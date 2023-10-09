@@ -28,7 +28,7 @@ app.get("/api/v1/ingredients", async (req, res) => {
 });
 
 
-// PUT a new rating - this is based on film id
+// PUT a new rating - this is based on film 
 // app.put("/api/v1/films", async (req, res) => {
 //   const filmID = req.body.filmID;
 //   const newRating = req.body.rating;
