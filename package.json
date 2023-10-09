@@ -1,0 +1,13 @@
+{
+    "name": "testapp",
+    "version": "1.0.0",
+    "description": "native application",
+    "main": "./client/public/index.html",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+    }
+  }
