@@ -47,5 +47,4 @@ app.get('/api/v1/restrictions', async (req, res) => {
   }
 });
 
-
 module.exports = app;
