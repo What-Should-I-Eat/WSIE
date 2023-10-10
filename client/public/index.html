@@ -3,12 +3,29 @@
 <head>
   <title>Ingredients test</title>
   <script type="text/javascript" src="./ingredients.js"></script>
-  <link rel="stylesheet" href="./stylesheets/style.css">
+  <link rel="stylesheet" href="./stylesheets/styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-    <div>WHAT UP hii</div>
+  <h1>Ingredients list</h1>
+
+  <div class="show-ingredients">
+    <!-- No onload attribute here -->
+    <form>
+      <table class="ingredients-table">
+        <thead id="ingredients-table-header"></thead>
+        <tbody id="ingredients-table-entries"></tbody>
+      </table>
+    </form>
+  </div>
+
+  <script>
+    // Call the getIngredients function when the page finishes loading
+    window.onload = () => {
+      API.getIngredients();
+    };
+  </script>
 
 </body>
 </html>

@@ -1,17 +1,15 @@
 const mongoose = require('mongoose');
-const Ingredient = require('./src/models/ingredients_model.js'); // Adjust the path as needed
+const Ingredient = require('./src/models/ingredients_model.js'); 
+const Restriction = require('./src/models/dietaryRestrictions_model.js');
 
-// MongoDB connection URL
 const mongoUrl = 'mongodb://db/ingredients'; // Matches the service name in docker-compose.yml
 
 // Function to insert JSON data into the database
 async function insertData() {
   try {
-    // Connect to MongoDB
     await mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 
-    // JSON data to be inserted 
-    const jsonData = [
+    const ingredientData = [
         {
             "_id": 100,
             "name": "milk",
@@ -103,17 +101,32 @@ async function insertData() {
         
     ];
 
-    // Insert the JSON data into the "ingredients" collection
-    await Ingredient.insertMany(jsonData);
+    const restrictionData = [
+      {
+        "_id": 100,
+        "name": "lactose intolerance",
+        "restrictions": [
+          "milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey"
+        ]
+      },
+      {
+        "_id": 101,
+        "name": "allergy peanut",
+        "restrictions": [
+          "peanut", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"
+        ]
+      }
+    ];
+
+    await Ingredient.insertMany(ingredientData);
+    await Restriction.insertMany(restrictionData);
 
     console.log('Data inserted successfully.');
   } catch (error) {
     console.error('Error inserting data:', error);
   } finally {
-    // Close the MongoDB connection
     mongoose.connection.close();
   }
 }
 
-// Call the insertData function to preload data
 insertData();
