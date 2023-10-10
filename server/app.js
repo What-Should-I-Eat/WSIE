@@ -12,31 +12,40 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // MongoDB connection
-mongoose.connect('mongodb://db', {
+mongoose.connect('mongodb://db:27017/WSIE', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
 
 
-
-// Define routes
 app.get("/", (req, res) => {
-  res.json({ msg: "ingredients" });
+  res.json({ msg: "data goes here" });
 });
 
-// Returns the array of ingredients (GET)
-app.get("/api/v1/ingredients", async (req, res) => {
-  const ingredients = await Ingredient.find({});
-  res.json(ingredients);
+//Ingredients route
+app.get('/api/v1/ingredients', async (req, res) => {
+  try {
+    const ingredients = await mongoose.model('Ingredient').find();
+    res.json(ingredients);
+  } 
+  catch (error) {
+    console.error('Error fetching ingredients:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
-//Returns the array of dietary restrictions
-app.get("/api/v1/restrictions", async (req, res) => {
-  const restrictions = await Restriction.find({});
-  res.json(restrictions);
+//Restrictions route
+app.get('/api/v1/restrictions', async (req, res) => {
+  try {
+    const restrictions = await mongoose.model('Restriction').find();
+    res.json(restrictions);
+  } 
+  catch (error) {
+    console.error('Error fetching restrictions:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
-
 
 
 module.exports = app;

@@ -11,7 +11,7 @@ services:
     depends_on: 
       - db
     environment:
-      - MONGO_DB_URI=mongodb://db/ingredients
+      - MONGO_DB_URI=mongodb://db/WSIE
   db:
     image: mongo
     ports:

@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const getModel = require('./generic_model.js');
 
-const RestrictionSchema = new Schema({
-    _id: Number,
+const RestrictionSchema = new mongoose.Schema({
     name: String,
-    restrictions: [String]
+    tags: [String]
 });
   
-module.exports = mongoose.model('Restriction', RestrictionSchema);
+module.exports = getModel('Restriction', RestrictionSchema);

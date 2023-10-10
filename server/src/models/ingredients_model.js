@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const getModel = require("./generic_model.js");
 
-const IngredientSchema = new Schema({
-    _id: Number,
+const IngredientSchema = new mongoose.Schema({
     name: String,
     tags: [
       {
@@ -13,4 +12,4 @@ const IngredientSchema = new Schema({
     ],
   });
   
-module.exports = mongoose.model('Ingredient', IngredientSchema);
+module.exports = getModel('Ingredient', IngredientSchema);

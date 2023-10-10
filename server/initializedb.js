@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Ingredient = require('./src/models/ingredients_model.js'); 
 const Restriction = require('./src/models/dietaryRestrictions_model.js');
 
-const mongoUrl = 'mongodb://db/ingredients'; // Matches the service name in docker-compose.yml
+const mongoUrl = 'mongodb://db/WSIE'; // Matches the service name in docker-compose.yml
 
 // Function to insert JSON data into the database
 async function insertData() {
@@ -11,7 +11,6 @@ async function insertData() {
 
     const ingredientData = [
         {
-            "_id": 100,
             "name": "milk",
             "tags": [
               {
@@ -22,7 +21,6 @@ async function insertData() {
             ]
           },
           {
-            "_id": 101,
             "name": "coconut milk",
             "tags": [
               {
@@ -33,7 +31,6 @@ async function insertData() {
             ]
           },
           {
-            "_id": 102,
             "name": "almond milk",
             "tags": [
               {
@@ -44,7 +41,6 @@ async function insertData() {
             ]
           },
           {
-            "_id": 103,
             "name": "oat milk",
             "tags": [
               {
@@ -55,7 +51,6 @@ async function insertData() {
             ]
           },
           {
-            "_id": 104,
             "name": "soy milk",
             "tags": [
               {
@@ -66,7 +61,6 @@ async function insertData() {
             ]
           },
           {
-            "_id": 105,
             "name": "rice milk",
             "tags": [
               {
@@ -77,7 +71,6 @@ async function insertData() {
             ]
           },
           {
-            "_id": 106,
             "name": "cashew milk",
             "tags": [
               {
@@ -88,7 +81,6 @@ async function insertData() {
             ]
           },
           {
-            "_id": 107,
             "name": "pea milk",
             "tags": [
               {
@@ -103,14 +95,12 @@ async function insertData() {
 
     const restrictionData = [
       {
-        "_id": 100,
         "name": "lactose intolerance",
         "restrictions": [
           "milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey"
         ]
       },
       {
-        "_id": 101,
         "name": "allergy peanut",
         "restrictions": [
           "peanut", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"
