@@ -51,10 +51,23 @@ app.get('/api/v1/scrape-foodnetwork', async (req, res) => {
   try {
     //the response variable is what needs to be changed - pass something to this
     const response = await axios.get('https://www.foodnetwork.com/recipes/giada-de-laurentiis/chicken-florentine-style-recipe-1942850');
+
+    //getRecipeData() is our generic method. no changes needed for that when passing a different type of recipe
+    scrapedData = getRecipeData(response);
+    res.json(scrapedData)
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while scraping data.' });
+  }
+});
+
+//DO NOT CHANGE THIS - this is called for the food network route. the food network URI is passed when it's called
+function getRecipeData(response){
     const html = response.data;
     const $ = cheerio.load(html);
     const scrapedData = {};
-
+  //All of this scraped data contains /ns and random spaces so we're getting rid of all of them in these
     //Title of the recipe
     scrapedData.title = $('.o-AssetTitle__a-Headline').text().replace(/\n/g, '').trim();
 
@@ -75,13 +88,7 @@ app.get('/api/v1/scrape-foodnetwork', async (req, res) => {
       scrapedData.directions.push(directionText);
     });
 
-    res.json(scrapedData);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred while scraping data.' });
-  }
-});
-
-
+    return scrapedData;
+}
 
 module.exports = app;
