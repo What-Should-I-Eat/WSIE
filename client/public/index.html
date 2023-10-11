@@ -10,6 +10,14 @@
 
   <h1>Playing around with data</h1>
 
+  <div class="restriction-detector">
+    <form id="restriction-form">
+      <input type="text" id="restriction-input" placeholder="Enter restriction">
+      <input type="text" id="ingredient-input" placeholder="Enter ingredient">
+      <button type="submit">Generate alternatives</button>
+    </form>    
+  </div>
+  
   <div class="show-ingredients">
     <form>
       <table class="ingredients-table">
@@ -20,7 +28,6 @@
   </div>
 
   <script>
-    // Call the getIngredients function when the page finishes loading
     window.onload = () => {
       API.getIngredients();
     };
