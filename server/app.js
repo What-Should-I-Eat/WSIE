@@ -55,38 +55,27 @@ app.get('/api/v1/search-simply-recipes/:searchQuery', async (req, res) => {
   axios.get(url)
     .then((response) => {
       if (response.status === 200) {
-        const html = response.data;
+        const html = response.data; //all html from the page
         const $ = cheerio.load(html);
+        const searchResultsSection = $('.comp.search-results-list-1.card-list'); //list of search results
+        const items = searchResultsSection.find('.comp.card-list__item'); //each item in the list
+        const results = []; //json array to store data
 
-        // Find the search results section
-        const searchResultsSection = $('.comp.search-results-list-1.card-list'); // Adjust the selector to match the specific container
-
-        // Find the list of items
-        const items = searchResultsSection.find('.comp.card-list__item');
-
-        const results = [];
-
-        // Iterate through each item and extract the data
+        //Iterating through the list of search results
         items.each((index, element) => {
-          const title = $(element).find('span.card__title').text().trim();
-          const link = $(element).find('.comp.card').attr('href');
-          console.log(link);
+          const title = $(element).find('span.card__title').text().trim(); //Name of the recipe
+          const link = $(element).find('.comp.card').attr('href'); //Link to recipe page
           results.push({ title, link });
         });
 
-        console.log(results);
-
-        // Send the results as a JSON response to the client
-        res.json(results);
+        res.json(results); //json array of recipe names and links 
       } else {
         console.error('Request failed with status code', response.status);
-        // Send an error response to the client, if needed
         res.status(500).json({ error: 'Internal Server Error' });
       }
     })
     .catch((error) => {
       console.error('Error:', error);
-      // Send an error response to the client
       res.status(500).json({ error: 'Internal Server Error' });
     });
 });
