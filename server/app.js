@@ -7,6 +7,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const Ingredient = require("./src/models/ingredients_model"); //Need to keep this even though its greyed out
 const Restriction = require("./src/models/dietaryRestrictions_model");
+const json = require("body-parser/lib/types/json");
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -46,41 +47,55 @@ app.get('/api/v1/restrictions', async (req, res) => {
   }
 });
 
-app.get('/api/v1/search-simply-recipes', async (req, res) => {
-  const searchQuery = req.query.query;
+//This is where we want to pass a search so that we can see the options for recipes
+app.get('/api/v1/search-simply-recipes/:searchQuery', async (req, res) => {
+  const searchQuery = encodeURIComponent(req.params.searchQuery);
+  const url = 'https://www.simplyrecipes.com/search?q=' + searchQuery;
 
-  // Construct the URL with the search query
-  const url = 'https://www.simplyrecipes.com/search?q=';
-
-
-// Make a GET request to fetch the HTML content
-  axios.get(url + searchQuery)
+  axios.get(url)
     .then((response) => {
       if (response.status === 200) {
         const html = response.data;
         const $ = cheerio.load(html);
 
         // Find the search results section
-        const searchResultsSection = $('#search-results-list-1_1-0');
+        const searchResultsSection = $('.comp.search-results-list-1.card-list'); // Adjust the selector to match the specific container
 
-        // Extract titles and hrefs
-        const results = searchResultsSection.find('.card__underline').map((i, el) => {
-          const title = $(el).text().trim();
-          const href = $(el).closest('.card').attr('href');
-          return { title, href };
-        }).get();
+        // Find the list of items
+        const items = searchResultsSection.find('.comp.card-list__item');
+
+        const results = [];
+
+        // Iterate through each item and extract the data
+        items.each((index, element) => {
+          const title = $(element).find('span.card__title').text().trim();
+          const link = $(element).find('.comp.card').attr('href');
+          console.log(link);
+          results.push({ title, link });
+        });
 
         console.log(results);
+
+        // Send the results as a JSON response to the client
+        res.json(results);
       } else {
         console.error('Request failed with status code', response.status);
+        // Send an error response to the client, if needed
+        res.status(500).json({ error: 'Internal Server Error' });
       }
     })
     .catch((error) => {
       console.error('Error:', error);
+      // Send an error response to the client
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
 });
 
 
-// Scraper route - this is for a specific recipe. Need to change so this passes a search
+//This scrapes a recipe called tomato soup
+//What we want is 1) the user to first search a recipe (above)
+//2) whatever they click on above is passed here and returned
+//Currently it's hard coded to tomato soup but that will change
 app.get('/api/v1/scrape-recipe', async (req, res) => {
   try {
     //the response variable is what needs to be changed - pass something to this
