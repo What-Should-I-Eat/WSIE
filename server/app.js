@@ -103,27 +103,26 @@ app.get('/api/v1/scrape-recipe', async (req, res) => {
 function getRecipeData(response){
   const html = response.data;
   const $ = cheerio.load(html);
-  const scrapedData = {};
-//All of this scraped data contains /ns and random spaces so we're getting rid of all of them in these
+  const recipeData = {};
   //Title of the recipe
-  scrapedData.title = $('h2.recipe-block__header').text().trim();
+  recipeData.title = $('h2.recipe-block__header').text().trim();
 
   //Recipe ingredients
-  scrapedData.ingredients = [];
+  recipeData.ingredients = [];
   $('ul.structured-ingredients__list li.structured-ingredients__list-item').each((index, element) => {
     const ingredientItem = $(element).find('p').text().trim();
-    scrapedData.ingredients.push(ingredientItem);
+    recipeData.ingredients.push(ingredientItem);
   });
 
 
   //Recipe directions
-  scrapedData.directions = [];
+  recipeData.directions = [];
   $('#mntl-sc-block_3-0-1, #mntl-sc-block_3-0-7, #mntl-sc-block_3-0-13, #mntl-sc-block_3-0-18').each((index, element) => {
     const directionText = $(element).find('p.mntl-sc-block-html').text().trim();
-    scrapedData.directions.push(directionText);
+    recipeData.directions.push(directionText);
   });
 
-  return scrapedData;
+  return recipeData;
 }
 
 
