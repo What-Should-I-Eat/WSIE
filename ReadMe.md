@@ -20,7 +20,7 @@ This will build and start the 5 docker containers of `testapp`:
 When the application starts, all 5 containers will run, then `initialize-db-1` will end immediately after loading data into `db-1`. All URIs run on `localhost:8080` via NGINX and data can be accessed via the endpoints described in the Server section.
 
 ## Client
-The client doesn't really do anything right now. It can be accessed at `localhost:8080`.
+The client doesn't really do anything right now. You can search a recipe and it will show options with links. It can be accessed at `localhost:8080`.
 
 ## Server
 The server contains the following API endpoints: 

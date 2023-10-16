@@ -95,15 +95,61 @@ async function insertData() {
 
     const restrictionData = [
       {
-        "name": "lactose intolerance",
+        "name": "allergy peanut",
+        "restrictions": [
+          "peanut", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"
+        ]
+      },
+      {
+        "name": "allergy milk",
         "restrictions": [
           "milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey"
         ]
       },
       {
-        "name": "allergy peanut",
+        "name": "allergy eggs",
         "restrictions": [
-          "peanut", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"
+          "egg"
+        ]
+      },
+      {
+        "name": "allergy fish",
+        "restrictions": [
+          "fish", "cod", "salmon", "tuna", "trout", "mahi", "sardines", "bass", "pollock", "char", "tilapia", 
+          "snapper", "anchovies", "haddock", "flounder", "catfish", "halibut", "swordfish", "branzino"
+        ]
+      },
+      {
+        "name": "allergy shellfish",
+        "restrictions": [
+          "shrimp", "prawn", "crab", "lobster", "clam", "mussels", "oyster", "scallop", "octopus", 
+          "squid", "abalone", "snail", "escargot"
+        ]
+      },
+      {
+        "name": "allergy treenut",
+        "restrictions": [
+          "almond", "Brazil nut", "cashew", "hazelnut", "pistachio", "pecan", "walnut", "macadamia", "pine nut"
+        ]
+      },
+      {
+        "name": "allergy wheat",
+        "restrictions": [
+          "wheat", "wheat flour", "bread crumbs", "bulgur", "couscous", "farina", "pasta", "semolina",
+           "wheat bran", "wheat protein", "wheat flour", "whole wheat", "glucose syrup", "tortilla", 
+           "dough", "soy sauce", "cereal"
+        ]
+      },
+      {
+        "name": "allergy soy",
+        "restrictions": [
+          "soy", "edamame", "soybean", "soymilk", "miso", "natto", "soy sauce", "tamari", "tempeh", "teriyaki", "tofu"
+        ]
+      },
+      {
+        "name": "lactose intolerance",
+        "restrictions": [
+          "milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey"
         ]
       }
     ];
