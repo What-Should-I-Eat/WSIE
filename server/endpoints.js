@@ -2,13 +2,13 @@ const express = require("express");
 const axios = require("axios");
 const cheerio = require('cheerio');
 const mongoose = require("mongoose");
-const router = express.Router();
+const endpoints = express.Router();
 const Ingredient = require("./src/models/ingredients_model"); //Need to keep this even though its greyed out
 const Restriction = require("./src/models/dietaryRestrictions_model");
 const json = require("body-parser/lib/types/json");
 
 //returns ingredients
-router.get('/ingredients', async (req, res) => {
+endpoints.get('/ingredients', async (req, res) => {
     try {
       const ingredients = await mongoose.model('Ingredient').find();
       res.json(ingredients);
@@ -20,7 +20,7 @@ router.get('/ingredients', async (req, res) => {
   });
   
   //returns restrictions
-  router.get('/restrictions', async (req, res) => {
+  endpoints.get('/restrictions', async (req, res) => {
     try {
       const restrictions = await mongoose.model('Restriction').find();
       res.json(restrictions);
@@ -32,7 +32,7 @@ router.get('/ingredients', async (req, res) => {
   });
   
   //This is where we want to pass a search so that we can see the options for recipes
-  router.get('/search-simply-recipes/:searchQuery', async (req, res) => {
+  endpoints.get('/search-simply-recipes/:searchQuery', async (req, res) => {
     const searchQuery = encodeURIComponent(req.params.searchQuery);
     const url = 'https://www.simplyrecipes.com/search?q=' + searchQuery;
   
@@ -69,7 +69,7 @@ router.get('/ingredients', async (req, res) => {
   //What we want is 1) the user to first search a recipe (above)
   //2) whatever they click on above is passed here and returned
   //Currently it's hard coded to tomato soup but that will change
-  router.get('/scrape-recipe', async (req, res) => {
+  endpoints.get('/scrape-recipe', async (req, res) => {
     try {
       //the response variable is what needs to be changed - pass something to this
       const response = await axios.get('https://www.simplyrecipes.com/recipes/tomato_soup/');
@@ -139,5 +139,5 @@ router.get('/ingredients', async (req, res) => {
       return scrapedData;
   }
   
-  module.exports = router;
+  module.exports = endpoints;
   

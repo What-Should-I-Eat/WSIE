@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require('cors');
-const routes = require('./routes');
+const endpoints = require('./endpoints');
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -19,6 +19,6 @@ app.get("/", (req, res) => {
   res.json({ msg: "data goes here" });
 });
 
-app.use('/api/v1', routes);
+app.use('/api/v1', endpoints);
 
 module.exports = app;
