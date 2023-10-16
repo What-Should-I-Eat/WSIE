@@ -10,6 +10,20 @@
 
   <h1>Playing around with data</h1>
 
+  <div class="search-recipe">
+    <form onsubmit="return API.searchRecipe()">
+      <input type="text" id="search-input" placeholder="Enter recipe to search">
+      <button type="submit">Search</button>
+
+      <table class="search-results">
+        <thead id="search-results-header"></thead>
+        <tbody id="recipe-items"></tbody>
+      </table>
+    </form>  
+  </div>
+
+  
+  <br><br><br><br><br><br><br><br><br><br><br><br><br>
   <div class="restriction-detector">
     <form id="restriction-form">
       <input type="text" id="restriction-input" placeholder="Enter restriction">
@@ -27,11 +41,11 @@
     </form>
   </div>
 
-  <script>
+  <!-- <script>
     window.onload = () => {
       API.getIngredients();
     };
-  </script>
+  </script> -->
 
 </body>
 </html>

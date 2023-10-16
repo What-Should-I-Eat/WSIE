@@ -71,9 +71,89 @@ var API = (() => {
     return false;
   }
 
+  var searchRecipe = () => {
+    console.log("called search recipe");
+    const searchParam = document.getElementById("search-input").value;
+    console.log("searching for " + searchParam);
+
+    try {
+      fetch("http://" + host + ":8080/api/v1/search-simply-recipes/" + searchParam, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(resp => resp.json())
+        .then(results => {
+          clearTable();
+          showTableHeaders();
+          results.forEach(data => {
+            showRow(data.title, data.link);
+          });
+        });
+    } catch (e) {
+      console.log(e);
+      console.log('________________________________');
+    }
+
+
+    return false;
+  }
+
+  function showTableHeaders() {
+    var recipeResultsHeader = document.getElementById('search-results-header');
+    var headerRow = document.createElement('tr');
+    var recipeNameHeader = document.createElement('th');
+    var recipeLinkHeader = document.createElement('th');
+
+    recipeNameHeader.textContent = 'Recipe';
+    recipeLinkHeader.textContent = 'Link';
+
+    headerRow.appendChild(recipeNameHeader);
+    headerRow.appendChild(recipeLinkHeader);
+    recipeResultsHeader.appendChild(headerRow);
+}
+
+function showRow(title, link) {
+
+  var recipeItem = document.getElementById('recipe-items');
+  var newRecipeRow = document.createElement('tr');
+
+  //recipe title
+  var titleCell = document.createElement('td');
+  titleCell.textContent = title;
+  newRecipeRow.appendChild(titleCell);
+
+  //recipe link
+  var linkCell = document.createElement('td');
+  linkCell.textContent = link;
+  newRecipeRow.appendChild(linkCell);
+
+  recipeItem.appendChild(newRecipeRow);
+
+}
+
+function clearTable() {
+  var recipeItems = document.getElementById('recipe-items');
+  var recipeResultsHeader = document.getElementById('search-results-header');
+
+  //Clear rows
+  while (recipeItems.rows.length > 0) {
+    recipeItems.deleteRow(0);
+  }
+
+  //Clear headers
+  while (recipeResultsHeader.firstChild) {
+    recipeResultsHeader.removeChild(recipeResultsHeader.firstChild);
+  }
+}
+
+
+  
   return {
-    getIngredients,
-    generateAlternatives
+    //getIngredients,
+    generateAlternatives,
+    searchRecipe
   }
 })();
 

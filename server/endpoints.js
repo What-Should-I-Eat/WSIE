@@ -27,15 +27,18 @@ endpoints.get('/ingredients', async (req, res) => {
     } 
     catch (error) {
       console.error('Error fetching restrictions:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: 'restrictions - Internal Server Error' });
     }
   });
   
   //This is where we want to pass a search so that we can see the options for recipes
   endpoints.get('/search-simply-recipes/:searchQuery', async (req, res) => {
     const searchQuery = encodeURIComponent(req.params.searchQuery);
+    console.log("searchQuery = " + searchQuery);
+    
     const url = 'https://www.simplyrecipes.com/search?q=' + searchQuery;
-  
+    console.log("searching url: " + url);
+
     axios.get(url)
       .then((response) => {
         if (response.status === 200) {
@@ -60,7 +63,7 @@ endpoints.get('/ingredients', async (req, res) => {
       })
       .catch((error) => {
         console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'search - Internal Server Error' });
       });
   });
   
@@ -80,7 +83,7 @@ endpoints.get('/ingredients', async (req, res) => {
       
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'An error occurred while scraping data.' });
+      res.status(500).json({ error: 'recipe - Internal server error.' });
     }
   });
   
