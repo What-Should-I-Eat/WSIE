@@ -1,46 +1,7 @@
 const host = 'localhost';
 
 var API = (() => {
-  
 
-  var getIngredients = () => {
-    console.log("getIngredients function called");
-    try {
-      fetch("http://" + host + ":8080/api/v1/ingredients", {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then(resp => resp.json())
-        .then(results => {
-          results.forEach(data => {
-            showRow(data);
-          });
-        });
-    } catch (e) {
-      console.log(e);
-      console.log('________________________________');
-    }
-    return false;
-  }
-
-  function showRow(data) {
-    var ingredientTableEntries = document.getElementById('ingredients-table-entries');
-    var newIngredientRow = document.createElement('tr');
-
-    // Ingredient name
-    var ingredientCell = document.createElement('td');
-    ingredientCell.textContent = data.name;
-    newIngredientRow.appendChild(ingredientCell);
-
-    // Tags
-    var tagsCell = document.createElement('td');
-    tagsCell.textContent = data.tags.map(tag => tag.restrictions.join(", ")).join("\n");
-    newIngredientRow.appendChild(tagsCell);
-
-    ingredientTableEntries.appendChild(newIngredientRow);
-  }
 
   var generateAlternatives = () => {
     const restriction = document.getElementById("restriction-input").value;
@@ -75,6 +36,8 @@ var API = (() => {
     console.log("called search recipe");
     const searchParam = document.getElementById("search-input").value;
     console.log("searching for " + searchParam);
+    const recipeList = document.getElementById('recipeList');
+    recipeList.innerHTML = '';
 
     try {
       fetch("http://" + host + ":8080/api/v1/search-simply-recipes/" + searchParam, {
@@ -85,10 +48,14 @@ var API = (() => {
         }
       }).then(resp => resp.json())
         .then(results => {
-          clearTable();
-          showTableHeaders();
           results.forEach(data => {
-            showRow(data.title, data.link);
+            const recipeName = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = data.link;
+            link.textContent = data.title;
+            link.onclick = () => showRecipe(data.link);
+            recipeName.appendChild(link);
+            recipeList.appendChild(recipeName);
           });
         });
     } catch (e) {
@@ -100,54 +67,32 @@ var API = (() => {
     return false;
   }
 
-  function showTableHeaders() {
-    var recipeResultsHeader = document.getElementById('search-results-header');
-    var headerRow = document.createElement('tr');
-    var recipeNameHeader = document.createElement('th');
-    var recipeLinkHeader = document.createElement('th');
+  function showRecipe(link) {
 
-    recipeNameHeader.textContent = 'Recipe';
-    recipeLinkHeader.textContent = 'Link';
+    try {
+      fetch("http://" + host + ":8080/api/v1/scrape-recipe/" + link, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(resp => resp.json())
+        .then(results => {
+          results.forEach(data => {
+            //do something here
+            
+          });
+        });
+    } catch (e) {
+      console.log(e);
+      console.log('________________________________');
+    }
 
-    headerRow.appendChild(recipeNameHeader);
-    headerRow.appendChild(recipeLinkHeader);
-    recipeResultsHeader.appendChild(headerRow);
-}
 
-function showRow(title, link) {
-
-  var recipeItem = document.getElementById('recipe-items');
-  var newRecipeRow = document.createElement('tr');
-
-  //recipe title
-  var titleCell = document.createElement('td');
-  titleCell.textContent = title;
-  newRecipeRow.appendChild(titleCell);
-
-  //recipe link
-  var linkCell = document.createElement('td');
-  linkCell.textContent = link;
-  newRecipeRow.appendChild(linkCell);
-
-  recipeItem.appendChild(newRecipeRow);
-
-}
-
-function clearTable() {
-  var recipeItems = document.getElementById('recipe-items');
-  var recipeResultsHeader = document.getElementById('search-results-header');
-
-  //Clear rows
-  while (recipeItems.rows.length > 0) {
-    recipeItems.deleteRow(0);
+    //REDIRECT USER TO DIFFERENT PAGE
+    //window.location.href = link;
+    return false;
   }
-
-  //Clear headers
-  while (recipeResultsHeader.firstChild) {
-    recipeResultsHeader.removeChild(recipeResultsHeader.firstChild);
-  }
-}
-
 
   
   return {

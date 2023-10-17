@@ -13,7 +13,11 @@
   <div class="search-recipe">
     <form onsubmit="return API.searchRecipe()">
       <input type="text" id="search-input" placeholder="Enter recipe to search">
+      <input type="text" id="restriction-input" placeholder="Enter dietary restriction">
       <button type="submit">Search</button>
+
+      <ul id="recipeList"></ul>
+
 
       <table class="search-results">
         <thead id="search-results-header"></thead>

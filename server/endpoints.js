@@ -72,19 +72,27 @@ endpoints.get('/ingredients', async (req, res) => {
   //What we want is 1) the user to first search a recipe (above)
   //2) whatever they click on above is passed here and returned
   //Currently it's hard coded to tomato soup but that will change
-  endpoints.get('/scrape-recipe', async (req, res) => {
-    try {
-      //the response variable is what needs to be changed - pass something to this
-      const response = await axios.get('https://www.simplyrecipes.com/recipes/tomato_soup/');
-  
-      //getRecipeData() is our generic method. no changes needed for that when passing a different type of recipe
-      scrapedData = getRecipeData(response);
-      res.json(scrapedData)
+  endpoints.get('/scrape-recipe/:recipeLink', async (req, res) => {
+    
+    const recipeLink = 'https://www.simplyrecipes.com/trinidadian-boiled-corn-recipe-6455683'; //THIS WORKS
+    //const recipeLink = req.params.recipeLink; //This DOES NOT WORK
+    console.log("link", recipeLink);
+
+    axios.get(recipeLink)
+    .then((response) => {
+      if (response.status === 200) {
+        scrapedData = getRecipeData(response);
+        res.json(scrapedData)
       
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'recipe - Internal server error.' });
-    }
+      } else {
+        console.error('Request failed with status code', response.status);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'search - Internal Server Error' });
+    });
   });
   
   function getRecipeData(response){
