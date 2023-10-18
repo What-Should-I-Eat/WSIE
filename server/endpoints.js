@@ -72,13 +72,14 @@ endpoints.get('/ingredients', async (req, res) => {
   //What we want is 1) the user to first search a recipe (above)
   //2) whatever they click on above is passed here and returned
   //Currently it's hard coded to tomato soup but that will change
-  endpoints.get('/scrape-recipe/:recipeLink', async (req, res) => {
+  endpoints.get('/scrape-recipe', async (req, res) => {
     
-    const recipeLink = 'https://www.simplyrecipes.com/trinidadian-boiled-corn-recipe-6455683'; //THIS WORKS
-    //const recipeLink = req.params.recipeLink; //This DOES NOT WORK
-    console.log("link", recipeLink);
+    const link = req.query.recipeLink; //This DOES NOT WORK
+    const encodedLink = encodeURIComponent(link);
 
-    axios.get(recipeLink)
+    console.log("link", link);
+
+    axios.get(encodedLink)
     .then((response) => {
       if (response.status === 200) {
         scrapedData = getRecipeData(response);

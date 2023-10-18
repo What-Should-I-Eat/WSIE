@@ -28,7 +28,7 @@ The server contains the following API endpoints:
 * `/api/v1/ingredients`: displays JSON array of ingredients from `WSIE` database.
 * `/api/v1/restrictions`: displays JSON array of dietary restrictions from `WSIE` database.
 * `/api/v1/search-simply-recipes/:searchQuery`: returns JSON array of recipe names and links to recipe pages based on an encoded search parameter.
-* `/api/v1/scrape-recipe`: displays JSON array of ingredients and recipe instructions for a specific recipe. Currently, this endpoint is hard coded to return a recipe for tomato soup, but later it will accept a link from the `search-simply-recipes` endpoint to display a recipe that the user selects.
+* `/api/v1/scrape-recipe`: displays JSON array of ingredients and recipe instructions for a specific recipe. This endpoint accepts a query parameter of a recipe link (access endpoint using `http://localhost:8080/api/v1/scrape-recipe?recipeLink={LINK}`).
 
 All of these endpoints can be accessed at `localhost:8080`.
 
