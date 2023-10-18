@@ -3,26 +3,27 @@
 <head>
   <title>Ingredients test</title>
   <script type="text/javascript" src="./ingredients.js"></script>
+  <script type="text/javascript" src="./processingAlgorithms/recipeRetrieval.js"></script>
   <link rel="stylesheet" href="./stylesheets/styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-  <h1>Playing around with data</h1>
+  <h1>Search a Recipe</h1>
 
   <div class="search-recipe">
-    <form onsubmit="return API.searchRecipe()">
+    <form onsubmit="return Recipe.searchRecipe()">
       <input type="text" id="search-input" placeholder="Enter recipe to search">
       <input type="text" id="restriction-input" placeholder="Enter dietary restriction">
       <button type="submit">Search</button>
 
-      <ul id="recipeList"></ul>
+      <ul id="recipeList">
+        
+      </ul>
+
+      <p id="recipe-content"></p>
 
 
-      <table class="search-results">
-        <thead id="search-results-header"></thead>
-        <tbody id="recipe-items"></tbody>
-      </table>
     </form>  
   </div>
 

@@ -71,15 +71,10 @@ endpoints.get('/ingredients', async (req, res) => {
   //This scrapes a recipe called tomato soup
   //What we want is 1) the user to first search a recipe (above)
   //2) whatever they click on above is passed here and returned
-  //Currently it's hard coded to tomato soup but that will change
   endpoints.get('/scrape-recipe', async (req, res) => {
-    
     const link = req.query.recipeLink; //This DOES NOT WORK
-    const encodedLink = encodeURIComponent(link);
 
-    console.log("link", link);
-
-    axios.get(encodedLink)
+    axios.get(link)
     .then((response) => {
       if (response.status === 200) {
         scrapedData = getRecipeData(response);
@@ -100,22 +95,32 @@ endpoints.get('/ingredients', async (req, res) => {
     const html = response.data;
     const $ = cheerio.load(html);
     const recipeData = {};
+
     //Title of the recipe
     recipeData.title = $('h2.recipe-block__header').text().trim();
+
+    //String arrays in JSON data
+    recipeData.ingredientList = []; //actual ingredients list
+    recipeData.directions = [];
+    recipeData.ingredientNames = []; //names of individual ingredients
   
     //Recipe ingredients
-    recipeData.ingredients = [];
     $('ul.structured-ingredients__list li.structured-ingredients__list-item').each((index, element) => {
       const ingredientItem = $(element).find('p').text().trim();
-      recipeData.ingredients.push(ingredientItem);
+      recipeData.ingredientList.push(ingredientItem);
     });
   
   
     //Recipe directions
-    recipeData.directions = [];
     $('#mntl-sc-block_3-0-1, #mntl-sc-block_3-0-7, #mntl-sc-block_3-0-13, #mntl-sc-block_3-0-18').each((index, element) => {
       const directionText = $(element).find('p.mntl-sc-block-html').text().trim();
       recipeData.directions.push(directionText);
+    });
+
+    //Individual ingredient names
+    $('ul.structured-ingredients__list li.structured-ingredients__list-item').each((index, element) => {
+      const ingredientItem = $(element).find('p [data-ingredient-name]').text().trim();
+      recipeData.ingredientNames.push(ingredientItem);
     });
   
     return recipeData;
