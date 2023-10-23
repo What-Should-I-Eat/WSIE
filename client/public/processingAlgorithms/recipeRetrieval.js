@@ -58,7 +58,7 @@ var Recipe = (() => {
           'Content-Type': 'application/json'
         }
       }).then(resp => resp.json())
-      .then(results => {
+      .then(async results => {
         //Setting up headers (need to do this here so it doesn't appear before the user selects a recipe)
         recipeTitleHeader.innerHTML = results.title;
         ingredientsHeader.innerHTML = 'Ingredients';
@@ -67,11 +67,12 @@ var Recipe = (() => {
         recipe = results;
         res = results;
         //Actual data
-        parseResults(results);
+        const updatedRecipe = await parseResults(results);
 
 
-        ingredientList.innerHTML = recipe.ingredientNames;
-        directionsList.innerHTML = recipe.directions;
+
+        ingredientList.innerHTML = updatedRecipe.ingredientNames;
+        directionsList.innerHTML = updatedRecipe.directions;
 
         //finish this - get return value from parse results then populate lists
 
@@ -123,9 +124,18 @@ var Recipe = (() => {
           recipe.ingredientList = getUpdatedRecipe(recipe.ingredientList);
           recipe.directions = getUpdatedRecipe(recipe.directions);
 
+          // console.log('--', recipe.ingredientNames);
+          // console.log('--', recipe.ingredientList);
+          // console.log('--', recipe.directions);
+
         }
       }
   
+      console.log('--', recipe.ingredientNames);
+          console.log('--', recipe.ingredientList);
+          console.log('--', recipe.directions);
+
+      updatedRecipe = recipe;
       console.log("UPDATED RECIPE", updatedRecipe);
       return updatedRecipe;
     } catch (e) {
@@ -196,13 +206,6 @@ function getUpdatedRecipe(list) {
 
     for (let i = 0; i < list.length; i++) {
       for (const item of subArray) {
-
-        // if (list[i].toLowerCase().includes(item.original.toLowerCase())) {
-        //   list[i] = item.substitution;
-        //   break; // Once we find a match, no need to continue searching
-        // }
-        
-
         if (list[i].toLowerCase().includes(item.original.toLowerCase())) {
           const lowercaseOriginal = item.original.toLowerCase();
           const index = list[i].toLowerCase().indexOf(lowercaseOriginal);
@@ -219,6 +222,7 @@ function getUpdatedRecipe(list) {
 
     console.log(list);
     console.log('----------new', recipe);
+    return list;
 }
 
 
