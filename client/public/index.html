@@ -4,12 +4,13 @@
   <title>Ingredients test</title>
   <script type="text/javascript" src="./ingredients.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/recipeRetrieval.js"></script>
-  <link rel="stylesheet" href="./stylesheets/styles.css">
+  <link rel="stylesheet" href="/stylesheets/styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-  <h1>Search a Recipe</h1>
+
+<h1>Search a Recipe</h1>
 
   <div class="search-recipe">
     <form onsubmit="return Recipe.searchRecipe()">
@@ -17,11 +18,17 @@
       <input type="text" id="restriction-input" placeholder="Enter dietary restriction">
       <button type="submit">Search</button>
 
-      <ul id="recipeList">
-        
-      </ul>
+      <ul id="recipeList"></ul>
 
-      <p id="recipe-content"></p>
+
+      <br><br><br><br><br><br>
+      <div id="selected-recipe-details">
+        <h2 id="recipe-name"></h2>
+          <p id="ingredients"></p>
+            <ul id="ingredient-list"></ul>
+          <p id="directions"></p>
+            <ul id="directions-list"></ul>
+      </div>
 
 
     </form>  
@@ -29,7 +36,7 @@
 
   
   <br><br><br><br><br><br><br><br><br><br><br><br><br>
-  <div class="restriction-detector">
+  <!-- <div class="restriction-detector">
     <form id="restriction-form">
       <input type="text" id="restriction-input" placeholder="Enter restriction">
       <input type="text" id="ingredient-input" placeholder="Enter ingredient">
@@ -44,13 +51,9 @@
         <tbody id="ingredients-table-entries"></tbody>
       </table>
     </form>
-  </div>
+  </div> -->
 
-  <!-- <script>
-    window.onload = () => {
-      API.getIngredients();
-    };
-  </script> -->
+
 
 </body>
 </html>

@@ -89,49 +89,59 @@ async function insertData() {
                 "alternatives": ["milk", "coconut milk", "almond milk", "oat milk", "soy milk", "rice milk", "cashew milk"]
               }
             ]
+          },
+          {
+            "name": "greek yogurt",
+            "tags": [
+              {
+                "restrictions": ["a-milk", "lactose-intolerance"],
+                "attributes": [],
+                "alternatives": ["coconut cream", "silken tofu"]
+              }
+            ]
           }
         
     ];
 
     const restrictionData = [
       {
-        "name": "allergy peanut",
+        "name": "a-peanut",
         "tags": [
           "peanut", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"
         ]
       },
       {
-        "name": "allergy milk",
+        "name": "a-milk",
         "tags": [
           "milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey"
         ]
       },
       {
-        "name": "allergy eggs",
+        "name": "a-eggs",
         "tags": ["egg"]
       },
       {
-        "name": "allergy fish",
+        "name": "a-fish",
         "tags": [
-          "fish", "cod", "salmon", "tuna", "trout", "mahi", "sardines", "bass", "pollock", "char", "tilapia", 
+          "fish", "cod", "salmon", "tuna", "trout", "mahi", "sardines", "bass", "sea bass", "pollock", "char", "tilapia", 
           "snapper", "anchovies", "haddock", "flounder", "catfish", "halibut", "swordfish", "branzino"
         ]
       },
       {
-        "name": "allergy shellfish",
+        "name": "a-shellfish",
         "tags": [
           "shrimp", "prawn", "crab", "lobster", "clam", "mussels", "oyster", "scallop", "octopus", 
           "squid", "abalone", "snail", "escargot"
         ]
       },
       {
-        "name": "allergy treenut",
+        "name": "a-treenut",
         "tags": [
           "almond", "Brazil nut", "cashew", "hazelnut", "pistachio", "pecan", "walnut", "macadamia", "pine nut"
         ]
       },
       {
-        "name": "allergy wheat",
+        "name": "a-wheat",
         "tags": [
           "wheat", "wheat flour", "bread crumbs", "bulgur", "couscous", "farina", "pasta", "semolina",
            "wheat bran", "wheat protein", "wheat flour", "whole wheat", "glucose syrup", "tortilla", 
@@ -139,13 +149,13 @@ async function insertData() {
         ]
       },
       {
-        "name": "allergy soy",
+        "name": "a-soy",
         "tags": [
           "soy", "edamame", "soybean", "soymilk", "miso", "natto", "soy sauce", "tamari", "tempeh", "teriyaki", "tofu"
         ]
       },
       {
-        "name": "lactose intolerance",
+        "name": "lactose-intolerance",
         "tags": [
           "milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey"
         ]
