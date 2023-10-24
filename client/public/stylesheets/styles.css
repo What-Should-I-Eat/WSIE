@@ -3,9 +3,9 @@ html {
   }
   
   body {
-    background-color: #f2ede179;
+    background-color: rgba(238, 235, 220, 0.255);
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    color: rgb(134, 126, 107);
+    color:#a08b6f; 
     text-align: center;
     font-weight: 200;
     font-size: 2vw;
@@ -13,7 +13,7 @@ html {
   }
   
   header{
-    background-color: rgb(215, 207, 191);
+    background-color: rgb(202, 192, 172);
     color: white;
     margin: 0 auto;
     width: 100%;
@@ -34,6 +34,19 @@ html {
     font-weight: 350;
     font-size: 8vw;
   }
+  h2{
+    font-weight: 350;
+    font-size: 6vw;
+  }
+  h4{
+    font-weight: 290;
+    font-size: 4vw;
+  }
+
+  ul{
+    font-weight: 200;
+    font-size: 2vw;
+  }
   
 
   li{
@@ -49,6 +62,12 @@ html {
 
   a:hover{
     color:rgb(215, 207, 191);
+  }
+
+  hr{ 
+    width: 70% ;
+    box-align: center;
+    color: #a28969;
   }
   
   table{
@@ -73,9 +92,9 @@ html {
   
   input{
     background-color: #9ec9532e;
-    width: 10vw;
-    height: 3.5vw;
-    font-size: 1vw;
+    width: auto;
+    height: 4.5vw;
+    font-size: 1.5vw;
     text-align: center;
     border: 1px solid rgb(134, 126, 107);
     border-radius: 0.075rem;
@@ -87,7 +106,7 @@ html {
   button{
     font: inherit;
     color: inherit;
-    font-size: 2vw;
+    font-size: 3vw;
     background-color: #9ec95359;
     border-width: .5vw;
     border-style: dotted;
@@ -95,7 +114,13 @@ html {
     padding: .25vw;
   }
   
-  #show-films-button{
-    margin-top: .5vw;
-    font-size: 4vw;
+  footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 5vw;
+    background-color:  rgb(202, 192, 172);
+    color: white;
+    text-align: center;
   }

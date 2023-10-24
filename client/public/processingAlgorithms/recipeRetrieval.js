@@ -1,6 +1,7 @@
 
 var Recipe = (() => {
 
+  const host = 'localhost';
   let recipe = [];
   let substitutionArray = [];
   const NUT_BUTTER = ["peanut butter", "almond butter", "hazelnut butter", "coconut butter", "nut butter", "cookie butter"];
@@ -48,6 +49,7 @@ var Recipe = (() => {
     const ingredientList = document.getElementById('ingredient-list'); //List of ingredients
     const directionsHeader = document.getElementById('directions'); //Name: directions
     const directionsList = document.getElementById('directions-list');//List of directions
+    const restriction = document.getElementById('restriction-input').value; //restriction
     recipeTitleHeader.innerHTML = '';
     ingredientsHeader.innerHTML = '';
     ingredientList.innerHTML = '';
@@ -68,10 +70,10 @@ var Recipe = (() => {
         recipeTitleHeader.innerHTML = results.title;
         ingredientsHeader.innerHTML = 'Ingredients';
         directionsHeader.innerHTML = 'Directions';
-
         recipe = results;
+
         //Actual data
-        const updatedRecipe = await parseResults(results);
+        const updatedRecipe = await parseResults(results, restriction);
 
         ingredientList.innerHTML = updatedRecipe.ingredientList;
         directionsList.innerHTML = updatedRecipe.directions;
@@ -87,10 +89,9 @@ var Recipe = (() => {
 
   //Gets restricted ingredients from db based on user's inputted restriction
   //Parameter is full recipe
-  async function parseResults(ingredientResults) {
+  async function parseResults(ingredientResults, restriction) {
     console.log("parsing results");
     try {
-      const restriction = document.getElementById('restriction-input').value;
       const ingredientNames = ingredientResults.ingredientNames;
       let updatedRecipe = [];
       restrictionList.push(restriction);
