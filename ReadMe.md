@@ -20,7 +20,11 @@ This will build and start the 5 docker containers of `testapp`:
 When the application starts, all 5 containers will run, then `initialize-db-1` will end immediately after loading data into `db-1`. All URIs run on `localhost:8080` via NGINX and data can be accessed via the endpoints described in the Server section.
 
 ## Client
-The client doesn't really do anything right now. You can search a recipe and it will show options with links. It can be accessed at `localhost:8080`.
+Currently, the client is a single page of HTML. 
+
+When the client is accessed at `localhost:8080`, it will display two input boxes. The user can enter a recipe to search in the first box, and a list of recipes will be rendered. The user can click a recipe to view it at the bottom of the screen. 
+
+If the user enters an approved dietary restriction in the second box, the application will parse recipes based on that dietary restriction. Later, the user will have button options for dietary restricitons. This can be tested with the input "a-milk", which denotes a milk allergy and substitutes all dairy ingredients in searched recipes.
 
 ## Server
 The server contains the following API endpoints: 
