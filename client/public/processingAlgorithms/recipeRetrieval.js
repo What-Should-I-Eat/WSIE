@@ -1,12 +1,17 @@
+
 var Recipe = (() => {
 
   let recipe = [];
-  let subArray = [];
+  let substitutionArray = [];
+  const NUT_BUTTER = ["peanut butter", "almond butter", "hazelnut butter", "coconut butter", "nut butter", "cookie butter"];
+  let restrictionList = [];
+  const ingredientSubstitutions = {
+    substitutionOptions: []
+  }; 
+  let restrictedIngredientCount = 0;
 
   var searchRecipe = () => {
-    console.log("called search recipe");
     const searchParam = document.getElementById("search-input").value;
-    console.log("searching for " + searchParam);
     const recipeList = document.getElementById('recipeList');
     recipeList.innerHTML = '';
 
@@ -22,7 +27,8 @@ var Recipe = (() => {
           results.forEach(data => {
             const recipeName = document.createElement('li');
             const link = document.createElement('a');
-            link.href = data.link;
+            //link.href = data.link; //--> this makes it redirect to the actual page of the webiste so we don't need it
+            //But perhaps we'll keep it for now so that the user can go see the original recipe if they want
             link.textContent = data.title;
             link.onclick = () => showRecipe(data.link);
             recipeName.appendChild(link);
@@ -31,7 +37,6 @@ var Recipe = (() => {
         });
     } catch (e) {
       console.log(e);
-      console.log('________________________________');
     }
     return false;
   }
@@ -49,7 +54,7 @@ var Recipe = (() => {
     directionsHeader.innerHTML = '';
     directionsList.innerHTML = '';
 
-    //Endpoint works and returns json array
+    //Endpoint works and returns json array of recipe
     try {
       fetch("http://" + host + ":8080/api/v1/scrape-recipe/?recipeLink=" + link, {
         method: 'GET',
@@ -65,25 +70,15 @@ var Recipe = (() => {
         directionsHeader.innerHTML = 'Directions';
 
         recipe = results;
-        res = results;
         //Actual data
         const updatedRecipe = await parseResults(results);
 
-
-
-        ingredientList.innerHTML = updatedRecipe.ingredientNames;
+        ingredientList.innerHTML = updatedRecipe.ingredientList;
         directionsList.innerHTML = updatedRecipe.directions;
-
-        //finish this - get return value from parse results then populate lists
-
-      
       });
   } catch (e) {
     console.log(e);
-    console.log('________________________________');
   }
-
-
 
   //REDIRECT USER TO DIFFERENT PAGE
   //window.location.href = link;
@@ -93,10 +88,12 @@ var Recipe = (() => {
   //Gets restricted ingredients from db based on user's inputted restriction
   //Parameter is full recipe
   async function parseResults(ingredientResults) {
+    console.log("parsing results");
     try {
       const restriction = document.getElementById('restriction-input').value;
       const ingredientNames = ingredientResults.ingredientNames;
       let updatedRecipe = [];
+      restrictionList.push(restriction);
   
       const response = await fetch("http://" + host + ":8080/api/v1/restrictions", {
         method: 'GET',
@@ -107,66 +104,76 @@ var Recipe = (() => {
       });
   
       const results = await response.json();
-  
+
       for (const data of results) {
         if (data.name === restriction) {
           const restrictedIngredients = data.tags;
           console.log("found", data.name);
-          console.log(restrictedIngredients);
   
+          console.log("original recipe: ", ingredientResults);
           const badIngredients = getRestrictedIngredientsInRecipe(ingredientNames, restrictedIngredients);
-          console.log("Back to parseResults()", badIngredients);
+          console.log("Back to parseResults() --> restricted ingredients list = ", badIngredients);
+          console.log("we are good until here back in parseResults() i think.");
+          console.log("now filling the substitution array in getSubstitutionsForRecipe()");
   
-          subArray = await getSubstitutionsForRecipe(ingredientResults, badIngredients);
-          console.log("back in original method"); //works up until here
+          await getSubstitutionsForRecipe(badIngredients);
+          console.log('Substitutions:', ingredientSubstitutions);
   
-          recipe.ingredientNames = getUpdatedRecipe(recipe.ingredientNames);
-          recipe.ingredientList = getUpdatedRecipe(recipe.ingredientList);
-          recipe.directions = getUpdatedRecipe(recipe.directions);
-
-          // console.log('--', recipe.ingredientNames);
-          // console.log('--', recipe.ingredientList);
-          // console.log('--', recipe.directions);
-
+          const handleDifferently = true;
+          recipe.ingredientNames = getUpdatedIngredientNames(recipe.ingredientNames, handleDifferently);
+          recipe.ingredientList = getUpdatedIngredientNames(recipe.ingredientList, !handleDifferently);
+          recipe.directions = getUpdatedIngredientNames(recipe.directions, !handleDifferently);
         }
       }
   
-      console.log('--', recipe.ingredientNames);
-          console.log('--', recipe.ingredientList);
-          console.log('--', recipe.directions);
+          console.log('--Ingredient names', recipe.ingredientNames);
+          console.log('--Ingredient list', recipe.ingredientList);
+          console.log('--Recipe Directions', recipe.directions);
 
       updatedRecipe = recipe;
       console.log("UPDATED RECIPE", updatedRecipe);
       return updatedRecipe;
     } catch (e) {
       console.log(e);
-      console.log('________________________________');
     }
   }
   
 
 //Finds and returns ingredients in the recipe that are restricted
 function getRestrictedIngredientsInRecipe(ingredientsOfRecipe, ingredientsRestrictedForUser){
-  console.log('made it to before we call ingredients endpoint');
   console.log("recipe ingredients", ingredientsOfRecipe);
-  console.log("restricted ingredients", ingredientsRestrictedForUser);
+  console.log("restricted ingredients for this user ", ingredientsRestrictedForUser);
 
   const badIngredientsInRecipe = [];
 
   for(let i = 0; i < ingredientsOfRecipe.length; i++){
-    const ingredient = ingredientsOfRecipe[i];
+    const ingredientOfRecipe = ingredientsOfRecipe[i];
 
-    if(ingredientsRestrictedForUser.some(restrictedIngredient => ingredient.includes(restrictedIngredient))){
-      badIngredientsInRecipe.push(ingredient);
+    let addBadIngredient = handleEdgeCaseBadIngredients(ingredientOfRecipe, ingredientsRestrictedForUser);
+    if(addBadIngredient){
+      badIngredientsInRecipe.push(ingredientOfRecipe);
     }
   }
-
   return badIngredientsInRecipe;
 }
 
+//Handles cases of ingredients that should or should not be added to badIngredients list
+//Currently only handles the nut butter issue but will be expanded
+function handleEdgeCaseBadIngredients(ingredientOfRecipe, ingredientsRestrictedForUser){
+  //Checks if a portion of the recipe ingredient string is included in ingredientsRestrictedForUser
+    if (ingredientsRestrictedForUser.some(restrictedIngredient => ingredientOfRecipe.includes(restrictedIngredient))) {
+      //Checks if the string includes the word "butter" and is not referring to dairy butter (need to abstract this somehow)
+      if (!NUT_BUTTER.some(nutButter => ingredientOfRecipe.toLowerCase().includes(nutButter))) {
+        console.log("-- added " + ingredientOfRecipe + " to restricted ingredients ");
+        return true;
+      }
+    }
 
-async function getSubstitutionsForRecipe(ingredientArray, badIngredients) {
-  const ingredientSubs = [];
+    return false;
+}
+
+//Params are original ingredients and identified bad ingredients
+async function getSubstitutionsForRecipe(badIngredients) {
 
   try {
     const response = await fetch("http://" + host + ":8080/api/v1/ingredients", {
@@ -178,54 +185,68 @@ async function getSubstitutionsForRecipe(ingredientArray, badIngredients) {
     });
     const results = await response.json();
 
-    for (const data of results) {
-      if (badIngredients.some(badIngredient => badIngredient.toLowerCase() === data.name.toLowerCase())) {
-        console.log('Found bad ingredient:', data.name);
-        const alternatives = data.tags[0].alternatives;
-        if (alternatives.length > 0) {
-          const badIngredientName = data.name;
-          alternatives.forEach(substitution => {
-            const isAlternativeRestricted = badIngredients.includes(substitution.toLowerCase());
-            if (!isAlternativeRestricted) {
-              ingredientSubs.push({ original: badIngredientName, substitution:substitution });
-            }
-          });
-        }
-      }
-    }
+    //Iterate through ingredient db: match a badIngredients array element with a substitution from the database
+    results.forEach(ingredientDB => {
+      //Matches each badIngredient element with an ingriedient in the ingredients database
+      if(badIngredients.some(badIngredient => badIngredient.toLowerCase().includes(ingredientDB.name.toLowerCase()))){
+        console.log("found bad ingredient: " + " matching db ingredient: " + ingredientDB.name);
+        
+        const alternativesList = [];
+        const alternatives = ingredientDB.tags[0].alternatives;
+        alternativesList.push(...alternatives);
+        console.log("alternatives to this ingredient: ", alternativesList);
 
-    console.log('Substitutions:', ingredientSubs);
+        ingredientSubstitutions.substitutionOptions.push({
+          original: ingredientDB.name,
+          substitutions: alternatives
+        });
+        restrictedIngredientCount++;
+      }
+
+
+    });
   } catch (e) {
     console.log(e);
-    console.log('________________________________');
   }
-  return ingredientSubs;
 }
 
-function getUpdatedRecipe(list) {
+//Changes every instance of a restricted ingredient to an alternative ingredient in the various recipe lists
+//Parameter is a list of the recipe (ex: ingredientNames)
+function getUpdatedIngredientNames(list, handleDifferently) {
 
-    for (let i = 0; i < list.length; i++) {
-      for (const item of subArray) {
-        if (list[i].toLowerCase().includes(item.original.toLowerCase())) {
-          const lowercaseOriginal = item.original.toLowerCase();
-          const index = list[i].toLowerCase().indexOf(lowercaseOriginal);
-          
-          if (index !== -1) {
-            const before = list[i].slice(0, index); // Portion before the match
-            const after = list[i].slice(index + lowercaseOriginal.length); // Portion after the match
-            
-            list[i] = before + item.substitution + after; // Combine the parts with the substitution
-          }
-        }
+  console.log("getUpdated recipe called for " + list);
+  
+  
+  
+  list.forEach((line, lineIndex) => {
+    line = line.toLowerCase();
+    console.log("line = " + line);
+    for (let i = 0; i < restrictedIngredientCount; i++) {
+      let originalIngredient = ingredientSubstitutions.substitutionOptions[i].original;
+  
+      // Check if the line contains the original ingredient
+      if (line.toLowerCase().includes(originalIngredient)) {
+        console.log("*FOUND " + originalIngredient + " in the original recipe");
+  
+        let substitutedIngredient = ingredientSubstitutions.substitutionOptions[i].substitutions[0];
+        console.log("substitution for " + originalIngredient + " = " + substitutedIngredient);
+        let quantity = line.split(' ')[0]; // Extract the quantity
+        console.log("quantity = " + quantity);
+        // Replace the ingredient part while preserving the quantity
+        line = '' + line.replace(originalIngredient.toLowerCase(), substitutedIngredient);
+        console.log("NEW LINE WITH SUBS: " + line);
+        // Perform your substitution here
       }
     }
+  
+    // Update the line in the list
+    list[lineIndex] = line;
+  });
 
-    console.log(list);
-    console.log('----------new', recipe);
+    console.log("*** new list *** " + list);
+    //console.log('----------new', recipe);
     return list;
 }
-
-
   
   return {
     searchRecipe
