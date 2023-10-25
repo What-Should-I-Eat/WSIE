@@ -41,3 +41,8 @@ All of these endpoints can be accessed at `localhost:8080`.
 The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains two collections: `restrictions` and `ingredients`. `restrictions` contains common dietary restrictions (i.e. peanut allergy, lactose intolerance, etc.). `ingredients` contains a list of ingredients, their associated dietary restrictions tags, and alternatives for the ingredient. These collections contain the data loaded by `initialize-db-1` when the program is run.
 
 Currently, the database only contains test data. Data can be accessed at `localhost:8080/api/v1/ingredients` and `localhost:8080/api/v1/restrictions`.
+
+## Parsing Architecture
+The following diagram shows the architecture of the parsing algorithms. Currently, these live in the client but will soon be transferred to the server once endpoints are created for user input. 
+
+![Alt text](<Parsing Architecture.png>)
