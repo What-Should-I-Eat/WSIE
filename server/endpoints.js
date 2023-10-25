@@ -5,8 +5,11 @@ const mongoose = require("mongoose");
 const endpoints = express.Router();
 const Ingredient = require("./src/models/ingredients_model"); //Need to keep this even though its greyed out
 const Restriction = require("./src/models/dietaryRestrictions_model");
+const RecipeInput = require("./src/models/recipeSearch_model.js"); 
+const RestrictionInput = require("./src/models/restrictionInput_model.js");
 const json = require("body-parser/lib/types/json");
 
+//ALL ENDPOINTS
 //returns ingredients
 endpoints.get('/ingredients', async (req, res) => {
     try {
@@ -91,6 +94,46 @@ endpoints.get('/ingredients', async (req, res) => {
     });
   });
   
+
+  endpoints.get('/search-input', async (req, res) => {
+    try {
+      const searchInputs = await mongoose.model('RecipeInput').find();
+      res.json(searchInputs)
+    } 
+    catch (error) {
+      console.error('Error fetching search input:', error);
+      res.status(500).json({ error: 'search input - Internal Server Error' });
+    }
+  });
+
+  endpoints.post("/search-input", async(req, res) => {
+    const recipeInput = new RecipeInput({ input: req.body.input });
+    const savedRecipeInput = await recipeInput.save();
+    res.json(savedRecipeInput);
+  });
+
+  endpoints.get("/restriction-input", async (req, res) => {
+    try {
+      const restrictionInputs = await mongoose.model('RestrictionInput').find();
+      res.json(restrictionInputs)
+    } 
+    catch (error) {
+      console.error('Error fetching search input:', error);
+      res.status(500).json({ error: 'search input - Internal Server Error' });
+    }
+  });
+
+  endpoints.post("/restriction-input", async(req, res) => {
+    const restrictionInput = new RestrictionInput({ input: req.body.input });
+    const savedRestrictionInput = await restrictionInput.save();
+    res.json(savedRestrictionInput);
+  });
+
+
+
+
+
+  //Support methods
   function getRecipeData(response){
     const html = response.data;
     const $ = cheerio.load(html);
@@ -112,9 +155,9 @@ endpoints.get('/ingredients', async (req, res) => {
   
   
     //Recipe directions
-    $('#mntl-sc-block_3-0-1, #mntl-sc-block_3-0-7, #mntl-sc-block_3-0-13, #mntl-sc-block_3-0-18').each((index, element) => {
-      const directionText = $(element).find('p.mntl-sc-block-html').text().trim();
-      recipeData.directions.push(directionText);
+    $('#mntl-sc-block_3-0').each((index, element) => {
+      const directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
+      recipeData.directions = recipeData.directions.concat(directionText);
     });
 
     //Individual ingredient names
@@ -125,36 +168,9 @@ endpoints.get('/ingredients', async (req, res) => {
   
     return recipeData;
   }
+
+
   
-  
-  //DO NOT CHANGE THIS - this is called for the food network route. the food network URI is passed when it's called
-  function getRecipeData1(response){
-      const html = response.data;
-      const $ = cheerio.load(html);
-      const scrapedData = {};
-    //All of this scraped data contains /ns and random spaces so we're getting rid of all of them in these
-      //Title of the recipe
-      scrapedData.title = $('.o-AssetTitle__a-Headline').text().replace(/\n/g, '').trim();
-  
-      //Recipe ingredients
-      scrapedData.ingredients = [];
-      $('.o-Ingredients__a-Ingredient').each((index, element) => {
-        const ingredientText = $(element).text();
-        const cleanedIngredient = ingredientText.replace(/\n/g, '').trim();
-        if (cleanedIngredient !== 'Deselect All') {
-          scrapedData.ingredients.push(cleanedIngredient);
-        }
-      });
-  
-      //Recipe directions
-      scrapedData.directions = [];
-      $('.o-Method__m-Step').each((index, element) => {
-        const directionText = $(element).text().trim();
-        scrapedData.directions.push(directionText);
-      });
-  
-      return scrapedData;
-  }
   
   module.exports = endpoints;
   
