@@ -99,6 +99,16 @@ async function insertData() {
                 "alternatives": ["coconut cream", "silken tofu"]
               }
             ]
+          },
+          {
+            "name": "yogurt",
+            "tags": [
+              {
+                "restrictions": ["a-milk", "lactose-intolerance"],
+                "attributes": [],
+                "alternatives": ["coconut cream", "silken tofu"]
+              }
+            ]
           }
         
     ];

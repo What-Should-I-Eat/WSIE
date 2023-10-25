@@ -75,8 +75,8 @@ var Recipe = (() => {
         //Actual data
         const updatedRecipe = await parseResults(results, restriction);
 
-        ingredientList.innerHTML = updatedRecipe.ingredientList;
-        directionsList.innerHTML = updatedRecipe.directions;
+        ingredientList.innerHTML = '<ul>' + updatedRecipe.ingredientList.map(item => `<li>${item}</li>`).join('') + '</ul>';
+        directionsList.innerHTML = '<ul>' + updatedRecipe.directions.map(item => `<li>${item}</li>`).join('') + '</ul>';
       });
   } catch (e) {
     console.log(e);
