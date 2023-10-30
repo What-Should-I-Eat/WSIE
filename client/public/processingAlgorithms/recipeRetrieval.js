@@ -113,9 +113,6 @@ var Recipe = (() => {
   
           console.log("original recipe: ", ingredientResults);
           const badIngredients = getRestrictedIngredientsInRecipe(ingredientNames, restrictedIngredients);
-          console.log("Back to parseResults() --> restricted ingredients list = ", badIngredients);
-          console.log("we are good until here back in parseResults() i think.");
-          console.log("now filling the substitution array in getSubstitutionsForRecipe()");
   
           await getSubstitutionsForRecipe(badIngredients);
           console.log('Substitutions:', ingredientSubstitutions);
@@ -161,12 +158,21 @@ function getRestrictedIngredientsInRecipe(ingredientsOfRecipe, ingredientsRestri
 //Handles cases of ingredients that should or should not be added to badIngredients list
 //Currently only handles the nut butter issue but will be expanded
 function handleEdgeCaseBadIngredients(ingredientOfRecipe, ingredientsRestrictedForUser){
+
   //Checks if a portion of the recipe ingredient string is included in ingredientsRestrictedForUser
     if (ingredientsRestrictedForUser.some(restrictedIngredient => ingredientOfRecipe.includes(restrictedIngredient))) {
       //Checks if the string includes the word "butter" and is not referring to dairy butter (need to abstract this somehow)
       if (!NUT_BUTTER.some(nutButter => ingredientOfRecipe.toLowerCase().includes(nutButter))) {
         console.log("-- added " + ingredientOfRecipe + " to restricted ingredients ");
         return true;
+      }
+      //check for milk prefix - ex: almond milk should not be flagged as milk
+      if(ingredientOfRecipe.includes('milk') && !ingredientsRestrictedForUser.some(restrictedIngredient => restrictedIngredient.includes('nut')))
+      {
+        if(ingredientOfRecipe.includes('almond') || ingredientOfRecipe.includes('coconut') || ingredientOfRecipe.includes('soy'))
+        {
+          return false;
+        }
       }
     }
 
@@ -217,8 +223,6 @@ function getUpdatedIngredientNames(list, handleDifferently) {
 
   console.log("getUpdated recipe called for " + list);
   
-  
-  
   list.forEach((line, lineIndex) => {
     line = line.toLowerCase();
     console.log("line = " + line);
@@ -245,7 +249,6 @@ function getUpdatedIngredientNames(list, handleDifferently) {
   });
 
     console.log("*** new list *** " + list);
-    //console.log('----------new', recipe);
     return list;
 }
   

@@ -175,14 +175,14 @@ var Recipe = function () {
 
           case 16:
             if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-              _context3.next = 36;
+              _context3.next = 33;
               break;
             }
 
             data = _step.value;
 
             if (!(data.name === restriction)) {
-              _context3.next = 33;
+              _context3.next = 30;
               break;
             }
 
@@ -190,59 +190,56 @@ var Recipe = function () {
             console.log("found", data.name);
             console.log("original recipe: ", ingredientResults);
             badIngredients = getRestrictedIngredientsInRecipe(ingredientNames, restrictedIngredients);
-            console.log("Back to parseResults() --> restricted ingredients list = ", badIngredients);
-            console.log("we are good until here back in parseResults() i think.");
-            console.log("now filling the substitution array in getSubstitutionsForRecipe()");
-            _context3.next = 28;
+            _context3.next = 25;
             return regeneratorRuntime.awrap(getSubstitutionsForRecipe(badIngredients));
 
-          case 28:
+          case 25:
             console.log('Substitutions:', ingredientSubstitutions);
             handleDifferently = true;
             recipe.ingredientNames = getUpdatedIngredientNames(recipe.ingredientNames, handleDifferently);
             recipe.ingredientList = getUpdatedIngredientNames(recipe.ingredientList, !handleDifferently);
             recipe.directions = getUpdatedIngredientNames(recipe.directions, !handleDifferently);
 
-          case 33:
+          case 30:
             _iteratorNormalCompletion = true;
             _context3.next = 16;
             break;
 
-          case 36:
-            _context3.next = 42;
+          case 33:
+            _context3.next = 39;
             break;
 
-          case 38:
-            _context3.prev = 38;
+          case 35:
+            _context3.prev = 35;
             _context3.t0 = _context3["catch"](14);
             _didIteratorError = true;
             _iteratorError = _context3.t0;
 
-          case 42:
-            _context3.prev = 42;
-            _context3.prev = 43;
+          case 39:
+            _context3.prev = 39;
+            _context3.prev = 40;
 
             if (!_iteratorNormalCompletion && _iterator["return"] != null) {
               _iterator["return"]();
             }
 
-          case 45:
-            _context3.prev = 45;
+          case 42:
+            _context3.prev = 42;
 
             if (!_didIteratorError) {
-              _context3.next = 48;
+              _context3.next = 45;
               break;
             }
 
             throw _iteratorError;
 
-          case 48:
-            return _context3.finish(45);
-
-          case 49:
+          case 45:
             return _context3.finish(42);
 
-          case 50:
+          case 46:
+            return _context3.finish(39);
+
+          case 47:
             console.log('--Ingredient names', recipe.ingredientNames);
             console.log('--Ingredient list', recipe.ingredientList);
             console.log('--Recipe Directions', recipe.directions);
@@ -250,17 +247,17 @@ var Recipe = function () {
             console.log("UPDATED RECIPE", updatedRecipe);
             return _context3.abrupt("return", updatedRecipe);
 
-          case 58:
-            _context3.prev = 58;
+          case 55:
+            _context3.prev = 55;
             _context3.t1 = _context3["catch"](1);
             console.log(_context3.t1);
 
-          case 61:
+          case 58:
           case "end":
             return _context3.stop();
         }
       }
-    }, null, null, [[1, 58], [14, 38, 42, 50], [43,, 45, 49]]);
+    }, null, null, [[1, 55], [14, 35, 39, 47], [40,, 42, 46]]);
   } //Finds and returns ingredients in the recipe that are restricted
 
 
@@ -294,6 +291,15 @@ var Recipe = function () {
       })) {
         console.log("-- added " + ingredientOfRecipe + " to restricted ingredients ");
         return true;
+      } //check for milk prefix - ex: almond milk should not be flagged as milk
+
+
+      if (ingredientOfRecipe.includes('milk') && !ingredientsRestrictedForUser.some(function (restrictedIngredient) {
+        return restrictedIngredient.includes('nut');
+      })) {
+        if (ingredientOfRecipe.includes('almond') || ingredientOfRecipe.includes('coconut') || ingredientOfRecipe.includes('soy')) {
+          return false;
+        }
       }
     }
 
@@ -384,8 +390,7 @@ var Recipe = function () {
 
       list[lineIndex] = line;
     });
-    console.log("*** new list *** " + list); //console.log('----------new', recipe);
-
+    console.log("*** new list *** " + list);
     return list;
   }
 
