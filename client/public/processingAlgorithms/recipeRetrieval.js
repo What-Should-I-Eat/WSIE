@@ -166,10 +166,10 @@ function handleEdgeCaseBadIngredients(ingredientOfRecipe, ingredientsRestrictedF
         console.log("-- added " + ingredientOfRecipe + " to restricted ingredients ");
         return true;
       }
-      //check for milk prefix - ex: almond milk should not be flagged as milk
+      //check for milk prefix - ex: almond milk should not be flagged as milk and substituted for milk allergy
       if(ingredientOfRecipe.includes('milk') && !ingredientsRestrictedForUser.some(restrictedIngredient => restrictedIngredient.includes('nut')))
       {
-        if(ingredientOfRecipe.includes('almond') || ingredientOfRecipe.includes('coconut') || ingredientOfRecipe.includes('soy'))
+        if(ingredientOfRecipe.includes('almond') || ingredientOfRecipe.includes('coconut') || ingredientOfRecipe.includes('soy') || ingredientOfRecipe.includes('oat'))
         {
           return false;
         }

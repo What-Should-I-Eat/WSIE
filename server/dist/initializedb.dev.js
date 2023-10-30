@@ -26,72 +26,176 @@ function insertData() {
           ingredientData = [{
             "name": "milk",
             "tags": [{
-              "restrictions": ["dairy free", "low sugar", "allergy dairy"],
-              "attributes": ["high calorie", "high protein", "gluten free"],
+              "restrictions": ["a-milk", "low sugar"],
               "alternatives": ["coconut milk", "almond milk", "oat milk", "soy milk", "rice milk", "cashew milk", "pea milk"]
             }]
           }, {
             "name": "coconut milk",
             "tags": [{
-              "restrictions": ["allergy tree nut", "low calorie", "allergy coconut"],
-              "attributes": ["high calorie", "high fat", "dairy free", "lactose free", "gluten free"],
+              "restrictions": ["a-treenut", "low calorie"],
               "alternatives": ["milk", "almond milk", "oat milk", "soy milk", "rice milk", "cashew milk", "pea milk"]
             }]
           }, {
             "name": "almond milk",
             "tags": [{
-              "restrictions": ["allergy tree nut", "high calorie", "allergy almond"],
-              "attributes": ["low calorie", "low fat", "dairy free", "lactose free", "gluten free"],
+              "restrictions": ["a-treenut", "high calorie", "a-almond"],
               "alternatives": ["milk", "coconut milk", "oat milk", "soy milk", "rice milk", "cashew milk", "pea milk"]
             }]
           }, {
             "name": "oat milk",
             "tags": [{
-              "restrictions": ["allergy oat", "high calorie"],
-              "attributes": ["low calorie", "low fat", "dairy free", "lactose free", "gluten free"],
+              "restrictions": ["a-oat", "high calorie"],
               "alternatives": ["milk", "coconut milk", "almond milk", "soy milk", "rice milk", "cashew milk", "pea milk"]
             }]
           }, {
             "name": "soy milk",
             "tags": [{
-              "restrictions": ["allergy soy", "low sugar"],
-              "attributes": ["low calorie", "high fat", "dairy free", "lactose free", "gluten free"],
+              "restrictions": ["a-soy", "low sugar"],
               "alternatives": ["milk", "coconut milk", "almond milk", "oat milk", "rice milk", "cashew milk", "pea milk"]
             }]
           }, {
             "name": "rice milk",
             "tags": [{
-              "restrictions": ["allergy rice", "low sugar", "high carb"],
-              "attributes": ["low calorie", "low fat", "dairy free", "lactose free", "gluten free"],
+              "restrictions": ["low sugar", "high carb"],
               "alternatives": ["milk", "coconut milk", "almond milk", "oat milk", "soy milk", "cashew milk", "pea milk"]
             }]
           }, {
             "name": "cashew milk",
             "tags": [{
-              "restrictions": ["allergy tree nut", "allergy cashew"],
-              "attributes": ["low calorie", "low fat", "dairy free", "lactose free", "gluten free"],
+              "restrictions": ["a-treenut", "a-cashew"],
               "alternatives": ["milk", "coconut milk", "almond milk", "oat milk", "soy milk", "rice milk", "pea milk"]
             }]
           }, {
             "name": "pea milk",
             "tags": [{
-              "restrictions": ["allergy legume", "allergy pea", "high calcium"],
-              "attributes": ["low calorie", "low fat", "dairy free", "lactose free", "gluten free", "high protein"],
+              "restrictions": ["a-legume", "a-pea", "high calcium"],
               "alternatives": ["milk", "coconut milk", "almond milk", "oat milk", "soy milk", "rice milk", "cashew milk"]
             }]
           }, {
             "name": "greek yogurt",
             "tags": [{
-              "restrictions": ["a-milk", "lactose-intolerance"],
-              "attributes": [],
+              "restrictions": ["a-milk"],
               "alternatives": ["coconut cream", "silken tofu"]
             }]
           }, {
             "name": "yogurt",
             "tags": [{
-              "restrictions": ["a-milk", "lactose-intolerance"],
-              "attributes": [],
+              "restrictions": ["a-milk"],
               "alternatives": ["coconut cream", "silken tofu"]
+            }]
+          }, {
+            "name": "beer",
+            "tags": [{
+              "restrictions": ["a-wheat"],
+              "alternatives": ["chicken broth"]
+            }]
+          }, {
+            "name": "bread crumbs",
+            "tags": [{
+              "restrictions": ["a-wheat"],
+              "alternatives": ["ground oats"]
+            }]
+          }, {
+            "name": "butter",
+            "tags": [{
+              "restrictions": ["a-milk"],
+              "alternatives": ["margarine", "shortening"]
+            }]
+          }, {
+            "name": "buttermilk",
+            "tags": [{
+              "restrictions": ["a-milk"],
+              "alternatives": ["lemon juice and unsweetened dairy-free milk beverage"]
+            }]
+          }, {
+            "name": "chocolate",
+            "tags": [{
+              "restrictions": ["a-milk"],
+              "alternatives": ["unsweetened cocoa with shortening"]
+            }]
+          }, {
+            "name": "cottage cheese",
+            "tags": [{
+              "restrictions": ["a-milk"],
+              "alternatives": ["dairy free cottage cheese"]
+            }]
+          }, {
+            "name": "cream",
+            "tags": [{
+              "restrictions": ["a-milk"],
+              "alternatives": ["coconut cream"]
+            }]
+          }, {
+            "name": "egg",
+            "tags": [{
+              "restrictions": ["a-egg"],
+              "alternatives": ["pureed silken tofu"]
+            }]
+          }, {
+            "name": "cashew",
+            "tags": [{
+              "restrictions": ["a-treenut"],
+              "alternatives": ["silken tofu"]
+            }]
+          }, {
+            "name": "almond",
+            "tags": [{
+              "restrictions": ["a-treenut"],
+              "alternatives": ["pumpkin seeds"]
+            }]
+          }, {
+            "name": "hazlenut",
+            "tags": [{
+              "restrictions": ["a-treenut"],
+              "alternatives": ["pumpkin seeds"]
+            }]
+          }, {
+            "name": "pistachio",
+            "tags": [{
+              "restrictions": ["a-treenut"],
+              "alternatives": ["pumpkin seeds"]
+            }]
+          }, {
+            "name": "peanut butter",
+            "tags": [{
+              "restrictions": ["a-peanut"],
+              "alternatives": ["cookie butter", "sunflower seed butter", "tahini"]
+            }]
+          }, {
+            "name": "peanut",
+            "tags": [{
+              "restrictions": ["a-peanut"],
+              "alternatives": ["sunflower seeds", "chickpeas"]
+            }]
+          }, {
+            "name": "peanut oil",
+            "tags": [{
+              "restrictions": ["a-peanut"],
+              "alternatives": ["vegetable oil"]
+            }]
+          }, {
+            "name": "peanut chip",
+            "tags": [{
+              "restrictions": ["a-peanut"],
+              "alternatives": ["chocolate chips"]
+            }]
+          }, {
+            "name": "peanut flour",
+            "tags": [{
+              "restrictions": ["a-peanut"],
+              "alternatives": ["flour"]
+            }]
+          }, {
+            "name": "peanut sauce",
+            "tags": [{
+              "restrictions": ["a-peanut"],
+              "alternatives": ["tahini"]
+            }]
+          }, {
+            "name": "szechuan sauce",
+            "tags": [{
+              "restrictions": ["a-peanut"],
+              "alternatives": ["sriracha sauce with 1 tbsp sugar"]
             }]
           }];
           restrictionData = [{
@@ -99,7 +203,7 @@ function insertData() {
             "tags": ["peanut", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"]
           }, {
             "name": "a-milk",
-            "tags": ["milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey"]
+            "tags": ["milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey", "buttermilk", "chocolate", "cottage cheese"]
           }, {
             "name": "a-eggs",
             "tags": ["egg"]
@@ -118,9 +222,6 @@ function insertData() {
           }, {
             "name": "a-soy",
             "tags": ["soy", "edamame", "soybean", "soymilk", "miso", "natto", "soy sauce", "tamari", "tempeh", "teriyaki", "tofu"]
-          }, {
-            "name": "lactose-intolerance",
-            "tags": ["milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey"]
           }];
           _context.next = 7;
           return regeneratorRuntime.awrap(Ingredient.insertMany(ingredientData));
