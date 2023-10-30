@@ -20,6 +20,8 @@ var Recipe = function () {
   var restrictedIngredientCount = 0;
 
   var searchRecipe = function searchRecipe() {
+    clearRecipeDetails(); //previous recipe cleared if it exists
+
     var searchParam = document.getElementById("search-input").value;
     var recipeList = document.getElementById('recipeList');
     recipeList.innerHTML = '';
@@ -48,6 +50,8 @@ var Recipe = function () {
           recipeName.appendChild(link);
           recipeList.appendChild(recipeName);
         });
+        var recipeListContainer = document.getElementById('recipe-list');
+        recipeListContainer.style.display = 'block';
       });
     } catch (e) {
       console.log(e);
@@ -62,6 +66,10 @@ var Recipe = function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+            _context2.next = 2;
+            return regeneratorRuntime.awrap(hideRecipeSearchResults());
+
+          case 2:
             //HTML stuff - clear it before anything happens (user might have clicked multiple recipes so need it to refresh)
             recipeTitleHeader = document.getElementById('recipe-name'); //Title of the recipe 
 
@@ -129,7 +137,7 @@ var Recipe = function () {
 
             return _context2.abrupt("return", false);
 
-          case 13:
+          case 15:
           case "end":
             return _context2.stop();
         }
@@ -285,21 +293,21 @@ var Recipe = function () {
     if (ingredientsRestrictedForUser.some(function (restrictedIngredient) {
       return ingredientOfRecipe.includes(restrictedIngredient);
     })) {
-      //Checks if the string includes the word "butter" and is not referring to dairy butter (need to abstract this somehow)
-      if (!NUT_BUTTER.some(function (nutButter) {
-        return ingredientOfRecipe.toLowerCase().includes(nutButter);
-      })) {
-        console.log("-- added " + ingredientOfRecipe + " to restricted ingredients ");
-        return true;
-      } //check for milk prefix - ex: almond milk should not be flagged as milk and substituted for milk allergy
-
-
+      //check for milk prefix - ex: almond milk should not be flagged as milk and substituted for milk allergy
       if (ingredientOfRecipe.includes('milk') && !ingredientsRestrictedForUser.some(function (restrictedIngredient) {
         return restrictedIngredient.includes('nut');
       })) {
         if (ingredientOfRecipe.includes('almond') || ingredientOfRecipe.includes('coconut') || ingredientOfRecipe.includes('soy') || ingredientOfRecipe.includes('oat')) {
           return false;
         }
+      } //Checks if the string includes the word "butter" and is not referring to dairy butter (need to abstract this somehow)
+
+
+      if (!NUT_BUTTER.some(function (nutButter) {
+        return ingredientOfRecipe.toLowerCase().includes(nutButter);
+      })) {
+        console.log("-- added " + ingredientOfRecipe + " to restricted ingredients ");
+        return true;
       }
     }
 
@@ -392,6 +400,35 @@ var Recipe = function () {
     });
     console.log("*** new list *** " + list);
     return list;
+  }
+
+  function hideRecipeSearchResults() {
+    return new Promise(function (resolve) {
+      var recipeListContainer = document.getElementById('recipe-list'); // Add a click event listener to the div that toggles its visibility
+
+      recipeListContainer.addEventListener('click', function () {
+        if (recipeListContainer.style.display === 'none') {
+          recipeListContainer.style.display = 'block';
+        } else {
+          recipeListContainer.style.display = 'none';
+        }
+
+        resolve(); // Resolve the promise when the hiding/showing is done
+      });
+    });
+  }
+
+  function clearRecipeDetails() {
+    var recipeTitleHeader = document.getElementById('recipe-name');
+    var ingredientsHeader = document.getElementById('ingredients');
+    var ingredientList = document.getElementById('ingredient-list');
+    var directionsHeader = document.getElementById('directions');
+    var directionsList = document.getElementById('directions-list');
+    recipeTitleHeader.innerHTML = '';
+    ingredientsHeader.innerHTML = '';
+    ingredientList.innerHTML = '';
+    directionsHeader.innerHTML = '';
+    directionsList.innerHTML = '';
   }
 
   return {
