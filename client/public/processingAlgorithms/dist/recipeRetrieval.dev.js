@@ -373,12 +373,11 @@ var Recipe = function () {
           console.log("*FOUND " + originalIngredient + " in the original recipe");
           var substitutedIngredient = ingredientSubstitutions.substitutionOptions[i].substitutions[0];
           console.log("substitution for " + originalIngredient + " = " + substitutedIngredient);
-          var quantity = line.split(' ')[0]; // Extract the quantity
+          var quantity = line.split(' ')[0];
+          console.log("quantity = " + quantity); //Replace restricted ingredient with substitution
 
-          console.log("quantity = " + quantity); // Replace the ingredient part while preserving the quantity
-
-          line = '' + line.replace(originalIngredient.toLowerCase(), substitutedIngredient);
-          console.log("NEW LINE WITH SUBS: " + line); // Perform your substitution here
+          line = line.replace(new RegExp(originalIngredient, 'gi'), substitutedIngredient);
+          console.log("NEW LINE WITH SUBS: " + line);
         }
       } // Update the line in the list
 

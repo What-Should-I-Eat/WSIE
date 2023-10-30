@@ -231,12 +231,12 @@ function getUpdatedIngredientNames(list, handleDifferently) {
   
         let substitutedIngredient = ingredientSubstitutions.substitutionOptions[i].substitutions[0];
         console.log("substitution for " + originalIngredient + " = " + substitutedIngredient);
-        let quantity = line.split(' ')[0]; // Extract the quantity
+        let quantity = line.split(' ')[0]; 
         console.log("quantity = " + quantity);
-        // Replace the ingredient part while preserving the quantity
-        line = '' + line.replace(originalIngredient.toLowerCase(), substitutedIngredient);
+        
+        //Replace restricted ingredient with substitution
+        line = line.replace(new RegExp(originalIngredient, 'gi'), substitutedIngredient);
         console.log("NEW LINE WITH SUBS: " + line);
-        // Perform your substitution here
       }
     }
   

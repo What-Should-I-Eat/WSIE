@@ -42,30 +42,33 @@ html {
     font-weight: 330;
     font-size: 4vw;
   }
-
-
-  .recipe-list{
-    font-weight: 200;
-    font-size: 3vw;
-  }
-
-  .ingredient-list{
-    font-weight: 200;
-    font-size: 2.5vw;
-  }
-
-  .directions-list{
-    font-weight: 200;
-    font-size: 2.5vw;
-  }
   
   ul{
     font-weight: 150;
     font-size: 3vw;
   }
 
+  div.recipeList{
+    text-align: center;
+  }
+  div.selected-recipe-details{
+    text-align: center;
+  }
+
+  ul.recipeList{
+    text-align: left;
+    font-weight: 200;
+    font-size: 3vw;
+  }
+
+  ul.directions-list, ul.ingredient-list{
+    text-align: left;
+    font-weight: 200;
+    font-size: 2.5vw;
+  }
+
   li{
-    margin: 3vw;
+    margin-top: 1vw;
     font-size: 3vw;
     list-style-type: none;
   }

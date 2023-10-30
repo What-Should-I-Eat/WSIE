@@ -295,22 +295,35 @@ function getRecipeData(response) {
 
   recipeData.directions = [];
   recipeData.ingredientNames = []; //names of individual ingredients
-  //Recipe ingredients
+  //Recipe ingredients and individual ingredient items
 
   $('ul.structured-ingredients__list li.structured-ingredients__list-item').each(function (index, element) {
-    var ingredientItem = $(element).find('p').text().trim();
-    recipeData.ingredientList.push(ingredientItem);
+    var fullIngredient = $(element).find('p').text().trim();
+    var ingredientItem = $(element).find('p [data-ingredient-name]').text().trim();
+    recipeData.ingredientList.push(fullIngredient);
+    recipeData.ingredientNames.push(ingredientItem);
   }); //Recipe directions
 
   $('#mntl-sc-block_3-0').each(function (index, element) {
     var directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
     recipeData.directions = recipeData.directions.concat(directionText);
-  }); //Individual ingredient names
+  }); //Some recipes have different html for the ingredients. This scrapes in that case
 
-  $('ul.structured-ingredients__list li.structured-ingredients__list-item').each(function (index, element) {
-    var ingredientItem = $(element).find('p [data-ingredient-name]').text().trim();
-    recipeData.ingredientNames.push(ingredientItem);
-  });
+  if (recipeData.ingredientList.length === 0 || recipeData.ingredientNames.length === 0) {
+    console.log("Scraping html the other way");
+    $('#ingredient-list_1-0 li.simple-list__item.js-checkbox-trigger.ingredient.text-passage').each(function (index, element) {
+      var fullIngredient = $(element).text().trim();
+
+      if (!fullIngredient.startsWith("For the")) {
+        recipeData.ingredientList.push(fullIngredient);
+        var parts = fullIngredient.split(' ');
+        var ingredientName = parts.slice(1).join(' '); // Select all parts except the first one
+
+        recipeData.ingredientNames.push(ingredientName);
+      }
+    });
+  }
+
   return recipeData;
 }
 
