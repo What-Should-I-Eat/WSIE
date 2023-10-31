@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Ingredients test</title>
-  <!-- <script type="text/javascript" src="./ingredients.js"></script> -->
   <script type="text/javascript" src="./processingAlgorithms/recipeRetrieval.js"></script>
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +10,13 @@
 
 <header>
   <h1>What Should I Eat?</h1>
+  <nav class="nav-header">
+    <ul>
+      <li><a href="">Search</a></li>
+      <li><a href="">Favorites</a></li>
+      <li><a href="">Profile</a></li>
+    </ul>
+  </nav>
 </header>
 
 
@@ -27,17 +33,23 @@
         <br><br><br>
       </div>
 
-      <div id="selected-recipe-details">
-        <h2 id="recipe-name"></h2>
-        <h4 id="ingredients"></h4>
-        <ul id="ingredient-list"></ul>
-        <h4 id="directions"></h4>
-        <ul id="directions-list"></ul>
-      </div>
-
-
     </form>  
   </div>
+
+  <div id="selected-recipe-details">
+    <h2 id="recipe-name"></h2>
+    <div class="ingredient-details">
+      <h4 id="ingredients"></h4>
+      <ul id="ingredient-list"></ul>
+    </div>
+    <div class="recipe-details">
+      <h4 id="directions"></h4>
+    <ul id="directions-list"></ul>
+    </div>
+  </div>
+
+
+   
 
   
   <br><br><br><br><br><br><br><br><br><br><br><br><br>

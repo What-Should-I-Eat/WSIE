@@ -20,8 +20,6 @@ var Recipe = function () {
   var restrictedIngredientCount = 0;
 
   var searchRecipe = function searchRecipe() {
-    clearRecipeDetails(); //previous recipe cleared if it exists
-
     var searchParam = document.getElementById("search-input").value;
     var recipeList = document.getElementById('recipeList');
     recipeList.innerHTML = '';
@@ -36,7 +34,9 @@ var Recipe = function () {
       }).then(function (resp) {
         return resp.json();
       }).then(function (results) {
+        //clearRecipeDetails();
         results.forEach(function (data) {
+          console.log("AHHHHHHHHHHHHHHHH");
           var recipeName = document.createElement('li');
           var link = document.createElement('a'); //link.href = data.link; //--> this makes it redirect to the actual page of the webiste so we don't need it
           //But perhaps we'll keep it for now so that the user can go see the original recipe if they want
@@ -50,8 +50,6 @@ var Recipe = function () {
           recipeName.appendChild(link);
           recipeList.appendChild(recipeName);
         });
-        var recipeListContainer = document.getElementById('recipe-list');
-        recipeListContainer.style.display = 'block';
       });
     } catch (e) {
       console.log(e);
@@ -66,10 +64,7 @@ var Recipe = function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.next = 2;
-            return regeneratorRuntime.awrap(hideRecipeSearchResults());
-
-          case 2:
+            //hideResults();
             //HTML stuff - clear it before anything happens (user might have clicked multiple recipes so need it to refresh)
             recipeTitleHeader = document.getElementById('recipe-name'); //Title of the recipe 
 
@@ -131,13 +126,11 @@ var Recipe = function () {
               });
             } catch (e) {
               console.log(e);
-            } //REDIRECT USER TO DIFFERENT PAGE
-            //window.location.href = link;
-
+            }
 
             return _context2.abrupt("return", false);
 
-          case 15:
+          case 13:
           case "end":
             return _context2.stop();
         }
@@ -402,22 +395,6 @@ var Recipe = function () {
     return list;
   }
 
-  function hideRecipeSearchResults() {
-    return new Promise(function (resolve) {
-      var recipeListContainer = document.getElementById('recipe-list'); // Add a click event listener to the div that toggles its visibility
-
-      recipeListContainer.addEventListener('click', function () {
-        if (recipeListContainer.style.display === 'none') {
-          recipeListContainer.style.display = 'block';
-        } else {
-          recipeListContainer.style.display = 'none';
-        }
-
-        resolve(); // Resolve the promise when the hiding/showing is done
-      });
-    });
-  }
-
   function clearRecipeDetails() {
     var recipeTitleHeader = document.getElementById('recipe-name');
     var ingredientsHeader = document.getElementById('ingredients');
@@ -429,6 +406,16 @@ var Recipe = function () {
     ingredientList.innerHTML = '';
     directionsHeader.innerHTML = '';
     directionsList.innerHTML = '';
+  }
+
+  function hideResults() {
+    var searchResults = document.getElementById('recipe-list');
+
+    if (searchResults.style.display != 'none') {
+      searchResults.style.display = 'none';
+    } else {
+      searchResults.style.display = 'inline';
+    }
   }
 
   return {

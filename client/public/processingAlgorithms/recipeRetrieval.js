@@ -11,10 +11,7 @@ var Recipe = (() => {
   }; 
   let restrictedIngredientCount = 0;
 
-
-
   var searchRecipe = () => {
-    clearRecipeDetails(); //previous recipe cleared if it exists
     const searchParam = document.getElementById("search-input").value;
     const recipeList = document.getElementById('recipeList');
     recipeList.innerHTML = '';
@@ -28,7 +25,9 @@ var Recipe = (() => {
         }
       }).then(resp => resp.json())
         .then(results => {
+          //clearRecipeDetails();
           results.forEach(data => {
+            console.log("AHHHHHHHHHHHHHHHH");
             const recipeName = document.createElement('li');
             const link = document.createElement('a');
             //link.href = data.link; //--> this makes it redirect to the actual page of the webiste so we don't need it
@@ -37,10 +36,8 @@ var Recipe = (() => {
             link.onclick = () => showRecipe(data.link);
             recipeName.appendChild(link);
             recipeList.appendChild(recipeName);
-          });
 
-          const recipeListContainer = document.getElementById('recipe-list');
-          recipeListContainer.style.display = 'block';
+          });
         });
     } catch (e) {
       console.log(e);
@@ -50,7 +47,7 @@ var Recipe = (() => {
 
   async function showRecipe(link) {
 
-    await hideRecipeSearchResults();
+    //hideResults();
 
     //HTML stuff - clear it before anything happens (user might have clicked multiple recipes so need it to refresh)
     const recipeTitleHeader = document.getElementById('recipe-name'); //Title of the recipe 
@@ -74,26 +71,23 @@ var Recipe = (() => {
           'Content-Type': 'application/json'
         }
       }).then(resp => resp.json())
-      .then(async results => {
-        //Setting up headers (need to do this here so it doesn't appear before the user selects a recipe)
-        recipeTitleHeader.innerHTML = results.title;
-        ingredientsHeader.innerHTML = 'Ingredients';
-        directionsHeader.innerHTML = 'Directions';
-        recipe = results;
+        .then(async results => {
+          //Setting up headers (need to do this here so it doesn't appear before the user selects a recipe)
+          recipeTitleHeader.innerHTML = results.title;
+          ingredientsHeader.innerHTML = 'Ingredients';
+          directionsHeader.innerHTML = 'Directions';
+          recipe = results;
 
-        //Actual data
-        const updatedRecipe = await parseResults(results, restriction);
+          //Actual data
+          const updatedRecipe = await parseResults(results, restriction);
 
-        ingredientList.innerHTML = '<ul>' + updatedRecipe.ingredientList.map(item => `<li>${item}</li>`).join('') + '</ul>';
-        directionsList.innerHTML = '<ul>' + updatedRecipe.directions.map(item => `<li>${item}</li>`).join('') + '</ul>';
-  
-      });
-  } catch (e) {
-    console.log(e);
-  }
-
-  //REDIRECT USER TO DIFFERENT PAGE
-  //window.location.href = link;
+          ingredientList.innerHTML = '<ul>' + updatedRecipe.ingredientList.map(item => `<li>${item}</li>`).join('') + '</ul>';
+          directionsList.innerHTML = '<ul>' + updatedRecipe.directions.map(item => `<li>${item}</li>`).join('') + '</ul>';
+    
+        });
+      } catch (e) {
+        console.log(e);
+      }
   return false;
   }
 
@@ -263,22 +257,6 @@ function getUpdatedIngredientNames(list, handleDifferently) {
     return list;
 }
 
-function hideRecipeSearchResults() {
-  return new Promise((resolve) => {
-    const recipeListContainer = document.getElementById('recipe-list');
-
-    // Add a click event listener to the div that toggles its visibility
-    recipeListContainer.addEventListener('click', function () {
-      if (recipeListContainer.style.display === 'none') {
-        recipeListContainer.style.display = 'block';
-      } else {
-        recipeListContainer.style.display = 'none';
-      }
-      resolve(); // Resolve the promise when the hiding/showing is done
-    });
-  });
-}
-
 function clearRecipeDetails(){
   const recipeTitleHeader = document.getElementById('recipe-name');
     const ingredientsHeader = document.getElementById('ingredients');
@@ -291,6 +269,16 @@ function clearRecipeDetails(){
     ingredientList.innerHTML = '';
     directionsHeader.innerHTML = '';
     directionsList.innerHTML = '';
+}
+
+function hideResults(){
+  const searchResults = document.getElementById('recipe-list');
+  if(searchResults.style.display != 'none'){
+    searchResults.style.display = 'none';
+  }
+  else{
+    searchResults.style.display = 'inline';
+  }
 }
   
   return {
