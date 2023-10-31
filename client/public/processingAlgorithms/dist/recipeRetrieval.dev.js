@@ -11,7 +11,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var Recipe = function () {
   var host = 'localhost';
   var recipe = [];
-  var substitutionArray = [];
   var NUT_BUTTER = ["peanut butter", "almond butter", "hazelnut butter", "coconut butter", "nut butter", "cookie butter"];
   var restrictionList = [];
   var ingredientSubstitutions = {
@@ -40,13 +39,9 @@ var Recipe = function () {
       }).then(function (resp) {
         return resp.json();
       }).then(function (results) {
-        //clearRecipeDetails();
         results.forEach(function (data) {
-          console.log("AHHHHHHHHHHHHHHHH");
           var recipeName = document.createElement('li');
-          var link = document.createElement('a'); //link.href = data.link; //--> this makes it redirect to the actual page of the webiste so we don't need it
-          //But perhaps we'll keep it for now so that the user can go see the original recipe if they want
-
+          var link = document.createElement('a');
           link.textContent = data.title;
 
           link.onclick = function () {

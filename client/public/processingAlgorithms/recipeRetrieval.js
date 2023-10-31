@@ -3,7 +3,6 @@ var Recipe = (() => {
 
   const host = 'localhost';
   let recipe = [];
-  let substitutionArray = [];
   const NUT_BUTTER = ["peanut butter", "almond butter", "hazelnut butter", "coconut butter", "nut butter", "cookie butter"];
   let restrictionList = [];
   const ingredientSubstitutions = {
@@ -20,7 +19,6 @@ var Recipe = (() => {
     const recipeListDiv = document.getElementById('recipe-list');
     recipeListDiv.style.display = 'block';
 
-
     const searchParam = document.getElementById("search-input").value;
     const recipeList = document.getElementById('recipeList');
     recipeList.innerHTML = '';
@@ -34,18 +32,13 @@ var Recipe = (() => {
         }
       }).then(resp => resp.json())
         .then(results => {
-          //clearRecipeDetails();
           results.forEach(data => {
-            console.log("AHHHHHHHHHHHHHHHH");
             const recipeName = document.createElement('li');
             const link = document.createElement('a');
-            //link.href = data.link; //--> this makes it redirect to the actual page of the webiste so we don't need it
-            //But perhaps we'll keep it for now so that the user can go see the original recipe if they want
             link.textContent = data.title;
             link.onclick = () => showRecipe(data.link);
             recipeName.appendChild(link);
             recipeList.appendChild(recipeName);
-
           });
         });
     } catch (e) {
