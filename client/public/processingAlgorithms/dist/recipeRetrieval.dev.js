@@ -20,6 +20,12 @@ var Recipe = function () {
   var restrictedIngredientCount = 0;
 
   var searchRecipe = function searchRecipe() {
+    //Hide recipe on new search (if it exists)
+    var selectedRecipeDetails = document.getElementById('selected-recipe-details');
+    selectedRecipeDetails.style.display = 'none'; //Show the search results
+
+    var recipeListDiv = document.getElementById('recipe-list');
+    recipeListDiv.style.display = 'block';
     var searchParam = document.getElementById("search-input").value;
     var recipeList = document.getElementById('recipeList');
     recipeList.innerHTML = '';
@@ -59,13 +65,18 @@ var Recipe = function () {
   };
 
   function showRecipe(link) {
-    var recipeTitleHeader, ingredientsHeader, ingredientList, directionsHeader, directionsList, restriction;
+    var recipeList, selectedRecipeDetails, recipeTitleHeader, ingredientsHeader, ingredientList, directionsHeader, directionsList, restriction;
     return regeneratorRuntime.async(function showRecipe$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            //hideResults();
-            //HTML stuff - clear it before anything happens (user might have clicked multiple recipes so need it to refresh)
+            //Hide search results
+            recipeList = document.getElementById('recipe-list');
+            recipeList.style.display = 'none'; //Show recipe
+
+            selectedRecipeDetails = document.getElementById('selected-recipe-details');
+            selectedRecipeDetails.style.display = 'block'; //HTML stuff - clear it before anything happens (user might have clicked multiple recipes so need it to refresh)
+
             recipeTitleHeader = document.getElementById('recipe-name'); //Title of the recipe 
 
             ingredientsHeader = document.getElementById('ingredients'); //Name: ingredients
@@ -130,7 +141,7 @@ var Recipe = function () {
 
             return _context2.abrupt("return", false);
 
-          case 13:
+          case 17:
           case "end":
             return _context2.stop();
         }
@@ -393,29 +404,6 @@ var Recipe = function () {
     });
     console.log("*** new list *** " + list);
     return list;
-  }
-
-  function clearRecipeDetails() {
-    var recipeTitleHeader = document.getElementById('recipe-name');
-    var ingredientsHeader = document.getElementById('ingredients');
-    var ingredientList = document.getElementById('ingredient-list');
-    var directionsHeader = document.getElementById('directions');
-    var directionsList = document.getElementById('directions-list');
-    recipeTitleHeader.innerHTML = '';
-    ingredientsHeader.innerHTML = '';
-    ingredientList.innerHTML = '';
-    directionsHeader.innerHTML = '';
-    directionsList.innerHTML = '';
-  }
-
-  function hideResults() {
-    var searchResults = document.getElementById('recipe-list');
-
-    if (searchResults.style.display != 'none') {
-      searchResults.style.display = 'none';
-    } else {
-      searchResults.style.display = 'inline';
-    }
   }
 
   return {

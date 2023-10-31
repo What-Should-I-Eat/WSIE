@@ -8,7 +8,7 @@ body {
   color: #a08b6f;
   text-align: center;
   font-weight: 200;
-  font-size: 2vw;
+  font-size: 3vw;
   margin: 0;
 }
 
@@ -46,7 +46,7 @@ nav.nav-header ul {
 
 nav.nav-header ul li {
   display: inline;
-  margin: 4vw;
+  margin: 2vw;
 }
 
 nav.nav-header a {
@@ -113,8 +113,8 @@ input {
 button {
   font: inherit;
   color: inherit;
-  font-size: 3vw;
-  height: 8vw;
+  font-size: 4vw;
+  height: auto;
   width: 12vw;
   background-color: #9ec95359;
   border-width: 0.5vw;

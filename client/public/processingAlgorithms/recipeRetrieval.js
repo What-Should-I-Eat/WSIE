@@ -12,6 +12,15 @@ var Recipe = (() => {
   let restrictedIngredientCount = 0;
 
   var searchRecipe = () => {
+    //Hide recipe on new search (if it exists)
+    const selectedRecipeDetails = document.getElementById('selected-recipe-details');
+    selectedRecipeDetails.style.display = 'none';
+
+    //Show the search results
+    const recipeListDiv = document.getElementById('recipe-list');
+    recipeListDiv.style.display = 'block';
+
+
     const searchParam = document.getElementById("search-input").value;
     const recipeList = document.getElementById('recipeList');
     recipeList.innerHTML = '';
@@ -47,7 +56,13 @@ var Recipe = (() => {
 
   async function showRecipe(link) {
 
-    //hideResults();
+     //Hide search results
+     const recipeList = document.getElementById('recipe-list');
+     recipeList.style.display = 'none';
+ 
+     //Show recipe
+     const selectedRecipeDetails = document.getElementById('selected-recipe-details');
+     selectedRecipeDetails.style.display = 'block';
 
     //HTML stuff - clear it before anything happens (user might have clicked multiple recipes so need it to refresh)
     const recipeTitleHeader = document.getElementById('recipe-name'); //Title of the recipe 
@@ -257,29 +272,6 @@ function getUpdatedIngredientNames(list, handleDifferently) {
     return list;
 }
 
-function clearRecipeDetails(){
-  const recipeTitleHeader = document.getElementById('recipe-name');
-    const ingredientsHeader = document.getElementById('ingredients');
-    const ingredientList = document.getElementById('ingredient-list');
-    const directionsHeader = document.getElementById('directions');
-    const directionsList = document.getElementById('directions-list');
-    
-    recipeTitleHeader.innerHTML = '';
-    ingredientsHeader.innerHTML = '';
-    ingredientList.innerHTML = '';
-    directionsHeader.innerHTML = '';
-    directionsList.innerHTML = '';
-}
-
-function hideResults(){
-  const searchResults = document.getElementById('recipe-list');
-  if(searchResults.style.display != 'none'){
-    searchResults.style.display = 'none';
-  }
-  else{
-    searchResults.style.display = 'inline';
-  }
-}
   
   return {
     searchRecipe
