@@ -84,10 +84,12 @@ var edamam = (() => {
                     
 
                     console.log("results: ", results);
-                    directionsList.innerHTML = results;
 
-                    // ingredientList.innerHTML = '<ul>' + updatedRecipe.ingredientList.map(item => `<li>${item}</li>`).join('') + '</ul>';
-                    //directionsList.innerHTML = '<ul>' + updatedRecipe.directions.map(item => `<li>${item}</li>`).join('') + '</ul';
+                    //directionsList.innerHTML = results;
+
+                    
+                    directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
+
                 });
         } catch (e) {
             console.log(e);
@@ -120,8 +122,8 @@ var edamam = (() => {
     });
 
     recipeTitleHeader.innerHTML = json.recipe.label;
-    ingredientList.innerHTML = ingredients;
     ingredientsHeader.innerHTML = 'Ingredients';
+    ingredientList.innerHTML = `<ul>${ingredients.map(item => `<li>${item}</li>`).join('')}</ul>`;
     directionsHeader.innerHTML = 'Directions';
   }
   
@@ -130,6 +132,3 @@ var edamam = (() => {
       searchRecipe
     }
   })();
-  
-  
-  

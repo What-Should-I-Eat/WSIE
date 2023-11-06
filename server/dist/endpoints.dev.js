@@ -290,10 +290,10 @@ function getFood52Data(link) {
           response = _context9.sent;
           html = response.data;
           $ = cheerio.load(html);
-          recipeDirections = [];
-          $('.recipe__list.recipe__list--steps li').each(function (index, element) {
-            var directionText = $(element).find('span').text().trim().split('\n\n'); //recipeData.directions = recipeData.directions.concat(directionText);
+          recipeDirections = []; //CHANGE THIS
 
+          $('.recipe__list.recipe__list--steps li').each(function (index, element) {
+            var directionText = $(element).find('span').text().trim().split('\n\n');
             recipeDirections.push(directionText);
           })["catch"](error);
           console.log("recipe directions in getfooddata: " + recipeDirections);

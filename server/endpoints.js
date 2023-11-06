@@ -140,9 +140,9 @@ endpoints.get('/ingredients', async (req, res) => {
         const $ = cheerio.load(html);
         const recipeDirections = [];
 
+        //CHANGE THIS
         $('.recipe__list.recipe__list--steps li').each((index, element) => {
             const directionText = $(element).find('span').text().trim().split('\n\n');
-            //recipeData.directions = recipeData.directions.concat(directionText);
             recipeDirections.push(directionText);
         }).catch(error);
 

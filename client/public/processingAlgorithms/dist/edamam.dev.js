@@ -72,9 +72,11 @@ var edamam = function () {
       }).then(function (resp) {
         return resp.json();
       }).then(function (results) {
-        console.log("results: ", results);
-        directionsList.innerHTML = results; // ingredientList.innerHTML = '<ul>' + updatedRecipe.ingredientList.map(item => `<li>${item}</li>`).join('') + '</ul>';
-        //directionsList.innerHTML = '<ul>' + updatedRecipe.directions.map(item => `<li>${item}</li>`).join('') + '</ul';
+        console.log("results: ", results); //directionsList.innerHTML = results;
+
+        directionsList.innerHTML = '<ul>' + results.map(function (item) {
+          return "<li>".concat(item[0], "</li>");
+        }).join('') + '</ul>';
       });
     } catch (e) {
       console.log(e);
@@ -108,8 +110,10 @@ var edamam = function () {
       ingredients.push(ingredient);
     });
     recipeTitleHeader.innerHTML = json.recipe.label;
-    ingredientList.innerHTML = ingredients;
     ingredientsHeader.innerHTML = 'Ingredients';
+    ingredientList.innerHTML = "<ul>".concat(ingredients.map(function (item) {
+      return "<li>".concat(item, "</li>");
+    }).join(''), "</ul>");
     directionsHeader.innerHTML = 'Directions';
   }
 
