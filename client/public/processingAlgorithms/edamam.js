@@ -1,5 +1,3 @@
-
-
 const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
 const host = 'localhost';
 //IDEA: filter from one recipe website and build a scraper for the directions for that website
@@ -34,7 +32,7 @@ var edamam = (() => {
                 results.hits.forEach(data => {
                   const source = data.recipe.source;
                   console.log("Source = ", source);
-                  if(source === 'Food52' || source === 'Martha Stewart' || source.includes('BBC') || source === 'Food Network')
+                  if(source === 'Food52' || source === 'Martha Stewart' || source.includes('BBC') || source === 'Food Network' || source === 'Simply Recipes')
                   {
                     const recipeName = document.createElement('li');
                     const link = document.createElement('a');
@@ -51,12 +49,10 @@ var edamam = (() => {
         return false;
     }
 
-
     function showRecipe(json, source) {
-      console.log('hit show recipe');
       console.log('recipe: ', json);
 
-      setupRecipe(json);
+      setupRecipe(json); //Recipe name and ingredients 
       const directionsList = document.getElementById('directions-list'); // List of directions
       directionsList.innerHTML = '';
       const link = json.recipe.url;

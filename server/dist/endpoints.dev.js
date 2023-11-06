@@ -253,26 +253,42 @@ function determineSite(link, source, request) {
           console.log("Source in determineSite() |" + source + "|");
           data = [];
           _context8.prev = 3;
-          _context8.next = 6;
+          _context8.t0 = source.toLowerCase().trim();
+          _context8.next = _context8.t0 === 'food52' ? 7 : _context8.t0 === 'simply recipes' ? 11 : 15;
+          break;
+
+        case 7:
+          _context8.next = 9;
           return regeneratorRuntime.awrap(getFood52Data(link));
 
-        case 6:
+        case 9:
           data = _context8.sent;
+          return _context8.abrupt("break", 15);
+
+        case 11:
+          _context8.next = 13;
+          return regeneratorRuntime.awrap(getSimplyRecipesData(link));
+
+        case 13:
+          data = _context8.sent;
+          return _context8.abrupt("break", 15);
+
+        case 15:
           console.log("directions: " + data);
           return _context8.abrupt("return", data);
 
-        case 11:
-          _context8.prev = 11;
-          _context8.t0 = _context8["catch"](3);
-          console.error("Error in determineSite:", _context8.t0);
-          throw _context8.t0;
+        case 19:
+          _context8.prev = 19;
+          _context8.t1 = _context8["catch"](3);
+          console.error("Error in determineSite:", _context8.t1);
+          throw _context8.t1;
 
-        case 15:
+        case 23:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[3, 11]]);
+  }, null, null, [[3, 19]]);
 }
 
 function getFood52Data(link) {
@@ -281,7 +297,7 @@ function getFood52Data(link) {
     while (1) {
       switch (_context9.prev = _context9.next) {
         case 0:
-          console.log('Made it to get data. Link = ', link);
+          console.log('Made it to get data in food52. Link = ', link);
           _context9.prev = 1;
           _context9.next = 4;
           return regeneratorRuntime.awrap(axios.get(link));
@@ -295,7 +311,7 @@ function getFood52Data(link) {
           $('.recipe__list.recipe__list--steps li').each(function (index, element) {
             var directionText = $(element).find('span').text().trim().split('\n\n');
             recipeDirections.push(directionText);
-          })["catch"](error);
+          });
           console.log("recipe directions in getfooddata: " + recipeDirections);
           return _context9.abrupt("return", recipeDirections);
 
@@ -313,47 +329,97 @@ function getFood52Data(link) {
   }, null, null, [[1, 13]]);
 }
 
-function getSimplyRecipesData(response) {
-  var html = response.data;
-  var $ = cheerio.load(html);
-  var recipeData = {}; //Title of the recipe
+function getSimplyRecipesData(link) {
+  var response, html, $, recipeDirections;
+  return regeneratorRuntime.async(function getSimplyRecipesData$(_context10) {
+    while (1) {
+      switch (_context10.prev = _context10.next) {
+        case 0:
+          console.log('Made it to get data in simply recipes. Link = ', link);
+          _context10.prev = 1;
+          _context10.next = 4;
+          return regeneratorRuntime.awrap(axios.get(link));
 
-  recipeData.title = $('h2.recipe-block__header').text().trim(); //String arrays in JSON data
+        case 4:
+          response = _context10.sent;
+          html = response.data;
+          $ = cheerio.load(html);
+          recipeDirections = []; //CHANGE THIS
 
-  recipeData.ingredientList = []; //actual ingredients list
+          $('#mntl-sc-block_3-0').each(function (index, element) {
+            var directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
+            recipeDirections.push(directionText);
+          });
+          console.log("recipe directions in getfooddata: " + recipeDirections);
+          return _context10.abrupt("return", recipeDirections);
 
-  recipeData.directions = [];
-  recipeData.ingredientNames = []; //names of individual ingredients
-  //Recipe ingredients and individual ingredient items
+        case 13:
+          _context10.prev = 13;
+          _context10.t0 = _context10["catch"](1);
+          console.error("Error in getFood52Data:", _context10.t0);
+          throw _context10.t0;
 
-  $('ul.structured-ingredients__list li.structured-ingredients__list-item').each(function (index, element) {
-    var fullIngredient = $(element).find('p').text().trim();
-    var ingredientItem = $(element).find('p [data-ingredient-name]').text().trim();
-    recipeData.ingredientList.push(fullIngredient);
-    recipeData.ingredientNames.push(ingredientItem);
-  }); //Recipe directions
-
-  $('#mntl-sc-block_3-0').each(function (index, element) {
-    var directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
-    recipeData.directions = recipeData.directions.concat(directionText);
-  }); //Some recipes have different html for the ingredients. This scrapes in that case
-
-  if (recipeData.ingredientList.length === 0 || recipeData.ingredientNames.length === 0) {
-    console.log("Scraping html the other way");
-    $('#ingredient-list_1-0 li.simple-list__item.js-checkbox-trigger.ingredient.text-passage').each(function (index, element) {
-      var fullIngredient = $(element).text().trim();
-
-      if (!fullIngredient.startsWith("For the")) {
-        recipeData.ingredientList.push(fullIngredient);
-        var parts = fullIngredient.split(' ');
-        var ingredientName = parts.slice(1).join(' '); // Select all parts except the first one
-
-        recipeData.ingredientNames.push(ingredientName);
+        case 17:
+        case "end":
+          return _context10.stop();
       }
-    });
-  }
+    }
+  }, null, null, [[1, 13]]);
+}
 
-  return recipeData;
+function getSimplyRecipesData1(response) {
+  var html, $, recipeData;
+  return regeneratorRuntime.async(function getSimplyRecipesData1$(_context11) {
+    while (1) {
+      switch (_context11.prev = _context11.next) {
+        case 0:
+          html = response.data;
+          $ = cheerio.load(html);
+          recipeData = {}; //Title of the recipe
+
+          recipeData.title = $('h2.recipe-block__header').text().trim(); //String arrays in JSON data
+
+          recipeData.ingredientList = []; //actual ingredients list
+
+          recipeData.directions = [];
+          recipeData.ingredientNames = []; //names of individual ingredients
+          //Recipe ingredients and individual ingredient items
+
+          $('ul.structured-ingredients__list li.structured-ingredients__list-item').each(function (index, element) {
+            var fullIngredient = $(element).find('p').text().trim();
+            var ingredientItem = $(element).find('p [data-ingredient-name]').text().trim();
+            recipeData.ingredientList.push(fullIngredient);
+            recipeData.ingredientNames.push(ingredientItem);
+          }); //Recipe directions
+
+          $('#mntl-sc-block_3-0').each(function (index, element) {
+            var directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
+            recipeData.directions = recipeData.directions.concat(directionText);
+          }); //Some recipes have different html for the ingredients. This scrapes in that case
+
+          if (recipeData.ingredientList.length === 0 || recipeData.ingredientNames.length === 0) {
+            console.log("Scraping html the other way");
+            $('#ingredient-list_1-0 li.simple-list__item.js-checkbox-trigger.ingredient.text-passage').each(function (index, element) {
+              var fullIngredient = $(element).text().trim();
+
+              if (!fullIngredient.startsWith("For the")) {
+                recipeData.ingredientList.push(fullIngredient);
+                var parts = fullIngredient.split(' ');
+                var ingredientName = parts.slice(1).join(' '); // Select all parts except the first one
+
+                recipeData.ingredientNames.push(ingredientName);
+              }
+            });
+          }
+
+          return _context11.abrupt("return", recipeData);
+
+        case 11:
+        case "end":
+          return _context11.stop();
+      }
+    }
+  });
 }
 
 function getBBCData(response) {

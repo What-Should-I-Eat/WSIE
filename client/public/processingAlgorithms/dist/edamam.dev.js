@@ -31,7 +31,7 @@ var edamam = function () {
           var source = data.recipe.source;
           console.log("Source = ", source);
 
-          if (source === 'Food52' || source === 'Martha Stewart' || source.includes('BBC') || source === 'Food Network') {
+          if (source === 'Food52' || source === 'Martha Stewart' || source.includes('BBC') || source === 'Food Network' || source === 'Simply Recipes') {
             var recipeName = document.createElement('li');
             var link = document.createElement('a');
             link.textContent = data.recipe.label;
@@ -52,9 +52,9 @@ var edamam = function () {
   };
 
   function showRecipe(json, source) {
-    console.log('hit show recipe');
     console.log('recipe: ', json);
-    setupRecipe(json);
+    setupRecipe(json); //Recipe name and ingredients 
+
     var directionsList = document.getElementById('directions-list'); // List of directions
 
     directionsList.innerHTML = '';

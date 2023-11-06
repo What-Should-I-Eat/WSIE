@@ -118,9 +118,23 @@ endpoints.get('/ingredients', async (req, res) => {
     let data = [];
 
     try {
-        data = await getFood52Data(link);
-        console.log("directions: " + data);
-        return data;
+
+      switch(source.toLowerCase().trim())
+      {
+        case 'food52':
+          data = await getFood52Data(link);
+          break;
+        case 'simply recipes':
+          data = await getSimplyRecipesData(link);
+          break;
+      }
+
+      console.log("directions: " + data);
+      return data;
+
+        // data = await getFood52Data(link);
+        // console.log("directions: " + data);
+        // return data;
     } catch (error) {
         console.error("Error in determineSite:", error);
         throw error;
@@ -130,24 +144,47 @@ endpoints.get('/ingredients', async (req, res) => {
 }
 
   async function getFood52Data(link) {
-    console.log('Made it to get data. Link = ', link);
-
+    console.log('Made it to get data in food52. Link = ', link);
     try {
-        // Fetch the HTML content from the provided URL
-        const response = await axios.get(link);
-        const html = response.data;
+      // Fetch the HTML content from the provided URL
+      const response = await axios.get(link);
+      const html = response.data;
 
-        const $ = cheerio.load(html);
-        const recipeDirections = [];
+      const $ = cheerio.load(html);
+      const recipeDirections = [];
 
-        //CHANGE THIS
-        $('.recipe__list.recipe__list--steps li').each((index, element) => {
-            const directionText = $(element).find('span').text().trim().split('\n\n');
-            recipeDirections.push(directionText);
-        }).catch(error);
+      //CHANGE THIS
+      $('.recipe__list.recipe__list--steps li').each((index, element) => {
+          const directionText = $(element).find('span').text().trim().split('\n\n');
+          recipeDirections.push(directionText);
+      });
 
-        console.log("recipe directions in getfooddata: " + recipeDirections);
-        return recipeDirections;
+      console.log("recipe directions in getfooddata: " + recipeDirections);
+      return recipeDirections;
+    } catch (error) {
+        console.error("Error in getFood52Data:", error);
+        throw error; 
+    }
+}
+
+async function getSimplyRecipesData(link){
+  console.log('Made it to get data in simply recipes. Link = ', link);
+    try {
+      // Fetch the HTML content from the provided URL
+      const response = await axios.get(link);
+      const html = response.data;
+
+      const $ = cheerio.load(html);
+      const recipeDirections = [];
+
+      //CHANGE THIS
+      $('#mntl-sc-block_3-0').each((index, element) => {
+        const directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
+        recipeDirections.push(directionText);
+      });
+
+      console.log("recipe directions in getfooddata: " + recipeDirections);
+      return recipeDirections;
     } catch (error) {
         console.error("Error in getFood52Data:", error);
         throw error; 
@@ -155,8 +192,7 @@ endpoints.get('/ingredients', async (req, res) => {
 }
 
 
-
-  function getSimplyRecipesData(response){
+  async function getSimplyRecipesData1(response){
     const html = response.data;
     const $ = cheerio.load(html);
     const recipeData = {};
