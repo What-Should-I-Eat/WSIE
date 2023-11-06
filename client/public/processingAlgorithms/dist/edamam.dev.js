@@ -72,8 +72,7 @@ var edamam = function () {
       }).then(function (resp) {
         return resp.json();
       }).then(function (results) {
-        console.log("results: ", results); //directionsList.innerHTML = results;
-
+        console.log("results: ", results);
         directionsList.innerHTML = '<ul>' + results.map(function (item) {
           return "<li>".concat(item[0], "</li>");
         }).join('') + '</ul>';

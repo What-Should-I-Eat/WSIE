@@ -32,25 +32,22 @@ var edamam = (() => {
             }).then(resp => resp.json())
               .then(results => {
                 results.hits.forEach(data => {
-                    const source = data.recipe.source;
-                    console.log("Source = ", source);
-                    if(source === 'Food52' || source === 'Martha Stewart' || source.includes('BBC') || source === 'Food Network')
-                    {
-                        const recipeName = document.createElement('li');
-                        const link = document.createElement('a');
-                        link.textContent = data.recipe.label;
-                        recipeName.appendChild(link);
-                        recipeList.appendChild(recipeName);
-                        link.onclick = () => showRecipe(data, data.recipe.source);
-                    }
-
+                  const source = data.recipe.source;
+                  console.log("Source = ", source);
+                  if(source === 'Food52' || source === 'Martha Stewart' || source.includes('BBC') || source === 'Food Network')
+                  {
+                    const recipeName = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.textContent = data.recipe.label;
+                    recipeName.appendChild(link);
+                    recipeList.appendChild(recipeName);
+                    link.onclick = () => showRecipe(data, data.recipe.source);
+                  }
                 });
             });
-        
-          } catch (e) {
-            console.log(e);
-          }
-
+        } catch (e) {
+          console.log(e);
+        }
         return false;
     }
 
@@ -59,43 +56,32 @@ var edamam = (() => {
       console.log('hit show recipe');
       console.log('recipe: ', json);
 
-      
-
-
-        setupRecipe(json);
-        const directionsList = document.getElementById('directions-list'); // List of directions
-        directionsList.innerHTML = '';
-        const link = json.recipe.url;
-
-    
-        // Create the URL with the recipeLink and source parameters
-        const fetchString = `http://${host}:8080/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
-    
-        try {
-            fetch(fetchString, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then((resp) => resp.json())
-                .then((results) => {
-                    
-
-                    console.log("results: ", results);
-
-                    //directionsList.innerHTML = results;
-
-                    
-                    directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
-
-                });
-        } catch (e) {
-            console.log(e);
-        }
-        return false;
-    }
+      setupRecipe(json);
+      const directionsList = document.getElementById('directions-list'); // List of directions
+      directionsList.innerHTML = '';
+      const link = json.recipe.url;
+  
+      // Create the URL with the recipeLink and source parameters
+      const fetchString = `http://${host}:8080/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
+  
+      try {
+          fetch(fetchString, {
+              method: 'GET',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then((resp) => resp.json())
+          .then((results) => {
+              console.log("results: ", results);
+              directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
+          });
+      } catch (e) {
+        console.log(e);
+      }
+    return false;
+  }
     
   function setupRecipe(json){
     // Hide search results
@@ -127,8 +113,7 @@ var edamam = (() => {
     directionsHeader.innerHTML = 'Directions';
   }
   
-    
-    return {
-      searchRecipe
-    }
-  })();
+  return {
+    searchRecipe
+  }
+})();
