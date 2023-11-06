@@ -72,7 +72,7 @@ var Recipe = (() => {
 
     //Endpoint works and returns json array of recipe
     try {
-      fetch("http://" + host + ":8080/api/v1/scrape-recipe/?recipeLink=" + link, {
+      fetch("http://" + host + ":8080/api/v1/scrape-recipe/simplyrecipes/?recipeLink=" + link, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -244,16 +244,18 @@ function getUpdatedIngredientNames(list, handleDifferently) {
   
       // Check if the line contains the original ingredient
       if (line.toLowerCase().includes(originalIngredient)) {
-        console.log("*FOUND " + originalIngredient + " in the original recipe");
+
+          console.log("*FOUND " + originalIngredient + " in the original recipe");
   
-        let substitutedIngredient = ingredientSubstitutions.substitutionOptions[i].substitutions[0];
-        console.log("substitution for " + originalIngredient + " = " + substitutedIngredient);
-        let quantity = line.split(' ')[0]; 
-        console.log("quantity = " + quantity);
+          let substitutedIngredient = ingredientSubstitutions.substitutionOptions[i].substitutions[0];
+          console.log("substitution for " + originalIngredient + " = " + substitutedIngredient);
+          let quantity = line.split(' ')[0]; 
+          console.log("quantity = " + quantity);
+          
+          //Replace restricted ingredient with substitution
+          line = line.replace(new RegExp(originalIngredient, 'gi'), substitutedIngredient);
+          console.log("NEW LINE WITH SUBS: " + line);
         
-        //Replace restricted ingredient with substitution
-        line = line.replace(new RegExp(originalIngredient, 'gi'), substitutedIngredient);
-        console.log("NEW LINE WITH SUBS: " + line);
       }
     }
   

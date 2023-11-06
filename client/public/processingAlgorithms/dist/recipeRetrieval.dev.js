@@ -91,7 +91,7 @@ var Recipe = function () {
             directionsList.innerHTML = ''; //Endpoint works and returns json array of recipe
 
             try {
-              fetch("http://" + host + ":8080/api/v1/scrape-recipe/?recipeLink=" + link, {
+              fetch("http://" + host + ":8080/api/v1/scrape-recipe/simplyrecipes/?recipeLink=" + link, {
                 method: 'GET',
                 headers: {
                   'Accept': 'application/json',

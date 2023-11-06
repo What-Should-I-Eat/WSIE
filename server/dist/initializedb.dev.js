@@ -132,13 +132,13 @@ function insertData() {
               "alternatives": ["pureed silken tofu"]
             }]
           }, {
-            "name": "cashew",
+            "name": "cashews",
             "tags": [{
               "restrictions": ["a-treenut"],
               "alternatives": ["silken tofu"]
             }]
           }, {
-            "name": "almond",
+            "name": "almonds",
             "tags": [{
               "restrictions": ["a-treenut"],
               "alternatives": ["pumpkin seeds"]
@@ -162,7 +162,7 @@ function insertData() {
               "alternatives": ["cookie butter", "sunflower seed butter", "tahini"]
             }]
           }, {
-            "name": "peanut",
+            "name": "peanuts",
             "tags": [{
               "restrictions": ["a-peanut"],
               "alternatives": ["sunflower seeds", "chickpeas"]
@@ -200,7 +200,7 @@ function insertData() {
           }];
           restrictionData = [{
             "name": "a-peanut",
-            "tags": ["peanut", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"]
+            "tags": ["peanuts", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"]
           }, {
             "name": "a-milk",
             "tags": ["milk", "yogurt", "greek yogurt", "cheese", "cream", "buttercream", "butter", "whey", "buttermilk", "chocolate", "cottage cheese"]

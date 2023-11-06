@@ -173,7 +173,7 @@ async function insertData() {
             ]
           },
           {
-            "name": "cashew",
+            "name": "cashews",
             "tags": [
               {
                 "restrictions": ["a-treenut"],
@@ -182,7 +182,7 @@ async function insertData() {
             ]
           },
           {
-            "name": "almond",
+            "name": "almonds",
             "tags": [
               {
                 "restrictions": ["a-treenut"],
@@ -218,7 +218,7 @@ async function insertData() {
             ]
           },
           {
-            "name": "peanut",
+            "name": "peanuts",
             "tags": [
               {
                 "restrictions": ["a-peanut"],
@@ -279,7 +279,7 @@ async function insertData() {
       {
         "name": "a-peanut",
         "tags": [
-          "peanut", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"
+          "peanuts", "peanut butter", "peanut oil", "peanut chip", "peanut flour", "peanut meal", "peanut sauce", "szechuan sauce"
         ]
       },
       {

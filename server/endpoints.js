@@ -69,42 +69,6 @@ endpoints.get('/ingredients', async (req, res) => {
         res.status(500).json({ error: 'search - Internal Server Error' });
       });
   });
-  
-  
-  //This scrapes a recipe called tomato soup
-  //What we want is 1) the user to first search a recipe (above)
-  //2) whatever they click on above is passed here and returned
-  endpoints.get('/scrape-recipe', async (req, res) => {
-    const link = req.query.recipeLink; //This DOES NOT WORK
-
-    axios.get(link)
-    .then((response) => {
-      if (response.status === 200) {
-        scrapedData = getRecipeData(response);
-        res.json(scrapedData)
-      
-      } else {
-        console.error('Request failed with status code', response.status);
-        res.status(500).json({ error: 'Internal Server Error' });
-      }
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'search - Internal Server Error' });
-    });
-  });
-  
-
-  endpoints.get('/search-input', async (req, res) => {
-    try {
-      const searchInputs = await mongoose.model('RecipeInput').find();
-      res.json(searchInputs)
-    } 
-    catch (error) {
-      console.error('Error fetching search input:', error);
-      res.status(500).json({ error: 'search input - Internal Server Error' });
-    }
-  });
 
   endpoints.post("/search-input", async(req, res) => {
     const recipeInput = new RecipeInput({ input: req.body.input });
@@ -129,12 +93,70 @@ endpoints.get('/ingredients', async (req, res) => {
     res.json(savedRestrictionInput);
   });
 
+ 
+//EDAMAM from here on down
 
+  endpoints.get('/scrape-recipe', async (req, res) => {
+    const recipeLink = req.query.recipeLink; 
+    const source = req.query.source;
+    
+    const data = await determineSite(recipeLink, source, req.query);
 
+    console.log("SCRAPED DATA: " + data);
+    res.json(data);      
+    
+});
 
-
+  
   //Support methods
-  function getRecipeData(response){
+
+  //Make this a switch after it works
+  async function determineSite(link, source, request) {
+    console.log("Link in determineSite(): " + link);
+    console.log("Source in determineSite() |" + source + "|");
+
+    let data = [];
+
+    try {
+        data = await getFood52Data(link);
+        console.log("directions: " + data);
+        return data;
+    } catch (error) {
+        console.error("Error in determineSite:", error);
+        throw error;
+    }
+
+    
+}
+
+  async function getFood52Data(link) {
+    console.log('Made it to get data. Link = ', link);
+
+    try {
+        // Fetch the HTML content from the provided URL
+        const response = await axios.get(link);
+        const html = response.data;
+
+        const $ = cheerio.load(html);
+        const recipeDirections = [];
+
+        $('.recipe__list.recipe__list--steps li').each((index, element) => {
+            const directionText = $(element).find('span').text().trim().split('\n\n');
+            //recipeData.directions = recipeData.directions.concat(directionText);
+            recipeDirections.push(directionText);
+        }).catch(error);
+
+        console.log("recipe directions in getfooddata: " + recipeDirections);
+        return recipeDirections;
+    } catch (error) {
+        console.error("Error in getFood52Data:", error);
+        throw error; 
+    }
+}
+
+
+
+  function getSimplyRecipesData(response){
     const html = response.data;
     const $ = cheerio.load(html);
     const recipeData = {};
@@ -178,8 +200,23 @@ endpoints.get('/ingredients', async (req, res) => {
 
 
     }
-  
-  
+    return recipeData;
+  }
+
+  function getBBCData(response){
+    const html = response.data;
+    const $ = cheerio.load(html);
+    const recipeData = {};
+
+    //Title of the recipe
+    //recipeData.title = $('h2.recipe-block__header').text().trim();
+    recipeData.directions = [];
+
+    $('.recipe__method-steps p').each((index, element) => {
+      const directionText = $(element).find('p').text().trim().split('\n\n');
+      recipeData.directions = recipeData.directions.concat(directionText);
+    });
+
     return recipeData;
   }
 
