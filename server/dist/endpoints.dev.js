@@ -254,7 +254,7 @@ function determineSite(link, source, request) {
           data = [];
           _context8.prev = 3;
           _context8.t0 = source.toLowerCase().trim();
-          _context8.next = _context8.t0 === 'food52' ? 7 : _context8.t0 === 'simply recipes' ? 11 : 15;
+          _context8.next = _context8.t0 === 'food52' ? 7 : _context8.t0 === 'simply recipes' ? 11 : _context8.t0 === 'bbc good food' ? 15 : _context8.t0 === 'martha stewart' ? 19 : 23;
           break;
 
         case 7:
@@ -263,7 +263,7 @@ function determineSite(link, source, request) {
 
         case 9:
           data = _context8.sent;
-          return _context8.abrupt("break", 15);
+          return _context8.abrupt("break", 23);
 
         case 11:
           _context8.next = 13;
@@ -271,24 +271,40 @@ function determineSite(link, source, request) {
 
         case 13:
           data = _context8.sent;
-          return _context8.abrupt("break", 15);
+          return _context8.abrupt("break", 23);
 
         case 15:
+          _context8.next = 17;
+          return regeneratorRuntime.awrap(getBBCData(link));
+
+        case 17:
+          data = _context8.sent;
+          return _context8.abrupt("break", 23);
+
+        case 19:
+          _context8.next = 21;
+          return regeneratorRuntime.awrap(getMarthaStewart(link));
+
+        case 21:
+          data = _context8.sent;
+          return _context8.abrupt("break", 23);
+
+        case 23:
           console.log("directions: " + data);
           return _context8.abrupt("return", data);
 
-        case 19:
-          _context8.prev = 19;
+        case 27:
+          _context8.prev = 27;
           _context8.t1 = _context8["catch"](3);
           console.error("Error in determineSite:", _context8.t1);
           throw _context8.t1;
 
-        case 23:
+        case 31:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[3, 19]]);
+  }, null, null, [[3, 27]]);
 }
 
 function getFood52Data(link) {
@@ -356,7 +372,7 @@ function getSimplyRecipesData(link) {
         case 13:
           _context10.prev = 13;
           _context10.t0 = _context10["catch"](1);
-          console.error("Error in getFood52Data:", _context10.t0);
+          console.error("Error in Simply Recipes:", _context10.t0);
           throw _context10.t0;
 
         case 17:
@@ -367,73 +383,80 @@ function getSimplyRecipesData(link) {
   }, null, null, [[1, 13]]);
 }
 
-function getSimplyRecipesData1(response) {
-  var html, $, recipeData;
-  return regeneratorRuntime.async(function getSimplyRecipesData1$(_context11) {
+function getBBCData(link) {
+  var response, html, $, recipeDirections;
+  return regeneratorRuntime.async(function getBBCData$(_context11) {
     while (1) {
       switch (_context11.prev = _context11.next) {
         case 0:
+          console.log('Made it to get data in BBC. Link = ', link);
+          _context11.prev = 1;
+          _context11.next = 4;
+          return regeneratorRuntime.awrap(axios.get(link));
+
+        case 4:
+          response = _context11.sent;
           html = response.data;
           $ = cheerio.load(html);
-          recipeData = {}; //Title of the recipe
+          recipeDirections = []; //CHANGE THIS
 
-          recipeData.title = $('h2.recipe-block__header').text().trim(); //String arrays in JSON data
+          $('.grouped-list li').each(function (index, element) {
+            var directionText = $(element).find('p').text().trim().split('\n\n');
+            recipeDirections.push(directionText);
+          });
+          console.log("recipe directions in getfooddata: " + recipeDirections);
+          return _context11.abrupt("return", recipeDirections);
 
-          recipeData.ingredientList = []; //actual ingredients list
+        case 13:
+          _context11.prev = 13;
+          _context11.t0 = _context11["catch"](1);
+          console.error("Error in BBC:", _context11.t0);
+          throw _context11.t0;
 
-          recipeData.directions = [];
-          recipeData.ingredientNames = []; //names of individual ingredients
-          //Recipe ingredients and individual ingredient items
-
-          $('ul.structured-ingredients__list li.structured-ingredients__list-item').each(function (index, element) {
-            var fullIngredient = $(element).find('p').text().trim();
-            var ingredientItem = $(element).find('p [data-ingredient-name]').text().trim();
-            recipeData.ingredientList.push(fullIngredient);
-            recipeData.ingredientNames.push(ingredientItem);
-          }); //Recipe directions
-
-          $('#mntl-sc-block_3-0').each(function (index, element) {
-            var directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
-            recipeData.directions = recipeData.directions.concat(directionText);
-          }); //Some recipes have different html for the ingredients. This scrapes in that case
-
-          if (recipeData.ingredientList.length === 0 || recipeData.ingredientNames.length === 0) {
-            console.log("Scraping html the other way");
-            $('#ingredient-list_1-0 li.simple-list__item.js-checkbox-trigger.ingredient.text-passage').each(function (index, element) {
-              var fullIngredient = $(element).text().trim();
-
-              if (!fullIngredient.startsWith("For the")) {
-                recipeData.ingredientList.push(fullIngredient);
-                var parts = fullIngredient.split(' ');
-                var ingredientName = parts.slice(1).join(' '); // Select all parts except the first one
-
-                recipeData.ingredientNames.push(ingredientName);
-              }
-            });
-          }
-
-          return _context11.abrupt("return", recipeData);
-
-        case 11:
+        case 17:
         case "end":
           return _context11.stop();
       }
     }
-  });
+  }, null, null, [[1, 13]]);
 }
 
-function getBBCData(response) {
-  var html = response.data;
-  var $ = cheerio.load(html);
-  var recipeData = {}; //Title of the recipe
-  //recipeData.title = $('h2.recipe-block__header').text().trim();
+function getMarthaStewart(link) {
+  var response, html, $, recipeDirections;
+  return regeneratorRuntime.async(function getMarthaStewart$(_context12) {
+    while (1) {
+      switch (_context12.prev = _context12.next) {
+        case 0:
+          console.log('Made it to get data in Martha Stewart. Link = ', link);
+          _context12.prev = 1;
+          _context12.next = 4;
+          return regeneratorRuntime.awrap(axios.get(link));
 
-  recipeData.directions = [];
-  $('.recipe__method-steps p').each(function (index, element) {
-    var directionText = $(element).find('p').text().trim().split('\n\n');
-    recipeData.directions = recipeData.directions.concat(directionText);
-  });
-  return recipeData;
+        case 4:
+          response = _context12.sent;
+          html = response.data;
+          $ = cheerio.load(html);
+          recipeDirections = []; //CHANGE THIS
+
+          $('div#recipe__steps-content_1-0 p').each(function (index, element) {
+            var directionText = $(element).text().trim().split('\n\n');
+            recipeDirections.push(directionText);
+          });
+          console.log("recipe directions in Martha Stewart: " + recipeDirections);
+          return _context12.abrupt("return", recipeDirections);
+
+        case 13:
+          _context12.prev = 13;
+          _context12.t0 = _context12["catch"](1);
+          console.error("Error in Martha Stewart:", _context12.t0);
+          throw _context12.t0;
+
+        case 17:
+        case "end":
+          return _context12.stop();
+      }
+    }
+  }, null, null, [[1, 13]]);
 }
 
 module.exports = endpoints;

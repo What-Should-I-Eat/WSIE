@@ -127,20 +127,20 @@ endpoints.get('/ingredients', async (req, res) => {
         case 'simply recipes':
           data = await getSimplyRecipesData(link);
           break;
+        case 'bbc good food':
+          data = await getBBCData(link);
+          break;
+        case 'martha stewart':
+          data = await getMarthaStewart(link);
+          break;
       }
 
       console.log("directions: " + data);
       return data;
-
-        // data = await getFood52Data(link);
-        // console.log("directions: " + data);
-        // return data;
     } catch (error) {
         console.error("Error in determineSite:", error);
         throw error;
     }
-
-    
 }
 
   async function getFood52Data(link) {
@@ -186,75 +186,57 @@ async function getSimplyRecipesData(link){
       console.log("recipe directions in getfooddata: " + recipeDirections);
       return recipeDirections;
     } catch (error) {
-        console.error("Error in getFood52Data:", error);
+        console.error("Error in Simply Recipes:", error);
         throw error; 
     }
 }
 
+  async function getBBCData(link){
+    console.log('Made it to get data in BBC. Link = ', link);
+    try {
+      // Fetch the HTML content from the provided URL
+      const response = await axios.get(link);
+      const html = response.data;
 
-  async function getSimplyRecipesData1(response){
-    const html = response.data;
-    const $ = cheerio.load(html);
-    const recipeData = {};
+      const $ = cheerio.load(html);
+      const recipeDirections = [];
 
-    //Title of the recipe
-    recipeData.title = $('h2.recipe-block__header').text().trim();
-
-    //String arrays in JSON data
-    recipeData.ingredientList = []; //actual ingredients list
-    recipeData.directions = [];
-    recipeData.ingredientNames = []; //names of individual ingredients
-  
-    //Recipe ingredients and individual ingredient items
-    $('ul.structured-ingredients__list li.structured-ingredients__list-item').each((index, element) => {
-      const fullIngredient = $(element).find('p').text().trim();
-      const ingredientItem = $(element).find('p [data-ingredient-name]').text().trim();
-      recipeData.ingredientList.push(fullIngredient);
-      recipeData.ingredientNames.push(ingredientItem);
-    });
-  
-    //Recipe directions
-    $('#mntl-sc-block_3-0').each((index, element) => {
-      const directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
-      recipeData.directions = recipeData.directions.concat(directionText);
-    });
-
-    //Some recipes have different html for the ingredients. This scrapes in that case
-    if(recipeData.ingredientList.length === 0 || recipeData.ingredientNames.length === 0)
-    {
-      console.log("Scraping html the other way");
-      $('#ingredient-list_1-0 li.simple-list__item.js-checkbox-trigger.ingredient.text-passage').each((index, element) => {
-        const fullIngredient = $(element).text().trim();
-
-        if (!fullIngredient.startsWith("For the")) {
-          recipeData.ingredientList.push(fullIngredient);
-          const parts = fullIngredient.split(' ');
-          const ingredientName = parts.slice(1).join(' '); // Select all parts except the first one
-          recipeData.ingredientNames.push(ingredientName);
-        }
+      //CHANGE THIS
+      $('.grouped-list li').each((index, element) => {
+        const directionText = $(element).find('p').text().trim().split('\n\n');
+        recipeDirections.push(directionText);
       });
 
-
+      console.log("recipe directions in getfooddata: " + recipeDirections);
+      return recipeDirections;
+    } catch (error) {
+        console.error("Error in BBC:", error);
+        throw error; 
     }
-    return recipeData;
   }
 
-  function getBBCData(response){
-    const html = response.data;
-    const $ = cheerio.load(html);
-    const recipeData = {};
+async function getMarthaStewart(link){
+  console.log('Made it to get data in Martha Stewart. Link = ', link);
+    try {
+      const response = await axios.get(link);
+      const html = response.data;
 
-    //Title of the recipe
-    //recipeData.title = $('h2.recipe-block__header').text().trim();
-    recipeData.directions = [];
+      const $ = cheerio.load(html);
+      const recipeDirections = [];
 
-    $('.recipe__method-steps p').each((index, element) => {
-      const directionText = $(element).find('p').text().trim().split('\n\n');
-      recipeData.directions = recipeData.directions.concat(directionText);
-    });
+      //CHANGE THIS
+      $('div#recipe__steps-content_1-0 p').each((index, element) => {
+        const directionText = $(element).text().trim().split('\n\n');
+        recipeDirections.push(directionText);
+      });
 
-    return recipeData;
-  }
+      console.log("recipe directions in Martha Stewart: " + recipeDirections);
+      return recipeDirections;
+    } catch (error) {
+        console.error("Error in Martha Stewart:", error);
+        throw error; 
+    }
+}
 
 
   
