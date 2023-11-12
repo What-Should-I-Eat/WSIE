@@ -32,7 +32,6 @@ header {
   width: 100%;
   position: sticky;
   padding-top: 0vw;
-  font-size: 3vw;
   font-weight: 300;
   text-align: center;
   background-color: rgb(162, 176, 121);
@@ -47,6 +46,7 @@ nav.nav-header ul {
 nav.nav-header ul li {
   display: inline;
   margin: 2vw;
+  font-size: 5vw;
 }
 
 nav.nav-header a {
@@ -60,7 +60,7 @@ p {
 
 h1 {
   font-weight: 350;
-  font-size: 8vw;
+  font-size: 11vw;
   margin-bottom: 0;
 }
 
@@ -110,17 +110,55 @@ input {
   margin-bottom: 1vw;
 }
 
+.restrictions-container button {
+  font: inherit;
+  color: inherit;
+  font-size: 4vw;
+  height: 12vw;
+  width: 22vw;
+  background-color: #9ec95359;
+  border-width: 0.5vw;
+  border-style: dotted;
+  border: rgb(134, 126, 107);
+  padding: 0.25vw;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+  vertical-align: top;
+}
+
+th{
+  text-align: center;
+  font-weight: 350;
+  font-size: 5vw;
+  max-width: 5vw; 
+  white-space: normal;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+}
+
 button {
   font: inherit;
   color: inherit;
   font-size: 4vw;
   height: auto;
   width: 12vw;
-  background-color: #9ec95359;
-  border-width: 0.5vw;
-  border-style: dotted;
-  border: rgb(134, 126, 107);
-  padding: 0.25vw;
+  padding: 1vw;
+  background-color:#9ec95359;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #e7ebe0;
 }
 
 footer {
@@ -129,7 +167,17 @@ footer {
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 5vw;
+  height: 10vw;
   background-color: rgb(162, 176, 121);
   color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
+
+footer img {
+  max-height: 100%; 
+}
+
+
