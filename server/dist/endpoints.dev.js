@@ -227,7 +227,7 @@ endpoints.get('/scrape-recipe', function _callee7(req, res) {
           recipeLink = req.query.recipeLink;
           source = req.query.source;
           _context7.next = 4;
-          return regeneratorRuntime.awrap(determineSite(recipeLink, source, req.query));
+          return regeneratorRuntime.awrap(determineSite(recipeLink, source));
 
         case 4:
           data = _context7.sent;
@@ -241,10 +241,9 @@ endpoints.get('/scrape-recipe', function _callee7(req, res) {
     }
   });
 }); //Support methods
-//Make this a switch after it works
 
-function determineSite(link, source, request) {
-  var data;
+function determineSite(link, source) {
+  var data, scraper, findScraper;
   return regeneratorRuntime.async(function determineSite$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
@@ -254,66 +253,81 @@ function determineSite(link, source, request) {
           data = [];
           _context8.prev = 3;
           _context8.t0 = source.toLowerCase().trim();
-          _context8.next = _context8.t0 === 'food52' ? 7 : _context8.t0 === 'simply recipes' ? 11 : _context8.t0 === 'bbc good food' ? 15 : _context8.t0 === 'martha stewart' ? 19 : 23;
+          _context8.next = _context8.t0 === 'food52' ? 7 : _context8.t0 === 'simply recipes' ? 10 : _context8.t0 === 'bbc good food' ? 13 : _context8.t0 === 'martha stewart' ? 16 : _context8.t0 === 'food network' ? 19 : _context8.t0 === 'delish' ? 22 : _context8.t0 === 'eatingwell' ? 25 : 28;
           break;
 
         case 7:
-          _context8.next = 9;
-          return regeneratorRuntime.awrap(getFood52Data(link));
+          //working
+          scraper = '.recipe__list.recipe__list--steps li';
+          findScraper = 'span';
+          return _context8.abrupt("break", 28);
 
-        case 9:
-          data = _context8.sent;
-          return _context8.abrupt("break", 23);
-
-        case 11:
-          _context8.next = 13;
-          return regeneratorRuntime.awrap(getSimplyRecipesData(link));
+        case 10:
+          //working
+          scraper = '#mntl-sc-block_3-0';
+          findScraper = 'p.mntl-sc-block-html';
+          return _context8.abrupt("break", 28);
 
         case 13:
-          data = _context8.sent;
-          return _context8.abrupt("break", 23);
+          //working
+          scraper = '.grouped-list li';
+          findScraper = 'p';
+          return _context8.abrupt("break", 28);
 
-        case 15:
-          _context8.next = 17;
-          return regeneratorRuntime.awrap(getBBCData(link));
-
-        case 17:
-          data = _context8.sent;
-          return _context8.abrupt("break", 23);
+        case 16:
+          //working
+          scraper = 'div#recipe__steps-content_1-0 p';
+          findScraper = '';
+          return _context8.abrupt("break", 28);
 
         case 19:
-          _context8.next = 21;
-          return regeneratorRuntime.awrap(getMarthaStewart(link));
+          //working
+          scraper = '.o-Method__m-Body ol';
+          findScraper = 'li';
+          return _context8.abrupt("break", 28);
 
-        case 21:
+        case 22:
+          //working but adding weird stuff
+          scraper = 'ul.directions li ol';
+          findScraper = 'li';
+          return _context8.abrupt("break", 28);
+
+        case 25:
+          //working
+          scraper = 'div#recipe__steps-content_1-0 ol li';
+          findScraper = 'p';
+          return _context8.abrupt("break", 28);
+
+        case 28:
+          _context8.next = 30;
+          return regeneratorRuntime.awrap(getRecipeDirectionsFromSource(link, scraper, findScraper));
+
+        case 30:
           data = _context8.sent;
-          return _context8.abrupt("break", 23);
-
-        case 23:
           console.log("directions: " + data);
           return _context8.abrupt("return", data);
 
-        case 27:
-          _context8.prev = 27;
+        case 35:
+          _context8.prev = 35;
           _context8.t1 = _context8["catch"](3);
           console.error("Error in determineSite:", _context8.t1);
           throw _context8.t1;
 
-        case 31:
+        case 39:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[3, 27]]);
+  }, null, null, [[3, 35]]);
 }
 
-function getFood52Data(link) {
+function getRecipeDirectionsFromSource(link, scraper, findScraper) {
   var response, html, $, recipeDirections;
-  return regeneratorRuntime.async(function getFood52Data$(_context9) {
+  return regeneratorRuntime.async(function getRecipeDirectionsFromSource$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
         case 0:
-          console.log('Made it to get data in food52. Link = ', link);
+          console.log("Made it to get data. Link = ".concat(link));
           _context9.prev = 1;
           _context9.next = 4;
           return regeneratorRuntime.awrap(axios.get(link));
@@ -322,138 +336,24 @@ function getFood52Data(link) {
           response = _context9.sent;
           html = response.data;
           $ = cheerio.load(html);
-          recipeDirections = []; //CHANGE THIS
-
-          $('.recipe__list.recipe__list--steps li').each(function (index, element) {
-            var directionText = $(element).find('span').text().trim().split('\n\n');
+          recipeDirections = [];
+          $(scraper).each(function (index, element) {
+            var directionElement = findScraper ? $(element).find(findScraper) : $(element);
+            var directionText = directionElement.text().trim().split('\n\n');
             recipeDirections.push(directionText);
           });
-          console.log("recipe directions in getfooddata: " + recipeDirections);
+          console.log("Recipe directions: ".concat(recipeDirections));
           return _context9.abrupt("return", recipeDirections);
 
         case 13:
           _context9.prev = 13;
           _context9.t0 = _context9["catch"](1);
-          console.error("Error in getFood52Data:", _context9.t0);
+          console.error("Error in scraping recipe directions: ".concat(_context9.t0));
           throw _context9.t0;
 
         case 17:
         case "end":
           return _context9.stop();
-      }
-    }
-  }, null, null, [[1, 13]]);
-}
-
-function getSimplyRecipesData(link) {
-  var response, html, $, recipeDirections;
-  return regeneratorRuntime.async(function getSimplyRecipesData$(_context10) {
-    while (1) {
-      switch (_context10.prev = _context10.next) {
-        case 0:
-          console.log('Made it to get data in simply recipes. Link = ', link);
-          _context10.prev = 1;
-          _context10.next = 4;
-          return regeneratorRuntime.awrap(axios.get(link));
-
-        case 4:
-          response = _context10.sent;
-          html = response.data;
-          $ = cheerio.load(html);
-          recipeDirections = []; //CHANGE THIS
-
-          $('#mntl-sc-block_3-0').each(function (index, element) {
-            var directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
-            recipeDirections.push(directionText);
-          });
-          console.log("recipe directions in getfooddata: " + recipeDirections);
-          return _context10.abrupt("return", recipeDirections);
-
-        case 13:
-          _context10.prev = 13;
-          _context10.t0 = _context10["catch"](1);
-          console.error("Error in Simply Recipes:", _context10.t0);
-          throw _context10.t0;
-
-        case 17:
-        case "end":
-          return _context10.stop();
-      }
-    }
-  }, null, null, [[1, 13]]);
-}
-
-function getBBCData(link) {
-  var response, html, $, recipeDirections;
-  return regeneratorRuntime.async(function getBBCData$(_context11) {
-    while (1) {
-      switch (_context11.prev = _context11.next) {
-        case 0:
-          console.log('Made it to get data in BBC. Link = ', link);
-          _context11.prev = 1;
-          _context11.next = 4;
-          return regeneratorRuntime.awrap(axios.get(link));
-
-        case 4:
-          response = _context11.sent;
-          html = response.data;
-          $ = cheerio.load(html);
-          recipeDirections = []; //CHANGE THIS
-
-          $('.grouped-list li').each(function (index, element) {
-            var directionText = $(element).find('p').text().trim().split('\n\n');
-            recipeDirections.push(directionText);
-          });
-          console.log("recipe directions in getfooddata: " + recipeDirections);
-          return _context11.abrupt("return", recipeDirections);
-
-        case 13:
-          _context11.prev = 13;
-          _context11.t0 = _context11["catch"](1);
-          console.error("Error in BBC:", _context11.t0);
-          throw _context11.t0;
-
-        case 17:
-        case "end":
-          return _context11.stop();
-      }
-    }
-  }, null, null, [[1, 13]]);
-}
-
-function getMarthaStewart(link) {
-  var response, html, $, recipeDirections;
-  return regeneratorRuntime.async(function getMarthaStewart$(_context12) {
-    while (1) {
-      switch (_context12.prev = _context12.next) {
-        case 0:
-          console.log('Made it to get data in Martha Stewart. Link = ', link);
-          _context12.prev = 1;
-          _context12.next = 4;
-          return regeneratorRuntime.awrap(axios.get(link));
-
-        case 4:
-          response = _context12.sent;
-          html = response.data;
-          $ = cheerio.load(html);
-          recipeDirections = []; //CHANGE THIS
-
-          $('div#recipe__steps-content_1-0 p').each(function (index, element) {
-            var directionText = $(element).text().trim().split('\n\n');
-            recipeDirections.push(directionText);
-          });
-          console.log("recipe directions in Martha Stewart: " + recipeDirections);
-          return _context12.abrupt("return", recipeDirections);
-
-        case 13:
-          _context12.prev = 13;
-          _context12.t0 = _context12["catch"](1);
-          console.error("Error in Martha Stewart:", _context12.t0);
-          throw _context12.t0;
-
-        case 17:
-        case "end":
-          return _context12.stop();
       }
     }
   }, null, null, [[1, 13]]);

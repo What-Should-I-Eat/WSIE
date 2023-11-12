@@ -19,6 +19,7 @@ var edamam = function () {
 
     try {
       fetch(fullLink, {
+        //RESTRICTIONS MUST BE ADDED TO THIS FULLLINK
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -29,9 +30,10 @@ var edamam = function () {
       }).then(function (results) {
         results.hits.forEach(function (data) {
           var source = data.recipe.source;
-          console.log("Source = ", source);
+          var viableSource = sourceIsViable(source);
 
-          if (source === 'Food52' || source === 'Martha Stewart' || source.includes('BBC') || source === 'Food Network' || source === 'Simply Recipes') {
+          if (viableSource) {
+            console.log(source, " - ", data.recipe.label);
             var recipeName = document.createElement('li');
             var link = document.createElement('a');
             link.textContent = data.recipe.label;
@@ -51,6 +53,34 @@ var edamam = function () {
     return false;
   };
 
+  function sourceIsViable(source) {
+    switch (source) {
+      case 'Food52':
+        return true;
+
+      case 'Martha Stewart':
+        return true;
+
+      case 'BBC Good Food':
+        return true;
+
+      case 'Food Network':
+        return true;
+
+      case 'Simply Recipes':
+        return true;
+
+      case 'Delish':
+        return true;
+
+      case 'EatingWell':
+        return true;
+
+      default:
+        return false;
+    }
+  }
+
   function showRecipe(json, source) {
     console.log('recipe: ', json);
     setupRecipe(json); //Recipe name and ingredients 
@@ -60,10 +90,10 @@ var edamam = function () {
     directionsList.innerHTML = '';
     var link = json.recipe.url; // Create the URL with the recipeLink and source parameters
 
-    var fetchString = "http://".concat(host, ":8080/api/v1/scrape-recipe/?recipeLink=").concat(link, "&source=").concat(source);
+    var recipeSiteEndpoint = "http://".concat(host, ":8080/api/v1/scrape-recipe/?recipeLink=").concat(link, "&source=").concat(source);
 
     try {
-      fetch(fetchString, {
+      fetch(recipeSiteEndpoint, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',

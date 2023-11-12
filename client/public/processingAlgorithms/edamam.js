@@ -21,7 +21,7 @@ var edamam = (() => {
         console.log(fullLink);
 
         try {
-            fetch(fullLink, {
+            fetch(fullLink, { //RESTRICTIONS MUST BE ADDED TO THIS FULLLINK
               method: 'GET',
               headers: {
                 'Accept': 'application/json',
@@ -31,9 +31,10 @@ var edamam = (() => {
               .then(results => {
                 results.hits.forEach(data => {
                   const source = data.recipe.source;
-                  console.log("Source = ", source);
-                  if(source === 'Food52' || source === 'Martha Stewart' || source.includes('BBC') || source === 'Food Network' || source === 'Simply Recipes')
+                  const viableSource = sourceIsViable(source);
+                  if(viableSource)
                   {
+                    console.log(source, " - ", data.recipe.label);
                     const recipeName = document.createElement('li');
                     const link = document.createElement('a');
                     link.textContent = data.recipe.label;
@@ -49,6 +50,27 @@ var edamam = (() => {
         return false;
     }
 
+    function sourceIsViable(source){
+      switch(source) {
+        case 'Food52':
+          return true;
+        case 'Martha Stewart':
+          return true;
+        case 'BBC Good Food':
+          return true;
+        case 'Food Network':
+          return true;
+        case 'Simply Recipes':
+          return true;
+        case 'Delish':
+          return true;
+        case 'EatingWell':
+          return true;
+        default:
+          return false;
+      }
+    }
+
     function showRecipe(json, source) {
       console.log('recipe: ', json);
 
@@ -58,10 +80,10 @@ var edamam = (() => {
       const link = json.recipe.url;
   
       // Create the URL with the recipeLink and source parameters
-      const fetchString = `http://${host}:8080/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
+      const recipeSiteEndpoint = `http://${host}:8080/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
   
       try {
-          fetch(fetchString, {
+          fetch(recipeSiteEndpoint, {
               method: 'GET',
               headers: {
                   'Accept': 'application/json',

@@ -100,41 +100,56 @@ endpoints.get('/ingredients', async (req, res) => {
     const recipeLink = req.query.recipeLink; 
     const source = req.query.source;
     
-    const data = await determineSite(recipeLink, source, req.query);
+    const data = await determineSite(recipeLink, source);
 
     console.log("SCRAPED DATA: " + data);
     res.json(data);      
     
 });
 
-  
   //Support methods
-
-  //Make this a switch after it works
-  async function determineSite(link, source, request) {
+  async function determineSite(link, source) {
     console.log("Link in determineSite(): " + link);
     console.log("Source in determineSite() |" + source + "|");
 
     let data = [];
+    let scraper;
+    let findScraper;
 
     try {
+      switch(source.toLowerCase().trim()){
+        case 'food52': //working
+          scraper = '.recipe__list.recipe__list--steps li';
+          findScraper = 'span';
+          break;
+        case 'simply recipes': //working
+          scraper = '#mntl-sc-block_3-0';
+          findScraper = 'p.mntl-sc-block-html';
+          break;
+        case 'bbc good food': //working
+          scraper = '.grouped-list li';
+          findScraper = 'p';
+          break;
+        case 'martha stewart': //working
+          scraper = 'div#recipe__steps-content_1-0 p';
+          findScraper = '';
+          break;
+        case 'food network': //working
+          scraper = '.o-Method__m-Body ol';
+          findScraper = 'li';
+          break;
+        case 'delish': //working but adding weird stuff
+          scraper = 'ul.directions li ol';
+          findScraper = 'li';
+          break;
+        case 'eatingwell': //working
+          scraper = 'div#recipe__steps-content_1-0 ol li';
+          findScraper = 'p';
+          break;
 
-      switch(source.toLowerCase().trim())
-      {
-        case 'food52':
-          data = await getFood52Data(link);
-          break;
-        case 'simply recipes':
-          data = await getSimplyRecipesData(link);
-          break;
-        case 'bbc good food':
-          data = await getBBCData(link);
-          break;
-        case 'martha stewart':
-          data = await getMarthaStewart(link);
-          break;
       }
 
+      data = await getRecipeDirectionsFromSource(link, scraper, findScraper);
       console.log("directions: " + data);
       return data;
     } catch (error) {
@@ -143,103 +158,28 @@ endpoints.get('/ingredients', async (req, res) => {
     }
 }
 
-  async function getFood52Data(link) {
-    console.log('Made it to get data in food52. Link = ', link);
-    try {
-      // Fetch the HTML content from the provided URL
-      const response = await axios.get(link);
-      const html = response.data;
+async function getRecipeDirectionsFromSource(link, scraper, findScraper){
+  console.log(`Made it to get data. Link = ${link}`);
 
-      const $ = cheerio.load(html);
-      const recipeDirections = [];
+  try {
+    const response = await axios.get(link);
+    const html = response.data;
+    const $ = cheerio.load(html);
+    const recipeDirections = [];
 
-      //CHANGE THIS
-      $('.recipe__list.recipe__list--steps li').each((index, element) => {
-          const directionText = $(element).find('span').text().trim().split('\n\n');
-          recipeDirections.push(directionText);
-      });
+    $(scraper).each((index, element) => {
+      const directionElement = findScraper ? $(element).find(findScraper) : $(element);
+      const directionText = directionElement.text().trim().split('\n\n');
+      recipeDirections.push(directionText);
+    });
 
-      console.log("recipe directions in getfooddata: " + recipeDirections);
-      return recipeDirections;
-    } catch (error) {
-        console.error("Error in getFood52Data:", error);
-        throw error; 
-    }
-}
-
-async function getSimplyRecipesData(link){
-  console.log('Made it to get data in simply recipes. Link = ', link);
-    try {
-      // Fetch the HTML content from the provided URL
-      const response = await axios.get(link);
-      const html = response.data;
-
-      const $ = cheerio.load(html);
-      const recipeDirections = [];
-
-      //CHANGE THIS
-      $('#mntl-sc-block_3-0').each((index, element) => {
-        const directionText = $(element).find('p.mntl-sc-block-html').text().trim().split('\n\n');
-        recipeDirections.push(directionText);
-      });
-
-      console.log("recipe directions in getfooddata: " + recipeDirections);
-      return recipeDirections;
-    } catch (error) {
-        console.error("Error in Simply Recipes:", error);
-        throw error; 
-    }
-}
-
-  async function getBBCData(link){
-    console.log('Made it to get data in BBC. Link = ', link);
-    try {
-      // Fetch the HTML content from the provided URL
-      const response = await axios.get(link);
-      const html = response.data;
-
-      const $ = cheerio.load(html);
-      const recipeDirections = [];
-
-      //CHANGE THIS
-      $('.grouped-list li').each((index, element) => {
-        const directionText = $(element).find('p').text().trim().split('\n\n');
-        recipeDirections.push(directionText);
-      });
-
-      console.log("recipe directions in getfooddata: " + recipeDirections);
-      return recipeDirections;
-    } catch (error) {
-        console.error("Error in BBC:", error);
-        throw error; 
-    }
+    console.log(`Recipe directions: ${recipeDirections}`);
+    return recipeDirections;
+  } catch (error) {
+    console.error(`Error in scraping recipe directions: ${error}`);
+    throw error;
   }
-
-async function getMarthaStewart(link){
-  console.log('Made it to get data in Martha Stewart. Link = ', link);
-    try {
-      const response = await axios.get(link);
-      const html = response.data;
-
-      const $ = cheerio.load(html);
-      const recipeDirections = [];
-
-      //CHANGE THIS
-      $('div#recipe__steps-content_1-0 p').each((index, element) => {
-        const directionText = $(element).text().trim().split('\n\n');
-        recipeDirections.push(directionText);
-      });
-
-      console.log("recipe directions in Martha Stewart: " + recipeDirections);
-      return recipeDirections;
-    } catch (error) {
-        console.error("Error in Martha Stewart:", error);
-        throw error; 
-    }
 }
 
-
-  
-  
-  module.exports = endpoints;
+module.exports = endpoints;
   
