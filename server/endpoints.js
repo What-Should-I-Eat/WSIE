@@ -96,6 +96,12 @@ endpoints.get('/ingredients', async (req, res) => {
  
 //EDAMAM from here on down
 
+  endpoints.get('/edamam', async (req, res) => {
+    const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
+    
+
+  });
+
   endpoints.get('/scrape-recipe', async (req, res) => {
     const recipeLink = req.query.recipeLink; 
     const source = req.query.source;

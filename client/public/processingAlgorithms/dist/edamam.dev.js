@@ -4,6 +4,17 @@ var edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f
 var host = 'localhost'; //IDEA: filter from one recipe website and build a scraper for the directions for that website
 
 var edamam = function () {
+  document.addEventListener('DOMContentLoaded', function () {
+    restrictions.handleRestrictions();
+    console.log('edamam restrictions', restrictions.selectedRestrictions);
+  });
+
+  var handleRestrictions = function handleRestrictions(selectedRestrictions) {
+    console.log('handling restrictions in edamam.js'); // Use the selectedRestrictions array in your logic here
+
+    console.log('Selected Restrictions in edamam.js:', selectedRestrictions);
+  };
+
   var searchRecipe = function searchRecipe() {
     //Hide recipe on new search (if it exists)
     var selectedRecipeDetails = document.getElementById('selected-recipe-details');
@@ -13,7 +24,8 @@ var edamam = function () {
     recipeListDiv.style.display = 'block';
     var recipeList = document.getElementById('recipeList');
     recipeList.innerHTML = '';
-    var searchParam = document.getElementById('search-input').value;
+    var searchParam = document.getElementById('search-input').value; //Call restricitons file to get array HERE
+
     var fullLink = edamamLink + searchParam;
     console.log(fullLink);
 
@@ -147,6 +159,7 @@ var edamam = function () {
   }
 
   return {
-    searchRecipe: searchRecipe
+    searchRecipe: searchRecipe,
+    handleRestrictions: handleRestrictions
   };
 }();

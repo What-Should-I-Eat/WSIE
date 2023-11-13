@@ -4,6 +4,17 @@ const host = 'localhost';
 
 var edamam = (() => {
   
+    document.addEventListener('DOMContentLoaded', function () {
+      restrictions.handleRestrictions();
+      console.log('edamam restrictions', restrictions.selectedRestrictions);
+    });
+
+    var handleRestrictions = (selectedRestrictions) => {
+      console.log('handling restrictions in edamam.js');
+      // Use the selectedRestrictions array in your logic here
+      console.log('Selected Restrictions in edamam.js:', selectedRestrictions);
+    }
+
     var searchRecipe = () => {
         //Hide recipe on new search (if it exists)
         const selectedRecipeDetails = document.getElementById('selected-recipe-details');
@@ -17,6 +28,8 @@ var edamam = (() => {
         recipeList.innerHTML = '';
 
         const searchParam = document.getElementById('search-input').value;
+
+        //Call restricitons file to get array HERE
         const fullLink = edamamLink + searchParam;
         console.log(fullLink);
 
@@ -49,6 +62,7 @@ var edamam = (() => {
         }
         return false;
     }
+    
 
     function sourceIsViable(source){
       switch(source) {
@@ -132,6 +146,7 @@ var edamam = (() => {
   }
   
   return {
-    searchRecipe
+    searchRecipe,
+    handleRestrictions
   }
 })();
