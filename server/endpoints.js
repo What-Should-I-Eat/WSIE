@@ -2,15 +2,61 @@ const express = require("express");
 const axios = require("axios");
 const cheerio = require('cheerio');
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const cors = require('cors');
 const endpoints = express.Router();
 const Ingredient = require("./src/models/ingredients_model"); //Need to keep this even though its greyed out
 const Restriction = require("./src/models/dietaryRestrictions_model");
 const RecipeInput = require("./src/models/recipeSearch_model.js"); 
 const RestrictionInput = require("./src/models/restrictionInput_model.js");
+const User = require("./src/models/userModel.js");
 const json = require("body-parser/lib/types/json");
 
 //ALL ENDPOINTS
-//returns ingredients
+endpoints.use(bodyParser.json()); //express app uses the body parser
+endpoints.use(cors());
+
+
+//-------------------------------------------------------------User Endpoints------------------------------------------------------------
+endpoints.get('/users', async (req, res) => { //WORKS!
+    try{
+      const users = await mongoose.model('User').find();
+      res.json(users);
+    }
+    catch(error){
+      console.error('Error fetching users: ', error);
+      res.status(500).json({ error: 'users - Internal Server Error' });
+    }
+
+});
+
+endpoints.post("/users", async(req, res) => { //WORKS!
+  const user = new User(
+    { 
+      id: req.body.id,
+      fullName: req.body.fullName,
+      userName: req.body.username,
+      password: req.body.password,
+      diet: req.body.diet,
+      health: req.body.health,
+      favorites: [{
+          recipeId: req.body.recipeId,
+          recipeName: req.body.recipeName,
+          recipeIngredients: req.body.recipeIngredients,
+          recipeDirections: req.body.recipeDirections,
+          recipeImage: req.body.recipeImage,
+          recipeUri: req.body.recipeUri 
+      }]
+    });
+
+  const savedUser = await user.save();
+  res.json(savedUser);
+});
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+
+//-------------------------------------------------------------Original Endpoints--------------------------------------------------------
 endpoints.get('/ingredients', async (req, res) => {
     try {
       const ingredients = await mongoose.model('Ingredient').find();
@@ -92,9 +138,9 @@ endpoints.get('/ingredients', async (req, res) => {
     const savedRestrictionInput = await restrictionInput.save();
     res.json(savedRestrictionInput);
   });
-
+//---------------------------------------------------------------------------------------------------------------------------------------
  
-//EDAMAM from here on down
+//-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
 
   endpoints.get('/edamam', async (req, res) => {
     const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";

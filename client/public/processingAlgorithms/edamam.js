@@ -2,20 +2,32 @@ const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd
 const host = 'localhost';
 //IDEA: filter from one recipe website and build a scraper for the directions for that website
 
-var edamam = (() => {
-  
-    document.addEventListener('DOMContentLoaded', function () {
-      restrictions.handleRestrictions();
-      console.log('edamam restrictions', restrictions.selectedRestrictions);
-    });
+var restrictionObject = {
+  selectedRestrictions: [],
+  selectedAllergies: [],
+};
 
-    var handleRestrictions = (selectedRestrictions) => {
-      console.log('handling restrictions in edamam.js');
-      // Use the selectedRestrictions array in your logic here
-      console.log('Selected Restrictions in edamam.js:', selectedRestrictions);
-    }
+var edamam = (() => {
+
+  var handleRestrictions = () => {
+    console.log('handling restrictions in edamam.js');
+    console.log('selected allergies in edamam: ', restrictionObject.selectedAllergies);
+    console.log('selected Restrictions in edamam: ', restrictionObject.selectedRestrictions);
+  }
+
 
     var searchRecipe = () => {
+
+      console.log('Restictions of user: ', restrictionObject.selectedRestrictions);
+      console.log('Allergies of user: ', restrictionObject.selectedAllergies);
+
+        const restrictionsArray = restrictionsHandler.selectedRestrictions;
+        const allergiesArray = restrictionsHandler.selectedAllergies;
+
+        console.log('EDAMAM restrictions', restrictionsArray);
+        console.log('EDAMAM allergies', allergiesArray);
+
+
         //Hide recipe on new search (if it exists)
         const selectedRecipeDetails = document.getElementById('selected-recipe-details');
         selectedRecipeDetails.style.display = 'none';
@@ -144,6 +156,10 @@ var edamam = (() => {
     ingredientList.innerHTML = `<ul>${ingredients.map(item => `<li>${item}</li>`).join('')}</ul>`;
     directionsHeader.innerHTML = 'Directions';
   }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    restrictionsHandler.handleRestrictions();
+  });
   
   return {
     searchRecipe,

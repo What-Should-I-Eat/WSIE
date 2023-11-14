@@ -1,30 +1,48 @@
-var restrictions = (() => {
+var restrictionsHandler = (() => {
     var selectedRestrictions = []; //this is what we want to pass to edamam
+    var selectedAllergies = [];
 
     var handleRestrictions = () => {
-        const restrictionButtons = document.querySelectorAll('.restrictions-container button, .allergies-container button');
-        restrictionButtons.forEach(function (button) {
+        const restrictionButtons = document.querySelectorAll('.restrictions-container button');
+        const allergyButtons = document.querySelectorAll('.allergies-container button');
+
+        selectedRestrictions = handleDietButtons(restrictionButtons, selectedRestrictions);
+        selectedAllergies = handleDietButtons(allergyButtons, selectedAllergies);
+
+        console.log('restrictions: ', selectedRestrictions);
+        console.log('allergies: ', selectedAllergies);
+
+        //edamam.handleRestrictions(selectedRestrictions, selectedAllergies);
+        
+    }
+
+
+    //Puts user restrictions into an array and gives the array to edamam.js
+    function handleDietButtons(buttonType, array) {
+        buttonType.forEach(function (button) {
             button.addEventListener('click', function () {
-                
                 button.classList.toggle('selected');
                 const sanitizedRestriction = getEdamamNameOfRestriction(button.textContent);
+    
                 if (button.classList.contains('selected')) {
-                    selectedRestrictions.push(sanitizedRestriction);
-                    console.log('added ', sanitizedRestriction, ' to restrictions');
-                } else 
-                {
-                    const index = selectedRestrictions.indexOf(sanitizedRestriction);
-                    if (index !== -1) {
-                        selectedRestrictions.splice(index, 1);
-                        console.log('removed ', sanitizedRestriction, ' from restrictions');
+                    array.push(sanitizedRestriction);
+                    console.log('added ', sanitizedRestriction, ' to array');
+                    console.log('state of this array: ', array);
+                } 
+                else {
+                    const indexRestrictions = array.indexOf(sanitizedRestriction);
+                    if (indexRestrictions !== -1) {
+                        array.splice(indexRestrictions, 1);
+                        console.log('removed ', sanitizedRestriction, ' from array');
+                        console.log('state of this array: ', array);
                     }
                 }
-                console.log('Selected Restrictions:', selectedRestrictions);
-                edamam.handleRestrictions(selectedRestrictions); //passing everything off to edamam.js
+                return array;
             });
         });
     }
-
+    
+    
 
     function getEdamamNameOfRestriction(buttonName){
 
@@ -94,11 +112,21 @@ var restrictions = (() => {
     }
 
     var getSelectedRestrictions = () => {
-        return selectedRestrictions;
+        return {
+            selectedRestrictions: selectedRestrictions,
+            selectedAllergies: selectedAllergies,
+        };
     }
+
+    //Put/post new allergies/restrictions once endpoints and models are created 
+    function postRestrictions() {
+        
+    }
+
     return {
         handleRestrictions,
         getSelectedRestrictions,
         selectedRestrictions,
+        selectedAllergies,
     }
 })();
