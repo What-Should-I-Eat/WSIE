@@ -12,12 +12,13 @@ const RestrictionInput = require("./src/models/restrictionInput_model.js");
 const User = require("./src/models/userModel.js");
 const json = require("body-parser/lib/types/json");
 
-//ALL ENDPOINTS
+//Endpoint Setup
 endpoints.use(bodyParser.json()); //express app uses the body parser
 endpoints.use(cors());
 
-
 //-------------------------------------------------------------User Endpoints------------------------------------------------------------
+
+//~~~~~ GET all users
 endpoints.get('/users', async (req, res) => { //WORKS!
     try{
       const users = await mongoose.model('User').find();
@@ -27,9 +28,9 @@ endpoints.get('/users', async (req, res) => { //WORKS!
       console.error('Error fetching users: ', error);
       res.status(500).json({ error: 'users - Internal Server Error' });
     }
-
 });
 
+//~~~~~ POST a new user
 endpoints.post("/users", async(req, res) => { //WORKS!
   const user = new User(
     { 
@@ -52,6 +53,7 @@ endpoints.post("/users", async(req, res) => { //WORKS!
   res.json(savedUser);
 });
 
+//~~~~~ DELETE a user
 endpoints.delete("/users/:id", async (req, res) => { //WORKS!
   try {
     const deletedUser = await mongoose.model('User').findByIdAndDelete(req.params.id);
@@ -65,6 +67,50 @@ endpoints.delete("/users/:id", async (req, res) => { //WORKS!
     res.status(500).json({ error: 'Delete user - Internal Server Error' });
   }
 });
+
+//~~~~~ PUT a change in a user's diet array
+endpoints.put('/users/:id/diet', async (req, res) => { //WORKS!
+  const userId = req.params.id;
+  const newDiet = req.body.diet; //Array of diet items
+
+  console.log('User ID = ', userId);
+  console.log('New diet = ', newDiet);
+
+  try {
+      const user = await mongoose.model('User').findById(userId); //check if user actually exists (by _id)
+      if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+      }
+      user.diet = newDiet;
+      await user.save();
+      res.json(user);
+  } 
+  catch (error) {
+      console.error('Error updating diet: ', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//~~~~~ PUT a change in a user's health array
+endpoints.put('/users/:id/health', async (req, res) => { //WORKS!
+  const userId = req.params.id;
+  const newHealth = req.body.health; //Array of health items
+
+  try {
+      const user = await mongoose.model('User').findById(userId); //check if user exists
+      if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+      }
+      user.health = newHealth;
+      await user.save();
+      res.json(user);
+  } 
+  catch (error) {
+      console.error('Error updating health: ', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 
 
