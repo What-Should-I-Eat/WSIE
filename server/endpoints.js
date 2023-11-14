@@ -48,10 +48,24 @@ endpoints.post("/users", async(req, res) => { //WORKS!
           recipeUri: req.body.recipeUri 
       }]
     });
-
   const savedUser = await user.save();
   res.json(savedUser);
 });
+
+endpoints.delete("/users/:id", async (req, res) => { //WORKS!
+  try {
+    const deletedUser = await mongoose.model('User').findByIdAndDelete(req.params.id);
+    if (!deletedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(deletedUser);
+  } 
+  catch (error) {
+    console.error('Error deleting user: ', error);
+    res.status(500).json({ error: 'Delete user - Internal Server Error' });
+  }
+});
+
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------
