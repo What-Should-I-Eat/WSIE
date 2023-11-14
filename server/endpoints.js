@@ -36,7 +36,7 @@ endpoints.post("/users", async(req, res) => { //WORKS!
     { 
       id: req.body.id,
       fullName: req.body.fullName,
-      userName: req.body.username,
+      userName: req.body.userName,
       password: req.body.password,
       diet: req.body.diet,
       health: req.body.health,
