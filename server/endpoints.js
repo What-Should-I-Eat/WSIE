@@ -112,6 +112,25 @@ endpoints.put('/users/:id/health', async (req, res) => { //WORKS!
 });
 
 
+//~~~~~ PUT a change in a user's favorite recipes
+endpoints.put('/users/:id/favorites', async (req, res) => { //WORKS!
+  const userId = req.params.id;
+  const newFavorites = req.body.favorites; // Array of objects
+
+  try {
+      const user = await mongoose.model('User').findById(userId);
+      if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+      }
+      user.favorites = newFavorites;
+      await user.save();
+      res.json(user);
+  } 
+  catch (error) {
+      console.error('Error updating favorites: ', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------
