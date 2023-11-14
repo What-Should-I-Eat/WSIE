@@ -118,10 +118,7 @@ var restrictionsHandler = (() => {
         };
     }
 
-    //Put/post new allergies/restrictions once endpoints and models are created 
-    function postRestrictions() {
-        
-    }
+
 
     return {
         handleRestrictions,

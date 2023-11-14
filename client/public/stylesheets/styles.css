@@ -110,6 +110,19 @@ input {
   margin-bottom: 1vw;
 }
 
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 75vh; /* Adjust as needed */
+}
+
+.user-login {
+  margin-top: 5vw; 
+  text-align: center;
+}
+
 .restrictions-container button, .allergies-container button {
   font: inherit;
   color: inherit;
