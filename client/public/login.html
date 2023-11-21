@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Home</title>
-  <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
+  <title>Login to WSIE</title>
+  <!-- <script type="text/javascript" src="./processingAlgorithms/login.js"></script> -->
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -14,9 +14,20 @@
             <h1>What Should I Eat?</h1>
             <h2 style="font-size: 8vw;">Log In</h2>
         </div>
+
+        <form action="/login/password" method="post">
+            <section>
+                <input id="username" name="username" type="text" autocomplete="username" placeholder="Username" required autofocus style="background-color: rgb(223, 220, 195);">
+            </section>
+            <section>
+                <input id="current-password" name="password" type="password" autocomplete="current-password" placeholder="Password" required style="background-color: rgb(223, 220, 195);">
+            </section>
+            <button type="submit">Sign in</button>
+        </form>
+
     
-        <div class="user-login">
-            <form onsubmit="return login.login()">
+        <!-- <div class="user-login">
+            <form onsubmit="return loginHandler.userLogin()">
                 <input type="text" id="username-input" placeholder="Username" style="background-color: rgb(223, 220, 195);">
                 <input type="text" id="password-input" placeholder="Password" style="background-color: rgb(223, 220, 195);">
                 
@@ -24,10 +35,19 @@
                 <button type="submit" style="background-color:rgb(202, 214, 169);">Log In</button>
             </form>  
             <br>
-            <form onsubmit="return newUser">
-                <button type="submit" style="background-color:rgb(202, 214, 169); font-size: 2vw;">New User</button>
-            </form>
-        </div>
+            <button onclick="newUserRedirect()">New User</button>
+            <script>
+                // Function to redirect to another HTML file
+                function newUserRedirect() {
+                // Redirect to another HTML file when the button is clicked
+                window.location.href = './newUser.html';
+                }
+            </script>
+
+            <h3 id="login-validation"></h3>
+
+
+        </div> -->
     </div>
     
 

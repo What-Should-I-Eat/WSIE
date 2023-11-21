@@ -123,6 +123,14 @@ input {
   text-align: center;
 }
 
+.new-user{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 75vh; /* Adjust as needed */
+}
+
 .restrictions-container button, .allergies-container button {
   font: inherit;
   color: inherit;

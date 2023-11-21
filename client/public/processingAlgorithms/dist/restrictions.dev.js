@@ -12,6 +12,7 @@ var restrictionsHandler = function () {
     selectedAllergies = handleDietButtons(allergyButtons, selectedAllergies);
     console.log('restrictions: ', selectedRestrictions);
     console.log('allergies: ', selectedAllergies); //edamam.handleRestrictions(selectedRestrictions, selectedAllergies);
+    //POST to server
   }; //Puts user restrictions into an array and gives the array to edamam.js
 
 

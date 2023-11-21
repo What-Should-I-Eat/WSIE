@@ -13,6 +13,7 @@ var restrictionsHandler = (() => {
         console.log('allergies: ', selectedAllergies);
 
         //edamam.handleRestrictions(selectedRestrictions, selectedAllergies);
+        //POST to server
         
     }
 
