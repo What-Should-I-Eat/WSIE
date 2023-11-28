@@ -12,6 +12,7 @@ const RestrictionInput = require("../src/models/restrictionInput_model.js");
 const User = require("../src/models/userModel.js");
 const json = require("body-parser/lib/types/json");
 const passport = require('passport');
+const bcrypt = require('bcrypt');
 
 //Endpoint Setup
 endpoints.use(bodyParser.json()); //express app uses the body parser
@@ -51,16 +52,20 @@ endpoints.get('/users', async (req, res) => { //WORKS!
     }
 });
 
-//~~~~~ GET specific user by id
-endpoints.get('/users/:id', async (req, res) => { 
+//~~~~~ GET specific user by user
+endpoints.get('/users/find-username', async (req, res) => { //WORKS
   try{
-    const user = await mongoose.model('User').findById(req.params.id);
+    const user = await User.findOne({ userName: req.body.userName });
+    const inputtedPassword = req.body.password;
     if(!user)
     {
       return res.status(404).json({ error: 'User not found' });
     }
     else {
-      res.json(user.userName, user.password);
+      //validate password
+      var passwordValidated = validatePassword(user, inputtedPassword);
+
+      res.json(user);
     }
   }
   catch(error){
@@ -70,28 +75,35 @@ endpoints.get('/users/:id', async (req, res) => {
 });
 
 
-//~~~~~ POST a new user
-endpoints.post("/users/register", async(req, res) => { //WORKS!
-  const user = new User(
-    { 
+//~~~~~ POST a new user - WORKS!
+endpoints.post("/users/register", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const user = new User({
       id: req.body.id,
       fullName: req.body.fullName,
       userName: req.body.userName,
-      password: req.body.password,
+      password: hashedPassword, 
       email: req.body.email,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
-          recipeId: req.body.recipeId,
-          recipeName: req.body.recipeName,
-          recipeIngredients: req.body.recipeIngredients,
-          recipeDirections: req.body.recipeDirections,
-          recipeImage: req.body.recipeImage,
-          recipeUri: req.body.recipeUri 
+        recipeId: req.body.recipeId,
+        recipeName: req.body.recipeName,
+        recipeIngredients: req.body.recipeIngredients,
+        recipeDirections: req.body.recipeDirections,
+        recipeImage: req.body.recipeImage,
+        recipeUri: req.body.recipeUri
       }]
     });
-  const savedUser = await user.save();
-  res.json(savedUser);
+
+    const savedUser = await user.save();
+    res.json(savedUser);
+  } catch (error) {
+    console.error('Error occurred during user registration:', error);
+    res.status(500).json({ error: 'An error occurred during user registration' });
+  }
 });
 
 //~~~~~ DELETE a user
@@ -351,6 +363,19 @@ async function getRecipeDirectionsFromSource(link, scraper, findScraper){
     console.error(`Error in scraping recipe directions: ${error}`);
     throw error;
   }
+}
+
+//Validates password from find-username endpoint
+function validatePassword(user, inputtedPassword){
+  bcrypt.compare(inputtedPassword, user.password, function(err, result) {
+    if (result) {
+        console.log("PASSWORDS MATCH!");
+    }
+  });
+
+
+
+  return false;
 }
 
 module.exports = endpoints;

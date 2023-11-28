@@ -13,7 +13,7 @@ var loginHandler = function () {
       userName: usernameInput,
       password: passwordInput
     };
-    fetch("http://" + host + "/api/v1/users/login", {
+    fetch("http://" + host + "/api/v1/users/find-username", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -21,6 +21,7 @@ var loginHandler = function () {
       body: JSON.stringify(userLoginRequest)
     }).then(function (response) {
       if (!response.ok) {
+        //add verificationMessage in html saying user not fount
         throw new Error('Error logging in');
       }
 

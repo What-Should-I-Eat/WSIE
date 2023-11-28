@@ -27,7 +27,9 @@ var User = require("../src/models/userModel.js");
 
 var json = require("body-parser/lib/types/json");
 
-var passport = require('passport'); //Endpoint Setup
+var passport = require('passport');
+
+var bcrypt = require('bcrypt'); //Endpoint Setup
 
 
 endpoints.use(bodyParser.json()); //express app uses the body parser
@@ -83,23 +85,26 @@ endpoints.get('/users', function _callee(req, res) {
       }
     }
   }, null, null, [[0, 7]]);
-}); //~~~~~ GET specific user by id
+}); //~~~~~ GET specific user by user
 
-endpoints.get('/users/:id', function _callee2(req, res) {
-  var user;
+endpoints.get('/users/find-username', function _callee2(req, res) {
+  var user, inputtedPassword, passwordValidated;
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           _context2.prev = 0;
           _context2.next = 3;
-          return regeneratorRuntime.awrap(mongoose.model('User').findById(req.params.id));
+          return regeneratorRuntime.awrap(User.findOne({
+            userName: req.body.userName
+          }));
 
         case 3:
           user = _context2.sent;
+          inputtedPassword = req.body.password;
 
           if (user) {
-            _context2.next = 8;
+            _context2.next = 9;
             break;
           }
 
@@ -107,41 +112,48 @@ endpoints.get('/users/:id', function _callee2(req, res) {
             error: 'User not found'
           }));
 
-        case 8:
-          res.json(user.userName, user.password);
-
         case 9:
-          _context2.next = 15;
-          break;
+          //validate password
+          passwordValidated = validatePassword(user, inputtedPassword);
+          res.json(user);
 
         case 11:
-          _context2.prev = 11;
+          _context2.next = 17;
+          break;
+
+        case 13:
+          _context2.prev = 13;
           _context2.t0 = _context2["catch"](0);
           console.error('Error fetching unique user: ', _context2.t0);
           res.status(500).json({
             error: 'users - Internal Server Error'
           });
 
-        case 15:
+        case 17:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 11]]);
-}); //~~~~~ POST a new user
+  }, null, null, [[0, 13]]);
+}); //~~~~~ POST a new user - WORKS!
 
 endpoints.post("/users/register", function _callee3(req, res) {
-  var user, savedUser;
+  var hashedPassword, user, savedUser;
   return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
-          //WORKS!
+          _context3.prev = 0;
+          _context3.next = 3;
+          return regeneratorRuntime.awrap(bcrypt.hash(req.body.password, 10));
+
+        case 3:
+          hashedPassword = _context3.sent;
           user = new User({
             id: req.body.id,
             fullName: req.body.fullName,
             userName: req.body.userName,
-            password: req.body.password,
+            password: hashedPassword,
             email: req.body.email,
             diet: req.body.diet,
             health: req.body.health,
@@ -154,19 +166,29 @@ endpoints.post("/users/register", function _callee3(req, res) {
               recipeUri: req.body.recipeUri
             }]
           });
-          _context3.next = 3;
+          _context3.next = 7;
           return regeneratorRuntime.awrap(user.save());
 
-        case 3:
+        case 7:
           savedUser = _context3.sent;
           res.json(savedUser);
+          _context3.next = 15;
+          break;
 
-        case 5:
+        case 11:
+          _context3.prev = 11;
+          _context3.t0 = _context3["catch"](0);
+          console.error('Error occurred during user registration:', _context3.t0);
+          res.status(500).json({
+            error: 'An error occurred during user registration'
+          });
+
+        case 15:
         case "end":
           return _context3.stop();
       }
     }
-  });
+  }, null, null, [[0, 11]]);
 }); //~~~~~ DELETE a user
 
 endpoints["delete"]("/users/:id", function _callee4(req, res) {
@@ -721,6 +743,16 @@ function getRecipeDirectionsFromSource(link, scraper, findScraper) {
       }
     }
   }, null, null, [[1, 13]]);
+} //Validates password from find-username endpoint
+
+
+function validatePassword(user, inputtedPassword) {
+  bcrypt.compare(inputtedPassword, user.password, function (err, result) {
+    if (result) {
+      console.log("PASSWORDS MATCH!");
+    }
+  });
+  return false;
 }
 
 module.exports = endpoints;
