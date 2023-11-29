@@ -57,8 +57,7 @@ var loginHandler = function () {
         }
       });
     })["catch"](function (error) {
-      console.error('Fetch error:', error); // Handle other fetch errors if necessary
-
+      console.error('Fetch error:', error);
       loginValidation.textContent = 'Fetch error: ' + error.message;
     });
     return false;

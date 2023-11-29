@@ -36,7 +36,6 @@ var loginHandler = (() => {
     })
     .catch(error => {
       console.error('Fetch error:', error);
-      // Handle other fetch errors if necessary
       loginValidation.textContent = 'Fetch error: ' + error.message;
     });
 
