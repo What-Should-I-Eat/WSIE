@@ -42,22 +42,28 @@ var loginHandler = function () {
     }).then(function (savedUser) {
       console.log('User created: ', savedUser);
       userId = savedUser._id;
-      console.log(userId);
+      console.log(userId); // After creating the user, handle UI changes
+
+      var loginSuccess = "We're happy to have you, " + fullName + "!<br>You have successfully created a WSIE profile.";
+      verificationMessage.innerHTML = loginSuccess;
+      var loginDiv = document.getElementById('login'); // Check if the login button is already appended to avoid duplication
+
+      if (!document.getElementById('loginButton')) {
+        // Show login button
+        var loginButton = document.createElement('button');
+        loginButton.textContent = 'Log In'; // Set button text
+
+        loginButton.id = 'loginButton'; // Set an ID for the button
+
+        loginButton.addEventListener('click', function (event) {
+          event.preventDefault();
+          window.location.href = './login.html';
+        });
+        loginDiv.appendChild(loginButton);
+      }
     })["catch"](function (error) {
       console.error('Fetch error:', error);
     });
-    var loginSuccess = "We're happy to have you, " + fullName + "!<br>You have successfully created a WSIE profie.";
-    verificationMessage.innerHTML = loginSuccess;
-    var loginDiv = document.getElementById('login'); //Show login button
-
-    var loginButton = document.createElement('button');
-    loginButton.textContent = 'Log In'; // Set button text
-
-    loginButton.addEventListener('click', function () {
-      window.location.href = './login.html';
-    });
-    loginDiv.appendChild(loginButton);
-    return true;
   };
 
   return {

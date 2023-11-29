@@ -30,42 +30,45 @@ var loginHandler = (() => {
       };
 
       fetch("http://" + host + "/api/v1/users/register", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newUserData),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newUserData),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error adding new user');
+        }
+        return response.json();
       })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error adding new user');
-          }
-          return response.json();
-        })
-        .then(savedUser => {
-          console.log('User created: ', savedUser);
-          userId = savedUser._id;
-          console.log(userId);
-        })
-        .catch(error => {
-          console.error('Fetch error:', error);
-        });
+      .then(savedUser => {
+        console.log('User created: ', savedUser);
+        userId = savedUser._id;
+        console.log(userId);
 
-        const loginSuccess = "We're happy to have you, " + fullName + "!<br>You have successfully created a WSIE profie.";
+        // After creating the user, handle UI changes
+        const loginSuccess = "We're happy to have you, " + fullName + "!<br>You have successfully created a WSIE profile.";
         verificationMessage.innerHTML = loginSuccess;
 
         const loginDiv = document.getElementById('login');
-        //Show login button
-        const loginButton = document.createElement('button');
-        loginButton.textContent = 'Log In'; // Set button text
-        loginButton.addEventListener('click', function() {
-          window.location.href = './login.html';
-        });
-        loginDiv.appendChild(loginButton);
 
-
-
-      return true;
+        // Check if the login button is already appended to avoid duplication
+        if (!document.getElementById('loginButton')) {
+          // Show login button
+          const loginButton = document.createElement('button');
+          loginButton.textContent = 'Log In'; // Set button text
+          loginButton.id = 'loginButton'; // Set an ID for the button
+          loginButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = './login.html';
+          });
+          loginDiv.appendChild(loginButton);
+        }
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+      });
     }
 
     return {

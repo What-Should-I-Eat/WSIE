@@ -35,20 +35,7 @@ var bcrypt = require('bcrypt'); //Endpoint Setup
 endpoints.use(bodyParser.json()); //express app uses the body parser
 
 endpoints.use(cors()); //-------------------------------------------------------------User Endpoints------------------------------------------------------------
-// endpoints.post('/login', passport.authenticate('local', {
-//   successRedirect: '/dashboard',
-//   failureRedirect: '/login',
-//   failureFlash: true
-// }));
-// Endpoint to handle login
 
-endpoints.post('/users/login', passport.authenticate('local'), function (req, res) {
-  // This function will only be called if authentication is successful.
-  res.json({
-    message: 'Login successful',
-    user: req.user
-  });
-});
 endpoints.get('/logout', function (req, res) {
   req.logout();
   res.redirect('/');
@@ -87,7 +74,7 @@ endpoints.get('/users', function _callee(req, res) {
   }, null, null, [[0, 7]]);
 }); //~~~~~ GET specific user by user
 
-endpoints.get('/users/find-username', function _callee2(req, res) {
+endpoints.post('/users/find-username', function _callee2(req, res) {
   var user, inputtedPassword, passwordValidated;
   return regeneratorRuntime.async(function _callee2$(_context2) {
     while (1) {
@@ -104,7 +91,7 @@ endpoints.get('/users/find-username', function _callee2(req, res) {
           inputtedPassword = req.body.password;
 
           if (user) {
-            _context2.next = 9;
+            _context2.next = 7;
             break;
           }
 
@@ -112,29 +99,59 @@ endpoints.get('/users/find-username', function _callee2(req, res) {
             error: 'User not found'
           }));
 
-        case 9:
-          //validate password
-          passwordValidated = validatePassword(user, inputtedPassword);
-          res.json(user);
+        case 7:
+          _context2.prev = 7;
+          _context2.next = 10;
+          return regeneratorRuntime.awrap(validatePassword(user, inputtedPassword));
 
-        case 11:
-          _context2.next = 17;
+        case 10:
+          passwordValidated = _context2.sent;
+
+          if (!passwordValidated) {
+            _context2.next = 16;
+            break;
+          }
+
+          console.log("Password is correct!");
+          return _context2.abrupt("return", res.status(200).json({
+            message: 'correct'
+          }));
+
+        case 16:
+          return _context2.abrupt("return", res.status(401).json({
+            error: 'incorrect'
+          }));
+
+        case 17:
+          _context2.next = 23;
           break;
 
-        case 13:
-          _context2.prev = 13;
-          _context2.t0 = _context2["catch"](0);
-          console.error('Error fetching unique user: ', _context2.t0);
+        case 19:
+          _context2.prev = 19;
+          _context2.t0 = _context2["catch"](7);
+          console.error('Error validating password: ', _context2.t0);
+          return _context2.abrupt("return", res.status(500).json({
+            error: 'Internal Server Error'
+          }));
+
+        case 23:
+          _context2.next = 29;
+          break;
+
+        case 25:
+          _context2.prev = 25;
+          _context2.t1 = _context2["catch"](0);
+          console.error('Error fetching unique user: ', _context2.t1);
           res.status(500).json({
             error: 'users - Internal Server Error'
           });
 
-        case 17:
+        case 29:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 13]]);
+  }, null, null, [[0, 25], [7, 19]]);
 }); //~~~~~ POST a new user - WORKS!
 
 endpoints.post("/users/register", function _callee3(req, res) {
@@ -747,12 +764,32 @@ function getRecipeDirectionsFromSource(link, scraper, findScraper) {
 
 
 function validatePassword(user, inputtedPassword) {
-  bcrypt.compare(inputtedPassword, user.password, function (err, result) {
-    if (result) {
-      console.log("PASSWORDS MATCH!");
+  return regeneratorRuntime.async(function validatePassword$(_context18) {
+    while (1) {
+      switch (_context18.prev = _context18.next) {
+        case 0:
+          return _context18.abrupt("return", new Promise(function (resolve, reject) {
+            bcrypt.compare(inputtedPassword, user.password, function (err, passwordsMatch) {
+              if (err) {
+                reject(err);
+                return;
+              }
+
+              if (passwordsMatch) {
+                console.log("PASSWORDS MATCH!");
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            });
+          }));
+
+        case 1:
+        case "end":
+          return _context18.stop();
+      }
     }
   });
-  return false;
 }
 
 module.exports = endpoints;

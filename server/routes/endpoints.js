@@ -20,19 +20,6 @@ endpoints.use(cors());
 
 //-------------------------------------------------------------User Endpoints------------------------------------------------------------
 
-// endpoints.post('/login', passport.authenticate('local', {
-//   successRedirect: '/dashboard',
-//   failureRedirect: '/login',
-//   failureFlash: true
-// }));
-
-// Endpoint to handle login
-endpoints.post('/users/login', passport.authenticate('local'), (req, res) => {
-  // This function will only be called if authentication is successful.
-  res.json({ message: 'Login successful', user: req.user });
-});
-
-
 
 endpoints.get('/logout', (req, res) => {
   req.logout();
@@ -53,26 +40,33 @@ endpoints.get('/users', async (req, res) => { //WORKS!
 });
 
 //~~~~~ GET specific user by user
-endpoints.get('/users/find-username', async (req, res) => { //WORKS
-  try{
+endpoints.post('/users/find-username', async (req, res) => {
+  try {
     const user = await User.findOne({ userName: req.body.userName });
     const inputtedPassword = req.body.password;
-    if(!user)
-    {
+
+    if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    else {
-      //validate password
-      var passwordValidated = validatePassword(user, inputtedPassword);
 
-      res.json(user);
+    try {
+      const passwordValidated = await validatePassword(user, inputtedPassword);
+      if (passwordValidated) {
+        console.log("Password is correct!");
+        return res.status(200).json({ message: 'correct' });
+      } else {
+        return res.status(401).json({ error: 'incorrect' });
+      }
+    } catch (error) {
+      console.error('Error validating password: ', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
-  }
-  catch(error){
+  } catch (error) {
     console.error('Error fetching unique user: ', error);
     res.status(500).json({ error: 'users - Internal Server Error' });
   }
 });
+
 
 
 //~~~~~ POST a new user - WORKS!
@@ -366,16 +360,21 @@ async function getRecipeDirectionsFromSource(link, scraper, findScraper){
 }
 
 //Validates password from find-username endpoint
-function validatePassword(user, inputtedPassword){
-  bcrypt.compare(inputtedPassword, user.password, function(err, result) {
-    if (result) {
+async function validatePassword(user, inputtedPassword) {
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(inputtedPassword, user.password, function(err, passwordsMatch) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (passwordsMatch) {
         console.log("PASSWORDS MATCH!");
-    }
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
   });
-
-
-
-  return false;
 }
 
 module.exports = endpoints;
