@@ -27,18 +27,30 @@ var User = require("../src/models/userModel.js");
 
 var json = require("body-parser/lib/types/json");
 
-var passport = require('passport');
+var bcrypt = require('bcrypt');
 
-var bcrypt = require('bcrypt'); //Endpoint Setup
+var session = require('express-session'); //Endpoint Setup
 
 
 endpoints.use(bodyParser.json()); //express app uses the body parser
 
-endpoints.use(cors()); //-------------------------------------------------------------User Endpoints------------------------------------------------------------
+endpoints.use(cors());
+endpoints.use(session({
+  secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
+  resave: false,
+  saveUninitialized: false
+}));
+endpoints.get('/profile', function (req, res) {
+  var sessionData = req.session;
+  var isLoggedIn = req.session.isLoggedIn;
+  var username = req.session.username;
+  console.log("INSIDE PROFILE ENDPOINT");
 
-endpoints.get('/logout', function (req, res) {
-  req.logout();
-  res.redirect('/');
+  if (isLoggedIn) {
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(403);
+  }
 }); //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
 //~~~~~ GET all users
 
@@ -72,7 +84,7 @@ endpoints.get('/users', function _callee(req, res) {
       }
     }
   }, null, null, [[0, 7]]);
-}); //~~~~~ GET specific user by user
+}); //~~~~~ POST specific user by user - changed from GET so we could have a body
 
 endpoints.post('/users/find-username', function _callee2(req, res) {
   var user, inputtedPassword, passwordValidated;
@@ -108,50 +120,52 @@ endpoints.post('/users/find-username', function _callee2(req, res) {
           passwordValidated = _context2.sent;
 
           if (!passwordValidated) {
-            _context2.next = 16;
+            _context2.next = 18;
             break;
           }
 
           console.log("Password is correct!");
+          req.session.isLoggedIn = true;
+          req.session.username = user.userName;
           return _context2.abrupt("return", res.status(200).json({
             message: 'correct'
           }));
 
-        case 16:
+        case 18:
           return _context2.abrupt("return", res.status(401).json({
             error: 'incorrect'
           }));
 
-        case 17:
-          _context2.next = 23;
+        case 19:
+          _context2.next = 25;
           break;
 
-        case 19:
-          _context2.prev = 19;
+        case 21:
+          _context2.prev = 21;
           _context2.t0 = _context2["catch"](7);
           console.error('Error validating password: ', _context2.t0);
           return _context2.abrupt("return", res.status(500).json({
             error: 'Internal Server Error'
           }));
 
-        case 23:
-          _context2.next = 29;
+        case 25:
+          _context2.next = 31;
           break;
 
-        case 25:
-          _context2.prev = 25;
+        case 27:
+          _context2.prev = 27;
           _context2.t1 = _context2["catch"](0);
           console.error('Error fetching unique user: ', _context2.t1);
           res.status(500).json({
             error: 'users - Internal Server Error'
           });
 
-        case 29:
+        case 31:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 25], [7, 19]]);
+  }, null, null, [[0, 27], [7, 21]]);
 }); //~~~~~ POST a new user - WORKS!
 
 endpoints.post("/users/register", function _callee3(req, res) {

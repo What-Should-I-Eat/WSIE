@@ -22,15 +22,21 @@ var loginHandler = (() => {
       body: JSON.stringify(userLoginRequest),
     })
     .then(async response => {
-      if (!response.ok) {
+      console.log("we are at the point of response. this is the response.status: ");
+      console.log(response.status);
+      if (response.status != 200) {
         const errorResponse = await response.json();
         console.error('Error logging in:', errorResponse.error);
         loginValidation.textContent = errorResponse.error || 'Error logging in';
       } 
       else {
         const successResponse = await response.json();
+
         console.log('Success:', successResponse.message);
         //THIS IS WHAT HAPPENS AFTER THE LOGIN IS SUCCESSFUL
+        
+
+
         window.location.href = './profile.html';
       }
     })

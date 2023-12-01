@@ -25,32 +25,35 @@ var loginHandler = function () {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (response.ok) {
-                _context.next = 8;
+              console.log("we are at the point of response. this is the response.status: ");
+              console.log(response.status);
+
+              if (!(response.status != 200)) {
+                _context.next = 10;
                 break;
               }
 
-              _context.next = 3;
+              _context.next = 5;
               return regeneratorRuntime.awrap(response.json());
 
-            case 3:
+            case 5:
               errorResponse = _context.sent;
               console.error('Error logging in:', errorResponse.error);
               loginValidation.textContent = errorResponse.error || 'Error logging in';
-              _context.next = 13;
+              _context.next = 15;
               break;
 
-            case 8:
-              _context.next = 10;
+            case 10:
+              _context.next = 12;
               return regeneratorRuntime.awrap(response.json());
 
-            case 10:
+            case 12:
               successResponse = _context.sent;
               console.log('Success:', successResponse.message); //THIS IS WHAT HAPPENS AFTER THE LOGIN IS SUCCESSFUL
 
               window.location.href = './profile.html';
 
-            case 13:
+            case 15:
             case "end":
               return _context.stop();
           }

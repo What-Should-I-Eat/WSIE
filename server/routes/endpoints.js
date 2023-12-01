@@ -11,19 +11,33 @@ const RecipeInput = require("../src/models/recipeSearch_model.js");
 const RestrictionInput = require("../src/models/restrictionInput_model.js");
 const User = require("../src/models/userModel.js");
 const json = require("body-parser/lib/types/json");
-const passport = require('passport');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
 
 //Endpoint Setup
 endpoints.use(bodyParser.json()); //express app uses the body parser
 endpoints.use(cors());
 
-//-------------------------------------------------------------User Endpoints------------------------------------------------------------
+endpoints.use(session({
+  secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
+  resave: false,
+  saveUninitialized: false
+}));
 
+endpoints.get('/profile', (req, res) =>{
+  const sessionData = req.session;
+  const isLoggedIn = req.session.isLoggedIn;
+  const username = req.session.username;
 
-endpoints.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/');
+  console.log("INSIDE PROFILE ENDPOINT");
+
+  if(isLoggedIn)
+  {
+    res.sendStatus(200);
+  }
+  else{
+    res.sendStatus(403);
+  }
 });
 
 //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
@@ -39,7 +53,7 @@ endpoints.get('/users', async (req, res) => { //WORKS!
     }
 });
 
-//~~~~~ GET specific user by user
+//~~~~~ POST specific user by user - changed from GET so we could have a body
 endpoints.post('/users/find-username', async (req, res) => {
   try {
     const user = await User.findOne({ userName: req.body.userName });
@@ -53,20 +67,23 @@ endpoints.post('/users/find-username', async (req, res) => {
       const passwordValidated = await validatePassword(user, inputtedPassword);
       if (passwordValidated) {
         console.log("Password is correct!");
+        req.session.isLoggedIn = true;
+        req.session.username = user.userName;
         return res.status(200).json({ message: 'correct' });
       } else {
         return res.status(401).json({ error: 'incorrect' });
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error validating password: ', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error fetching unique user: ', error);
     res.status(500).json({ error: 'users - Internal Server Error' });
   }
 });
-
 
 
 //~~~~~ POST a new user - WORKS!
@@ -94,7 +111,8 @@ endpoints.post("/users/register", async (req, res) => {
 
     const savedUser = await user.save();
     res.json(savedUser);
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error occurred during user registration:', error);
     res.status(500).json({ error: 'An error occurred during user registration' });
   }
