@@ -21,24 +21,12 @@ endpoints.use(cors());
 endpoints.use(session({
   secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+    cookie: {
+        secure: false
+    }
 }));
 
-endpoints.get('/profile', (req, res) =>{
-  const sessionData = req.session;
-  const isLoggedIn = req.session.isLoggedIn;
-  const username = req.session.username;
-
-  console.log("INSIDE PROFILE ENDPOINT");
-
-  if(isLoggedIn)
-  {
-    res.sendStatus(200);
-  }
-  else{
-    res.sendStatus(403);
-  }
-});
 
 //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
 //~~~~~ GET all users
@@ -68,7 +56,15 @@ endpoints.post('/users/find-username', async (req, res) => {
       if (passwordValidated) {
         console.log("Password is correct!");
         req.session.isLoggedIn = true;
+        req.session.userId = user._id;
         req.session.username = user.userName;
+
+        //This goes to the browser
+        res.cookie('sessionId', req.session.id, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+
         return res.status(200).json({ message: 'correct' });
       } else {
         return res.status(401).json({ error: 'incorrect' });
@@ -85,6 +81,19 @@ endpoints.post('/users/find-username', async (req, res) => {
   }
 });
 
+//Get user's profile if they're logged in
+endpoints.get('/users/profile', (req, res) => {
+  const isLoggedIn = req.session.isLoggedIn;
+  const username = req.session.username; 
+
+  console.log("Inside /profile endpoint. isLoggedIn = ", isLoggedIn);
+  console.log("username = ", username);
+  if (isLoggedIn) {
+    res.status(200).json({ username });
+  } else {
+    res.status(403).json({ error: 'Unauthorized' });
+  }
+});
 
 //~~~~~ POST a new user - WORKS!
 endpoints.post("/users/register", async (req, res) => {

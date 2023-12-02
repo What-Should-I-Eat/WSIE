@@ -40,7 +40,7 @@ var loginHandler = function () {
               errorResponse = _context.sent;
               console.error('Error logging in:', errorResponse.error);
               loginValidation.textContent = errorResponse.error || 'Error logging in';
-              _context.next = 15;
+              _context.next = 17;
               break;
 
             case 10:
@@ -49,11 +49,13 @@ var loginHandler = function () {
 
             case 12:
               successResponse = _context.sent;
-              console.log('Success:', successResponse.message); //THIS IS WHAT HAPPENS AFTER THE LOGIN IS SUCCESSFUL
+              console.log('Success:', successResponse.message);
+              console.log("Response: ", response.json);
+              console.log("Cookie: ", response.cookie); //THIS IS WHAT HAPPENS AFTER THE LOGIN IS SUCCESSFUL
 
-              window.location.href = './profile.html';
+              getProfilePageForThisUser(userLoginRequest);
 
-            case 15:
+            case 17:
             case "end":
               return _context.stop();
           }
@@ -65,6 +67,32 @@ var loginHandler = function () {
     });
     return false;
   };
+
+  function getProfilePageForThisUser(userLoginRequest) {
+    console.log("Inside getProfilePage()... ready to call profile endpoint");
+    fetch("http://localhost:8080/api/v1/users/profile", {
+      method: 'GET',
+      credentials: 'include',
+      // Send cookies with the request
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      console.log("Here is the response of the /profile endpoint: ", response);
+
+      if (response.ok) {
+        return response.json(); // Parse the JSON response
+      } else {
+        throw new Error('Failed to fetch profile data');
+      }
+    }).then(function (data) {
+      // Handle the received profile data
+      console.log('Profile Data:', data); // Perform actions with the profile data as needed
+    })["catch"](function (error) {
+      console.error('Error fetching profile data:', error); // Handle the error (display message, redirect to login, etc.)
+    });
+    window.location.href = './profile.html';
+  }
 
   return {
     userLogin: userLogin

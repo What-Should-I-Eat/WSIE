@@ -38,20 +38,11 @@ endpoints.use(cors());
 endpoints.use(session({
   secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
   resave: false,
-  saveUninitialized: false
-}));
-endpoints.get('/profile', function (req, res) {
-  var sessionData = req.session;
-  var isLoggedIn = req.session.isLoggedIn;
-  var username = req.session.username;
-  console.log("INSIDE PROFILE ENDPOINT");
-
-  if (isLoggedIn) {
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(403);
+  saveUninitialized: false,
+  cookie: {
+    secure: false
   }
-}); //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
+})); //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
 //~~~~~ GET all users
 
 endpoints.get('/users', function _callee(req, res) {
@@ -120,52 +111,75 @@ endpoints.post('/users/find-username', function _callee2(req, res) {
           passwordValidated = _context2.sent;
 
           if (!passwordValidated) {
-            _context2.next = 18;
+            _context2.next = 20;
             break;
           }
 
           console.log("Password is correct!");
           req.session.isLoggedIn = true;
-          req.session.username = user.userName;
+          req.session.userId = user._id;
+          req.session.username = user.userName; //This goes to the browser
+
+          res.cookie('sessionId', req.session.id, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000
+          });
           return _context2.abrupt("return", res.status(200).json({
             message: 'correct'
           }));
 
-        case 18:
+        case 20:
           return _context2.abrupt("return", res.status(401).json({
             error: 'incorrect'
           }));
 
-        case 19:
-          _context2.next = 25;
+        case 21:
+          _context2.next = 27;
           break;
 
-        case 21:
-          _context2.prev = 21;
+        case 23:
+          _context2.prev = 23;
           _context2.t0 = _context2["catch"](7);
           console.error('Error validating password: ', _context2.t0);
           return _context2.abrupt("return", res.status(500).json({
             error: 'Internal Server Error'
           }));
 
-        case 25:
-          _context2.next = 31;
+        case 27:
+          _context2.next = 33;
           break;
 
-        case 27:
-          _context2.prev = 27;
+        case 29:
+          _context2.prev = 29;
           _context2.t1 = _context2["catch"](0);
           console.error('Error fetching unique user: ', _context2.t1);
           res.status(500).json({
             error: 'users - Internal Server Error'
           });
 
-        case 31:
+        case 33:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 27], [7, 21]]);
+  }, null, null, [[0, 29], [7, 23]]);
+}); //Get user's profile if they're logged in
+
+endpoints.get('/users/profile', function (req, res) {
+  var isLoggedIn = req.session.isLoggedIn;
+  var username = req.session.username;
+  console.log("Inside /profile endpoint. isLoggedIn = ", isLoggedIn);
+  console.log("username = ", username);
+
+  if (isLoggedIn) {
+    res.status(200).json({
+      username: username
+    });
+  } else {
+    res.status(403).json({
+      error: 'Unauthorized'
+    });
+  }
 }); //~~~~~ POST a new user - WORKS!
 
 endpoints.post("/users/register", function _callee3(req, res) {
