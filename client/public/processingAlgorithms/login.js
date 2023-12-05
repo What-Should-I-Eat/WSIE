@@ -33,9 +33,9 @@ var loginHandler = (() => {
         const successResponse = await response.json();
         console.log('Success:', successResponse.message);
         console.log("Response: ", response.json);
-        console.log("Cookie: ", response.cookie);
+        console.log("User login request: ", userLoginRequest.userName);
         //THIS IS WHAT HAPPENS AFTER THE LOGIN IS SUCCESSFUL
-        getProfilePageForThisUser(userLoginRequest);
+        getProfilePageForThisUser(userLoginRequest.userName);
       }
     })
     .catch(error => {
@@ -46,7 +46,7 @@ var loginHandler = (() => {
     return false; 
   };
 
-  function getProfilePageForThisUser(userLoginRequest){
+  function getProfilePageForThisUser(username){
     console.log("Inside getProfilePage()... ready to call profile endpoint");
     fetch("http://localhost:8080/api/v1/users/profile", {
       method: 'GET',
@@ -75,7 +75,7 @@ var loginHandler = (() => {
     });
 
 
-    window.location.href = './profile.html';
+    window.location.href = `./profile.html?name=${username}`;
   }
 
   return {

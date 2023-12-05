@@ -3,7 +3,7 @@
 
 <head>
     <title>Profile</title>
-    <script type="text/javascript" src="./processingAlgorithms/restrictions.js"></script>
+    <script type="text/javascript" src="./processingAlgorithms/profile.js"></script>
     <script type="text/javascript" src="./processingAlgorithms/edamam.js"></script>
     <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
     <link rel="stylesheet" href="/stylesheets/styles.css">
@@ -25,7 +25,7 @@
     </header>
 
     <div>
-        <h2 id="user-identification"></h2><h2>'s Dietary Profile</h2>
+        <h2 id="user-identification"></h2>
     </div>
 
     <div id="user-restrictions" class="restrictions-container">
@@ -107,6 +107,17 @@
     <br><br><br>
     <footer>
     </footer>
+
+    <script>
+        function getUserName(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+        const username = getUserName('name');
+
+        const userIdentification = document.getElementById('user-identification');
+        userIdentification.textContent = username ? `${username}'s Dietary Profile` : 'User Profile';
+    </script>
 
 </body>
 

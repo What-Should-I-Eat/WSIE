@@ -51,9 +51,9 @@ var loginHandler = function () {
               successResponse = _context.sent;
               console.log('Success:', successResponse.message);
               console.log("Response: ", response.json);
-              console.log("Cookie: ", response.cookie); //THIS IS WHAT HAPPENS AFTER THE LOGIN IS SUCCESSFUL
+              console.log("User login request: ", userLoginRequest.userName); //THIS IS WHAT HAPPENS AFTER THE LOGIN IS SUCCESSFUL
 
-              getProfilePageForThisUser(userLoginRequest);
+              getProfilePageForThisUser(userLoginRequest.userName);
 
             case 17:
             case "end":
@@ -68,7 +68,7 @@ var loginHandler = function () {
     return false;
   };
 
-  function getProfilePageForThisUser(userLoginRequest) {
+  function getProfilePageForThisUser(username) {
     console.log("Inside getProfilePage()... ready to call profile endpoint");
     fetch("http://localhost:8080/api/v1/users/profile", {
       method: 'GET',
@@ -91,7 +91,7 @@ var loginHandler = function () {
     })["catch"](function (error) {
       console.error('Error fetching profile data:', error); // Handle the error (display message, redirect to login, etc.)
     });
-    window.location.href = './profile.html';
+    window.location.href = "./profile.html?name=".concat(username);
   }
 
   return {
