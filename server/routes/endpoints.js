@@ -95,6 +95,23 @@ endpoints.get('/users/profile', (req, res) => {
   }
 });
 
+//Find user id by username - WORKS! returns username's id
+endpoints.get('/users/findUserId', async (req, res) => {
+  try {
+    const username = req.query.username; // Access the username from query parameters
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const idNum = user._id;
+    res.json(idNum);
+  } 
+  catch (error) {
+    console.error('Error finding this username: ', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 //~~~~~ POST a new user - WORKS!
 endpoints.post("/users/register", async (req, res) => {
   try {

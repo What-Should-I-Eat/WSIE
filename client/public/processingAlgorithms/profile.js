@@ -1,19 +1,29 @@
 var restrictionsHandler = (() => {
-    var selectedRestrictions = []; //this is what we want to pass to edamam
-    var selectedAllergies = [];
+    
+    //Going to pass these to the edamam call after we process the arrays
+    var dietRestrictions = []; 
+    var healthRestrictions = [];
 
-    var handleRestrictions = () => {
-        const restrictionButtons = document.querySelectorAll('.restrictions-container button');
-        const allergyButtons = document.querySelectorAll('.allergies-container button');
+    var handleRestrictions = async () => {
+        const username = getUsername();
+        console.log("username: ", username);
+        const userId = await getUserId(username);
+        console.log("userId: ", userId);
 
-        selectedRestrictions = handleDietButtons(restrictionButtons, selectedRestrictions);
-        selectedAllergies = handleDietButtons(allergyButtons, selectedAllergies);
 
-        console.log('restrictions: ', selectedRestrictions);
-        console.log('allergies: ', selectedAllergies);
+        const dietButtons = document.querySelectorAll('.diet-container button');
+        const healthButtons1 = document.querySelectorAll('.health-container-1 button');
+        const healthButtons2 = document.querySelectorAll('.health-container-2 button');
+        const healthButtons = Array.from(healthButtons1).concat(Array.from(healthButtons2));
+
+        dietRestrictions = handleDietButtons(dietButtons, dietRestrictions);
+        healthRestrictions = handleDietButtons(healthButtons, healthRestrictions);
+
+        console.log('restrictions: ', dietRestrictions);
+        console.log('allergies: ', healthRestrictions);
 
         //edamam.handleRestrictions(selectedRestrictions, selectedAllergies);
-        //POST to server
+        //PUT to server (need to find id thru username in the endpoint)
         
     }
 
@@ -42,9 +52,37 @@ var restrictionsHandler = (() => {
             });
         });
     }
-    
-    
 
+    function PUTintoDatabase(){
+
+    }
+
+    function getUsername(){
+        let username = document.getElementById("user-identification").textContent.trim();
+        const endIndex = username.indexOf("'");
+        username = username.substring(0, endIndex);
+        return username;
+    }
+
+    async function getUserId(username){
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/users/findUserId?username=${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            return "";
+        }
+    }
+    
     function getEdamamNameOfRestriction(buttonName){
 
         switch(buttonName){
@@ -112,19 +150,19 @@ var restrictionsHandler = (() => {
 
     }
 
-    var getSelectedRestrictions = () => {
-        return {
-            selectedRestrictions: selectedRestrictions,
-            selectedAllergies: selectedAllergies,
-        };
+    function getDietRestrictions() {
+        return dietRestrictions;
     }
 
-
+    function getHealthRestrictions(){
+        return healthRestrictions;
+    }
 
     return {
         handleRestrictions,
-        getSelectedRestrictions,
-        selectedRestrictions,
-        selectedAllergies,
+        getDietRestrictions,
+        getHealthRestrictions,
+        selectedRestrictions: dietRestrictions,
+        selectedAllergies: healthRestrictions,
     }
 })();

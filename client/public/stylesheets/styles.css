@@ -131,7 +131,9 @@ input {
   height: 75vh; /* Adjust as needed */
 }
 
-.restrictions-container button, .allergies-container button {
+.diet-container button, 
+.health-container-1 button,
+.health-container-2 button {
   font: inherit;
   color: inherit;
   font-size: 3.5vw;
@@ -144,14 +146,15 @@ input {
   padding: 0.25vw;
 }
 
-.restrictions-container button.selected,
-.allergies-container button.selected {
+.diet-container button.selected,
+.health-container-1 button.selected,
+.health-container-2 button.selected {
   background-color: #7fa341c0;
   border-color: #a28969; 
   border-radius: 10%;
 }
 
-.allergies-container{
+.health-container-2{
   padding-top: 7vw;
 }
 
