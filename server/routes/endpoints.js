@@ -160,45 +160,42 @@ endpoints.delete("/users/:id", async (req, res) => { //WORKS!
 });
 
 //~~~~~ PUT a change in a user's diet array
-endpoints.put('/users/:id/diet', async (req, res) => { //WORKS!
-  const userId = req.params.id;
-  const newDiet = req.body.diet; //Array of diet items
-
-  console.log('User ID = ', userId);
-  console.log('New diet = ', newDiet);
-
+endpoints.put('/users/diet', async (req, res) => {
   try {
-      const user = await mongoose.model('User').findById(userId); //check if user actually exists (by _id)
-      if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-      }
-      user.diet = newDiet;
-      await user.save();
-      res.json(user);
+    const username = req.body.username;
+    console.log("Username = ", username);
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const newDiet = req.body.diet;
+    user.diet = newDiet;
+    await user.save();
+
+    res.json(user.diet);
   } 
   catch (error) {
-      console.error('Error updating diet: ', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error updating diet: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
 //~~~~~ PUT a change in a user's health array
-endpoints.put('/users/:id/health', async (req, res) => { //WORKS!
-  const userId = req.params.id;
-  const newHealth = req.body.health; //Array of health items
-
+endpoints.put('/users/health', async (req, res) => {
   try {
-      const user = await mongoose.model('User').findById(userId); //check if user exists
-      if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-      }
-      user.health = newHealth;
-      await user.save();
-      res.json(user);
+    const username = req.body.username;
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const newHealth = req.body.health;
+    user.health = newHealth;
+    await user.save();
+    res.json(user.heath);
   } 
   catch (error) {
-      console.error('Error updating health: ', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error updating health: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

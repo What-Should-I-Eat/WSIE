@@ -158,6 +158,21 @@ input {
   padding-top: 7vw;
 }
 
+.submit-restrictions button{
+  font: inherit;
+  color: inherit;
+  font-size: 4vw;
+  font-weight: 600;
+  height: 15vw;
+  width: 30vw;
+  background-color: #9ec95359;
+  border-width: 2vw;
+  border-style: dotted;
+  border: rgb(134, 126, 107);
+  padding: 0.25vw;
+}
+
+
 table {
   width: 100%;
   border-collapse: collapse;

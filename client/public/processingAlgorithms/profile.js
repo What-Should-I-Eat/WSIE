@@ -1,30 +1,57 @@
 var restrictionsHandler = (() => {
     
     //Going to pass these to the edamam call after we process the arrays
-    var dietRestrictions = []; 
-    var healthRestrictions = [];
+    let dietRestrictions = []; 
+    let healthRestrictions = [];
 
     var handleRestrictions = async () => {
         const username = getUsername();
         console.log("username: ", username);
-        const userId = await getUserId(username);
-        console.log("userId: ", userId);
+        getUserId(username)
+            .then(userId => {
+                console.log("userId: ", userId);
+                const dietButtons = document.querySelectorAll('.diet-container button');
+                const healthButtons1 = document.querySelectorAll('.health-container-1 button');
+                const healthButtons2 = document.querySelectorAll('.health-container-2 button');
+                const healthButtons = Array.from(healthButtons1).concat(Array.from(healthButtons2));
 
+                showArrays(dietButtons, healthButtons);
+            })
+            .catch(error => {
+                console.error('Error getting user ID:', error);
+            });
+    }
 
-        const dietButtons = document.querySelectorAll('.diet-container button');
-        const healthButtons1 = document.querySelectorAll('.health-container-1 button');
-        const healthButtons2 = document.querySelectorAll('.health-container-2 button');
-        const healthButtons = Array.from(healthButtons1).concat(Array.from(healthButtons2));
-
+    async function showArrays(dietButtons, healthButtons){
         dietRestrictions = handleDietButtons(dietButtons, dietRestrictions);
         healthRestrictions = handleDietButtons(healthButtons, healthRestrictions);
-
         console.log('restrictions: ', dietRestrictions);
         console.log('allergies: ', healthRestrictions);
+    }
 
-        //edamam.handleRestrictions(selectedRestrictions, selectedAllergies);
-        //PUT to server (need to find id thru username in the endpoint)
-        
+    var submitRestrictions = async (event) => {
+        event.preventDefault();
+        try {
+            console.log("inside submitRestrictions(): ");
+            const username = getUsername();
+            console.log("username: ", username);
+            getUserId(username)
+                .then(userId => {
+                    console.log("userId: ", userId);
+                    console.log("diet restrictions: ", dietRestrictions);
+                    console.log("health restrictions: ", healthRestrictions);
+
+                    if (userId) {
+                        PUTintoDatabase(username);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error getting user ID:', error);
+                });
+        } 
+        catch (error) {
+            console.error('Error while submitting restrictions:', error);
+        }
     }
 
 
@@ -39,8 +66,7 @@ var restrictionsHandler = (() => {
                     array.push(sanitizedRestriction);
                     console.log('added ', sanitizedRestriction, ' to array');
                     console.log('state of this array: ', array);
-                } 
-                else {
+                } else {
                     const indexRestrictions = array.indexOf(sanitizedRestriction);
                     if (indexRestrictions !== -1) {
                         array.splice(indexRestrictions, 1);
@@ -51,10 +77,7 @@ var restrictionsHandler = (() => {
                 return array;
             });
         });
-    }
-
-    function PUTintoDatabase(){
-
+        return array;
     }
 
     function getUsername(){
@@ -150,19 +173,70 @@ var restrictionsHandler = (() => {
 
     }
 
+    async function PUTintoDatabase(username) {
+        try {
+            if (username) {
+                const dietData = {
+                    username: username,
+                    diet: getDietRestrictions()
+                };
+                const healthData = {
+                    username: username,
+                    health: getHealthRestrictions()
+                };
+
+                await sendDietData(dietData);
+                await sendHealthData(healthData);
+            }
+        } 
+        catch (error) {
+            console.error('Error during beforeunload event:', error);
+        }
+    }
+    
+    async function sendDietData(dietData) {
+
+        try {
+            await fetch("http://localhost:8080/api/v1/users/diet", {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dietData),
+            });
+        } catch (error) {
+            console.error('Error sending diet data:', error);
+        }
+    }
+    
+    async function sendHealthData(healthData) {
+        try {
+            await fetch("http://localhost:8080/api/v1/users/health", {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(healthData),
+            });
+        } catch (error) {
+            console.error('Error sending health data:', error);
+        }
+    }
+
     function getDietRestrictions() {
+        console.log("Diet restrictions array: ", dietRestrictions);
         return dietRestrictions;
     }
 
     function getHealthRestrictions(){
+        console.log("Health restrictions array: ", healthRestrictions);
         return healthRestrictions;
     }
 
     return {
         handleRestrictions,
+        submitRestrictions,
         getDietRestrictions,
         getHealthRestrictions,
-        selectedRestrictions: dietRestrictions,
-        selectedAllergies: healthRestrictions,
     }
 })();

@@ -6,32 +6,80 @@ var restrictionsHandler = function () {
   var healthRestrictions = [];
 
   var handleRestrictions = function handleRestrictions() {
-    var username, userId, dietButtons, healthButtons1, healthButtons2, healthButtons;
+    var username;
     return regeneratorRuntime.async(function handleRestrictions$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             username = getUsername();
             console.log("username: ", username);
-            _context.next = 4;
-            return regeneratorRuntime.awrap(getUserId(username));
+            getUserId(username).then(function (userId) {
+              console.log("userId: ", userId);
+              var dietButtons = document.querySelectorAll('.diet-container button');
+              var healthButtons1 = document.querySelectorAll('.health-container-1 button');
+              var healthButtons2 = document.querySelectorAll('.health-container-2 button');
+              var healthButtons = Array.from(healthButtons1).concat(Array.from(healthButtons2));
+              showArrays(dietButtons, healthButtons);
+            })["catch"](function (error) {
+              console.error('Error getting user ID:', error);
+            });
 
-          case 4:
-            userId = _context.sent;
-            console.log("userId: ", userId);
-            dietButtons = document.querySelectorAll('.diet-container button');
-            healthButtons1 = document.querySelectorAll('.health-container-1 button');
-            healthButtons2 = document.querySelectorAll('.health-container-2 button');
-            healthButtons = Array.from(healthButtons1).concat(Array.from(healthButtons2));
+          case 3:
+          case "end":
+            return _context.stop();
+        }
+      }
+    });
+  };
+
+  function showArrays(dietButtons, healthButtons) {
+    return regeneratorRuntime.async(function showArrays$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
             dietRestrictions = handleDietButtons(dietButtons, dietRestrictions);
             healthRestrictions = handleDietButtons(healthButtons, healthRestrictions);
             console.log('restrictions: ', dietRestrictions);
-            console.log('allergies: ', healthRestrictions); //edamam.handleRestrictions(selectedRestrictions, selectedAllergies);
-            //PUT to server (need to find id thru username in the endpoint)
+            console.log('allergies: ', healthRestrictions);
 
-          case 14:
+          case 4:
           case "end":
-            return _context.stop();
+            return _context2.stop();
+        }
+      }
+    });
+  }
+
+  var submitRestrictions = function submitRestrictions(event) {
+    var username;
+    return regeneratorRuntime.async(function submitRestrictions$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            event.preventDefault();
+
+            try {
+              console.log("inside submitRestrictions(): ");
+              username = getUsername();
+              console.log("username: ", username);
+              getUserId(username).then(function (userId) {
+                console.log("userId: ", userId);
+                console.log("diet restrictions: ", dietRestrictions);
+                console.log("health restrictions: ", healthRestrictions);
+
+                if (userId) {
+                  PUTintoDatabase(username);
+                }
+              })["catch"](function (error) {
+                console.error('Error getting user ID:', error);
+              });
+            } catch (error) {
+              console.error('Error while submitting restrictions:', error);
+            }
+
+          case 2:
+          case "end":
+            return _context3.stop();
         }
       }
     });
@@ -61,9 +109,8 @@ var restrictionsHandler = function () {
         return array;
       });
     });
+    return array;
   }
-
-  function PUTintoDatabase() {}
 
   function getUsername() {
     var username = document.getElementById("user-identification").textContent.trim();
@@ -74,12 +121,12 @@ var restrictionsHandler = function () {
 
   function getUserId(username) {
     var response, data;
-    return regeneratorRuntime.async(function getUserId$(_context2) {
+    return regeneratorRuntime.async(function getUserId$(_context4) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
-            _context2.prev = 0;
-            _context2.next = 3;
+            _context4.prev = 0;
+            _context4.next = 3;
             return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1/users/findUserId?username=".concat(username), {
               method: 'GET',
               headers: {
@@ -88,32 +135,32 @@ var restrictionsHandler = function () {
             }));
 
           case 3:
-            response = _context2.sent;
+            response = _context4.sent;
 
             if (response.ok) {
-              _context2.next = 6;
+              _context4.next = 6;
               break;
             }
 
             throw new Error('Network response was not ok');
 
           case 6:
-            _context2.next = 8;
+            _context4.next = 8;
             return regeneratorRuntime.awrap(response.json());
 
           case 8:
-            data = _context2.sent;
-            return _context2.abrupt("return", data);
+            data = _context4.sent;
+            return _context4.abrupt("return", data);
 
           case 12:
-            _context2.prev = 12;
-            _context2.t0 = _context2["catch"](0);
-            console.error('There was a problem with the fetch operation:', _context2.t0);
-            return _context2.abrupt("return", "");
+            _context4.prev = 12;
+            _context4.t0 = _context4["catch"](0);
+            console.error('There was a problem with the fetch operation:', _context4.t0);
+            return _context4.abrupt("return", "");
 
           case 16:
           case "end":
-            return _context2.stop();
+            return _context4.stop();
         }
       }
     }, null, null, [[0, 12]]);
@@ -213,19 +260,129 @@ var restrictionsHandler = function () {
     }
   }
 
+  function PUTintoDatabase(username) {
+    var dietData, healthData;
+    return regeneratorRuntime.async(function PUTintoDatabase$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+
+            if (!username) {
+              _context5.next = 8;
+              break;
+            }
+
+            dietData = {
+              username: username,
+              diet: getDietRestrictions()
+            };
+            healthData = {
+              username: username,
+              health: getHealthRestrictions()
+            };
+            _context5.next = 6;
+            return regeneratorRuntime.awrap(sendDietData(dietData));
+
+          case 6:
+            _context5.next = 8;
+            return regeneratorRuntime.awrap(sendHealthData(healthData));
+
+          case 8:
+            _context5.next = 13;
+            break;
+
+          case 10:
+            _context5.prev = 10;
+            _context5.t0 = _context5["catch"](0);
+            console.error('Error during beforeunload event:', _context5.t0);
+
+          case 13:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, null, null, [[0, 10]]);
+  }
+
+  function sendDietData(dietData) {
+    return regeneratorRuntime.async(function sendDietData$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            _context6.next = 3;
+            return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1/users/diet", {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(dietData)
+            }));
+
+          case 3:
+            _context6.next = 8;
+            break;
+
+          case 5:
+            _context6.prev = 5;
+            _context6.t0 = _context6["catch"](0);
+            console.error('Error sending diet data:', _context6.t0);
+
+          case 8:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, null, null, [[0, 5]]);
+  }
+
+  function sendHealthData(healthData) {
+    return regeneratorRuntime.async(function sendHealthData$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.prev = 0;
+            _context7.next = 3;
+            return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1/users/health", {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(healthData)
+            }));
+
+          case 3:
+            _context7.next = 8;
+            break;
+
+          case 5:
+            _context7.prev = 5;
+            _context7.t0 = _context7["catch"](0);
+            console.error('Error sending health data:', _context7.t0);
+
+          case 8:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, null, null, [[0, 5]]);
+  }
+
   function getDietRestrictions() {
+    console.log("Diet restrictions array: ", dietRestrictions);
     return dietRestrictions;
   }
 
   function getHealthRestrictions() {
+    console.log("Health restrictions array: ", healthRestrictions);
     return healthRestrictions;
   }
 
   return {
     handleRestrictions: handleRestrictions,
+    submitRestrictions: submitRestrictions,
     getDietRestrictions: getDietRestrictions,
-    getHealthRestrictions: getHealthRestrictions,
-    selectedRestrictions: dietRestrictions,
-    selectedAllergies: healthRestrictions
+    getHealthRestrictions: getHealthRestrictions
   };
 }();

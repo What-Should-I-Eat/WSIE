@@ -327,27 +327,25 @@ endpoints["delete"]("/users/:id", function _callee5(req, res) {
   }, null, null, [[0, 9]]);
 }); //~~~~~ PUT a change in a user's diet array
 
-endpoints.put('/users/:id/diet', function _callee6(req, res) {
-  var userId, newDiet, user;
+endpoints.put('/users/diet', function _callee6(req, res) {
+  var username, user, newDiet;
   return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
         case 0:
-          //WORKS!
-          userId = req.params.id;
-          newDiet = req.body.diet; //Array of diet items
+          _context6.prev = 0;
+          username = req.body.username;
+          console.log("Username = ", username);
+          _context6.next = 5;
+          return regeneratorRuntime.awrap(User.findOne({
+            userName: username
+          }));
 
-          console.log('User ID = ', userId);
-          console.log('New diet = ', newDiet);
-          _context6.prev = 4;
-          _context6.next = 7;
-          return regeneratorRuntime.awrap(mongoose.model('User').findById(userId));
-
-        case 7:
+        case 5:
           user = _context6.sent;
 
           if (user) {
-            _context6.next = 10;
+            _context6.next = 8;
             break;
           }
 
@@ -355,51 +353,51 @@ endpoints.put('/users/:id/diet', function _callee6(req, res) {
             error: 'User not found'
           }));
 
-        case 10:
+        case 8:
+          newDiet = req.body.diet;
           user.diet = newDiet;
-          _context6.next = 13;
+          _context6.next = 12;
           return regeneratorRuntime.awrap(user.save());
 
-        case 13:
-          res.json(user);
-          _context6.next = 20;
+        case 12:
+          res.json(user.diet);
+          _context6.next = 19;
           break;
 
-        case 16:
-          _context6.prev = 16;
-          _context6.t0 = _context6["catch"](4);
+        case 15:
+          _context6.prev = 15;
+          _context6.t0 = _context6["catch"](0);
           console.error('Error updating diet: ', _context6.t0);
           res.status(500).json({
             error: 'Internal Server Error'
           });
 
-        case 20:
+        case 19:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[4, 16]]);
+  }, null, null, [[0, 15]]);
 }); //~~~~~ PUT a change in a user's health array
 
-endpoints.put('/users/:id/health', function _callee7(req, res) {
-  var userId, newHealth, user;
+endpoints.put('/users/health', function _callee7(req, res) {
+  var username, user, newHealth;
   return regeneratorRuntime.async(function _callee7$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
-          //WORKS!
-          userId = req.params.id;
-          newHealth = req.body.health; //Array of health items
+          _context7.prev = 0;
+          username = req.body.username;
+          _context7.next = 4;
+          return regeneratorRuntime.awrap(User.findOne({
+            userName: username
+          }));
 
-          _context7.prev = 2;
-          _context7.next = 5;
-          return regeneratorRuntime.awrap(mongoose.model('User').findById(userId));
-
-        case 5:
+        case 4:
           user = _context7.sent;
 
           if (user) {
-            _context7.next = 8;
+            _context7.next = 7;
             break;
           }
 
@@ -407,19 +405,20 @@ endpoints.put('/users/:id/health', function _callee7(req, res) {
             error: 'User not found'
           }));
 
-        case 8:
+        case 7:
+          newHealth = req.body.health;
           user.health = newHealth;
           _context7.next = 11;
           return regeneratorRuntime.awrap(user.save());
 
         case 11:
-          res.json(user);
+          res.json(user.heath);
           _context7.next = 18;
           break;
 
         case 14:
           _context7.prev = 14;
-          _context7.t0 = _context7["catch"](2);
+          _context7.t0 = _context7["catch"](0);
           console.error('Error updating health: ', _context7.t0);
           res.status(500).json({
             error: 'Internal Server Error'
@@ -430,7 +429,7 @@ endpoints.put('/users/:id/health', function _callee7(req, res) {
           return _context7.stop();
       }
     }
-  }, null, null, [[2, 14]]);
+  }, null, null, [[0, 14]]);
 }); //~~~~~ PUT a change in a user's favorite recipes
 
 endpoints.put('/users/:id/favorites', function _callee8(req, res) {
