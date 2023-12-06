@@ -1,27 +1,40 @@
 "use strict";
 
-var edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
-var host = 'localhost'; //IDEA: filter from one recipe website and build a scraper for the directions for that website
+var edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q="; //const host = 'localhost';
+//IDEA: filter from one recipe website and build a scraper for the directions for that website
+// const username = localStorage.getItem('username');
+// console.log("Username: ", username);
+// let user = getUser(username);
+// const userHealth = user.health;
+// const userDiet = user.diet;
 
-var restrictionObject = {
-  selectedRestrictions: [],
-  selectedAllergies: []
-};
+function getUser(username) {
+  fetch("http://localhost:8080/users/finduser/".concat(username), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(function (response) {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+  }).then(function (data) {
+    console.log('User found:', data);
+  })["catch"](function (error) {
+    console.error('Problem getting the user: ', error);
+  });
+}
 
 var edamam = function () {
-  var handleRestrictions = function handleRestrictions() {
-    console.log('handling restrictions in edamam.js');
-    console.log('selected allergies in edamam: ', restrictionObject.selectedAllergies);
-    console.log('selected Restrictions in edamam: ', restrictionObject.selectedRestrictions);
-  };
-
-  var searchRecipe = function searchRecipe() {
-    console.log('Restictions of user: ', restrictionObject.selectedRestrictions);
-    console.log('Allergies of user: ', restrictionObject.selectedAllergies);
-    var restrictionsArray = restrictionsHandler.selectedRestrictions;
-    var allergiesArray = restrictionsHandler.selectedAllergies;
-    console.log('EDAMAM restrictions', restrictionsArray);
-    console.log('EDAMAM allergies', allergiesArray); //Hide recipe on new search (if it exists)
+  var searchRecipe = function searchRecipe(event) {
+    event.preventDefault();
+    console.log(username);
+    console.log('Health of user: ', userDiet);
+    console.log('Diet of user: ', userHealth); // console.log('EDAMAM restrictions', restrictionsArray);
+    // console.log('EDAMAM allergies', allergiesArray);
+    //Hide recipe on new search (if it exists)
 
     var selectedRecipeDetails = document.getElementById('selected-recipe-details');
     selectedRecipeDetails.style.display = 'none'; //Show the search results
@@ -162,13 +175,12 @@ var edamam = function () {
       return "<li>".concat(item, "</li>");
     }).join(''), "</ul>");
     directionsHeader.innerHTML = 'Directions';
-  }
+  } // document.addEventListener('DOMContentLoaded', function () {
+  //   restrictionsHandler.handleRestrictions();
+  // });
 
-  document.addEventListener('DOMContentLoaded', function () {
-    restrictionsHandler.handleRestrictions();
-  });
+
   return {
-    searchRecipe: searchRecipe,
-    handleRestrictions: handleRestrictions
+    searchRecipe: searchRecipe
   };
 }();

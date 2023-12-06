@@ -127,6 +127,10 @@
 
         const userIdentification = document.getElementById('user-identification');
         userIdentification.textContent = username ? `${username}'s Dietary Profile` : 'User Profile';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            restrictionsHandler.handleRestrictions();
+        });
     </script>
 
 </body>

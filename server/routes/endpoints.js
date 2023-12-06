@@ -112,6 +112,23 @@ endpoints.get('/users/findUserId', async (req, res) => {
   }
 });
 
+//Find user by username - not for login purposes - WORKS!
+endpoints.get('/users/finduser/:username', async (req, res) => {
+  try {
+    const username = req.params.username; // Access the username from query parameters
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } 
+  catch (error) {
+    console.error('Error finding this username: ', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 //~~~~~ POST a new user - WORKS!
 endpoints.post("/users/register", async (req, res) => {
   try {
@@ -191,7 +208,7 @@ endpoints.put('/users/health', async (req, res) => {
     const newHealth = req.body.health;
     user.health = newHealth;
     await user.save();
-    res.json(user.heath);
+    res.json(user);
   } 
   catch (error) {
     console.error('Error updating health: ', error);

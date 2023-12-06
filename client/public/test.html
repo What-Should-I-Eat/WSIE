@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Test</title>
-  <script type="text/javascript" src="./processingAlgorithms/restrictions.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/edamam.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
   <script src="https://developer.edamam.com/attribution/badge.js"></script>
@@ -25,7 +24,7 @@
 
 
   <div class="search-recipe">
-    <form onsubmit="return edamam.searchRecipe()">
+    <form onsubmit="return edamam.searchRecipe(event)">
       <input type="text" id="search-input" placeholder="Enter recipe to search">
       <button type="submit">Search</button>
 
