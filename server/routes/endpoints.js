@@ -79,27 +79,27 @@ endpoints.post('/users/find-username', async (req, res) => {
         req.session.userId = user._id;
         req.session.username = user.userName;
 
-        //This goes to the browser
+        // Set the cookie
         res.cookie('sessionId', req.session.id, {
           httpOnly: true,
           maxAge: 24 * 60 * 60 * 1000,
         });
 
-        return res.status(200).json({ message: 'correct' });
+        // Return the user object in the response
+        return res.json(user);
       } else {
-        return res.status(401).json({ error: 'incorrect' });
+        return res.status(401).json({ error: 'Incorrect password' });
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.error('Error validating password: ', error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-  } 
-  catch (error) {
+  } catch (error) {
     console.error('Error fetching unique user: ', error);
-    res.status(500).json({ error: 'users - Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 //Get user's profile if they're logged in

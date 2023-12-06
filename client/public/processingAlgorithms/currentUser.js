@@ -1,11 +1,14 @@
-let userData = null;
 
-function setUserData(data) {
-  userData = data;
-}
+var UserModule = UserModule || {};
 
-function getUserData() {
-  return userData;
-}
+UserModule.userData = null;
 
-export { setUserData, getUserData };
+UserModule.setUserData = function(data) {
+  UserModule.userData = data;
+};
+
+UserModule.getUserData = function() {
+  return UserModule.userData;
+};
+
+window.UserModule = UserModule;

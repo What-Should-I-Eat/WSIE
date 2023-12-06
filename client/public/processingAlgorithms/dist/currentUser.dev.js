@@ -1,16 +1,14 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.setUserData = setUserData;
-exports.getUserData = getUserData;
-var userData = null;
+var UserModule = UserModule || {};
+UserModule.userData = null;
 
-function setUserData(data) {
-  userData = data;
-}
+UserModule.setUserData = function (data) {
+  UserModule.userData = data;
+};
 
-function getUserData() {
-  return userData;
-}
+UserModule.getUserData = function () {
+  return UserModule.userData;
+};
+
+window.UserModule = UserModule;

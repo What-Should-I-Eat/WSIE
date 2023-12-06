@@ -21,7 +21,7 @@ var loginHandler = function () {
       },
       body: JSON.stringify(userLoginRequest)
     }).then(function _callee(response) {
-      var errorResponse, successResponse;
+      var errorResponse;
       return regeneratorRuntime.async(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -29,8 +29,8 @@ var loginHandler = function () {
               console.log("we are at the point of response. this is the response.status: ");
               console.log(response.status);
 
-              if (!(response.status != 200)) {
-                _context.next = 10;
+              if (!(response.status !== 200)) {
+                _context.next = 11;
                 break;
               }
 
@@ -41,38 +41,21 @@ var loginHandler = function () {
               errorResponse = _context.sent;
               console.error('Error logging in:', errorResponse.error);
               loginValidation.textContent = errorResponse.error || 'Error logging in';
-              _context.next = 17;
-              break;
+              throw new Error(errorResponse.error || 'Error logging in');
 
-            case 10:
-              _context.next = 12;
-              return regeneratorRuntime.awrap(response.json());
+            case 11:
+              return _context.abrupt("return", response.json());
 
             case 12:
-              successResponse = _context.sent;
-              console.log('Success:', successResponse.message);
-              console.log("Response: ", response.json);
-              console.log("User login request: ", userLoginRequest.userName); //THIS IS WHAT HAPPENS AFTER THE LOGIN IS SUCCESSFUL
-              //First we put user data in the model
-              // try {
-              //   const userData = await response.json();
-              //   setUserData(userData);
-              //   const currentUser = getUserData();
-              //   console.log(currentUser);
-              //   // Additional actions with currentUser if needed
-              // } catch (error) {
-              //   console.error('Error parsing response:', error);
-              //   // Handle parsing error (display message, etc.)
-              // }
-
-              getProfilePageForThisUser(userLoginRequest.userName);
-
-            case 17:
             case "end":
               return _context.stop();
           }
         }
       });
+    }).then(function (data) {
+      console.log("DATA = ", data);
+      UserModule.setUserData(data);
+      console.log("userModule.getUserData() = ", UserModule.getUserData());
     })["catch"](function (error) {
       console.error('Fetch error:', error);
       loginValidation.textContent = 'Fetch error: ' + error.message;

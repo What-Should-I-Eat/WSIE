@@ -140,19 +140,18 @@ endpoints.post('/users/find-username', function _callee2(req, res) {
           console.log("Password is correct!");
           req.session.isLoggedIn = true;
           req.session.userId = user._id;
-          req.session.username = user.userName; //This goes to the browser
+          req.session.username = user.userName; // Set the cookie
 
           res.cookie('sessionId', req.session.id, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000
-          });
-          return _context2.abrupt("return", res.status(200).json({
-            message: 'correct'
-          }));
+          }); // Return the user object in the response
+
+          return _context2.abrupt("return", res.json(user));
 
         case 20:
           return _context2.abrupt("return", res.status(401).json({
-            error: 'incorrect'
+            error: 'Incorrect password'
           }));
 
         case 21:
@@ -176,7 +175,7 @@ endpoints.post('/users/find-username', function _callee2(req, res) {
           _context2.t1 = _context2["catch"](0);
           console.error('Error fetching unique user: ', _context2.t1);
           res.status(500).json({
-            error: 'users - Internal Server Error'
+            error: 'Internal Server Error'
           });
 
         case 33:
