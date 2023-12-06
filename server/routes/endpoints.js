@@ -102,20 +102,6 @@ endpoints.post('/users/find-username', async (req, res) => {
 });
 
 
-
-//Middleware to check session for endpoints after login/new user
-endpoints.use((req, res, next) => {
-  if(req.session && req.session.userId)
-  {
-    next();
-  }
-  else {
-    res.status(401).json({
-      error: 'Unauthorized'
-    });
-  }
-});
-
 //Get user's profile if they're logged in
 endpoints.get('/users/profile', (req, res) => {
   const isLoggedIn = req.session.isLoggedIn;
@@ -137,6 +123,19 @@ endpoints.get('/users/profile', (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     });
 
+});
+
+//Middleware to check session for endpoints after login/new user
+endpoints.use((req, res, next) => {
+  if(req.session && req.session.userId)
+  {
+    next();
+  }
+  else {
+    res.status(401).json({
+      error: 'Unauthorized'
+    });
+  }
 });
 
 

@@ -185,16 +185,6 @@ endpoints.post('/users/find-username', function _callee2(req, res) {
       }
     }
   }, null, null, [[0, 29], [7, 23]]);
-}); //Middleware to check session for endpoints after login/new user
-
-endpoints.use(function (req, res, next) {
-  if (req.session && req.session.userId) {
-    next();
-  } else {
-    res.status(401).json({
-      error: 'Unauthorized'
-    });
-  }
 }); //Get user's profile if they're logged in
 
 endpoints.get('/users/profile', function (req, res) {
@@ -220,6 +210,16 @@ endpoints.get('/users/profile', function (req, res) {
       error: 'Internal Server Error'
     });
   });
+}); //Middleware to check session for endpoints after login/new user
+
+endpoints.use(function (req, res, next) {
+  if (req.session && req.session.userId) {
+    next();
+  } else {
+    res.status(401).json({
+      error: 'Unauthorized'
+    });
+  }
 }); //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
 //~~~~~ GET all users
 
