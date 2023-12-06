@@ -26,10 +26,10 @@ services:
     depends_on:
       - client
       - server
-  initialize-db:
-    build:
-      context: './server'      
-      dockerfile: 'Dockerfile'  
-    depends_on:
-      - db
-    command: ["node", "initializedb.js"]  
+  # initialize-db:
+  #   build:
+  #     context: './server'      
+  #     dockerfile: 'Dockerfile'  
+  #   depends_on:
+  #     - db
+  #   command: ["node", "initializedb.js"]  
