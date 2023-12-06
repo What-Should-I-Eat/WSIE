@@ -56,6 +56,7 @@ var loginHandler = function () {
       console.log("DATA = ", data);
       UserModule.setUserData(data);
       console.log("userModule.getUserData() = ", UserModule.getUserData());
+      getProfilePageForThisUser(UserModule.getUserData());
     })["catch"](function (error) {
       console.error('Fetch error:', error);
       loginValidation.textContent = 'Fetch error: ' + error.message;
@@ -63,8 +64,9 @@ var loginHandler = function () {
     return false;
   };
 
-  function getProfilePageForThisUser(username) {
+  function getProfilePageForThisUser(user) {
     console.log("Inside getProfilePage()... ready to call profile endpoint");
+    console.log("user: ", user);
     fetch("http://localhost:8080/api/v1/users/profile", {
       method: 'GET',
       credentials: 'include',
@@ -84,7 +86,7 @@ var loginHandler = function () {
     })["catch"](function (error) {
       console.error('Error fetching profile data:', error);
     });
-    window.location.href = "./profile.html?name=".concat(username);
+    window.location.href = "./profile.html?name=".concat(user.fullName);
   }
 
   return {
