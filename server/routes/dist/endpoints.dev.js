@@ -34,47 +34,69 @@ var session = require('express-session'); //Endpoint Setup
 
 endpoints.use(bodyParser.json()); //express app uses the body parser
 
-endpoints.use(cors());
+endpoints.use(cors()); //Session middleware
+
 endpoints.use(session({
   secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
     secure: false
   }
-})); //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
-//~~~~~ GET all users
+})); //~~~~~ POST a new user - WORKS!
 
-endpoints.get('/users', function _callee(req, res) {
-  var users;
+endpoints.post("/users/register", function _callee(req, res) {
+  var hashedPassword, user, savedUser;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
           _context.next = 3;
-          return regeneratorRuntime.awrap(mongoose.model('User').find());
+          return regeneratorRuntime.awrap(bcrypt.hash(req.body.password, 10));
 
         case 3:
-          users = _context.sent;
-          res.json(users);
-          _context.next = 11;
-          break;
+          hashedPassword = _context.sent;
+          user = new User({
+            id: req.body.id,
+            fullName: req.body.fullName,
+            userName: req.body.userName,
+            password: hashedPassword,
+            email: req.body.email,
+            diet: req.body.diet,
+            health: req.body.health,
+            favorites: [{
+              recipeId: req.body.recipeId,
+              recipeName: req.body.recipeName,
+              recipeIngredients: req.body.recipeIngredients,
+              recipeDirections: req.body.recipeDirections,
+              recipeImage: req.body.recipeImage,
+              recipeUri: req.body.recipeUri
+            }]
+          });
+          _context.next = 7;
+          return regeneratorRuntime.awrap(user.save());
 
         case 7:
-          _context.prev = 7;
-          _context.t0 = _context["catch"](0);
-          console.error('Error fetching users: ', _context.t0);
-          res.status(500).json({
-            error: 'users - Internal Server Error'
-          });
+          savedUser = _context.sent;
+          res.json(savedUser);
+          _context.next = 15;
+          break;
 
         case 11:
+          _context.prev = 11;
+          _context.t0 = _context["catch"](0);
+          console.error('Error occurred during user registration:', _context.t0);
+          res.status(500).json({
+            error: 'An error occurred during user registration'
+          });
+
+        case 15:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 7]]);
+  }, null, null, [[0, 11]]);
 }); //~~~~~ POST specific user by user - changed from GET so we could have a body
 
 endpoints.post('/users/find-username', function _callee2(req, res) {
@@ -163,81 +185,84 @@ endpoints.post('/users/find-username', function _callee2(req, res) {
       }
     }
   }, null, null, [[0, 29], [7, 23]]);
+}); //Middleware to check session for endpoints after login/new user
+
+endpoints.use(function (req, res, next) {
+  if (req.session && req.session.userId) {
+    next();
+  } else {
+    res.status(401).json({
+      error: 'Unauthorized'
+    });
+  }
 }); //Get user's profile if they're logged in
 
 endpoints.get('/users/profile', function (req, res) {
   var isLoggedIn = req.session.isLoggedIn;
+  var userId = req.session.userId;
   var username = req.session.username;
   console.log("Inside /profile endpoint. isLoggedIn = ", isLoggedIn);
   console.log("username = ", username);
+  User.findById(userId).then(function (user) {
+    if (!user) {
+      return res.status(404).json({
+        error: 'User not found'
+      });
+    }
 
-  if (isLoggedIn) {
-    res.status(200).json({
-      username: username
+    console.log("user (inside endpoint): ", user);
+    res.json({
+      user: user
     });
-  } else {
-    res.status(403).json({
-      error: 'Unauthorized'
+  })["catch"](function (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({
+      error: 'Internal Server Error'
     });
-  }
-}); //Find user id by username - WORKS! returns username's id
+  });
+}); //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
+//~~~~~ GET all users
 
-endpoints.get('/users/findUserId', function _callee3(req, res) {
-  var username, user, idNum;
+endpoints.get('/users', function _callee3(req, res) {
+  var users;
   return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
           _context3.prev = 0;
-          username = req.query.username; // Access the username from query parameters
+          _context3.next = 3;
+          return regeneratorRuntime.awrap(mongoose.model('User').find());
 
-          _context3.next = 4;
-          return regeneratorRuntime.awrap(User.findOne({
-            userName: username
-          }));
-
-        case 4:
-          user = _context3.sent;
-
-          if (user) {
-            _context3.next = 7;
-            break;
-          }
-
-          return _context3.abrupt("return", res.status(404).json({
-            error: 'User not found'
-          }));
-
-        case 7:
-          idNum = user._id;
-          res.json(idNum);
-          _context3.next = 15;
+        case 3:
+          users = _context3.sent;
+          res.json(users);
+          _context3.next = 11;
           break;
 
-        case 11:
-          _context3.prev = 11;
+        case 7:
+          _context3.prev = 7;
           _context3.t0 = _context3["catch"](0);
-          console.error('Error finding this username: ', _context3.t0);
-          return _context3.abrupt("return", res.status(500).json({
-            error: 'Internal Server Error'
-          }));
+          console.error('Error fetching users: ', _context3.t0);
+          res.status(500).json({
+            error: 'users - Internal Server Error'
+          });
 
-        case 15:
+        case 11:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[0, 11]]);
-}); //Find user by username - not for login purposes - WORKS!
+  }, null, null, [[0, 7]]);
+}); //Find user id by username - WORKS! returns username's id
 
-endpoints.get('/users/finduser/:username', function _callee4(req, res) {
-  var username, user;
+endpoints.get('/users/findUserId', function _callee4(req, res) {
+  var username, user, idNum;
   return regeneratorRuntime.async(function _callee4$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
           _context4.prev = 0;
-          username = req.params.username; // Access the username from query parameters
+          username = req.query.username; // Access the username from query parameters
 
           _context4.next = 4;
           return regeneratorRuntime.awrap(User.findOne({
@@ -257,78 +282,72 @@ endpoints.get('/users/finduser/:username', function _callee4(req, res) {
           }));
 
         case 7:
-          res.json(user);
-          _context4.next = 14;
+          idNum = user._id;
+          res.json(idNum);
+          _context4.next = 15;
           break;
 
-        case 10:
-          _context4.prev = 10;
+        case 11:
+          _context4.prev = 11;
           _context4.t0 = _context4["catch"](0);
           console.error('Error finding this username: ', _context4.t0);
           return _context4.abrupt("return", res.status(500).json({
             error: 'Internal Server Error'
           }));
 
-        case 14:
+        case 15:
         case "end":
           return _context4.stop();
       }
     }
-  }, null, null, [[0, 10]]);
-}); //~~~~~ POST a new user - WORKS!
+  }, null, null, [[0, 11]]);
+}); //Find user by username - not for login purposes - WORKS!
 
-endpoints.post("/users/register", function _callee5(req, res) {
-  var hashedPassword, user, savedUser;
+endpoints.get('/users/finduser/:username', function _callee5(req, res) {
+  var username, user;
   return regeneratorRuntime.async(function _callee5$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
           _context5.prev = 0;
-          _context5.next = 3;
-          return regeneratorRuntime.awrap(bcrypt.hash(req.body.password, 10));
+          username = req.params.username; // Access the username from query parameters
 
-        case 3:
-          hashedPassword = _context5.sent;
-          user = new User({
-            id: req.body.id,
-            fullName: req.body.fullName,
-            userName: req.body.userName,
-            password: hashedPassword,
-            email: req.body.email,
-            diet: req.body.diet,
-            health: req.body.health,
-            favorites: [{
-              recipeId: req.body.recipeId,
-              recipeName: req.body.recipeName,
-              recipeIngredients: req.body.recipeIngredients,
-              recipeDirections: req.body.recipeDirections,
-              recipeImage: req.body.recipeImage,
-              recipeUri: req.body.recipeUri
-            }]
-          });
-          _context5.next = 7;
-          return regeneratorRuntime.awrap(user.save());
+          _context5.next = 4;
+          return regeneratorRuntime.awrap(User.findOne({
+            userName: username
+          }));
+
+        case 4:
+          user = _context5.sent;
+
+          if (user) {
+            _context5.next = 7;
+            break;
+          }
+
+          return _context5.abrupt("return", res.status(404).json({
+            error: 'User not found'
+          }));
 
         case 7:
-          savedUser = _context5.sent;
-          res.json(savedUser);
-          _context5.next = 15;
+          res.json(user);
+          _context5.next = 14;
           break;
 
-        case 11:
-          _context5.prev = 11;
+        case 10:
+          _context5.prev = 10;
           _context5.t0 = _context5["catch"](0);
-          console.error('Error occurred during user registration:', _context5.t0);
-          res.status(500).json({
-            error: 'An error occurred during user registration'
-          });
+          console.error('Error finding this username: ', _context5.t0);
+          return _context5.abrupt("return", res.status(500).json({
+            error: 'Internal Server Error'
+          }));
 
-        case 15:
+        case 14:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[0, 11]]);
+  }, null, null, [[0, 10]]);
 }); //~~~~~ DELETE a user
 
 endpoints["delete"]("/users/:id", function _callee6(req, res) {

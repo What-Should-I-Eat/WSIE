@@ -1,3 +1,7 @@
+const { setUserData, getUserData } = require("./currentUser");
+import (setUserData);
+import (getUserData);
+
 const host = 'localhost:8080';
 
 var loginHandler = (() => {

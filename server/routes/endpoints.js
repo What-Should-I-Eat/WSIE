@@ -18,27 +18,47 @@ const session = require('express-session');
 endpoints.use(bodyParser.json()); //express app uses the body parser
 endpoints.use(cors());
 
+//Session middleware
 endpoints.use(session({
   secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
     cookie: {
         secure: false
     }
 }));
 
 
-//------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
-//~~~~~ GET all users
-endpoints.get('/users', async (req, res) => { //WORKS!
-    try{
-      const users = await mongoose.model('User').find();
-      res.json(users);
-    }
-    catch(error){
-      console.error('Error fetching users: ', error);
-      res.status(500).json({ error: 'users - Internal Server Error' });
-    }
+//~~~~~ POST a new user - WORKS!
+endpoints.post("/users/register", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const user = new User({
+      id: req.body.id,
+      fullName: req.body.fullName,
+      userName: req.body.userName,
+      password: hashedPassword, 
+      email: req.body.email,
+      diet: req.body.diet,
+      health: req.body.health,
+      favorites: [{
+        recipeId: req.body.recipeId,
+        recipeName: req.body.recipeName,
+        recipeIngredients: req.body.recipeIngredients,
+        recipeDirections: req.body.recipeDirections,
+        recipeImage: req.body.recipeImage,
+        recipeUri: req.body.recipeUri
+      }]
+    });
+
+    const savedUser = await user.save();
+    res.json(savedUser);
+  } 
+  catch (error) {
+    console.error('Error occurred during user registration:', error);
+    res.status(500).json({ error: 'An error occurred during user registration' });
+  }
 });
 
 //~~~~~ POST specific user by user - changed from GET so we could have a body
@@ -81,19 +101,58 @@ endpoints.post('/users/find-username', async (req, res) => {
   }
 });
 
+
+
+//Middleware to check session for endpoints after login/new user
+endpoints.use((req, res, next) => {
+  if(req.session && req.session.userId)
+  {
+    next();
+  }
+  else {
+    res.status(401).json({
+      error: 'Unauthorized'
+    });
+  }
+});
+
 //Get user's profile if they're logged in
 endpoints.get('/users/profile', (req, res) => {
   const isLoggedIn = req.session.isLoggedIn;
+  const userId = req.session.userId;
   const username = req.session.username; 
-
   console.log("Inside /profile endpoint. isLoggedIn = ", isLoggedIn);
   console.log("username = ", username);
-  if (isLoggedIn) {
-    res.status(200).json({ username });
-  } else {
-    res.status(403).json({ error: 'Unauthorized' });
-  }
+
+  User.findById(userId)
+    .then(user => {
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      console.log("user (inside endpoint): ", user);
+      res.json({ user });
+    })
+    .catch(error => {
+      console.error('Error fetching user data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
+
 });
+
+
+//------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
+//~~~~~ GET all users
+endpoints.get('/users', async (req, res) => { //WORKS!
+    try{
+      const users = await mongoose.model('User').find();
+      res.json(users);
+    }
+    catch(error){
+      console.error('Error fetching users: ', error);
+      res.status(500).json({ error: 'users - Internal Server Error' });
+    }
+});
+
 
 //Find user id by username - WORKS! returns username's id
 endpoints.get('/users/findUserId', async (req, res) => {
@@ -128,38 +187,6 @@ endpoints.get('/users/finduser/:username', async (req, res) => {
   }
 });
 
-
-//~~~~~ POST a new user - WORKS!
-endpoints.post("/users/register", async (req, res) => {
-  try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-    const user = new User({
-      id: req.body.id,
-      fullName: req.body.fullName,
-      userName: req.body.userName,
-      password: hashedPassword, 
-      email: req.body.email,
-      diet: req.body.diet,
-      health: req.body.health,
-      favorites: [{
-        recipeId: req.body.recipeId,
-        recipeName: req.body.recipeName,
-        recipeIngredients: req.body.recipeIngredients,
-        recipeDirections: req.body.recipeDirections,
-        recipeImage: req.body.recipeImage,
-        recipeUri: req.body.recipeUri
-      }]
-    });
-
-    const savedUser = await user.save();
-    res.json(savedUser);
-  } 
-  catch (error) {
-    console.error('Error occurred during user registration:', error);
-    res.status(500).json({ error: 'An error occurred during user registration' });
-  }
-});
 
 //~~~~~ DELETE a user
 endpoints.delete("/users/:id", async (req, res) => { //WORKS!
