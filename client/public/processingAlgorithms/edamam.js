@@ -175,14 +175,17 @@ var edamam = (() => {
     });
 
     recipeTitleHeader.innerHTML = json.recipe.label;
+    const heartIcon = document.createElement('img');
+    heartIcon.src = './assets/heart.png'; 
+    heartIcon.alt = 'Heart Icon';
+    heartIcon.style.width = `${10}vw`;
+    heartIcon.style.marginLeft = `${3}vw`
+    recipeTitleHeader.appendChild(heartIcon);
+
     ingredientsHeader.innerHTML = 'Ingredients';
     ingredientList.innerHTML = `<ul>${ingredients.map(item => `<li>${item}</li>`).join('')}</ul>`;
     directionsHeader.innerHTML = 'Directions';
   }
-
-  // document.addEventListener('DOMContentLoaded', function () {
-  //   restrictionsHandler.handleRestrictions();
-  // });
   
   return {
     searchRecipe,
