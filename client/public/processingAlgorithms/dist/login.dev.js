@@ -86,7 +86,7 @@ var loginHandler = function () {
     })["catch"](function (error) {
       console.error('Error fetching profile data:', error);
     });
-    window.location.href = "./profile.html?name=".concat(user.fullName);
+    window.location.href = "./profile.html?name=".concat(user.userName);
   }
 
   return {

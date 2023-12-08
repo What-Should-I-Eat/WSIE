@@ -3,6 +3,7 @@
 
 <head>
     <title>Profile</title>
+    <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
     <script type="text/javascript" src="./processingAlgorithms/profile.js"></script>
     <script type="text/javascript" src="./processingAlgorithms/edamam.js"></script>
     <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
@@ -16,11 +17,11 @@
         <h1>What Should I Eat?</h1>
         <nav class="nav-header">
             <ul>
-                <li><a href="index.html">Search</a></li>
-                <li><a href="test.html">Test</a></li>
-                <li><a href="favorites.html">Favorites</a></li>
-                <li><a href="profile.html">Profile</a></li>
-            </ul>
+                <li><a href="index.html" id="search">Search</a></li>
+                <li><a href="test.html" id="test">Test</a></li>
+                <li><a href="favorites.html" id="favorites">Favorites</a></li>
+                <li><a href="profile.html" id="profile">Profile</a></li>
+              </ul>
         </nav>
     </header>
 
@@ -130,6 +131,11 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             restrictionsHandler.handleRestrictions();
+            
+            document.getElementById('search').href = `index.html?name=${username}`;
+            document.getElementById('test').href = `test.html?name=${username}`;
+            document.getElementById('favorites').href = `favorites.html?name=${username}`;
+            document.getElementById('profile').href = `profile.html?name=${username}`;
         });
     </script>
 
