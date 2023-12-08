@@ -1,88 +1,106 @@
 "use strict";
 
 var edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q="; //const host = 'localhost';
-//IDEA: filter from one recipe website and build a scraper for the directions for that website
-// const username = localStorage.getItem('username');
-// console.log("Username: ", username);
-// let user = getUser(username);
-// const userHealth = user.health;
-// const userDiet = user.diet;
-
-function getUser(username) {
-  fetch("http://localhost:8080/users/finduser/".concat(username), {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }).then(function (response) {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    return response.json();
-  }).then(function (data) {
-    console.log('User found:', data);
-  })["catch"](function (error) {
-    console.error('Problem getting the user: ', error);
-  });
-}
 
 var edamam = function () {
   var searchRecipe = function searchRecipe(event) {
     event.preventDefault();
-    console.log(username);
-    console.log('Health of user: ', userDiet);
-    console.log('Diet of user: ', userHealth); // console.log('EDAMAM restrictions', restrictionsArray);
-    // console.log('EDAMAM allergies', allergiesArray);
-    //Hide recipe on new search (if it exists)
+    var username = getUsername();
+    getUserData(username).then(function _callee(userData) {
+      var healthString, dietString, selectedRecipeDetails, recipeListDiv, recipeList, searchParam, fullLink;
+      return regeneratorRuntime.async(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              console.log(userData);
+              console.log('Health of user: ', userData.health);
+              console.log('Diet of user: ', userData.diet); //get strings for health and diet to append to fullLink
 
-    var selectedRecipeDetails = document.getElementById('selected-recipe-details');
-    selectedRecipeDetails.style.display = 'none'; //Show the search results
+              healthString = getHealthString(userData.health);
+              console.log("HEALTH STRING: ", healthString);
+              dietString = getDietString(userData.diet);
+              console.log("DIET STRING: ", dietString); //Hide recipe on new search (if it exists)
 
-    var recipeListDiv = document.getElementById('recipe-list');
-    recipeListDiv.style.display = 'block';
-    var recipeList = document.getElementById('recipeList');
-    recipeList.innerHTML = '';
-    var searchParam = document.getElementById('search-input').value; //Call restricitons file to get array HERE
+              selectedRecipeDetails = document.getElementById('selected-recipe-details');
+              selectedRecipeDetails.style.display = 'none'; //Show the search results
 
-    var fullLink = edamamLink + searchParam;
-    console.log(fullLink);
+              recipeListDiv = document.getElementById('recipe-list');
+              recipeListDiv.style.display = 'block';
+              recipeList = document.getElementById('recipeList');
+              recipeList.innerHTML = '';
+              searchParam = document.getElementById('search-input').value; //Call restricitons file to get array HERE
 
-    try {
-      fetch(fullLink, {
-        //RESTRICTIONS MUST BE ADDED TO THIS FULLLINK
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then(function (resp) {
-        return resp.json();
-      }).then(function (results) {
-        results.hits.forEach(function (data) {
-          var source = data.recipe.source;
-          var viableSource = sourceIsViable(source);
+              fullLink = edamamLink + searchParam + dietString + healthString;
+              console.log(fullLink);
 
-          if (viableSource) {
-            console.log(source, " - ", data.recipe.label);
-            var recipeName = document.createElement('li');
-            var link = document.createElement('a');
-            link.textContent = data.recipe.label;
-            recipeName.appendChild(link);
-            recipeList.appendChild(recipeName);
+              try {
+                fetch(fullLink, {
+                  //RESTRICTIONS MUST BE ADDED TO THIS FULLLINK
+                  method: 'GET',
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  }
+                }).then(function (resp) {
+                  return resp.json();
+                }).then(function (results) {
+                  results.hits.forEach(function (data) {
+                    var source = data.recipe.source;
+                    var viableSource = sourceIsViable(source);
 
-            link.onclick = function () {
-              return showRecipe(data, data.recipe.source);
-            };
+                    if (viableSource) {
+                      console.log(source, " - ", data.recipe.label);
+                      var recipeName = document.createElement('li');
+                      var link = document.createElement('a');
+                      link.textContent = data.recipe.label;
+                      recipeName.appendChild(link);
+                      recipeList.appendChild(recipeName);
+
+                      link.onclick = function () {
+                        return showRecipe(data, data.recipe.source);
+                      };
+                    }
+                  });
+                });
+              } catch (e) {
+                console.log(e);
+              }
+
+            case 17:
+            case "end":
+              return _context.stop();
           }
-        });
+        }
       });
-    } catch (e) {
-      console.log(e);
-    }
-
+    })["catch"](function (error) {
+      console.error('Error fetching user data:', error);
+    });
     return false;
   };
+
+  function getHealthString(healthArray) {
+    if (!healthArray.length) {
+      return "";
+    }
+
+    var healthString = "";
+    healthArray.forEach(function (healthItem) {
+      healthString += "&health=" + "".concat(healthItem);
+    });
+    return healthString;
+  }
+
+  function getDietString(dietArray) {
+    if (!dietArray.length) {
+      return "";
+    }
+
+    var dietString = "";
+    dietArray.forEach(function (dietItem) {
+      dietString += "&diet=" + "".concat(dietItem, ",");
+    });
+    return dietString;
+  }
 
   function sourceIsViable(source) {
     switch (source) {
@@ -121,7 +139,7 @@ var edamam = function () {
     directionsList.innerHTML = '';
     var link = json.recipe.url; // Create the URL with the recipeLink and source parameters
 
-    var recipeSiteEndpoint = "http://".concat(host, ":8080/api/v1/scrape-recipe/?recipeLink=").concat(link, "&source=").concat(source);
+    var recipeSiteEndpoint = "http://".concat(host, "/api/v1/scrape-recipe/?recipeLink=").concat(link, "&source=").concat(source);
 
     try {
       fetch(recipeSiteEndpoint, {

@@ -1,14 +1,48 @@
+async function getUserId(username){
+  try {
+      const response = await fetch(`http://localhost:8080/api/v1/users/findUserId?username=${username}`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+  } 
+  catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      return "";
+  }
+}
 
-var UserModule = UserModule || {};
+async function getUserData(username){
+  try {
+      const response = await fetch(`http://localhost:8080/api/v1//users/findUserData?username=${username}`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data;
+  } 
+  catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+      return "";
+  }
+}
 
-UserModule.userData = null;
 
-UserModule.setUserData = function(data) {
-  UserModule.userData = data;
-};
-
-UserModule.getUserData = function() {
-  return UserModule.userData;
-};
-
-window.UserModule = UserModule;
+function getUsername(){
+  const urlString = window.location.href;
+  const url = new URL(urlString);
+  const username = url.searchParams.get('name');
+  console.log(username);
+  return username;
+}

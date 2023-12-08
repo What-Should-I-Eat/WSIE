@@ -125,6 +125,21 @@ endpoints.get('/users/profile', (req, res) => {
 
 });
 
+endpoints.get('/users/findUserData', async (req, res) => {
+  try {
+    const username = req.query.username;
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } 
+  catch (error) {
+    console.error('Error finding this username: ', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 //Middleware to check session for endpoints after login/new user
 endpoints.use((req, res, next) => {
   if(req.session && req.session.userId)
@@ -169,6 +184,21 @@ endpoints.get('/users/findUserId', async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+// endpoints.get('/users/findUserData', async (req, res) => {
+//   try {
+//     const username = req.query.username;
+//     const user = await User.findOne({ userName: username });
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
+//     res.json(user);
+//   } 
+//   catch (error) {
+//     console.error('Error finding this username: ', error);
+//     return res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 //Find user by username - not for login purposes - WORKS!
 endpoints.get('/users/finduser/:username', async (req, res) => {

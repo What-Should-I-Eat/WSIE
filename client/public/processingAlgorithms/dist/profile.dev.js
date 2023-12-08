@@ -117,54 +117,25 @@ var restrictionsHandler = function () {
     var endIndex = username.indexOf("'");
     username = username.substring(0, endIndex);
     return username;
-  }
+  } // async function getUserId(username){
+  //     try {
+  //         const response = await fetch(`http://localhost:8080/api/v1/users/findUserId?username=${username}`, {
+  //             method: 'GET',
+  //             headers: {
+  //                 'Content-Type': 'application/json',
+  //             },
+  //         });
+  //         if (!response.ok) {
+  //             throw new Error('Network response was not ok');
+  //         }
+  //         const data = await response.json();
+  //         return data;
+  //     } catch (error) {
+  //         console.error('There was a problem with the fetch operation:', error);
+  //         return "";
+  //     }
+  // }
 
-  function getUserId(username) {
-    var response, data;
-    return regeneratorRuntime.async(function getUserId$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            _context4.prev = 0;
-            _context4.next = 3;
-            return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1/users/findUserId?username=".concat(username), {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            }));
-
-          case 3:
-            response = _context4.sent;
-
-            if (response.ok) {
-              _context4.next = 6;
-              break;
-            }
-
-            throw new Error('Network response was not ok');
-
-          case 6:
-            _context4.next = 8;
-            return regeneratorRuntime.awrap(response.json());
-
-          case 8:
-            data = _context4.sent;
-            return _context4.abrupt("return", data);
-
-          case 12:
-            _context4.prev = 12;
-            _context4.t0 = _context4["catch"](0);
-            console.error('There was a problem with the fetch operation:', _context4.t0);
-            return _context4.abrupt("return", "");
-
-          case 16:
-          case "end":
-            return _context4.stop();
-        }
-      }
-    }, null, null, [[0, 12]]);
-  }
 
   function getEdamamNameOfRestriction(buttonName) {
     switch (buttonName) {
@@ -262,14 +233,14 @@ var restrictionsHandler = function () {
 
   function PUTintoDatabase(username) {
     var dietData, healthData;
-    return regeneratorRuntime.async(function PUTintoDatabase$(_context5) {
+    return regeneratorRuntime.async(function PUTintoDatabase$(_context4) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
-            _context5.prev = 0;
+            _context4.prev = 0;
 
             if (!username) {
-              _context5.next = 8;
+              _context4.next = 8;
               break;
             }
 
@@ -281,37 +252,37 @@ var restrictionsHandler = function () {
               username: username,
               health: getHealthRestrictions()
             };
-            _context5.next = 6;
+            _context4.next = 6;
             return regeneratorRuntime.awrap(sendDietData(dietData));
 
           case 6:
-            _context5.next = 8;
+            _context4.next = 8;
             return regeneratorRuntime.awrap(sendHealthData(healthData));
 
           case 8:
-            _context5.next = 13;
+            _context4.next = 13;
             break;
 
           case 10:
-            _context5.prev = 10;
-            _context5.t0 = _context5["catch"](0);
-            console.error('Error during beforeunload event:', _context5.t0);
+            _context4.prev = 10;
+            _context4.t0 = _context4["catch"](0);
+            console.error('Error during beforeunload event:', _context4.t0);
 
           case 13:
           case "end":
-            return _context5.stop();
+            return _context4.stop();
         }
       }
     }, null, null, [[0, 10]]);
   }
 
   function sendDietData(dietData) {
-    return regeneratorRuntime.async(function sendDietData$(_context6) {
+    return regeneratorRuntime.async(function sendDietData$(_context5) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
-            _context6.prev = 0;
-            _context6.next = 3;
+            _context5.prev = 0;
+            _context5.next = 3;
             return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1/users/diet", {
               method: 'PUT',
               headers: {
@@ -321,29 +292,29 @@ var restrictionsHandler = function () {
             }));
 
           case 3:
-            _context6.next = 8;
+            _context5.next = 8;
             break;
 
           case 5:
-            _context6.prev = 5;
-            _context6.t0 = _context6["catch"](0);
-            console.error('Error sending diet data:', _context6.t0);
+            _context5.prev = 5;
+            _context5.t0 = _context5["catch"](0);
+            console.error('Error sending diet data:', _context5.t0);
 
           case 8:
           case "end":
-            return _context6.stop();
+            return _context5.stop();
         }
       }
     }, null, null, [[0, 5]]);
   }
 
   function sendHealthData(healthData) {
-    return regeneratorRuntime.async(function sendHealthData$(_context7) {
+    return regeneratorRuntime.async(function sendHealthData$(_context6) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
-            _context7.prev = 0;
-            _context7.next = 3;
+            _context6.prev = 0;
+            _context6.next = 3;
             return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1/users/health", {
               method: 'PUT',
               headers: {
@@ -353,17 +324,17 @@ var restrictionsHandler = function () {
             }));
 
           case 3:
-            _context7.next = 8;
+            _context6.next = 8;
             break;
 
           case 5:
-            _context7.prev = 5;
-            _context7.t0 = _context7["catch"](0);
-            console.error('Error sending health data:', _context7.t0);
+            _context6.prev = 5;
+            _context6.t0 = _context6["catch"](0);
+            console.error('Error sending health data:', _context6.t0);
 
           case 8:
           case "end":
-            return _context7.stop();
+            return _context6.stop();
         }
       }
     }, null, null, [[0, 5]]);

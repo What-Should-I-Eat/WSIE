@@ -1,6 +1,3 @@
-//import { setUserData, getUserData } from './currentUser.js';
-
-
 const host = 'localhost:8080';
 
 var loginHandler = (() => {
@@ -38,9 +35,8 @@ var loginHandler = (() => {
     })
     .then(data => {
       console.log("DATA = ", data);
-      UserModule.setUserData(data);
-      console.log("userModule.getUserData() = ", UserModule.getUserData());
-      getProfilePageForThisUser(UserModule.getUserData());
+      console.log(data.userName);
+      getProfilePageForThisUser(data.userName);
     })
     .catch(error => {
       console.error('Fetch error:', error);
@@ -52,7 +48,7 @@ var loginHandler = (() => {
   
   function getProfilePageForThisUser(user){
     console.log("Inside getProfilePage()... ready to call profile endpoint");
-    console.log("user: ", user);
+    console.log("username: ", user);
     fetch("http://localhost:8080/api/v1/users/profile", {
       method: 'GET',
       credentials: 'include',
@@ -76,7 +72,7 @@ var loginHandler = (() => {
       console.error('Error fetching profile data:', error);
     });
 
-    window.location.href = `./profile.html?name=${user.userName}`;
+    window.location.href = `./profile.html?name=${user}`;
   }
 
   return {

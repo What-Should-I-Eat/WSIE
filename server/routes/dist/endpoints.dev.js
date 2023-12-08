@@ -209,6 +209,51 @@ endpoints.get('/users/profile', function (req, res) {
       error: 'Internal Server Error'
     });
   });
+});
+endpoints.get('/users/findUserData', function _callee3(req, res) {
+  var username, user;
+  return regeneratorRuntime.async(function _callee3$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          username = req.query.username;
+          _context3.next = 4;
+          return regeneratorRuntime.awrap(User.findOne({
+            userName: username
+          }));
+
+        case 4:
+          user = _context3.sent;
+
+          if (user) {
+            _context3.next = 7;
+            break;
+          }
+
+          return _context3.abrupt("return", res.status(404).json({
+            error: 'User not found'
+          }));
+
+        case 7:
+          res.json(user);
+          _context3.next = 14;
+          break;
+
+        case 10:
+          _context3.prev = 10;
+          _context3.t0 = _context3["catch"](0);
+          console.error('Error finding this username: ', _context3.t0);
+          return _context3.abrupt("return", res.status(500).json({
+            error: 'Internal Server Error'
+          }));
+
+        case 14:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, null, null, [[0, 10]]);
 }); //Middleware to check session for endpoints after login/new user
 
 endpoints.use(function (req, res, next) {
@@ -222,94 +267,46 @@ endpoints.use(function (req, res, next) {
 }); //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
 //~~~~~ GET all users
 
-endpoints.get('/users', function _callee3(req, res) {
+endpoints.get('/users', function _callee4(req, res) {
   var users;
-  return regeneratorRuntime.async(function _callee3$(_context3) {
+  return regeneratorRuntime.async(function _callee4$(_context4) {
     while (1) {
-      switch (_context3.prev = _context3.next) {
+      switch (_context4.prev = _context4.next) {
         case 0:
-          _context3.prev = 0;
-          _context3.next = 3;
+          _context4.prev = 0;
+          _context4.next = 3;
           return regeneratorRuntime.awrap(mongoose.model('User').find());
 
         case 3:
-          users = _context3.sent;
+          users = _context4.sent;
           res.json(users);
-          _context3.next = 11;
+          _context4.next = 11;
           break;
 
         case 7:
-          _context3.prev = 7;
-          _context3.t0 = _context3["catch"](0);
-          console.error('Error fetching users: ', _context3.t0);
+          _context4.prev = 7;
+          _context4.t0 = _context4["catch"](0);
+          console.error('Error fetching users: ', _context4.t0);
           res.status(500).json({
             error: 'users - Internal Server Error'
           });
 
         case 11:
         case "end":
-          return _context3.stop();
+          return _context4.stop();
       }
     }
   }, null, null, [[0, 7]]);
 }); //Find user id by username - WORKS! returns username's id
 
-endpoints.get('/users/findUserId', function _callee4(req, res) {
+endpoints.get('/users/findUserId', function _callee5(req, res) {
   var username, user, idNum;
-  return regeneratorRuntime.async(function _callee4$(_context4) {
-    while (1) {
-      switch (_context4.prev = _context4.next) {
-        case 0:
-          _context4.prev = 0;
-          username = req.query.username; // Access the username from query parameters
-
-          _context4.next = 4;
-          return regeneratorRuntime.awrap(User.findOne({
-            userName: username
-          }));
-
-        case 4:
-          user = _context4.sent;
-
-          if (user) {
-            _context4.next = 7;
-            break;
-          }
-
-          return _context4.abrupt("return", res.status(404).json({
-            error: 'User not found'
-          }));
-
-        case 7:
-          idNum = user._id;
-          res.json(idNum);
-          _context4.next = 15;
-          break;
-
-        case 11:
-          _context4.prev = 11;
-          _context4.t0 = _context4["catch"](0);
-          console.error('Error finding this username: ', _context4.t0);
-          return _context4.abrupt("return", res.status(500).json({
-            error: 'Internal Server Error'
-          }));
-
-        case 15:
-        case "end":
-          return _context4.stop();
-      }
-    }
-  }, null, null, [[0, 11]]);
-}); //Find user by username - not for login purposes - WORKS!
-
-endpoints.get('/users/finduser/:username', function _callee5(req, res) {
-  var username, user;
   return regeneratorRuntime.async(function _callee5$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
           _context5.prev = 0;
-          username = req.params.username; // Access the username from query parameters
+          username = req.query.username; // Access the username from query parameters
 
           _context5.next = 4;
           return regeneratorRuntime.awrap(User.findOne({
@@ -329,41 +326,60 @@ endpoints.get('/users/finduser/:username', function _callee5(req, res) {
           }));
 
         case 7:
-          res.json(user);
-          _context5.next = 14;
+          idNum = user._id;
+          res.json(idNum);
+          _context5.next = 15;
           break;
 
-        case 10:
-          _context5.prev = 10;
+        case 11:
+          _context5.prev = 11;
           _context5.t0 = _context5["catch"](0);
           console.error('Error finding this username: ', _context5.t0);
           return _context5.abrupt("return", res.status(500).json({
             error: 'Internal Server Error'
           }));
 
-        case 14:
+        case 15:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[0, 10]]);
-}); //~~~~~ DELETE a user
+  }, null, null, [[0, 11]]);
+}); // endpoints.get('/users/findUserData', async (req, res) => {
+//   try {
+//     const username = req.query.username;
+//     const user = await User.findOne({ userName: username });
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
+//     res.json(user);
+//   } 
+//   catch (error) {
+//     console.error('Error finding this username: ', error);
+//     return res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+//Find user by username - not for login purposes - WORKS!
 
-endpoints["delete"]("/users/:id", function _callee6(req, res) {
-  var deletedUser;
+endpoints.get('/users/finduser/:username', function _callee6(req, res) {
+  var username, user;
   return regeneratorRuntime.async(function _callee6$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
         case 0:
           _context6.prev = 0;
-          _context6.next = 3;
-          return regeneratorRuntime.awrap(mongoose.model('User').findByIdAndDelete(req.params.id));
+          username = req.params.username; // Access the username from query parameters
 
-        case 3:
-          deletedUser = _context6.sent;
+          _context6.next = 4;
+          return regeneratorRuntime.awrap(User.findOne({
+            userName: username
+          }));
 
-          if (deletedUser) {
-            _context6.next = 6;
+        case 4:
+          user = _context6.sent;
+
+          if (user) {
+            _context6.next = 7;
             break;
           }
 
@@ -371,46 +387,42 @@ endpoints["delete"]("/users/:id", function _callee6(req, res) {
             error: 'User not found'
           }));
 
-        case 6:
-          res.json(deletedUser);
-          _context6.next = 13;
+        case 7:
+          res.json(user);
+          _context6.next = 14;
           break;
 
-        case 9:
-          _context6.prev = 9;
+        case 10:
+          _context6.prev = 10;
           _context6.t0 = _context6["catch"](0);
-          console.error('Error deleting user: ', _context6.t0);
-          res.status(500).json({
-            error: 'Delete user - Internal Server Error'
-          });
+          console.error('Error finding this username: ', _context6.t0);
+          return _context6.abrupt("return", res.status(500).json({
+            error: 'Internal Server Error'
+          }));
 
-        case 13:
+        case 14:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 9]]);
-}); //~~~~~ PUT a change in a user's diet array
+  }, null, null, [[0, 10]]);
+}); //~~~~~ DELETE a user
 
-endpoints.put('/users/diet', function _callee7(req, res) {
-  var username, user, newDiet;
+endpoints["delete"]("/users/:id", function _callee7(req, res) {
+  var deletedUser;
   return regeneratorRuntime.async(function _callee7$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
           _context7.prev = 0;
-          username = req.body.username;
-          console.log("Username = ", username);
-          _context7.next = 5;
-          return regeneratorRuntime.awrap(User.findOne({
-            userName: username
-          }));
+          _context7.next = 3;
+          return regeneratorRuntime.awrap(mongoose.model('User').findByIdAndDelete(req.params.id));
 
-        case 5:
-          user = _context7.sent;
+        case 3:
+          deletedUser = _context7.sent;
 
-          if (user) {
-            _context7.next = 8;
+          if (deletedUser) {
+            _context7.next = 6;
             break;
           }
 
@@ -418,51 +430,46 @@ endpoints.put('/users/diet', function _callee7(req, res) {
             error: 'User not found'
           }));
 
-        case 8:
-          newDiet = req.body.diet;
-          user.diet = newDiet;
-          _context7.next = 12;
-          return regeneratorRuntime.awrap(user.save());
-
-        case 12:
-          res.json(user.diet);
-          _context7.next = 19;
+        case 6:
+          res.json(deletedUser);
+          _context7.next = 13;
           break;
 
-        case 15:
-          _context7.prev = 15;
+        case 9:
+          _context7.prev = 9;
           _context7.t0 = _context7["catch"](0);
-          console.error('Error updating diet: ', _context7.t0);
+          console.error('Error deleting user: ', _context7.t0);
           res.status(500).json({
-            error: 'Internal Server Error'
+            error: 'Delete user - Internal Server Error'
           });
 
-        case 19:
+        case 13:
         case "end":
           return _context7.stop();
       }
     }
-  }, null, null, [[0, 15]]);
-}); //~~~~~ PUT a change in a user's health array
+  }, null, null, [[0, 9]]);
+}); //~~~~~ PUT a change in a user's diet array
 
-endpoints.put('/users/health', function _callee8(req, res) {
-  var username, user, newHealth;
+endpoints.put('/users/diet', function _callee8(req, res) {
+  var username, user, newDiet;
   return regeneratorRuntime.async(function _callee8$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
         case 0:
           _context8.prev = 0;
           username = req.body.username;
-          _context8.next = 4;
+          console.log("Username = ", username);
+          _context8.next = 5;
           return regeneratorRuntime.awrap(User.findOne({
             userName: username
           }));
 
-        case 4:
+        case 5:
           user = _context8.sent;
 
           if (user) {
-            _context8.next = 7;
+            _context8.next = 8;
             break;
           }
 
@@ -470,52 +477,51 @@ endpoints.put('/users/health', function _callee8(req, res) {
             error: 'User not found'
           }));
 
-        case 7:
-          newHealth = req.body.health;
-          user.health = newHealth;
-          _context8.next = 11;
+        case 8:
+          newDiet = req.body.diet;
+          user.diet = newDiet;
+          _context8.next = 12;
           return regeneratorRuntime.awrap(user.save());
 
-        case 11:
-          res.json(user);
-          _context8.next = 18;
+        case 12:
+          res.json(user.diet);
+          _context8.next = 19;
           break;
 
-        case 14:
-          _context8.prev = 14;
+        case 15:
+          _context8.prev = 15;
           _context8.t0 = _context8["catch"](0);
-          console.error('Error updating health: ', _context8.t0);
+          console.error('Error updating diet: ', _context8.t0);
           res.status(500).json({
             error: 'Internal Server Error'
           });
 
-        case 18:
+        case 19:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[0, 14]]);
-}); //~~~~~ PUT a change in a user's favorite recipes
+  }, null, null, [[0, 15]]);
+}); //~~~~~ PUT a change in a user's health array
 
-endpoints.put('/users/:id/favorites', function _callee9(req, res) {
-  var userId, newFavorites, user;
+endpoints.put('/users/health', function _callee9(req, res) {
+  var username, user, newHealth;
   return regeneratorRuntime.async(function _callee9$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
         case 0:
-          //WORKS!
-          userId = req.params.id;
-          newFavorites = req.body.favorites; // Array of objects
+          _context9.prev = 0;
+          username = req.body.username;
+          _context9.next = 4;
+          return regeneratorRuntime.awrap(User.findOne({
+            userName: username
+          }));
 
-          _context9.prev = 2;
-          _context9.next = 5;
-          return regeneratorRuntime.awrap(mongoose.model('User').findById(userId));
-
-        case 5:
+        case 4:
           user = _context9.sent;
 
           if (user) {
-            _context9.next = 8;
+            _context9.next = 7;
             break;
           }
 
@@ -523,8 +529,9 @@ endpoints.put('/users/:id/favorites', function _callee9(req, res) {
             error: 'User not found'
           }));
 
-        case 8:
-          user.favorites = newFavorites;
+        case 7:
+          newHealth = req.body.health;
+          user.health = newHealth;
           _context9.next = 11;
           return regeneratorRuntime.awrap(user.save());
 
@@ -535,8 +542,8 @@ endpoints.put('/users/:id/favorites', function _callee9(req, res) {
 
         case 14:
           _context9.prev = 14;
-          _context9.t0 = _context9["catch"](2);
-          console.error('Error updating favorites: ', _context9.t0);
+          _context9.t0 = _context9["catch"](0);
+          console.error('Error updating health: ', _context9.t0);
           res.status(500).json({
             error: 'Internal Server Error'
           });
@@ -546,64 +553,84 @@ endpoints.put('/users/:id/favorites', function _callee9(req, res) {
           return _context9.stop();
       }
     }
-  }, null, null, [[2, 14]]);
-}); //---------------------------------------------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------Original Endpoints--------------------------------------------------------
+  }, null, null, [[0, 14]]);
+}); //~~~~~ PUT a change in a user's favorite recipes
 
-endpoints.get('/ingredients', function _callee10(req, res) {
-  var ingredients;
+endpoints.put('/users/:id/favorites', function _callee10(req, res) {
+  var userId, newFavorites, user;
   return regeneratorRuntime.async(function _callee10$(_context10) {
     while (1) {
       switch (_context10.prev = _context10.next) {
         case 0:
-          _context10.prev = 0;
-          _context10.next = 3;
-          return regeneratorRuntime.awrap(mongoose.model('Ingredient').find());
+          //WORKS!
+          userId = req.params.id;
+          newFavorites = req.body.favorites; // Array of objects
 
-        case 3:
-          ingredients = _context10.sent;
-          res.json(ingredients);
+          _context10.prev = 2;
+          _context10.next = 5;
+          return regeneratorRuntime.awrap(mongoose.model('User').findById(userId));
+
+        case 5:
+          user = _context10.sent;
+
+          if (user) {
+            _context10.next = 8;
+            break;
+          }
+
+          return _context10.abrupt("return", res.status(404).json({
+            error: 'User not found'
+          }));
+
+        case 8:
+          user.favorites = newFavorites;
           _context10.next = 11;
-          break;
-
-        case 7:
-          _context10.prev = 7;
-          _context10.t0 = _context10["catch"](0);
-          console.error('Error fetching ingredients:', _context10.t0);
-          res.status(500).json({
-            error: 'ingredients - Internal Server Error'
-          });
+          return regeneratorRuntime.awrap(user.save());
 
         case 11:
+          res.json(user);
+          _context10.next = 18;
+          break;
+
+        case 14:
+          _context10.prev = 14;
+          _context10.t0 = _context10["catch"](2);
+          console.error('Error updating favorites: ', _context10.t0);
+          res.status(500).json({
+            error: 'Internal Server Error'
+          });
+
+        case 18:
         case "end":
           return _context10.stop();
       }
     }
-  }, null, null, [[0, 7]]);
-}); //returns restrictions
+  }, null, null, [[2, 14]]);
+}); //---------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------Original Endpoints--------------------------------------------------------
 
-endpoints.get('/restrictions', function _callee11(req, res) {
-  var restrictions;
+endpoints.get('/ingredients', function _callee11(req, res) {
+  var ingredients;
   return regeneratorRuntime.async(function _callee11$(_context11) {
     while (1) {
       switch (_context11.prev = _context11.next) {
         case 0:
           _context11.prev = 0;
           _context11.next = 3;
-          return regeneratorRuntime.awrap(mongoose.model('Restriction').find());
+          return regeneratorRuntime.awrap(mongoose.model('Ingredient').find());
 
         case 3:
-          restrictions = _context11.sent;
-          res.json(restrictions);
+          ingredients = _context11.sent;
+          res.json(ingredients);
           _context11.next = 11;
           break;
 
         case 7:
           _context11.prev = 7;
           _context11.t0 = _context11["catch"](0);
-          console.error('Error fetching restrictions:', _context11.t0);
+          console.error('Error fetching ingredients:', _context11.t0);
           res.status(500).json({
-            error: 'restrictions - Internal Server Error'
+            error: 'ingredients - Internal Server Error'
           });
 
         case 11:
@@ -612,13 +639,45 @@ endpoints.get('/restrictions', function _callee11(req, res) {
       }
     }
   }, null, null, [[0, 7]]);
-}); //This is where we want to pass a search so that we can see the options for recipes
+}); //returns restrictions
 
-endpoints.get('/search-simply-recipes/:searchQuery', function _callee12(req, res) {
-  var searchQuery, url;
+endpoints.get('/restrictions', function _callee12(req, res) {
+  var restrictions;
   return regeneratorRuntime.async(function _callee12$(_context12) {
     while (1) {
       switch (_context12.prev = _context12.next) {
+        case 0:
+          _context12.prev = 0;
+          _context12.next = 3;
+          return regeneratorRuntime.awrap(mongoose.model('Restriction').find());
+
+        case 3:
+          restrictions = _context12.sent;
+          res.json(restrictions);
+          _context12.next = 11;
+          break;
+
+        case 7:
+          _context12.prev = 7;
+          _context12.t0 = _context12["catch"](0);
+          console.error('Error fetching restrictions:', _context12.t0);
+          res.status(500).json({
+            error: 'restrictions - Internal Server Error'
+          });
+
+        case 11:
+        case "end":
+          return _context12.stop();
+      }
+    }
+  }, null, null, [[0, 7]]);
+}); //This is where we want to pass a search so that we can see the options for recipes
+
+endpoints.get('/search-simply-recipes/:searchQuery', function _callee13(req, res) {
+  var searchQuery, url;
+  return regeneratorRuntime.async(function _callee13$(_context13) {
+    while (1) {
+      switch (_context13.prev = _context13.next) {
         case 0:
           searchQuery = encodeURIComponent(req.params.searchQuery);
           console.log("searchQuery = " + searchQuery);
@@ -662,124 +721,124 @@ endpoints.get('/search-simply-recipes/:searchQuery', function _callee12(req, res
 
         case 5:
         case "end":
-          return _context12.stop();
-      }
-    }
-  });
-});
-endpoints.post("/search-input", function _callee13(req, res) {
-  var recipeInput, savedRecipeInput;
-  return regeneratorRuntime.async(function _callee13$(_context13) {
-    while (1) {
-      switch (_context13.prev = _context13.next) {
-        case 0:
-          recipeInput = new RecipeInput({
-            input: req.body.input
-          });
-          _context13.next = 3;
-          return regeneratorRuntime.awrap(recipeInput.save());
-
-        case 3:
-          savedRecipeInput = _context13.sent;
-          res.json(savedRecipeInput);
-
-        case 5:
-        case "end":
           return _context13.stop();
       }
     }
   });
 });
-endpoints.get("/restriction-input", function _callee14(req, res) {
-  var restrictionInputs;
+endpoints.post("/search-input", function _callee14(req, res) {
+  var recipeInput, savedRecipeInput;
   return regeneratorRuntime.async(function _callee14$(_context14) {
     while (1) {
       switch (_context14.prev = _context14.next) {
         case 0:
-          _context14.prev = 0;
+          recipeInput = new RecipeInput({
+            input: req.body.input
+          });
           _context14.next = 3;
+          return regeneratorRuntime.awrap(recipeInput.save());
+
+        case 3:
+          savedRecipeInput = _context14.sent;
+          res.json(savedRecipeInput);
+
+        case 5:
+        case "end":
+          return _context14.stop();
+      }
+    }
+  });
+});
+endpoints.get("/restriction-input", function _callee15(req, res) {
+  var restrictionInputs;
+  return regeneratorRuntime.async(function _callee15$(_context15) {
+    while (1) {
+      switch (_context15.prev = _context15.next) {
+        case 0:
+          _context15.prev = 0;
+          _context15.next = 3;
           return regeneratorRuntime.awrap(mongoose.model('RestrictionInput').find());
 
         case 3:
-          restrictionInputs = _context14.sent;
+          restrictionInputs = _context15.sent;
           res.json(restrictionInputs);
-          _context14.next = 11;
+          _context15.next = 11;
           break;
 
         case 7:
-          _context14.prev = 7;
-          _context14.t0 = _context14["catch"](0);
-          console.error('Error fetching search input:', _context14.t0);
+          _context15.prev = 7;
+          _context15.t0 = _context15["catch"](0);
+          console.error('Error fetching search input:', _context15.t0);
           res.status(500).json({
             error: 'search input - Internal Server Error'
           });
 
         case 11:
         case "end":
-          return _context14.stop();
+          return _context15.stop();
       }
     }
   }, null, null, [[0, 7]]);
 });
-endpoints.post("/restriction-input", function _callee15(req, res) {
+endpoints.post("/restriction-input", function _callee16(req, res) {
   var restrictionInput, savedRestrictionInput;
-  return regeneratorRuntime.async(function _callee15$(_context15) {
+  return regeneratorRuntime.async(function _callee16$(_context16) {
     while (1) {
-      switch (_context15.prev = _context15.next) {
+      switch (_context16.prev = _context16.next) {
         case 0:
           restrictionInput = new RestrictionInput({
             input: req.body.input
           });
-          _context15.next = 3;
+          _context16.next = 3;
           return regeneratorRuntime.awrap(restrictionInput.save());
 
         case 3:
-          savedRestrictionInput = _context15.sent;
+          savedRestrictionInput = _context16.sent;
           res.json(savedRestrictionInput);
 
         case 5:
         case "end":
-          return _context15.stop();
+          return _context16.stop();
       }
     }
   });
 }); //---------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
 
-endpoints.get('/edamam', function _callee16(req, res) {
+endpoints.get('/edamam', function _callee17(req, res) {
   var edamamLink;
-  return regeneratorRuntime.async(function _callee16$(_context16) {
+  return regeneratorRuntime.async(function _callee17$(_context17) {
     while (1) {
-      switch (_context16.prev = _context16.next) {
+      switch (_context17.prev = _context17.next) {
         case 0:
           edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
 
         case 1:
         case "end":
-          return _context16.stop();
+          return _context17.stop();
       }
     }
   });
 });
-endpoints.get('/scrape-recipe', function _callee17(req, res) {
+endpoints.get('/scrape-recipe', function _callee18(req, res) {
   var recipeLink, source, data;
-  return regeneratorRuntime.async(function _callee17$(_context17) {
+  return regeneratorRuntime.async(function _callee18$(_context18) {
     while (1) {
-      switch (_context17.prev = _context17.next) {
+      switch (_context18.prev = _context18.next) {
         case 0:
           recipeLink = req.query.recipeLink;
           source = req.query.source;
-          _context17.next = 4;
+          _context18.next = 4;
           return regeneratorRuntime.awrap(determineSite(recipeLink, source));
 
         case 4:
-          data = _context17.sent;
+          data = _context18.sent;
           console.log("SCRAPED DATA: " + data);
           res.json(data);
 
         case 7:
         case "end":
-          return _context17.stop();
+          return _context18.stop();
       }
     }
   });
@@ -787,78 +846,78 @@ endpoints.get('/scrape-recipe', function _callee17(req, res) {
 
 function determineSite(link, source) {
   var data, scraper, findScraper;
-  return regeneratorRuntime.async(function determineSite$(_context18) {
+  return regeneratorRuntime.async(function determineSite$(_context19) {
     while (1) {
-      switch (_context18.prev = _context18.next) {
+      switch (_context19.prev = _context19.next) {
         case 0:
           console.log("Link in determineSite(): " + link);
           console.log("Source in determineSite() |" + source + "|");
           data = [];
-          _context18.prev = 3;
-          _context18.t0 = source.toLowerCase().trim();
-          _context18.next = _context18.t0 === 'food52' ? 7 : _context18.t0 === 'simply recipes' ? 10 : _context18.t0 === 'bbc good food' ? 13 : _context18.t0 === 'martha stewart' ? 16 : _context18.t0 === 'food network' ? 19 : _context18.t0 === 'delish' ? 22 : _context18.t0 === 'eatingwell' ? 25 : 28;
+          _context19.prev = 3;
+          _context19.t0 = source.toLowerCase().trim();
+          _context19.next = _context19.t0 === 'food52' ? 7 : _context19.t0 === 'simply recipes' ? 10 : _context19.t0 === 'bbc good food' ? 13 : _context19.t0 === 'martha stewart' ? 16 : _context19.t0 === 'food network' ? 19 : _context19.t0 === 'delish' ? 22 : _context19.t0 === 'eatingwell' ? 25 : 28;
           break;
 
         case 7:
           //working
           scraper = '.recipe__list.recipe__list--steps li';
           findScraper = 'span';
-          return _context18.abrupt("break", 28);
+          return _context19.abrupt("break", 28);
 
         case 10:
           //working
           scraper = '#mntl-sc-block_3-0';
           findScraper = 'p.mntl-sc-block-html';
-          return _context18.abrupt("break", 28);
+          return _context19.abrupt("break", 28);
 
         case 13:
           //working
           scraper = '.grouped-list li';
           findScraper = 'p';
-          return _context18.abrupt("break", 28);
+          return _context19.abrupt("break", 28);
 
         case 16:
           //working
           scraper = 'div#recipe__steps-content_1-0 p';
           findScraper = '';
-          return _context18.abrupt("break", 28);
+          return _context19.abrupt("break", 28);
 
         case 19:
           //working
           scraper = '.o-Method__m-Body ol';
           findScraper = 'li';
-          return _context18.abrupt("break", 28);
+          return _context19.abrupt("break", 28);
 
         case 22:
           //working but adding weird stuff
           scraper = 'ul.directions li ol';
           findScraper = 'li';
-          return _context18.abrupt("break", 28);
+          return _context19.abrupt("break", 28);
 
         case 25:
           //working
           scraper = 'div#recipe__steps-content_1-0 ol li';
           findScraper = 'p';
-          return _context18.abrupt("break", 28);
+          return _context19.abrupt("break", 28);
 
         case 28:
-          _context18.next = 30;
+          _context19.next = 30;
           return regeneratorRuntime.awrap(getRecipeDirectionsFromSource(link, scraper, findScraper));
 
         case 30:
-          data = _context18.sent;
+          data = _context19.sent;
           console.log("directions: " + data);
-          return _context18.abrupt("return", data);
+          return _context19.abrupt("return", data);
 
         case 35:
-          _context18.prev = 35;
-          _context18.t1 = _context18["catch"](3);
-          console.error("Error in determineSite:", _context18.t1);
-          throw _context18.t1;
+          _context19.prev = 35;
+          _context19.t1 = _context19["catch"](3);
+          console.error("Error in determineSite:", _context19.t1);
+          throw _context19.t1;
 
         case 39:
         case "end":
-          return _context18.stop();
+          return _context19.stop();
       }
     }
   }, null, null, [[3, 35]]);
@@ -866,17 +925,17 @@ function determineSite(link, source) {
 
 function getRecipeDirectionsFromSource(link, scraper, findScraper) {
   var response, html, $, recipeDirections;
-  return regeneratorRuntime.async(function getRecipeDirectionsFromSource$(_context19) {
+  return regeneratorRuntime.async(function getRecipeDirectionsFromSource$(_context20) {
     while (1) {
-      switch (_context19.prev = _context19.next) {
+      switch (_context20.prev = _context20.next) {
         case 0:
           console.log("Made it to get data. Link = ".concat(link));
-          _context19.prev = 1;
-          _context19.next = 4;
+          _context20.prev = 1;
+          _context20.next = 4;
           return regeneratorRuntime.awrap(axios.get(link));
 
         case 4:
-          response = _context19.sent;
+          response = _context20.sent;
           html = response.data;
           $ = cheerio.load(html);
           recipeDirections = [];
@@ -886,17 +945,17 @@ function getRecipeDirectionsFromSource(link, scraper, findScraper) {
             recipeDirections.push(directionText);
           });
           console.log("Recipe directions: ".concat(recipeDirections));
-          return _context19.abrupt("return", recipeDirections);
+          return _context20.abrupt("return", recipeDirections);
 
         case 13:
-          _context19.prev = 13;
-          _context19.t0 = _context19["catch"](1);
-          console.error("Error in scraping recipe directions: ".concat(_context19.t0));
-          throw _context19.t0;
+          _context20.prev = 13;
+          _context20.t0 = _context20["catch"](1);
+          console.error("Error in scraping recipe directions: ".concat(_context20.t0));
+          throw _context20.t0;
 
         case 17:
         case "end":
-          return _context19.stop();
+          return _context20.stop();
       }
     }
   }, null, null, [[1, 13]]);
@@ -904,11 +963,11 @@ function getRecipeDirectionsFromSource(link, scraper, findScraper) {
 
 
 function validatePassword(user, inputtedPassword) {
-  return regeneratorRuntime.async(function validatePassword$(_context20) {
+  return regeneratorRuntime.async(function validatePassword$(_context21) {
     while (1) {
-      switch (_context20.prev = _context20.next) {
+      switch (_context21.prev = _context21.next) {
         case 0:
-          return _context20.abrupt("return", new Promise(function (resolve, reject) {
+          return _context21.abrupt("return", new Promise(function (resolve, reject) {
             bcrypt.compare(inputtedPassword, user.password, function (err, passwordsMatch) {
               if (err) {
                 reject(err);
@@ -926,7 +985,7 @@ function validatePassword(user, inputtedPassword) {
 
         case 1:
         case "end":
-          return _context20.stop();
+          return _context21.stop();
       }
     }
   });

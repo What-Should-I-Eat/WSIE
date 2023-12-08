@@ -1,47 +1,25 @@
 const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
 //const host = 'localhost';
-//IDEA: filter from one recipe website and build a scraper for the directions for that website
-
-// const username = localStorage.getItem('username');
-// console.log("Username: ", username);
-// let user = getUser(username);
-// const userHealth = user.health;
-// const userDiet = user.diet;
-
-function getUser(username){
-  fetch(`http://localhost:8080/users/finduser/${username}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('User found:', data);
-    })
-    .catch(error => {
-      console.error('Problem getting the user: ', error);
-    });
-}
 
 var edamam = (() => {
 
     var searchRecipe = (event) => {
       event.preventDefault();
-      console.log(username);
 
+      const username = getUsername();
 
-      console.log('Health of user: ', userDiet);
-      console.log('Diet of user: ', userHealth);
+      getUserData(username)
+      .then(async (userData) => {
+        console.log(userData);
+  
+        console.log('Health of user: ', userData.health);
+        console.log('Diet of user: ', userData.diet);
+        //get strings for health and diet to append to fullLink
+        var healthString = getHealthString(userData.health);
+        console.log("HEALTH STRING: ", healthString);
 
-        // console.log('EDAMAM restrictions', restrictionsArray);
-        // console.log('EDAMAM allergies', allergiesArray);
-
+        var dietString = getDietString(userData.diet);
+        console.log("DIET STRING: ", dietString);
 
         //Hide recipe on new search (if it exists)
         const selectedRecipeDetails = document.getElementById('selected-recipe-details');
@@ -50,14 +28,13 @@ var edamam = (() => {
         //Show the search results
         const recipeListDiv = document.getElementById('recipe-list');
         recipeListDiv.style.display = 'block';
-
         const recipeList = document.getElementById('recipeList');
         recipeList.innerHTML = '';
 
         const searchParam = document.getElementById('search-input').value;
 
         //Call restricitons file to get array HERE
-        const fullLink = edamamLink + searchParam;
+        const fullLink = edamamLink + searchParam + dietString + healthString;
         console.log(fullLink);
 
         try {
@@ -87,7 +64,39 @@ var edamam = (() => {
         } catch (e) {
           console.log(e);
         }
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
         return false;
+    }
+
+    function getHealthString(healthArray){
+      if(!healthArray.length)
+      {
+        return "";
+      }
+      
+      let healthString = "";
+
+      healthArray.forEach(healthItem => {
+        healthString += "&health=" + `${healthItem}`;
+      });
+      return healthString;
+    }
+
+    function getDietString(dietArray){
+      if(!dietArray.length)
+      {
+        return "";
+      }
+      
+      let dietString = "";
+
+      dietArray.forEach(dietItem => {
+        dietString += "&diet=" + `${dietItem},`;
+      });
+      return dietString;
     }
 
     function sourceIsViable(source){
@@ -120,7 +129,7 @@ var edamam = (() => {
       const link = json.recipe.url;
   
       // Create the URL with the recipeLink and source parameters
-      const recipeSiteEndpoint = `http://${host}:8080/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
+      const recipeSiteEndpoint = `http://${host}/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
   
       try {
           fetch(recipeSiteEndpoint, {
