@@ -23,8 +23,8 @@
   </nav>
 </header>
 
-
   <div class="search-recipe">
+    <!-- <h1>Search a Recipe</h1> -->
     <form onsubmit="return edamam.searchRecipe(event)">
       <input type="text" id="search-input" placeholder="Enter recipe to search">
       <button type="submit">Search</button>
@@ -39,7 +39,7 @@
   </div>
 
   <div id="selected-recipe-details">
-    <h2 id="recipe-name"></h2>
+    <h2 id="recipe-name"  style="font-size: 10vw;"></h2>
     <div class="ingredient-details">
       <h4 id="ingredients"></h4>
       <ul id="ingredient-list"></ul>
@@ -53,7 +53,7 @@
   <br><br>
   <br>
 
-  <footer><div id="edamam-badge" data-color="white"></div>
+  <footer><div class="badge" id="edamam-badge" data-color="white"></div>
   </footer>
 
   <script>
