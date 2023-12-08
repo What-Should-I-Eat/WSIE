@@ -1,4 +1,4 @@
-const host = 'localhost:8080';
+//const host = 'localhost:8080';
 
 var loginHandler = (() => {
   var userLogin = (event) => {
@@ -14,7 +14,7 @@ var loginHandler = (() => {
       password: passwordInput
     };
   
-    fetch("http://" + host + "/api/v1/users/find-username", {
+    fetch(`http://${host}/api/v1/users/find-username`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ var loginHandler = (() => {
   function getProfilePageForThisUser(user){
     console.log("Inside getProfilePage()... ready to call profile endpoint");
     console.log("username: ", user);
-    fetch("http://localhost:8080/api/v1/users/profile", {
+    fetch(`http://${host}/api/v1/users/profile`, {
       method: 'GET',
       credentials: 'include',
       headers: {

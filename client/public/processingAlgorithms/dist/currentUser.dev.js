@@ -1,5 +1,7 @@
 "use strict";
 
+var host = 'localhost:8080';
+
 function getUserId(username) {
   var response, data;
   return regeneratorRuntime.async(function getUserId$(_context) {
@@ -8,7 +10,7 @@ function getUserId(username) {
         case 0:
           _context.prev = 0;
           _context.next = 3;
-          return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1/users/findUserId?username=".concat(username), {
+          return regeneratorRuntime.awrap(fetch("http://".concat(host, "/api/v1/users/findUserId?username=").concat(username), {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -55,7 +57,7 @@ function getUserData(username) {
         case 0:
           _context2.prev = 0;
           _context2.next = 3;
-          return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1//users/findUserData?username=".concat(username), {
+          return regeneratorRuntime.awrap(fetch("http://".concat(host, "/api/v1//users/findUserData?username=").concat(username), {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'

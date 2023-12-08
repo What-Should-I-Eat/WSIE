@@ -1,6 +1,6 @@
 "use strict";
 
-var edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q="; //const host = 'localhost';
+var edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
 
 var edamam = function () {
   var searchRecipe = function searchRecipe(event) {

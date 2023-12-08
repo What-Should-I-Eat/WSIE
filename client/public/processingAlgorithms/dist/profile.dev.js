@@ -117,25 +117,7 @@ var restrictionsHandler = function () {
     var endIndex = username.indexOf("'");
     username = username.substring(0, endIndex);
     return username;
-  } // async function getUserId(username){
-  //     try {
-  //         const response = await fetch(`http://localhost:8080/api/v1/users/findUserId?username=${username}`, {
-  //             method: 'GET',
-  //             headers: {
-  //                 'Content-Type': 'application/json',
-  //             },
-  //         });
-  //         if (!response.ok) {
-  //             throw new Error('Network response was not ok');
-  //         }
-  //         const data = await response.json();
-  //         return data;
-  //     } catch (error) {
-  //         console.error('There was a problem with the fetch operation:', error);
-  //         return "";
-  //     }
-  // }
-
+  }
 
   function getEdamamNameOfRestriction(buttonName) {
     switch (buttonName) {
@@ -283,7 +265,7 @@ var restrictionsHandler = function () {
           case 0:
             _context5.prev = 0;
             _context5.next = 3;
-            return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1/users/diet", {
+            return regeneratorRuntime.awrap(fetch("http://".concat(host, "/api/v1/users/diet"), {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json'
@@ -315,7 +297,7 @@ var restrictionsHandler = function () {
           case 0:
             _context6.prev = 0;
             _context6.next = 3;
-            return regeneratorRuntime.awrap(fetch("http://localhost:8080/api/v1/users/health", {
+            return regeneratorRuntime.awrap(fetch("http://".concat(host, "/api/v1/users/health"), {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json'

@@ -1,7 +1,5 @@
 "use strict";
 
-var host = 'localhost:8080';
-
 var loginHandler = function () {
   var userLogin = function userLogin(event) {
     event.preventDefault();
@@ -13,7 +11,7 @@ var loginHandler = function () {
       userName: usernameInput,
       password: passwordInput
     };
-    fetch("http://" + host + "/api/v1/users/find-username", {
+    fetch("http://".concat(host, "/api/v1/users/find-username"), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -65,7 +63,7 @@ var loginHandler = function () {
   function getProfilePageForThisUser(user) {
     console.log("Inside getProfilePage()... ready to call profile endpoint");
     console.log("username: ", user);
-    fetch("http://localhost:8080/api/v1/users/profile", {
+    fetch("http://".concat(host, "/api/v1/users/profile"), {
       method: 'GET',
       credentials: 'include',
       headers: {
