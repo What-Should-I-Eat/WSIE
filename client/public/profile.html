@@ -16,14 +16,14 @@
     <header>
         <h1>What Should I Eat?</h1>
         <nav class="nav-header">
-            <ul>
-                <li><a href="index.html" id="search">Search</a></li>
-                <li><a href="test.html" id="test">Test</a></li>
-                <li><a href="favorites.html" id="favorites">Favorites</a></li>
-                <li><a href="profile.html" id="profile">Profile</a></li>
-              </ul>
+          <ul>
+            <li><a href="test.html" id="test">Test</a></li>
+            <li><a href="favorites.html" id="favorites">Favorites</a></li>
+            <li><a href="profile.html" id="profile">Profile</a></li>
+            <li><a href="login.html" id="search">Logout</a></li>
+          </ul>
         </nav>
-    </header>
+      </header>
 
     <div>
         <h2 id="user-identification"></h2>
@@ -132,7 +132,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             restrictionsHandler.handleRestrictions();
             
-            document.getElementById('search').href = `index.html?name=${username}`;
+            document.getElementById('search').href = "login.html";
             document.getElementById('test').href = `test.html?name=${username}`;
             document.getElementById('favorites').href = `favorites.html?name=${username}`;
             document.getElementById('profile').href = `profile.html?name=${username}`;
