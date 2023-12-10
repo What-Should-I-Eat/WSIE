@@ -132,7 +132,7 @@ var edamam = function () {
 
   function showRecipe(json, source) {
     console.log('recipe: ', json);
-    var heartButton = setupRecipe(json); //Recipe name and ingredients 
+    var ingredients = setupRecipe(json); //Recipe name and ingredients 
 
     var directionsList = document.getElementById('directions-list'); // List of directions
 
@@ -154,14 +154,17 @@ var edamam = function () {
         console.log("results: ", results);
         directionsList.innerHTML = '<ul>' + results.map(function (item) {
           return "<li>".concat(item[0], "</li>");
-        }).join('') + '</ul>'; //CHANGE THIS: What to do when heart icon is clicked - put to favorites
+        }).join('') + '</ul>';
+        var recipeTitleHeader = document.getElementById('recipe-name');
+        var heartButton = getHeartIcon(recipeTitleHeader);
+        recipeTitleHeader.appendChild(heartButton); //CHANGE THIS: What to do when heart icon is clicked - put to favorites
 
         heartButton.addEventListener('click', function () {
           var heartIcon = this.querySelector('img');
 
           if (heartIcon.style.filter === 'sepia(100%)') {
             heartIcon.style.filter = 'none';
-            putToFavorites(ingredients);
+            putToFavorites(json, ingredients, results);
           } else {
             heartIcon.style.filter = 'sepia(100%)';
           }
@@ -199,20 +202,26 @@ var edamam = function () {
 
     json.recipe.ingredientLines.forEach(function (ingredient) {
       ingredients.push(ingredient);
-    }); //Add title of recipe to results and make button for favoriting
-
+    });
     recipeTitleHeader.innerHTML = json.recipe.label;
-    var heartButton = getHeartIcon(recipeTitleHeader);
-    recipeTitleHeader.appendChild(heartButton);
     ingredientsHeader.innerHTML = 'Ingredients';
     ingredientList.innerHTML = "<ul>".concat(ingredients.map(function (item) {
       return "<li>".concat(item, "</li>");
     }).join(''), "</ul>");
     directionsHeader.innerHTML = 'Directions';
-    return heartButton;
+    return ingredients;
   }
 
-  function putToFavorites() {}
+  function putToFavorites(json, ingredients, directions) {
+    var newFavoritedRecipe = {
+      recipeName: json.recipe.label,
+      recipeIngredients: ingredients,
+      recipeDirections: directions[0],
+      //need index 0 because it puts it into a subarray 
+      recipeUri: json.recipe.uri
+    };
+    console.log("name: ", newFavoritedRecipe);
+  }
 
   function getHeartIcon() {
     var heartButton = document.createElement('button');

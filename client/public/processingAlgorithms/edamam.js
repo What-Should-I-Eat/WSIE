@@ -122,7 +122,7 @@ var edamam = (() => {
     function showRecipe(json, source) {
       console.log('recipe: ', json);
 
-      const heartButton = setupRecipe(json); //Recipe name and ingredients 
+      const ingredients = setupRecipe(json); //Recipe name and ingredients 
       const directionsList = document.getElementById('directions-list'); // List of directions
       directionsList.innerHTML = '';
       const link = json.recipe.url;
@@ -143,12 +143,17 @@ var edamam = (() => {
               console.log("results: ", results);
               directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
 
+              const recipeTitleHeader = document.getElementById('recipe-name');
+              const heartButton = getHeartIcon(recipeTitleHeader);
+              recipeTitleHeader.appendChild(heartButton);
+              
+
               //CHANGE THIS: What to do when heart icon is clicked - put to favorites
               heartButton.addEventListener('click', function() {
                 const heartIcon = this.querySelector('img');
                 if (heartIcon.style.filter === 'sepia(100%)') {
                   heartIcon.style.filter = 'none'; 
-                  putToFavorites(ingredients);
+                  putToFavorites(json, ingredients, results);
                 } 
                 else {
                   heartIcon.style.filter = 'sepia(100%)';
@@ -186,19 +191,24 @@ var edamam = (() => {
       ingredients.push(ingredient);
     });
 
-    //Add title of recipe to results and make button for favoriting
     recipeTitleHeader.innerHTML = json.recipe.label;
-    const heartButton = getHeartIcon(recipeTitleHeader);
-    recipeTitleHeader.appendChild(heartButton);
-
     ingredientsHeader.innerHTML = 'Ingredients';
     ingredientList.innerHTML = `<ul>${ingredients.map(item => `<li>${item}</li>`).join('')}</ul>`;
     directionsHeader.innerHTML = 'Directions';
 
-    return heartButton;
+    return ingredients;
   }
 
-  function putToFavorites(){
+  function putToFavorites(json, ingredients, directions){
+
+    const newFavoritedRecipe = {
+      recipeName: json.recipe.label,
+      recipeIngredients: ingredients,
+      recipeDirections: directions[0], //need index 0 because it puts it into a subarray 
+      recipeUri: json.recipe.uri,
+    }
+
+    console.log("name: ", newFavoritedRecipe);
 
   }
 
