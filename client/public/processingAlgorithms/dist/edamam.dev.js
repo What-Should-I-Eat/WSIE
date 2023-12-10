@@ -213,14 +213,72 @@ var edamam = function () {
   }
 
   function putToFavorites(json, ingredients, directions) {
-    var newFavoritedRecipe = {
-      recipeName: json.recipe.label,
-      recipeIngredients: ingredients,
-      recipeDirections: directions[0],
-      //need index 0 because it puts it into a subarray 
-      recipeUri: json.recipe.uri
-    };
-    console.log("name: ", newFavoritedRecipe);
+    var newFavoritedRecipe, username, userId, response, updatedUser;
+    return regeneratorRuntime.async(function putToFavorites$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            newFavoritedRecipe = {
+              recipeName: json.recipe.label,
+              recipeIngredients: ingredients,
+              recipeDirections: directions[0],
+              //need index 0 because it puts it into a subarray 
+              recipeUri: json.recipe.uri
+            };
+            console.log("favoritedRecipe: ", newFavoritedRecipe);
+            _context2.prev = 2;
+            _context2.next = 5;
+            return regeneratorRuntime.awrap(getUsername());
+
+          case 5:
+            username = _context2.sent;
+            _context2.next = 8;
+            return regeneratorRuntime.awrap(getUserId(username));
+
+          case 8:
+            userId = _context2.sent;
+            _context2.next = 11;
+            return regeneratorRuntime.awrap(fetch("http://".concat(host, "/api/v1/users/").concat(userId, "/favorites"), {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                favorites: newFavoritedRecipe
+              })
+            }));
+
+          case 11:
+            response = _context2.sent;
+
+            if (response.ok) {
+              _context2.next = 14;
+              break;
+            }
+
+            throw new Error('Network response was not ok.');
+
+          case 14:
+            _context2.next = 16;
+            return regeneratorRuntime.awrap(response.json());
+
+          case 16:
+            updatedUser = _context2.sent;
+            console.log('Updated user:', updatedUser);
+            _context2.next = 23;
+            break;
+
+          case 20:
+            _context2.prev = 20;
+            _context2.t0 = _context2["catch"](2);
+            console.error('There was a problem with the fetch operation:', _context2.t0);
+
+          case 23:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, null, null, [[2, 20]]);
   }
 
   function getHeartIcon() {

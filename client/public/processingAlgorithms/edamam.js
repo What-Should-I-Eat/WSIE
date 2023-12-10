@@ -199,18 +199,39 @@ var edamam = (() => {
     return ingredients;
   }
 
-  function putToFavorites(json, ingredients, directions){
-
+  async function putToFavorites(json, ingredients, directions) {
     const newFavoritedRecipe = {
       recipeName: json.recipe.label,
       recipeIngredients: ingredients,
       recipeDirections: directions[0], //need index 0 because it puts it into a subarray 
       recipeUri: json.recipe.uri,
+    };
+  
+    console.log("favoritedRecipe: ", newFavoritedRecipe);
+  
+    try {
+      const username = await getUsername();
+      const userId = await getUserId(username);
+  
+      const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ favorites: newFavoritedRecipe })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+  
+      const updatedUser = await response.json();
+      console.log('Updated user:', updatedUser);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
     }
-
-    console.log("name: ", newFavoritedRecipe);
-
   }
+  
 
   function getHeartIcon(){
     const heartButton = document.createElement('button');
