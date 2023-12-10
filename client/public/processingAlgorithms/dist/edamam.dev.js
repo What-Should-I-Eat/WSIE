@@ -132,7 +132,7 @@ var edamam = function () {
 
   function showRecipe(json, source) {
     console.log('recipe: ', json);
-    setupRecipe(json); //Recipe name and ingredients 
+    var heartButton = setupRecipe(json); //Recipe name and ingredients 
 
     var directionsList = document.getElementById('directions-list'); // List of directions
 
@@ -154,7 +154,20 @@ var edamam = function () {
         console.log("results: ", results);
         directionsList.innerHTML = '<ul>' + results.map(function (item) {
           return "<li>".concat(item[0], "</li>");
-        }).join('') + '</ul>';
+        }).join('') + '</ul>'; //CHANGE THIS: What to do when heart icon is clicked - put to favorites
+
+        heartButton.addEventListener('click', function () {
+          var heartIcon = this.querySelector('img');
+
+          if (heartIcon.style.filter === 'sepia(100%)') {
+            heartIcon.style.filter = 'none';
+            putToFavorites(ingredients);
+          } else {
+            heartIcon.style.filter = 'sepia(100%)';
+          }
+
+          console.log('Heart button clicked!');
+        });
       });
     } catch (e) {
       console.log(e);
@@ -186,19 +199,35 @@ var edamam = function () {
 
     json.recipe.ingredientLines.forEach(function (ingredient) {
       ingredients.push(ingredient);
-    });
+    }); //Add title of recipe to results and make button for favoriting
+
     recipeTitleHeader.innerHTML = json.recipe.label;
-    var heartIcon = document.createElement('img');
-    heartIcon.src = './assets/heart.png';
-    heartIcon.alt = 'Heart Icon';
-    heartIcon.style.width = "".concat(10, "vw");
-    heartIcon.style.marginLeft = "".concat(3, "vw");
-    recipeTitleHeader.appendChild(heartIcon);
+    var heartButton = getHeartIcon(recipeTitleHeader);
+    recipeTitleHeader.appendChild(heartButton);
     ingredientsHeader.innerHTML = 'Ingredients';
     ingredientList.innerHTML = "<ul>".concat(ingredients.map(function (item) {
       return "<li>".concat(item, "</li>");
     }).join(''), "</ul>");
     directionsHeader.innerHTML = 'Directions';
+    return heartButton;
+  }
+
+  function putToFavorites() {}
+
+  function getHeartIcon() {
+    var heartButton = document.createElement('button');
+    var heartIcon = document.createElement('img');
+    heartButton.classList.add('heart-button');
+    heartButton.type = 'button';
+    heartIcon.src = './assets/heart.png';
+    heartIcon.alt = 'Heart Icon';
+    heartIcon.style.width = "".concat(10, "vw");
+    heartIcon.style.marginLeft = "".concat(3, "vw");
+    heartButton.style.background = 'none';
+    heartIcon.style.filter = 'sepia(100%)';
+    heartIcon.classList.add('original-color');
+    heartButton.appendChild(heartIcon);
+    return heartButton;
   }
 
   return {

@@ -122,7 +122,7 @@ var edamam = (() => {
     function showRecipe(json, source) {
       console.log('recipe: ', json);
 
-      setupRecipe(json); //Recipe name and ingredients 
+      const heartButton = setupRecipe(json); //Recipe name and ingredients 
       const directionsList = document.getElementById('directions-list'); // List of directions
       directionsList.innerHTML = '';
       const link = json.recipe.url;
@@ -142,6 +142,19 @@ var edamam = (() => {
           .then((results) => {
               console.log("results: ", results);
               directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
+
+              //CHANGE THIS: What to do when heart icon is clicked - put to favorites
+              heartButton.addEventListener('click', function() {
+                const heartIcon = this.querySelector('img');
+                if (heartIcon.style.filter === 'sepia(100%)') {
+                  heartIcon.style.filter = 'none'; 
+                  putToFavorites(ingredients);
+                } 
+                else {
+                  heartIcon.style.filter = 'sepia(100%)';
+                }
+                console.log('Heart button clicked!');
+              });
           });
       } catch (e) {
         console.log(e);
@@ -173,17 +186,40 @@ var edamam = (() => {
       ingredients.push(ingredient);
     });
 
+    //Add title of recipe to results and make button for favoriting
     recipeTitleHeader.innerHTML = json.recipe.label;
-    const heartIcon = document.createElement('img');
-    heartIcon.src = './assets/heart.png'; 
-    heartIcon.alt = 'Heart Icon';
-    heartIcon.style.width = `${10}vw`;
-    heartIcon.style.marginLeft = `${3}vw`
-    recipeTitleHeader.appendChild(heartIcon);
+    const heartButton = getHeartIcon(recipeTitleHeader);
+    recipeTitleHeader.appendChild(heartButton);
 
     ingredientsHeader.innerHTML = 'Ingredients';
     ingredientList.innerHTML = `<ul>${ingredients.map(item => `<li>${item}</li>`).join('')}</ul>`;
     directionsHeader.innerHTML = 'Directions';
+
+    return heartButton;
+  }
+
+  function putToFavorites(){
+
+  }
+
+  function getHeartIcon(){
+    const heartButton = document.createElement('button');
+    const heartIcon = document.createElement('img');
+
+    heartButton.classList.add('heart-button');
+    heartButton.type = 'button';
+
+    heartIcon.src = './assets/heart.png';
+    heartIcon.alt = 'Heart Icon';
+    heartIcon.style.width = `${10}vw`;
+    heartIcon.style.marginLeft = `${3}vw`;
+    heartButton.style.background = 'none';
+    heartIcon.style.filter = 'sepia(100%)';
+    heartIcon.classList.add('original-color');
+
+    heartButton.appendChild(heartIcon);
+
+    return heartButton;
   }
   
   return {
