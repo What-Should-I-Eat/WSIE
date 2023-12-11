@@ -47,12 +47,19 @@ The following endpoints provide functionality related to users of the applicatio
 
 ##### Authentication or User Session Required to Access
 `GET /users/profile`: Fetches a user's profile if that user is logged in.
+
 `GET users/findUserData`: Gets user data based on the username of the current user.
+
 `GET /users`: Returns a JSON array of all users.
+
 `GET /users/findUserId`: Returns the `_id` parameter of a user.
+
 `DELETE /users/:id`: Deletes a user by their user ID.
+
 `PUT /users/diet`: Updates a user's diet restrictions.
+
 `PUT /users/health`: Updates a user's health restrictions.
+
 `PUT /users/:id/favorites`: Updates a user's favorited recipes.
 
 
