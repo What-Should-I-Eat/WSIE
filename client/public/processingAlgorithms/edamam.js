@@ -205,6 +205,7 @@ var edamam = (() => {
       recipeIngredients: ingredients,
       recipeDirections: directions[0], //need index 0 because it puts it into a subarray 
       recipeUri: json.recipe.uri,
+      recipeImage: json.recipe.images.SMALL.url,
     };
   
     console.log("favoritedRecipe: ", newFavoritedRecipe);
@@ -222,11 +223,11 @@ var edamam = (() => {
       });
   
       if (!response.ok) {
-        throw new Error('Network response was not ok.');
+        throw new Error('There was a problem!!!');
       }
   
       const updatedUser = await response.json();
-      console.log('Updated user:', updatedUser);
+      console.log('Updated user favorites:', updatedUser);
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }

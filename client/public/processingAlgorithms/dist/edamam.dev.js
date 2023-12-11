@@ -223,7 +223,8 @@ var edamam = function () {
               recipeIngredients: ingredients,
               recipeDirections: directions[0],
               //need index 0 because it puts it into a subarray 
-              recipeUri: json.recipe.uri
+              recipeUri: json.recipe.uri,
+              recipeImage: json.recipe.images.SMALL.url
             };
             console.log("favoritedRecipe: ", newFavoritedRecipe);
             _context2.prev = 2;
@@ -256,7 +257,7 @@ var edamam = function () {
               break;
             }
 
-            throw new Error('Network response was not ok.');
+            throw new Error('There was a problem!!!');
 
           case 14:
             _context2.next = 16;
@@ -264,7 +265,7 @@ var edamam = function () {
 
           case 16:
             updatedUser = _context2.sent;
-            console.log('Updated user:', updatedUser);
+            console.log('Updated user favorites:', updatedUser);
             _context2.next = 23;
             break;
 

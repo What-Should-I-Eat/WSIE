@@ -583,7 +583,7 @@ endpoints.put('/users/:id/favorites', function _callee10(req, res) {
           }));
 
         case 8:
-          user.favorites = newFavorites;
+          user.favorites.push(newFavorites);
           _context10.next = 11;
           return regeneratorRuntime.awrap(user.save());
 

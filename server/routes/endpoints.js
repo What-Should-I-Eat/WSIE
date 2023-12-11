@@ -283,7 +283,7 @@ endpoints.put('/users/:id/favorites', async (req, res) => { //WORKS!
       if (!user) {
           return res.status(404).json({ error: 'User not found' });
       }
-      user.favorites = newFavorites;
+      user.favorites.push(newFavorites);
       await user.save();
       res.json(user);
   } 
