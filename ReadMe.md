@@ -60,7 +60,7 @@ The following endpoints provide functionality related to users of the applicatio
 `GET /edamam`: Returns the Edamam API access link for this application.
 
 #### Scraping Endpoints
-`GET /scrape-recipe`: Accepts query parameters of Edamam recipe link and Edamam recipe source. Calls determineSite() which determines the site of origin and creates a scraper for the recipe directions in that site. determineSite() calls getRecipeDirectionsFromSource(), which gets the text content of the recipe directions on the respective site. Recipe data is ultimately returned as a JSON object to `/scrape-recipe`.
+`GET /scrape-recipe`: Accepts query parameters of Edamam recipe link and Edamam recipe source. Calls `determineSite()` which determines the site of origin and creates a scraper for the recipe directions in that site. `determineSite()` calls `getRecipeDirectionsFromSource()`, which gets the text content of the recipe directions on the respective site. Recipe data is ultimately returned as a JSON object to `/scrape-recipe`.
 
 ### Models
 #### UserSchema
@@ -75,7 +75,7 @@ The following endpoints provide functionality related to users of the applicatio
 * `diet` (String array): Array containing user's dietary selections (these identifiers follow query parameters passed to Edamam API).
 * `health` (String array): Array containing user's health selections (these identifiers follow query parameters passed to Edamam API).
 * `favorites` (object array): Array of objects representing recipes that the user has favorited.
-  - `-id` (String): Randomly generated identifier for the favorited recipe.
+  - `_id` (String): Randomly generated identifier for the favorited recipe.
   - `recipeName` (String): Name of the recipe.
   - `recipeIngredients` (String array): Array of recipe ingredients.
   - `recipeDirections` (String array): Array of recipe directions.
@@ -90,6 +90,8 @@ The following endpoints provide functionality related to users of the applicatio
 ## Database
 The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains one collection called `Users`. 
 
+## Nginx
+Nginx is used as a reverse proxy and enables both the client and server to be accessed via a single host variable, which is currently set to `localhost:8080`. Internally, the client runs on port `3000` and the server runs on port `3001`.
 
 ## Software Architecture
 The following diagram shows the software architecture of the application.
