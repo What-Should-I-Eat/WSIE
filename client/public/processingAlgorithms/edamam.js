@@ -205,7 +205,7 @@ var edamam = (() => {
       recipeIngredients: ingredients,
       recipeDirections: directions[0], //need index 0 because it puts it into a subarray 
       recipeUri: json.recipe.uri,
-      recipeImage: json.recipe.images.SMALL.url,
+      recipeImage: json.recipe.images.LARGE.url,
     };
   
     console.log("favoritedRecipe: ", newFavoritedRecipe);

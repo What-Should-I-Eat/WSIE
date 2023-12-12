@@ -20,16 +20,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         user.favorites.forEach(recipe => {
           console.log(recipe);
-          if (recipe.recipeIngredients && recipe.recipeIngredients.length > 0) { //get rid of undefined
+           
+          //conditional gets rid of undefined
+           if (recipe.recipeIngredients && recipe.recipeIngredients.length > 0) {
             const recipeElement = document.createElement('div');
             recipeElement.classList.add('recipe-item');
 
             recipeElement.innerHTML = `
-                <h3>${recipe.recipeName}</h3>
                 <img src="${recipe.recipeImage}" alt="${recipe.recipeName}">
-                <ul>
-                    ${recipe.recipeIngredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
-                </ul>
+                <h2>${recipe.recipeName}</h2>
             `;
 
             favoritesContainer.appendChild(recipeElement);
