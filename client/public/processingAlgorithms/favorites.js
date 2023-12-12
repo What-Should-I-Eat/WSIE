@@ -19,20 +19,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const favoritesContainer = document.getElementById('favorites-container');
 
         user.favorites.forEach(recipe => {
-          const recipeElement = document.createElement('div');
-          recipeElement.classList.add('recipe-item');
+          console.log(recipe);
+          if (recipe.recipeIngredients && recipe.recipeIngredients.length > 0) { //get rid of undefined
+            const recipeElement = document.createElement('div');
+            recipeElement.classList.add('recipe-item');
 
-          recipeElement.innerHTML = `
-              <h3>${recipe.recipeName}</h3>
-              <img src="${recipe.recipeImage}" alt="${recipe.recipeName}">
-              <ul>
-                ${recipe.recipeIngredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
-              </ul>
-          `;
+            recipeElement.innerHTML = `
+                <h3>${recipe.recipeName}</h3>
+                <img src="${recipe.recipeImage}" alt="${recipe.recipeName}">
+                <ul>
+                    ${recipe.recipeIngredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+                </ul>
+            `;
 
-          favoritesContainer.appendChild(recipeElement);
-          const line = document.createElement('hr');
-          favoritesContainer.appendChild(line);
+            favoritesContainer.appendChild(recipeElement);
+            const line = document.createElement('hr');
+            favoritesContainer.appendChild(line);
+          }
+          
         });
       })
       .catch(error => {

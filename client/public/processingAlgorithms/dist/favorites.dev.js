@@ -22,14 +22,19 @@ document.addEventListener('DOMContentLoaded', function _callee() {
             console.log('User found: ', user);
             var favoritesContainer = document.getElementById('favorites-container');
             user.favorites.forEach(function (recipe) {
-              var recipeElement = document.createElement('div');
-              recipeElement.classList.add('recipe-item');
-              recipeElement.innerHTML = "\n              <h3>".concat(recipe.recipeName, "</h3>\n              <img src=\"").concat(recipe.recipeImage, "\" alt=\"").concat(recipe.recipeName, "\">\n              <ul>\n                ").concat(recipe.recipeIngredients.map(function (ingredient) {
-                return "<li>".concat(ingredient, "</li>");
-              }).join(''), "\n              </ul>\n          ");
-              favoritesContainer.appendChild(recipeElement);
-              var line = document.createElement('hr');
-              favoritesContainer.appendChild(line);
+              console.log(recipe);
+
+              if (recipe.recipeIngredients && recipe.recipeIngredients.length > 0) {
+                //get rid of undefined
+                var recipeElement = document.createElement('div');
+                recipeElement.classList.add('recipe-item');
+                recipeElement.innerHTML = "\n                <h3>".concat(recipe.recipeName, "</h3>\n                <img src=\"").concat(recipe.recipeImage, "\" alt=\"").concat(recipe.recipeName, "\">\n                <ul>\n                    ").concat(recipe.recipeIngredients.map(function (ingredient) {
+                  return "<li>".concat(ingredient, "</li>");
+                }).join(''), "\n                </ul>\n            ");
+                favoritesContainer.appendChild(recipeElement);
+                var line = document.createElement('hr');
+                favoritesContainer.appendChild(line);
+              }
             });
           })["catch"](function (error) {
             console.error('Fetch error: ', error);

@@ -48,3 +48,26 @@ function getUsername(){
   console.log(username);
   return username;
 }
+
+function getUserObject(username){
+    fetch(`http://${host}/api/v1/users/findUser/${username}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Cannot find user');
+        }
+        return response.json();
+      })
+      .then(user => {
+        console.log('User found: ', user);
+        return user;
+        
+      })
+      .catch(error => {
+        console.error('Fetch error: ', error);
+      });
+}

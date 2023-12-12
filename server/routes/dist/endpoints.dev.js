@@ -345,21 +345,7 @@ endpoints.get('/users/findUserId', function _callee5(req, res) {
       }
     }
   }, null, null, [[0, 11]]);
-}); // endpoints.get('/users/findUserData', async (req, res) => {
-//   try {
-//     const username = req.query.username;
-//     const user = await User.findOne({ userName: username });
-//     if (!user) {
-//       return res.status(404).json({ error: 'User not found' });
-//     }
-//     res.json(user);
-//   } 
-//   catch (error) {
-//     console.error('Error finding this username: ', error);
-//     return res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-//Find user by username - not for login purposes - WORKS!
+}); //Find user by username - not for login purposes - WORKS!
 
 endpoints.get('/users/finduser/:username', function _callee6(req, res) {
   var username, user;
