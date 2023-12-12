@@ -16,7 +16,7 @@ This will build and start the 4 Docker containers of `capstone copy`:
 3. `client-1`
 4. `nginx-1`
 
-Navigate to `http://localhost:8080/login.html` to begin using the application. 
+Navigate to `http://localhost:8080/login` to begin using the application. 
 
 ## Client
 
