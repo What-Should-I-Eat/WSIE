@@ -12,14 +12,14 @@
         "@capacitor/cli": "^5.5.1",
         "@capacitor/core": "^5.5.1",
         "@capacitor/ios": "^5.5.1",
-        "axios": "^1.5.1",
+        "axios": "^1.6.2",
         "bcrypt": "^5.1.1",
         "bcryptjs": "^2.4.3",
         "cheerio": "^1.0.0-rc.12",
         "express-session": "^1.17.3",
-        "passport": "^0.6.0",
+        "passport": "^0.7.0",
         "passport-local": "^1.0.0",
-        "vue": "^3.3.4",
+        "vue": "^3.3.11",
         "vue-router": "^4.2.5"
     }
 }
