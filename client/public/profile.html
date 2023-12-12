@@ -20,7 +20,7 @@
             <li><a href="test.html" id="test">Search</a></li>
             <li><a href="favorites.html" id="favorites">Favorites</a></li>
             <li><a href="profile.html" id="profile">Profile</a></li>
-            <li><a href="login.html" id="search">Logout</a></li>
+            <li><a href="index.html" id="search">Logout</a></li>
           </ul>
         </nav>
       </header>
@@ -132,7 +132,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             restrictionsHandler.handleRestrictions();
             
-            document.getElementById('search').href = "login.html";
+            document.getElementById('search').href = "index.html";
             document.getElementById('test').href = `test.html?name=${username}`;
             document.getElementById('favorites').href = `favorites.html?name=${username}`;
             document.getElementById('profile').href = `profile.html?name=${username}`;

@@ -9,6 +9,9 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@capacitor/cli": "^5.5.1",
+        "@capacitor/core": "^5.5.1",
+        "@capacitor/ios": "^5.5.1",
         "axios": "^1.5.1",
         "bcrypt": "^5.1.1",
         "bcryptjs": "^2.4.3",

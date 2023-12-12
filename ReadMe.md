@@ -10,7 +10,7 @@ Ensure Docker Desktop is available. Use the following commands to run the applic
 
 `docker compose up`
 
-This will build and start the 4 docker containers of `capstone copy`:
+This will build and start the 4 Docker containers of `capstone copy`:
 1. `db-1`
 2. `server-1`
 3. `client-1`

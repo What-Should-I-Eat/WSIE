@@ -18,13 +18,12 @@
         <li><a href="test.html" id="test">Search</a></li>
         <li><a href="favorites.html" id="favorites">Favorites</a></li>
         <li><a href="profile.html" id="profile">Profile</a></li>
-        <li><a href="login.html" id="search">Logout</a></li>
+        <li><a href="index.html" id="search">Logout</a></li>
       </ul>
     </nav>
   </header>
 
   <div class="search-recipe">
-    <!-- <h1>Search a Recipe</h1> -->
     <form onsubmit="return edamam.searchRecipe(event)">
       <input type="text" id="search-input" placeholder="Enter recipe to search">
       <button type="submit">Search</button>
@@ -39,6 +38,7 @@
   </div>
 
   <div id="selected-recipe-details">
+    <br>
     <div id="recipe-image"></div>
     <h2 id="recipe-name"  style="font-size: 10vw;"></h2>
 
@@ -66,7 +66,7 @@
     }
     const username = getUserName('name');
     document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('search').href = "login.html";
+        document.getElementById('search').href = "index.html";
         document.getElementById('test').href = `test.html?name=${username}`;
         document.getElementById('favorites').href = `favorites.html?name=${username}`;
         document.getElementById('profile').href = `profile.html?name=${username}`;
