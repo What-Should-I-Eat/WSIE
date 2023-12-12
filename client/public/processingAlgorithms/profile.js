@@ -5,26 +5,26 @@ var restrictionsHandler = (() => {
     let healthRestrictions = [];
 
     var handleRestrictions = async () => {
-        const username = getUsername();
+        const username = getUsername(); 
         console.log("username: ", username);
-        getUserId(username)
-            .then(userId => {
-                console.log("userId: ", userId);
+        getUserData(username)
+            .then(user=> {
+                console.log("user: ", user);
                 const dietButtons = document.querySelectorAll('.diet-container button');
                 const healthButtons1 = document.querySelectorAll('.health-container-1 button');
                 const healthButtons2 = document.querySelectorAll('.health-container-2 button');
                 const healthButtons = Array.from(healthButtons1).concat(Array.from(healthButtons2));
 
-                showArrays(dietButtons, healthButtons);
+                showArrays(dietButtons, healthButtons, user.health, user.diet);
             })
             .catch(error => {
                 console.error('Error getting user ID:', error);
             });
     }
 
-    async function showArrays(dietButtons, healthButtons){
-        dietRestrictions = handleDietButtons(dietButtons, dietRestrictions);
-        healthRestrictions = handleDietButtons(healthButtons, healthRestrictions);
+    async function showArrays(dietButtons, healthButtons, healthArray, dietArray){
+        dietRestrictions = handleDietButtons(dietButtons, dietRestrictions, dietArray);
+        healthRestrictions = handleDietButtons(healthButtons, healthRestrictions, healthArray);
         console.log('restrictions: ', dietRestrictions);
         console.log('allergies: ', healthRestrictions);
     }
@@ -56,12 +56,18 @@ var restrictionsHandler = (() => {
 
 
     //Puts user restrictions into an array and gives the array to edamam.js
-    function handleDietButtons(buttonType, array) {
+    function handleDietButtons(buttonType, array, healthOrDietArray) {
         buttonType.forEach(function (button) {
+            const sanitizedRestriction = getEdamamNameOfRestriction(button.textContent);
+            const userPreviouslySelected = healthOrDietArray.includes(sanitizedRestriction);
+    
+            if (userPreviouslySelected) {
+                button.classList.add('selected');
+                array.push(sanitizedRestriction);
+            }
+    
             button.addEventListener('click', function () {
                 button.classList.toggle('selected');
-                const sanitizedRestriction = getEdamamNameOfRestriction(button.textContent);
-    
                 if (button.classList.contains('selected')) {
                     array.push(sanitizedRestriction);
                     console.log('added ', sanitizedRestriction, ' to array');
@@ -79,6 +85,7 @@ var restrictionsHandler = (() => {
         });
         return array;
     }
+    
 
     function getUsername(){
         let username = document.getElementById("user-identification").textContent.trim();

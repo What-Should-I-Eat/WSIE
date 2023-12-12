@@ -13,13 +13,13 @@ var restrictionsHandler = function () {
           case 0:
             username = getUsername();
             console.log("username: ", username);
-            getUserId(username).then(function (userId) {
-              console.log("userId: ", userId);
+            getUserData(username).then(function (user) {
+              console.log("user: ", user);
               var dietButtons = document.querySelectorAll('.diet-container button');
               var healthButtons1 = document.querySelectorAll('.health-container-1 button');
               var healthButtons2 = document.querySelectorAll('.health-container-2 button');
               var healthButtons = Array.from(healthButtons1).concat(Array.from(healthButtons2));
-              showArrays(dietButtons, healthButtons);
+              showArrays(dietButtons, healthButtons, user.health, user.diet);
             })["catch"](function (error) {
               console.error('Error getting user ID:', error);
             });
@@ -32,13 +32,13 @@ var restrictionsHandler = function () {
     });
   };
 
-  function showArrays(dietButtons, healthButtons) {
+  function showArrays(dietButtons, healthButtons, healthArray, dietArray) {
     return regeneratorRuntime.async(function showArrays$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            dietRestrictions = handleDietButtons(dietButtons, dietRestrictions);
-            healthRestrictions = handleDietButtons(healthButtons, healthRestrictions);
+            dietRestrictions = handleDietButtons(dietButtons, dietRestrictions, dietArray);
+            healthRestrictions = handleDietButtons(healthButtons, healthRestrictions, healthArray);
             console.log('restrictions: ', dietRestrictions);
             console.log('allergies: ', healthRestrictions);
 
@@ -86,11 +86,18 @@ var restrictionsHandler = function () {
   }; //Puts user restrictions into an array and gives the array to edamam.js
 
 
-  function handleDietButtons(buttonType, array) {
+  function handleDietButtons(buttonType, array, healthOrDietArray) {
     buttonType.forEach(function (button) {
+      var sanitizedRestriction = getEdamamNameOfRestriction(button.textContent);
+      var userPreviouslySelected = healthOrDietArray.includes(sanitizedRestriction);
+
+      if (userPreviouslySelected) {
+        button.classList.add('selected');
+        array.push(sanitizedRestriction);
+      }
+
       button.addEventListener('click', function () {
         button.classList.toggle('selected');
-        var sanitizedRestriction = getEdamamNameOfRestriction(button.textContent);
 
         if (button.classList.contains('selected')) {
           array.push(sanitizedRestriction);
