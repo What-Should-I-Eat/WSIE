@@ -81,33 +81,23 @@ var edamam = (() => {
         return false;
     }
 
-    function getHealthString(healthArray){
-      if(!healthArray.length)
-      {
+    //These are for the diet and health parameters passed to edamam api call
+    function getHealthString(healthArray) {
+      if (!healthArray.length) {
         return "";
       }
-      
-      let healthString = "";
-
-      healthArray.forEach(healthItem => {
-        healthString += "&health=" + `${healthItem}`;
-      });
+      const healthString = healthArray.map(healthItem => `&health=${healthItem}`).join('');
       return healthString;
     }
-
-    function getDietString(dietArray){
-      if(!dietArray.length)
-      {
+    
+    function getDietString(dietArray) {
+      if (!dietArray.length) {
         return "";
       }
-      
-      let dietString = "";
-
-      dietArray.forEach(dietItem => {
-        dietString += "&diet=" + `${dietItem},`;
-      });
+      const dietString = dietArray.map(dietItem => `&diet=${dietItem}`).join('');
       return dietString;
     }
+    
 
     function sourceIsViable(source){
       switch(source) {

@@ -85,17 +85,17 @@ var edamam = function () {
       console.error('Error fetching user data:', error);
     });
     return false;
-  };
+  }; //These are for the diet and health parameters passed to edamam api call
+
 
   function getHealthString(healthArray) {
     if (!healthArray.length) {
       return "";
     }
 
-    var healthString = "";
-    healthArray.forEach(function (healthItem) {
-      healthString += "&health=" + "".concat(healthItem);
-    });
+    var healthString = healthArray.map(function (healthItem) {
+      return "&health=".concat(healthItem);
+    }).join('');
     return healthString;
   }
 
@@ -104,10 +104,9 @@ var edamam = function () {
       return "";
     }
 
-    var dietString = "";
-    dietArray.forEach(function (dietItem) {
-      dietString += "&diet=" + "".concat(dietItem, ",");
-    });
+    var dietString = dietArray.map(function (dietItem) {
+      return "&diet=".concat(dietItem);
+    }).join('');
     return dietString;
   }
 
