@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', function _callee() {
               console.log(recipe); //conditional gets rid of undefined
 
               if (recipe.recipeIngredients && recipe.recipeIngredients.length > 0) {
-                var recipeElement = document.createElement('div');
-                recipeElement.classList.add('recipe-item');
-                recipeElement.innerHTML = "\n                <img src=\"".concat(recipe.recipeImage, "\" alt=\"").concat(recipe.recipeName, "\">\n                <h2>").concat(recipe.recipeName, "</h2>\n            ");
-                favoritesContainer.appendChild(recipeElement);
+                var favoriteElement = document.createElement('div');
+                favoriteElement.classList.add('recipe-item');
+                favoriteElement.innerHTML = "\n                <img src=\"".concat(recipe.recipeImage, "\" alt=\"").concat(recipe.recipeName, "\">\n                <h2>").concat(recipe.recipeName, "</h2>\n            ");
+                favoritesContainer.appendChild(favoriteElement);
                 var line = document.createElement('hr');
                 favoritesContainer.appendChild(line);
               }

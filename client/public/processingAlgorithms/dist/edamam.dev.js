@@ -35,7 +35,6 @@ var edamam = function () {
 
               try {
                 fetch(fullLink, {
-                  //RESTRICTIONS MUST BE ADDED TO THIS FULLLINK
                   method: 'GET',
                   headers: {
                     'Accept': 'application/json',
@@ -50,7 +49,17 @@ var edamam = function () {
 
                     if (viableSource) {
                       console.log(source, " - ", data.recipe.label);
-                      var recipeName = document.createElement('li');
+                      var recipeName = document.createElement('li'); //Image
+
+                      if (data.recipe.images && data.recipe.images.LARGE && data.recipe.images.LARGE.url) {
+                        var imageElement = document.createElement('img');
+                        imageElement.src = data.recipe.images.LARGE.url;
+                        imageElement.alt = data.recipe.label;
+                        imageElement.style.display = 'block';
+                        imageElement.style.margin = '0 auto';
+                        recipeName.appendChild(imageElement);
+                      }
+
                       var link = document.createElement('a');
                       link.textContent = data.recipe.label;
                       recipeName.appendChild(link);

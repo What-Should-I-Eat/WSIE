@@ -23,15 +23,15 @@ document.addEventListener('DOMContentLoaded', async () => {
            
           //conditional gets rid of undefined
            if (recipe.recipeIngredients && recipe.recipeIngredients.length > 0) {
-            const recipeElement = document.createElement('div');
-            recipeElement.classList.add('recipe-item');
+            const favoriteElement = document.createElement('div');
+            favoriteElement.classList.add('recipe-item');
 
-            recipeElement.innerHTML = `
+            favoriteElement.innerHTML = `
                 <img src="${recipe.recipeImage}" alt="${recipe.recipeName}">
                 <h2>${recipe.recipeName}</h2>
             `;
 
-            favoritesContainer.appendChild(recipeElement);
+            favoritesContainer.appendChild(favoriteElement);
             const line = document.createElement('hr');
             favoritesContainer.appendChild(line);
           }
