@@ -191,24 +191,37 @@ var edamam = (() => {
     const ingredientsHeader = document.getElementById('ingredients'); // Name: ingredients
     const ingredientList = document.getElementById('ingredient-list'); // List of ingredients
     const directionsHeader = document.getElementById('directions'); // Name: directions
+    const recipeImageContainer = document.getElementById('recipe-image'); // Container for the recipe image
+
     recipeTitleHeader.innerHTML = '';
     ingredientsHeader.innerHTML = '';
     ingredientList.innerHTML = '';
     directionsHeader.innerHTML = '';
+    recipeImageContainer.innerHTML = ''; 
 
     const ingredients = [];
-    //Get ingredients from edamam response and add to ingredients array
     json.recipe.ingredientLines.forEach(ingredient => {
-      ingredients.push(ingredient);
+        ingredients.push(ingredient);
     });
 
     recipeTitleHeader.innerHTML = json.recipe.label;
+
+    if (json.recipe.image) {
+        const recipeImage = document.createElement('img');
+        recipeImage.src = json.recipe.image;
+        recipeImage.alt = json.recipe.label;
+        recipeImage.style.maxWidth = '100%';
+        recipeImageContainer.appendChild(recipeImage);
+    }
+
+    // Display ingredients and directions
     ingredientsHeader.innerHTML = 'Ingredients';
     ingredientList.innerHTML = `<ul>${ingredients.map(item => `<li>${item}</li>`).join('')}</ul>`;
     directionsHeader.innerHTML = 'Directions';
 
     return ingredients;
-  }
+}
+
 
   async function putToFavorites(json, ingredients, directions) {
     const newFavoritedRecipe = {

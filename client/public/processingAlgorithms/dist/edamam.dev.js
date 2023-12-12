@@ -203,16 +203,28 @@ var edamam = function () {
 
     var directionsHeader = document.getElementById('directions'); // Name: directions
 
+    var recipeImageContainer = document.getElementById('recipe-image'); // Container for the recipe image
+
     recipeTitleHeader.innerHTML = '';
     ingredientsHeader.innerHTML = '';
     ingredientList.innerHTML = '';
     directionsHeader.innerHTML = '';
-    var ingredients = []; //Get ingredients from edamam response and add to ingredients array
-
+    recipeImageContainer.innerHTML = '';
+    var ingredients = [];
     json.recipe.ingredientLines.forEach(function (ingredient) {
       ingredients.push(ingredient);
     });
     recipeTitleHeader.innerHTML = json.recipe.label;
+
+    if (json.recipe.image) {
+      var recipeImage = document.createElement('img');
+      recipeImage.src = json.recipe.image;
+      recipeImage.alt = json.recipe.label;
+      recipeImage.style.maxWidth = '100%';
+      recipeImageContainer.appendChild(recipeImage);
+    } // Display ingredients and directions
+
+
     ingredientsHeader.innerHTML = 'Ingredients';
     ingredientList.innerHTML = "<ul>".concat(ingredients.map(function (item) {
       return "<li>".concat(item, "</li>");
