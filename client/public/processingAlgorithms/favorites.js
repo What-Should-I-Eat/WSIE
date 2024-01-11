@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             favoriteElement.innerHTML = `
                 <img src="${recipe.recipeImage}" alt="${recipe.recipeName}">
-                <h2>${recipe.recipeName}</h2>
-            `;
+                <h2><a href="#" class="recipe-link">${recipe.recipeName}</a></h2>
+                `;
 
             favoritesContainer.appendChild(favoriteElement);
             const line = document.createElement('hr');
