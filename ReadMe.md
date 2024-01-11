@@ -4,6 +4,8 @@
 What Should I Eat? is a web and iOS mobile application dedicated to assisting people with dietary restrictions with finding diverse food to make and eat. 
 
 ## Run the Web Application Version
+After cloning, run `npm install` in the root, client, and server directories.
+
 Ensure Docker Desktop is available. Use the following commands to run the application in the root directory:
 
 `docker compose build`
