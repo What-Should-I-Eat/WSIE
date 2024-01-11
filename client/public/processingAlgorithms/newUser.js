@@ -61,7 +61,7 @@ var loginHandler = (() => {
           loginButton.id = 'loginButton'; // Set an ID for the button
           loginButton.addEventListener('click', function(event) {
             event.preventDefault();
-            window.location.href = './login.html';
+            window.location.href = './index.html';
           });
           loginDiv.appendChild(loginButton);
         }
