@@ -1,0 +1,8 @@
+{
+  "appId": "com.example.app",
+  "appName": "WSIE",
+  "webDir": "client/public",
+  "server": {
+    "androidScheme": "https"
+  }
+}

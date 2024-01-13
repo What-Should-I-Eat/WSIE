@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Test</title>
-  <script type="text/javascript" src="./processingAlgorithms/restrictions.js"></script>
+  <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/edamam.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
   <script src="https://developer.edamam.com/attribution/badge.js"></script>
@@ -11,21 +11,20 @@
 </head>
 <body>
 
-<header>
-  <h1>What Should I Eat?</h1>
-  <nav class="nav-header">
-    <ul>
-      <li><a href="index.html">Search</a></li>
-      <li><a href="test.html">Test</a></li>
-      <li><a href="favorites.html">Favorites</a></li>
-      <li><a href="profile.html">Profile</a></li>
-    </ul>
-  </nav>
-</header>
-
+  <header>
+    <h1>What Should I Eat?</h1>
+    <nav class="nav-header">
+      <ul>
+        <li><a href="test.html" id="test">Search</a></li>
+        <li><a href="favorites.html" id="favorites">Favorites</a></li>
+        <li><a href="profile.html" id="profile">Profile</a></li>
+        <li><a href="index.html" id="search">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
 
   <div class="search-recipe">
-    <form onsubmit="return edamam.searchRecipe()">
+    <form onsubmit="return edamam.searchRecipe(event)">
       <input type="text" id="search-input" placeholder="Enter recipe to search">
       <button type="submit">Search</button>
 
@@ -39,7 +38,10 @@
   </div>
 
   <div id="selected-recipe-details">
-    <h2 id="recipe-name"></h2>
+    <br>
+    <div id="recipe-image"></div>
+    <h2 id="recipe-name"  style="font-size: 10vw;"></h2>
+
     <div class="ingredient-details">
       <h4 id="ingredients"></h4>
       <ul id="ingredient-list"></ul>
@@ -50,10 +52,25 @@
     </div>
   </div>
 
-  <br><br>
-  <br>
+  <br><br><br><br><br><br>
 
-  <footer><div id="edamam-badge" data-color="white"></div>
+  <footer>
+    <div class="badge" id="edamam-badge" data-color="white"></div>
+
   </footer>
+
+  <script>
+    function getUserName(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
+    const username = getUserName('name');
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('search').href = "index.html";
+        document.getElementById('test').href = `test.html?name=${username}`;
+        document.getElementById('favorites').href = `favorites.html?name=${username}`;
+        document.getElementById('profile').href = `profile.html?name=${username}`;
+    });
+</script>
 </body>
 </html>

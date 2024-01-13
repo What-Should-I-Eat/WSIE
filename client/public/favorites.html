@@ -2,7 +2,8 @@
 <html>
 <head>
   <title>Favorites</title>
-  <script type="text/javascript" src="./processingAlgorithms/recipeRetrieval.js"></script>
+  <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
+  <script type="text/javascript" src="./processingAlgorithms/favorites.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,10 +14,10 @@
     <h1>What Should I Eat?</h1>
     <nav class="nav-header">
       <ul>
-        <li><a href="index.html">Search</a></li>
-        <li><a href="test.html">Test</a></li>
-        <li><a href="favorites.html">Favorites</a></li>
-        <li><a href="profile.html">Profile</a></li>
+        <li><a href="test.html" id="test">Search</a></li>
+        <li><a href="favorites.html" id="favorites">Favorites</a></li>
+        <li><a href="profile.html" id="profile">Profile</a></li>
+        <li><a href="index.html" id="search">Logout</a></li>
       </ul>
     </nav>
   </header>
@@ -24,13 +25,25 @@
 
 <div>
     <h2>Favorited Recipes</h2>
+    <div id="favorites-container"></div>
 </div>
-
- 
 
 <br><br><br>
   <footer>
   </footer>
 
+  <script>
+    function getUserName(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
+    const username = getUserName('name');
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('search').href = "index.html";
+        document.getElementById('test').href = `test.html?name=${username}`;
+        document.getElementById('favorites').href = `favorites.html?name=${username}`;
+        document.getElementById('profile').href = `profile.html?name=${username}`;
+    });
+</script>
 </body>
 </html>

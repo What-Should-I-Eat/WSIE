@@ -77,7 +77,7 @@ h4 {
 li {
   text-align: center;
   margin-top: 1.5vw;
-  font-size: 4vw;
+  font-size: 5.5vw;
   list-style-type: none;
   margin-right: 18%;
 }
@@ -100,8 +100,8 @@ hr {
 input {
   background-color: #9ec9532e;
   width: auto;
-  height: 8vw;
-  font-size: 3vw;
+  height: 12vw;
+  font-size: 4vw;
   text-align: center;
   border: 1px solid rgb(134, 126, 107);
   border-radius: 0.075rem;
@@ -118,6 +118,13 @@ input {
   height: 75vh; /* Adjust as needed */
 }
 
+.login-title h1{
+  font-size: 15vw;
+}
+.login-title h2{
+  font-size: 10vw;
+}
+
 .user-login {
   margin-top: 5vw; 
   text-align: center;
@@ -131,7 +138,21 @@ input {
   height: 75vh; /* Adjust as needed */
 }
 
-.restrictions-container button, .allergies-container button {
+.new-user h1{
+  font-size: 15vw;
+}
+.new-user h4{
+  font-size: 8vw;
+}
+
+.search-recipe h1{
+  padding-bottom: 2vw;
+  font-size: 6vw;
+}
+
+.diet-container button, 
+.health-container-1 button,
+.health-container-2 button {
   font: inherit;
   color: inherit;
   font-size: 3.5vw;
@@ -144,15 +165,42 @@ input {
   padding: 0.25vw;
 }
 
-.restrictions-container button.selected,
-.allergies-container button.selected {
+.diet-container button.selected,
+.health-container-1 button.selected,
+.health-container-2 button.selected {
   background-color: #7fa341c0;
   border-color: #a28969; 
   border-radius: 10%;
 }
 
-.allergies-container{
+.health-container-2{
   padding-top: 7vw;
+}
+
+.submit-restrictions button{
+  font: inherit;
+  color: inherit;
+  font-size: 4vw;
+  font-weight: 600;
+  height: 15vw;
+  width: 30vw;
+  background-color: #9ec95359;
+  border-width: 2vw;
+  border-style: dotted;
+  border: rgb(134, 126, 107);
+  padding: 0.25vw;
+}
+
+
+
+.ingredient-details h4{
+  padding-top: 0vw;
+  padding-bottom: 0vw;
+  font-size: 8vw;
+}
+
+.recipe-details h4{
+  font-size: 8vw;
 }
 
 table {
@@ -180,9 +228,9 @@ th {
 button {
   font: inherit;
   color: inherit;
-  font-size: 3.5vw; 
+  font-size: 5vw; 
   height: auto;
-  width: 12vw;
+  width: 16vw;
   padding: 1vw;
   background-color: #9ec95359;
   border: none;

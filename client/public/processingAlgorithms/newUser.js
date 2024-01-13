@@ -1,4 +1,4 @@
-const host = 'localhost:8080';
+
 
 var loginHandler = (() => {
 
@@ -29,7 +29,7 @@ var loginHandler = (() => {
         favorites: []
       };
 
-      fetch("http://" + host + "/api/v1/users/register", {
+      fetch(`http://${host}/api/v1/users/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ var loginHandler = (() => {
           loginButton.id = 'loginButton'; // Set an ID for the button
           loginButton.addEventListener('click', function(event) {
             event.preventDefault();
-            window.location.href = './login.html';
+            window.location.href = './index.html';
           });
           loginDiv.appendChild(loginButton);
         }

@@ -1,58 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Home</title>
-  <script type="text/javascript" src="./processingAlgorithms/recipeRetrieval.js"></script>
+  <title>Login to WSIE</title>
+  <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
+  <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
-
-  <header>
-    <h1>What Should I Eat?</h1>
-    <nav class="nav-header">
-      <ul>
-        <li><a href="index.html">Search</a></li>
-        <li><a href="test.html">Test</a></li>
-        <li><a href="favorites.html">Favorites</a></li>
-        <li><a href="profile.html">Profile</a></li>
-      </ul>
-    </nav>
-  </header>
+<body style="background-color: rgb(162, 176, 121); color: white;" >
 
 
-  <div class="search-recipe">
-    <form onsubmit="return Recipe.searchRecipe()">
-      <input type="text" id="search-input" placeholder="Enter recipe to search">
-      <input type="text" id="restriction-input" placeholder="Enter dietary restriction">
-      <button type="submit">Search</button>
-      
-      <!-- hide and show later -->
-      <div class="recipe-list" id="recipe-list"> 
-        <br><br><br>
-        <ul id="recipeList"></ul>
-        <br><br><br>
-      </div>
-
-    </form>  
-  </div>
-
-  <div id="selected-recipe-details">
-    <h2 id="recipe-name"></h2>
-    <div class="ingredient-details">
-      <h4 id="ingredients"></h4>
-      <ul id="ingredient-list"></ul>
+<div class="login-container">
+    <div class="login-title">
+        <h1>What Should I Eat?</h1>
+        <h2 style="font-size: 8vw;">Log In</h2>
     </div>
-    <div class="recipe-details">
-      <h4 id="directions"></h4>
-    <ul id="directions-list"></ul>
+    <div class="user-login">
+        <form onsubmit="return loginHandler.userLogin(event)">
+            <input type="text" id="username-input" placeholder="Username" style="background-color: rgb(223, 220, 195);">
+            <input type="text" id="password-input" placeholder="Password" style="background-color: rgb(223, 220, 195);">
+            
+            <br><br>
+            <button type="submit" style="background-color:rgb(202, 214, 169);">Log In</button>
+        </form>  
+        <br><br>
+        <button onclick="newUserRedirect()" style="background-color:rgb(202, 214, 169);">New User</button>
+        <script>
+            function newUserRedirect() {
+                window.location.href = './newUser.html';
+            }
+        </script>
+        <h3 id="login-validation"></h3>
     </div>
-  </div>
-
-<br><br><br><br>
-
-  <footer>
-  </footer>
-
+</div>
 </body>
 </html>
+

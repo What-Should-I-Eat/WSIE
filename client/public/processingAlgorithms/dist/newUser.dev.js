@@ -1,7 +1,5 @@
 "use strict";
 
-var host = 'localhost:8080';
-
 var loginHandler = function () {
   var newUser = function newUser(event) {
     event.preventDefault();
@@ -27,7 +25,7 @@ var loginHandler = function () {
       health: [],
       favorites: []
     };
-    fetch("http://" + host + "/api/v1/users/register", {
+    fetch("http://".concat(host, "/api/v1/users/register"), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

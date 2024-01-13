@@ -1,23 +1,22 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+const session = require('express-session');
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const endpoints = require('./routes/endpoints');
-const session = require('express-session');
-const passport = require('./routes/passport');
-
 //app.use('/', indexRouter);
 //app.use('/', passport);
 app.use(bodyParser.json());
 app.use(cors());
 app.use(session({
-  secret: 'key',
+  secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+    cookie: {
+        secure: false
+    }
 }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 // MongoDB connection (ingredients and restrictions)
 mongoose.connect('mongodb://db:27017/WSIE', {

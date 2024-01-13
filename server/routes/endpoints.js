@@ -11,62 +11,22 @@ const RecipeInput = require("../src/models/recipeSearch_model.js");
 const RestrictionInput = require("../src/models/restrictionInput_model.js");
 const User = require("../src/models/userModel.js");
 const json = require("body-parser/lib/types/json");
-const passport = require('passport');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
 
 //Endpoint Setup
 endpoints.use(bodyParser.json()); //express app uses the body parser
 endpoints.use(cors());
 
-//-------------------------------------------------------------User Endpoints------------------------------------------------------------
-
-
-endpoints.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/');
-});
-
-//------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
-//~~~~~ GET all users
-endpoints.get('/users', async (req, res) => { //WORKS!
-    try{
-      const users = await mongoose.model('User').find();
-      res.json(users);
+//Session middleware
+endpoints.use(session({
+  secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
+  resave: false,
+  saveUninitialized: true,
+    cookie: {
+        secure: false
     }
-    catch(error){
-      console.error('Error fetching users: ', error);
-      res.status(500).json({ error: 'users - Internal Server Error' });
-    }
-});
-
-//~~~~~ GET specific user by user
-endpoints.post('/users/find-username', async (req, res) => {
-  try {
-    const user = await User.findOne({ userName: req.body.userName });
-    const inputtedPassword = req.body.password;
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    try {
-      const passwordValidated = await validatePassword(user, inputtedPassword);
-      if (passwordValidated) {
-        console.log("Password is correct!");
-        return res.status(200).json({ message: 'correct' });
-      } else {
-        return res.status(401).json({ error: 'incorrect' });
-      }
-    } catch (error) {
-      console.error('Error validating password: ', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
-  } catch (error) {
-    console.error('Error fetching unique user: ', error);
-    res.status(500).json({ error: 'users - Internal Server Error' });
-  }
-});
-
+}));
 
 
 //~~~~~ POST a new user - WORKS!
@@ -94,11 +54,152 @@ endpoints.post("/users/register", async (req, res) => {
 
     const savedUser = await user.save();
     res.json(savedUser);
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error occurred during user registration:', error);
     res.status(500).json({ error: 'An error occurred during user registration' });
   }
 });
+
+//~~~~~ POST specific user by user - changed from GET so we could have a body
+endpoints.post('/users/find-username', async (req, res) => {
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+    const inputtedPassword = req.body.password;
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    try {
+      const passwordValidated = await validatePassword(user, inputtedPassword);
+      if (passwordValidated) {
+        console.log("Password is correct!");
+        req.session.isLoggedIn = true;
+        req.session.userId = user._id;
+        req.session.username = user.userName;
+
+        // Set the cookie
+        res.cookie('sessionId', req.session.id, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+
+        // Return the user object in the response
+        return res.json(user);
+      } else {
+        return res.status(401).json({ error: 'Incorrect password' });
+      }
+    } catch (error) {
+      console.error('Error validating password: ', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  } catch (error) {
+    console.error('Error fetching unique user: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+//Get user's profile if they're logged in
+endpoints.get('/users/profile', (req, res) => {
+  const isLoggedIn = req.session.isLoggedIn;
+  const userId = req.session.userId;
+  const username = req.session.username; 
+  console.log("Inside /profile endpoint. isLoggedIn = ", isLoggedIn);
+  console.log("username = ", username);
+
+  User.findById(userId)
+    .then(user => {
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      console.log("user (inside endpoint): ", user);
+      res.json({ user });
+    })
+    .catch(error => {
+      console.error('Error fetching user data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
+
+});
+
+endpoints.get('/users/findUserData', async (req, res) => {
+  try {
+    const username = req.query.username;
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } 
+  catch (error) {
+    console.error('Error finding this username: ', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//Middleware to check session for endpoints after login/new user
+endpoints.use((req, res, next) => {
+  if(req.session && req.session.userId)
+  {
+    next();
+  }
+  else {
+    res.status(401).json({
+      error: 'Unauthorized'
+    });
+  }
+});
+
+
+//------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
+//~~~~~ GET all users
+endpoints.get('/users', async (req, res) => { //WORKS!
+    try{
+      const users = await mongoose.model('User').find();
+      res.json(users);
+    }
+    catch(error){
+      console.error('Error fetching users: ', error);
+      res.status(500).json({ error: 'users - Internal Server Error' });
+    }
+});
+
+//Find user id by username - WORKS! returns username's id
+endpoints.get('/users/findUserId', async (req, res) => {
+  try {
+    const username = req.query.username; // Access the username from query parameters
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const idNum = user._id;
+    res.json(idNum);
+  } 
+  catch (error) {
+    console.error('Error finding this username: ', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//Find user by username - not for login purposes - WORKS!
+endpoints.get('/users/finduser/:username', async (req, res) => {
+  try {
+    const username = req.params.username; // Access the username from query parameters
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } 
+  catch (error) {
+    console.error('Error finding this username: ', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 //~~~~~ DELETE a user
 endpoints.delete("/users/:id", async (req, res) => { //WORKS!
@@ -116,45 +217,42 @@ endpoints.delete("/users/:id", async (req, res) => { //WORKS!
 });
 
 //~~~~~ PUT a change in a user's diet array
-endpoints.put('/users/:id/diet', async (req, res) => { //WORKS!
-  const userId = req.params.id;
-  const newDiet = req.body.diet; //Array of diet items
-
-  console.log('User ID = ', userId);
-  console.log('New diet = ', newDiet);
-
+endpoints.put('/users/diet', async (req, res) => {
   try {
-      const user = await mongoose.model('User').findById(userId); //check if user actually exists (by _id)
-      if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-      }
-      user.diet = newDiet;
-      await user.save();
-      res.json(user);
+    const username = req.body.username;
+    console.log("Username = ", username);
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const newDiet = req.body.diet;
+    user.diet = newDiet;
+    await user.save();
+
+    res.json(user.diet);
   } 
   catch (error) {
-      console.error('Error updating diet: ', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error updating diet: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
 //~~~~~ PUT a change in a user's health array
-endpoints.put('/users/:id/health', async (req, res) => { //WORKS!
-  const userId = req.params.id;
-  const newHealth = req.body.health; //Array of health items
-
+endpoints.put('/users/health', async (req, res) => {
   try {
-      const user = await mongoose.model('User').findById(userId); //check if user exists
-      if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-      }
-      user.health = newHealth;
-      await user.save();
-      res.json(user);
+    const username = req.body.username;
+    const user = await User.findOne({ userName: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const newHealth = req.body.health;
+    user.health = newHealth;
+    await user.save();
+    res.json(user);
   } 
   catch (error) {
-      console.error('Error updating health: ', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error updating health: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -169,7 +267,7 @@ endpoints.put('/users/:id/favorites', async (req, res) => { //WORKS!
       if (!user) {
           return res.status(404).json({ error: 'User not found' });
       }
-      user.favorites = newFavorites;
+      user.favorites.push(newFavorites);
       await user.save();
       res.json(user);
   } 

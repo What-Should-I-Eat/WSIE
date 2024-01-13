@@ -1,7 +1,5 @@
 "use strict";
 
-var host = 'localhost:8080';
-
 var loginHandler = function () {
   var userLogin = function userLogin(event) {
     event.preventDefault();
@@ -13,55 +11,79 @@ var loginHandler = function () {
       userName: usernameInput,
       password: passwordInput
     };
-    fetch("http://" + host + "/api/v1/users/find-username", {
+    fetch("http://".concat(host, "/api/v1/users/find-username"), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(userLoginRequest)
     }).then(function _callee(response) {
-      var errorResponse, successResponse;
+      var errorResponse;
       return regeneratorRuntime.async(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (response.ok) {
-                _context.next = 8;
+              console.log("we are at the point of response. this is the response.status: ");
+              console.log(response.status);
+
+              if (!(response.status !== 200)) {
+                _context.next = 11;
                 break;
               }
 
-              _context.next = 3;
+              _context.next = 5;
               return regeneratorRuntime.awrap(response.json());
 
-            case 3:
+            case 5:
               errorResponse = _context.sent;
               console.error('Error logging in:', errorResponse.error);
               loginValidation.textContent = errorResponse.error || 'Error logging in';
-              _context.next = 13;
-              break;
+              throw new Error(errorResponse.error || 'Error logging in');
 
-            case 8:
-              _context.next = 10;
-              return regeneratorRuntime.awrap(response.json());
+            case 11:
+              return _context.abrupt("return", response.json());
 
-            case 10:
-              successResponse = _context.sent;
-              console.log('Success:', successResponse.message); //THIS IS WHAT HAPPENS AFTER THE LOGIN IS SUCCESSFUL
-
-              window.location.href = './profile.html';
-
-            case 13:
+            case 12:
             case "end":
               return _context.stop();
           }
         }
       });
+    }).then(function (data) {
+      console.log("DATA = ", data);
+      console.log(data.userName);
+      getProfilePageForThisUser(data.userName);
     })["catch"](function (error) {
       console.error('Fetch error:', error);
       loginValidation.textContent = 'Fetch error: ' + error.message;
     });
     return false;
   };
+
+  function getProfilePageForThisUser(user) {
+    console.log("Inside getProfilePage()... ready to call profile endpoint");
+    console.log("username: ", user);
+    fetch("http://".concat(host, "/api/v1/users/profile"), {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      console.log("Here is the response of the /profile endpoint: ", response);
+
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Failed to fetch profile data');
+      }
+    }).then(function (data) {
+      console.log('Profile Data:', data);
+    })["catch"](function (error) {
+      console.error('Error fetching profile data:', error);
+    });
+    window.location.href = "./profile.html?name=".concat(user);
+  }
 
   return {
     userLogin: userLogin
