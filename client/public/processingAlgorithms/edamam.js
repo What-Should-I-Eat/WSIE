@@ -214,10 +214,13 @@ var edamam = (() => {
 
 
   async function putToFavorites(json, ingredients, directions) {
+
+    console.log("DIRECTIONS OF RECIPE: " + directions);
+
     const newFavoritedRecipe = {
       recipeName: json.recipe.label,
       recipeIngredients: ingredients,
-      recipeDirections: directions[0], //need index 0 because it puts it into a subarray 
+      recipeDirections: directions.join(", "), //Directions array to string
       recipeUri: json.recipe.uri,
       recipeImage: json.recipe.images.LARGE.url,
     };
