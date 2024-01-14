@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           directionsElement.style.display = 'none';
 
           
-          favoriteElement.addEventListener('click', () => {
+          favoriteElement.addEventListener('click', (event) => {
 
             event.preventDefault();
 
