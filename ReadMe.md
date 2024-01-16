@@ -18,7 +18,7 @@ This will build and start the 4 Docker containers of the root directory:
 3. `client-1`
 4. `nginx-1`
 
-Navigate to `http://localhost:8080/login` to begin using the application. 
+Navigate to `http://localhost:8080` to begin using the application. 
 
 To end the Docker containers, run `docker compose down` in the root directory.
 
