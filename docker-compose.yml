@@ -16,6 +16,8 @@ services:
     image: mongo
     ports:
       - "27017:27017"
+    volumes: 
+      - mongodb_data:/data/db
   nginx:
     image: nginx:latest
     ports:
@@ -26,10 +28,6 @@ services:
     depends_on:
       - client
       - server
-  # initialize-db:
-  #   build:
-  #     context: './server'      
-  #     dockerfile: 'Dockerfile'  
-  #   depends_on:
-  #     - db
-  #   command: ["node", "initializedb.js"]  
+
+volumes:
+  mongodb_data:
