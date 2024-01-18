@@ -18,14 +18,19 @@ var loginHandler = (() => {
         return false;
       }
 
-
+      //Check username does not contain special characters
       var alphaNumberic = /^[0-9a-z]+$/i;
+      if(!username.match(alphaNumberic)){
+        verificationMessage.innerHTML = 'Username must not contain special characters.';
+        return false;
+      }
+
 
       //Check for valid password
       // password minimum length is purposely set to less than 5 for simplicity while testing
       // can make it minimum of 8 for actual use
       if(password.length > 15 || password.length < 5){
-        verificationMessage.innerHTML = "Please ensure password is between 5 and 15 characters.";
+        verificationMessage.innerHTML = 'Please ensure password is between 5 and 15 characters.';
         return false;
       }
 
