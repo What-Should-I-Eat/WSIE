@@ -33,6 +33,7 @@ endpoints.use(session({
 endpoints.post("/users/register", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const existingUserCheck = await User.findOne({ userName: req.body.userName });
 
     const user = new User({
       id: req.body.id,
@@ -52,8 +53,13 @@ endpoints.post("/users/register", async (req, res) => {
       }]
     });
 
-    const savedUser = await user.save();
-    res.json(savedUser);
+    if(existingUserCheck){
+      res.status(205).json({error: 'User already exists'});
+    } else{
+      const savedUser = await user.save();
+      res.json(savedUser);
+    }
+    
   } 
   catch (error) {
     console.error('Error occurred during user registration:', error);

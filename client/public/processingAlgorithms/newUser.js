@@ -56,47 +56,92 @@ var loginHandler = (() => {
         favorites: []
       };
 
+      var usernameIsNotTaken = true;
+
+      // fetch(`http://${host}/api/v1//users/findUserData?username=${username}`, {
+      //   method: 'GET',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      // })
+      //   .then(response => {
+      //     if (!response.ok) {
+      //       throw new Error('Cannot find user');
+      //     }
+      //     return response.json();
+      //   })
+      //   .then(user => {
+      //     console.log('User already exists: ', user);
+      //     verificationMessage.innerHTML = 'Username already exists in database.';
+      //     usernameIsNotTaken = false;
+      //     // return false;
+          
+      //   })
+      //   .catch(error => {
+      //     console.error('Fetch error: ', error);
+      //   });
+    
+
+
+
       fetch(`http://${host}/api/v1/users/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newUserData),
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Error adding new user');
-        }
-        return response.json();
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUserData),
       })
-      .then(savedUser => {
-        console.log('User created: ', savedUser);
-        userId = savedUser._id;
-        console.log(userId);
+        .then(response => {
+          if(response.status == 205){
+            console.log('205 sent');
+            verificationMessage.innerHTML = 'Username already exists in database.';
+            throw new Error('User already exists');
+          }else if (!response.ok) {
+            throw new Error('Error adding new user');
+          }
 
-        // After creating the user, handle UI changes
-        const loginSuccess = "We're happy to have you, " + fullName + "!<br>You have successfully created a WSIE profile.";
-        verificationMessage.innerHTML = loginSuccess;
+          return response.json();
+        })
+        .then(savedUser => {
+          console.log('User created: ', savedUser);
+          userId = savedUser._id;
+          console.log(userId);
+  
+          // After creating the user, handle UI changes
+          const loginSuccess = "We're happy to have you, " + fullName + "!<br>You have successfully created a WSIE profile.";
+          verificationMessage.innerHTML = loginSuccess;
+  
+          const loginDiv = document.getElementById('login');
+  
+          // Check if the login button is already appended to avoid duplication
+          if (!document.getElementById('loginButton')) {
+            // Show login button
+            const loginButton = document.createElement('button');
+            loginButton.textContent = 'Log In'; // Set button text
+            loginButton.id = 'loginButton'; // Set an ID for the button
+            loginButton.addEventListener('click', function(event) {
+              event.preventDefault();
+              window.location.href = './index.html';
+            });
+            loginDiv.appendChild(loginButton);
+          }
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+        });
+      }
 
-        const loginDiv = document.getElementById('login');
 
-        // Check if the login button is already appended to avoid duplication
-        if (!document.getElementById('loginButton')) {
-          // Show login button
-          const loginButton = document.createElement('button');
-          loginButton.textContent = 'Log In'; // Set button text
-          loginButton.id = 'loginButton'; // Set an ID for the button
-          loginButton.addEventListener('click', function(event) {
-            event.preventDefault();
-            window.location.href = './index.html';
-          });
-          loginDiv.appendChild(loginButton);
-        }
-      })
-      .catch(error => {
-        console.error('Fetch error:', error);
-      });
-    }
+      
+
+
+
+
+
+
+
+
+      
 
     return {
       newUser
