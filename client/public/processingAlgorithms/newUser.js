@@ -18,6 +18,17 @@ var loginHandler = (() => {
         return false;
       }
 
+
+      var alphaNumberic = /^[0-9a-z]+$/i;
+
+      //Check for valid password
+      // password minimum length is purposely set to less than 5 for simplicity while testing
+      // can make it minimum of 8 for actual use
+      if(password.length > 15 || password.length < 5){
+        verificationMessage.innerHTML = "Please ensure password is between 5 and 15 characters.";
+        return false;
+      }
+
      //If all fields are filled in, continue
       const newUserData = {
         fullName: fullName,
