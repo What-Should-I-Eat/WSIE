@@ -4,7 +4,7 @@ COPY . /src
 
 WORKDIR /src
 
-COPY initializedb.js /app
+#COPY initializedb.js /app
 
 RUN npm install --production
 
