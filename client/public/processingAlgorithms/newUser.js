@@ -18,6 +18,14 @@ var loginHandler = (() => {
         return false;
       }
 
+      //Check for valid email address format
+      // string@string.string is the meaning of the below variable
+      var validEmailFormat = /\S+@\S+\.\S+/;
+      if(!validEmailFormat.test(email)){
+        verificationMessage.innerHTML = 'Please enter a valid email address.';
+        return false;
+      }
+
       //Check username does not contain special characters
       var alphaNumberic = /^[0-9a-z]+$/i;
       if(!username.match(alphaNumberic)){
@@ -25,12 +33,15 @@ var loginHandler = (() => {
         return false;
       }
 
-
       //Check for valid password
+      var hasNumber = /\d/;
       // password minimum length is purposely set to less than 5 for simplicity while testing
       // can make it minimum of 8 for actual use
       if(password.length > 15 || password.length < 5){
         verificationMessage.innerHTML = 'Please ensure password is between 5 and 15 characters.';
+        return false;
+      } else if(!hasNumber.test(password)){
+        verificationMessage.innerHTML = 'Please ensure password contains a number.';
         return false;
       }
 
