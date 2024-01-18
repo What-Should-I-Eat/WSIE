@@ -56,34 +56,6 @@ var loginHandler = (() => {
         favorites: []
       };
 
-      var usernameIsNotTaken = true;
-
-      // fetch(`http://${host}/api/v1//users/findUserData?username=${username}`, {
-      //   method: 'GET',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      // })
-      //   .then(response => {
-      //     if (!response.ok) {
-      //       throw new Error('Cannot find user');
-      //     }
-      //     return response.json();
-      //   })
-      //   .then(user => {
-      //     console.log('User already exists: ', user);
-      //     verificationMessage.innerHTML = 'Username already exists in database.';
-      //     usernameIsNotTaken = false;
-      //     // return false;
-          
-      //   })
-      //   .catch(error => {
-      //     console.error('Fetch error: ', error);
-      //   });
-    
-
-
-
       fetch(`http://${host}/api/v1/users/register`, {
         method: 'POST',
         headers: {
@@ -130,18 +102,6 @@ var loginHandler = (() => {
           console.error('Fetch error:', error);
         });
       }
-
-
-      
-
-
-
-
-
-
-
-
-      
 
     return {
       newUser
