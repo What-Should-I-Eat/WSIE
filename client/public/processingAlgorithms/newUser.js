@@ -70,8 +70,8 @@ var loginHandler = (() => {
         body: JSON.stringify(newUserData),
       })
         .then(response => {
-          if(response.status == 205){
-            console.log('205 sent');
+          if(response.status == 444){
+            console.log('444 sent');
             verificationMessage.innerHTML = 'Username already exists in database.';
             throw new Error('User already exists');
           }else if (!response.ok) {

@@ -54,7 +54,7 @@ endpoints.post("/users/register", async (req, res) => {
     });
 
     if(existingUserCheck){
-      res.status(205).json({error: 'User already exists'});
+      res.status(444).json({error: 'User already exists'});
     } else{
       const savedUser = await user.save();
       res.json(savedUser);
