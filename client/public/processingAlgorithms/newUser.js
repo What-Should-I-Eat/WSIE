@@ -26,24 +26,30 @@ var loginHandler = (() => {
         return false;
       }
 
-      //Check username does not contain special characters
+      //Check username does not contain special characters and is between 4 and 15 characters
       var alphaNumberic = /^[0-9a-z]+$/i;
-      if(!username.match(alphaNumberic)){
+      if(username.length > 15 || username.length < 4){
+        verificationMessage.innerHTML = 'Please ensure username is between 4 and 15 characters.';
+        return false;
+      }else if(!username.match(alphaNumberic)){
         verificationMessage.innerHTML = 'Username must not contain special characters.';
         return false;
       }
 
       //Check for valid password
       var hasNumber = /\d/;
-      // password minimum length is purposely set to less than 5 for simplicity while testing
-      // can make it minimum of 8 for actual use
-      if(password.length > 15 || password.length < 5){
-        verificationMessage.innerHTML = 'Please ensure password is between 5 and 15 characters.';
+      // password minimum length is between 8 and 15 characters, has at least one number, one capital letter, one lowercase letter, and one special characters
+      if(password.length > 15 || password.length < 8){
+        verificationMessage.innerHTML = 'Please ensure password is between 8 and 15 characters.';
         return false;
       } else if(!hasNumber.test(password)){
-        verificationMessage.innerHTML = 'Please ensure password contains a number.';
+        verificationMessage.innerHTML = 'Please ensure password contains at least one number.';
         return false;
       }
+      // } else if(password.match(alphaNumberic)){
+      //   verificationMessage.innerHTML = 'Please ensure password contains at least one special character.';
+      //   return false;
+      // }
 
      //If all fields are filled in, continue
       const newUserData = {
