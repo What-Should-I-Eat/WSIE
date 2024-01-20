@@ -159,6 +159,18 @@ endpoints.use((req, res, next) => {
   }
 });
 
+// used to clear current database, can be deleted or commented out at the end of the project if needed
+endpoints.get('/clearUserDatabase', async (req, res) => {
+  try{
+    const cleared = await mongoose.model('User').deleteMany({});
+    res.json(cleared);
+
+  } catch(error){
+    console.log('Error clearing database: ', error);
+    res.status(500).json({error: 'error clearing database'});
+  }
+});
+
 
 //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
 //~~~~~ GET all users
