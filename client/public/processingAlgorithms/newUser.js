@@ -37,19 +37,23 @@ var loginHandler = (() => {
       }
 
       //Check for valid password
+      // password minimum length is between 8 and 15 characters, has at least one number, one capital letter, and one lowercase letter
       var hasNumber = /\d/;
-      // password minimum length is between 8 and 15 characters, has at least one number, one capital letter, one lowercase letter, and one special characters
+      var hasCapitalLetter = /[A-Z]/;
+      var hasLowercaseLetter = /[a-z]/;
       if(password.length > 15 || password.length < 8){
         verificationMessage.innerHTML = 'Please ensure password is between 8 and 15 characters.';
         return false;
       } else if(!hasNumber.test(password)){
         verificationMessage.innerHTML = 'Please ensure password contains at least one number.';
         return false;
+      } else if(!hasCapitalLetter.test(password)){
+        verificationMessage.innerHTML = 'Please ensure password contains at least one capital letter.';
+        return false;
+      } else if(!hasLowercaseLetter.test(password)){
+        verificationMessage.innerHTML = 'Please ensure password contains at least one lowercase letter.';
+        return false;
       }
-      // } else if(password.match(alphaNumberic)){
-      //   verificationMessage.innerHTML = 'Please ensure password contains at least one special character.';
-      //   return false;
-      // }
 
      //If all fields are filled in, continue
       const newUserData = {
