@@ -33,6 +33,7 @@ endpoints.use(session({
 endpoints.post("/users/register", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const existingUserCheck = await User.findOne({ userName: req.body.userName });
 
     const user = new User({
       id: req.body.id,
@@ -52,8 +53,13 @@ endpoints.post("/users/register", async (req, res) => {
       }]
     });
 
-    const savedUser = await user.save();
-    res.json(savedUser);
+    if(existingUserCheck){
+      res.status(444).json({error: 'User already exists'});
+    } else{
+      const savedUser = await user.save();
+      res.json(savedUser);
+    }
+    
   } 
   catch (error) {
     console.error('Error occurred during user registration:', error);
@@ -150,6 +156,18 @@ endpoints.use((req, res, next) => {
     res.status(401).json({
       error: 'Unauthorized'
     });
+  }
+});
+
+// used to clear current database, can be deleted or commented out at the end of the project if needed
+endpoints.get('/clearUserDatabase', async (req, res) => {
+  try{
+    const cleared = await mongoose.model('User').deleteMany({});
+    res.json(cleared);
+
+  } catch(error){
+    console.log('Error clearing database: ', error);
+    res.status(500).json({error: 'error clearing database'});
   }
 });
 
