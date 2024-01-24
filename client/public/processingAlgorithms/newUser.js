@@ -11,21 +11,20 @@ var loginHandler = (() => {
       const confirmedPassword = document.getElementById('password-input2').value ?? '';
       const verificationMessage = document.getElementById('verification-message');
       
+      //USER INPUT viability - any userInputViabilityNumber other than 0 means user input is invalid;
       const userInputViabilityNumber = checkIfUserInputIsViable(fullName, email, username, password, confirmedPassword);
-      //Any userInputViabilityNumber other than 0 means user input is invalid;
-      if(userInputViabilityNumber != 0)
-      {
+      if(userInputViabilityNumber != 0) {
         verificationMessage.innerHTML = getVerificationMessage(userInputViabilityNumber);
         return false;
       }
 
-      verificationMessage.innerHTML = "success";
+      //If viable user input, we continue with email verification HERE
       
-
+      //Email verification goes here
     
-      
+      //After email verification, continue with registration
 
-     //If all fields are filled in, continue
+      //
       const newUserData = {
         fullName: fullName,
         userName: username,
