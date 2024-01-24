@@ -78,6 +78,10 @@ var loginHandler = (() => {
             console.log('444 sent');
             verificationMessage.innerHTML = 'Username already exists in database.';
             throw new Error('User already exists');
+          } else if(response.status == 445){
+            console.log('445 sent');
+            verificationMessage.innerHTML = 'Email already exists in database.';
+            throw new Error('Email already exists');
           }else if (!response.ok) {
             throw new Error('Error adding new user');
           }

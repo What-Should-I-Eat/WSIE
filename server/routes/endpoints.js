@@ -33,7 +33,8 @@ endpoints.use(session({
 endpoints.post("/users/register", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const existingUserCheck = await User.findOne({ userName: req.body.userName });
+    const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
+    const existingEmailCheck = await User.findOne({ email: req.body.email });
 
     const user = new User({
       id: req.body.id,
@@ -53,8 +54,10 @@ endpoints.post("/users/register", async (req, res) => {
       }]
     });
 
-    if(existingUserCheck){
+    if(existingUsernameCheck){
       res.status(444).json({error: 'User already exists'});
+    } else if(existingEmailCheck){
+      res.status(445).json({error: 'Email already exists'});
     } else{
       const savedUser = await user.save();
       res.json(savedUser);
