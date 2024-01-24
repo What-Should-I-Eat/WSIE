@@ -37,13 +37,6 @@ var loginHandler = (() => {
         return false;
       }
 
-      //Check if both inputted passwords match - TEST THIS TORIE RIGHT NOW
-      if(password != confirmedPassword)
-      {
-        verificationMessage.innerHTML = 'Passwords do not match.';
-        return false;
-      }
-
       //Check for valid password
       // password minimum length is between 8 and 15 characters, has at least one number, one capital letter, and one lowercase letter
       var hasNumber = /\d/;
@@ -60,6 +53,9 @@ var loginHandler = (() => {
         return false;
       } else if(!hasLowercaseLetter.test(password)){
         verificationMessage.innerHTML = 'Please ensure password contains at least one lowercase letter.';
+        return false;
+      } else if(password != confirmedPassword) { //Password verification
+        verificationMessage.innerHTML = 'Passwords do not match.';
         return false;
       }
 
