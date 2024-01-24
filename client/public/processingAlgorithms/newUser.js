@@ -10,35 +10,19 @@ var loginHandler = (() => {
       const password = document.getElementById('password-input1').value ?? '';
       const confirmedPassword = document.getElementById('password-input2').value ?? '';
       const verificationMessage = document.getElementById('verification-message');
-
-      const allFieldsAreFilledIn = checkIfAllFieldsAreFilledIn(fullName, email, username, password, verificationMessage);
-      const emailAddressIsValid = checkIfEmailAddressIsValid(email);
-      const userNameHasValidChars = checkIfUserNameHasValidChars(username);
-      const userNameIsCorrectLength = checkIfUserNameIsCorrectLength(username);
-      const passwordIsValid = checkIfPasswordIsValid(password);
-      const passwordsMatch = checkIfPasswordsMatch(password, confirmedPassword);
-
-      //Verification message - put this into its own method after refactoring
-      if(!allFieldsAreFilledIn) {
-        console.log("printing fields not filled in verification message");
-        verificationMessage.innerHTML = 'Please make sure all fields are filled in.';
-        return false;
-      } else if(!emailAddressIsValid) {
-        verificationMessage.innerHTML = 'Please enter a valid email address.';
-        return false;
-      } else if(!userNameHasValidChars) {
-        verificationMessage.innerHTML = 'Username must not contain special characters.';
-        return false;
-      } else if(!userNameIsCorrectLength) {
-        verificationMessage.innerHTML = 'Please ensure that username is between 4 and 15 characters.';
-        return false;
-      } else if(!passwordIsValid) {
-        verificationMessage.innerHTML = 'Please ensure that password is between 8-15 characters, contains at least one capital and lowercase letter, and contains a number.';
-        return false;
-      } else if(!passwordsMatch) {
-        verificationMessage.innerHTML = 'Please ensure that passwords match.';
+      
+      const userInputViabilityNumber = checkIfUserInputIsViable(fullName, email, username, password, confirmedPassword);
+      //Any userInputViabilityNumber other than 0 means user input is invalid;
+      if(userInputViabilityNumber != 0)
+      {
+        verificationMessage.innerHTML = getVerificationMessage(userInputViabilityNumber);
         return false;
       }
+
+      verificationMessage.innerHTML = "success";
+      
+
+    
       
 
      //If all fields are filled in, continue
@@ -106,6 +90,45 @@ var loginHandler = (() => {
 
         return false;
       }
+
+    function checkIfUserInputIsViable(fullName, email, username, password, confirmedPassword){
+      const passwordIsValid = checkIfPasswordIsValid(password);
+      
+      if(!checkIfAllFieldsAreFilledIn(fullName, email, username, password)) {
+        return 1;
+      } else if(!checkIfEmailAddressIsValid(email)) {
+        return 2;
+      } else if(!checkIfUserNameHasValidChars(username)) {
+        return 3;
+      } else if(!checkIfUserNameIsCorrectLength(username)) {
+        return 4;
+      } else if(!passwordIsValid) {
+        return 5;
+      } else if(!checkIfPasswordsMatch(password, confirmedPassword)) {
+        return 6;
+      }
+
+      return 0;
+    }
+
+    function getVerificationMessage(userInputViabilityNumber){
+      switch(userInputViabilityNumber){
+        case 1:
+          return 'Please make sure all fields are filled in.';
+        case 2:
+          return 'Please enter a valid email address.';
+        case 3:
+          return 'Username must not contain special characters.';
+        case 4:
+          return 'Please ensure that username is between 4 and 15 characters.';
+        case 5:
+          return 'Please ensure that password is between 8-15 characters, contains at least one capital and lowercase letter, and contains a number.';
+        case 6:
+          return 'Please ensure that passwords match.';
+        default:
+          return 'Success';
+      }
+    }
 
     function checkIfAllFieldsAreFilledIn(fullName, email, username, password){
       if(fullName === '' || email === '' || username === '' || password === ''){
