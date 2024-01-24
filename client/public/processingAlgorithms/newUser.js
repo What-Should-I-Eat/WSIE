@@ -9,7 +9,8 @@ var loginHandler = (() => {
       const fullName = document.getElementById('fullname-input').value;
       const email = document.getElementById('email-input').value;
       const username = document.getElementById('username-input').value;
-      const password = document.getElementById('password-input').value;
+      const password = document.getElementById('password-input1').value;
+      const confirmedPassword = document.getElementById('password-input2').value;
       const verificationMessage = document.getElementById('verification-message');
 
       //Check if all fields are filled in
@@ -33,6 +34,13 @@ var loginHandler = (() => {
         return false;
       }else if(!username.match(alphaNumberic)){
         verificationMessage.innerHTML = 'Username must not contain special characters.';
+        return false;
+      }
+
+      //Check if both inputted passwords match - TEST THIS TORIE RIGHT NOW
+      if(password != confirmedPassword)
+      {
+        verificationMessage.innerHTML = 'Passwords do not match.';
         return false;
       }
 
