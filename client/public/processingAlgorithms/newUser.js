@@ -1,41 +1,36 @@
-
-
 var loginHandler = (() => {
 
     var newUser = (event) => {
       event.preventDefault();
       console.log('CALLING NEWUSER()');
 
-      const fullName = document.getElementById('fullname-input').value;
-      const email = document.getElementById('email-input').value;
-      const username = document.getElementById('username-input').value;
-      const password = document.getElementById('password-input1').value;
-      const confirmedPassword = document.getElementById('password-input2').value;
+      const fullName = document.getElementById('fullname-input').value ?? '';
+      const email = document.getElementById('email-input').value ?? '';
+      const username = document.getElementById('username-input').value ?? '';
+      const password = document.getElementById('password-input1').value ?? '';
+      const confirmedPassword = document.getElementById('password-input2').value ?? '';
       const verificationMessage = document.getElementById('verification-message');
 
-      //Check if all fields are filled in
-      if(fullName === '' || email === '' || username === '' || password === ''){
+      const allFieldsAreFilledIn = checkIfAllFieldsAreFilledIn(fullName, email, username, password, verificationMessage);
+      const emailAddressIsValid = checkIfEmailAddressIsValid(email);
+      const userNameHasValidChars = checkIfUserNameHasValidChars(username);
+      const userNameIsCorrectLength = checkIfUserNameIsCorrectLength(username);
+
+      //Verification message
+      if(!allFieldsAreFilledIn) {
+        console.log("printing fields not filled in verification message");
         verificationMessage.innerHTML = 'Please make sure all fields are filled in.';
         return false;
-      }
-
-      //Check for valid email address format
-      // string@string.string is the meaning of the below variable
-      var validEmailFormat = /\S+@\S+\.\S+/;
-      if(!validEmailFormat.test(email)){
+      } else if(!emailAddressIsValid) {
         verificationMessage.innerHTML = 'Please enter a valid email address.';
         return false;
-      }
-
-      //Check username does not contain special characters and is between 4 and 15 characters
-      var alphaNumberic = /^[0-9a-z]+$/i;
-      if(username.length > 15 || username.length < 4){
-        verificationMessage.innerHTML = 'Please ensure username is between 4 and 15 characters.';
-        return false;
-      }else if(!username.match(alphaNumberic)){
+      } else if(!userNameHasValidChars) {
         verificationMessage.innerHTML = 'Username must not contain special characters.';
         return false;
+      } else if(!userNameIsCorrectLength) {
+        verificationMessage.innerHTML = 'Please ensure username is between 4 and 15 characters.';
       }
+      
 
       //Check for valid password
       // password minimum length is between 8 and 15 characters, has at least one number, one capital letter, and one lowercase letter
@@ -109,8 +104,8 @@ var loginHandler = (() => {
             confirmationCodeDiv.style.display = 'block';
             // Show login button
             const loginButton = document.createElement('button');
-            loginButton.textContent = 'Log In'; // Set button text
-            loginButton.id = 'loginButton'; // Set an ID for the button
+            loginButton.textContent = 'Log In'; 
+            loginButton.id = 'loginButton';
             loginButton.addEventListener('click', function(event) {
               event.preventDefault();
               window.location.href = './index.html';
@@ -121,7 +116,42 @@ var loginHandler = (() => {
         .catch(error => {
           console.error('Fetch error:', error);
         });
+
+        return false;
       }
+
+    function checkIfAllFieldsAreFilledIn(fullName, email, username, password){
+      if(fullName === '' || email === '' || username === '' || password === ''){
+        console.log("fields not filled in");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfEmailAddressIsValid(email) {
+      //Check for valid email address format
+      // string@string.string is the meaning of the below variable
+      var validEmailFormat = /\S+@\S+\.\S+/;
+      if(!validEmailFormat.test(email)){
+        
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfUserNameHasValidChars(username) {
+      var alphaNumberic = /^[0-9a-z]+$/i;
+      if(!username.match(alphaNumberic)){
+        return false;
+      }
+    }
+
+    function checkIfUserNameIsCorrectLength(username){
+      if(username.length > 15 || username.length < 4){
+        return false;
+      }
+      return true;
+    }
 
     return {
       newUser
