@@ -1,65 +1,30 @@
-
-
 var loginHandler = (() => {
 
     var newUser = (event) => {
       event.preventDefault();
       console.log('CALLING NEWUSER()');
 
-      const fullName = document.getElementById('fullname-input').value;
-      const email = document.getElementById('email-input').value;
-      const username = document.getElementById('username-input').value;
-      const password = document.getElementById('password-input1').value;
-      const confirmedPassword = document.getElementById('password-input2').value;
+      const fullName = document.getElementById('fullname-input').value ?? '';
+      const email = document.getElementById('email-input').value ?? '';
+      const username = document.getElementById('username-input').value ?? '';
+      const password = document.getElementById('password-input1').value ?? '';
+      const confirmedPassword = document.getElementById('password-input2').value ?? '';
       const verificationMessage = document.getElementById('verification-message');
-
-      //Check if all fields are filled in
-      if(fullName === '' || email === '' || username === '' || password === ''){
-        verificationMessage.innerHTML = 'Please make sure all fields are filled in.';
+      
+      //USER INPUT viability - any userInputViabilityNumber other than 0 means user input is invalid;
+      const userInputViabilityNumber = checkIfUserInputIsViable(fullName, email, username, password, confirmedPassword);
+      if(userInputViabilityNumber != 0) {
+        verificationMessage.innerHTML = getVerificationMessage(userInputViabilityNumber);
         return false;
       }
 
-      //Check for valid email address format
-      // string@string.string is the meaning of the below variable
-      var validEmailFormat = /\S+@\S+\.\S+/;
-      if(!validEmailFormat.test(email)){
-        verificationMessage.innerHTML = 'Please enter a valid email address.';
-        return false;
-      }
+      //If viable user input, we continue with email verification HERE
+      
+      //Email verification goes here
+    
+      //After email verification, continue with registration
 
-      //Check username does not contain special characters and is between 4 and 15 characters
-      var alphaNumberic = /^[0-9a-z]+$/i;
-      if(username.length > 15 || username.length < 4){
-        verificationMessage.innerHTML = 'Please ensure username is between 4 and 15 characters.';
-        return false;
-      }else if(!username.match(alphaNumberic)){
-        verificationMessage.innerHTML = 'Username must not contain special characters.';
-        return false;
-      }
-
-      //Check for valid password
-      // password minimum length is between 8 and 15 characters, has at least one number, one capital letter, and one lowercase letter
-      var hasNumber = /\d/;
-      var hasCapitalLetter = /[A-Z]/;
-      var hasLowercaseLetter = /[a-z]/;
-      if(password.length > 15 || password.length < 8){
-        verificationMessage.innerHTML = 'Please ensure password is between 8 and 15 characters.';
-        return false;
-      } else if(!hasNumber.test(password)){
-        verificationMessage.innerHTML = 'Please ensure password contains at least one number.';
-        return false;
-      } else if(!hasCapitalLetter.test(password)){
-        verificationMessage.innerHTML = 'Please ensure password contains at least one capital letter.';
-        return false;
-      } else if(!hasLowercaseLetter.test(password)){
-        verificationMessage.innerHTML = 'Please ensure password contains at least one lowercase letter.';
-        return false;
-      } else if(password != confirmedPassword) { //Password verification
-        verificationMessage.innerHTML = 'Passwords do not match.';
-        return false;
-      }
-
-     //If all fields are filled in, continue
+      //
       const newUserData = {
         fullName: fullName,
         userName: username,
@@ -109,8 +74,8 @@ var loginHandler = (() => {
             confirmationCodeDiv.style.display = 'block';
             // Show login button
             const loginButton = document.createElement('button');
-            loginButton.textContent = 'Log In'; // Set button text
-            loginButton.id = 'loginButton'; // Set an ID for the button
+            loginButton.textContent = 'Log In'; 
+            loginButton.id = 'loginButton';
             loginButton.addEventListener('click', function(event) {
               event.preventDefault();
               window.location.href = './index.html';
@@ -121,7 +86,143 @@ var loginHandler = (() => {
         .catch(error => {
           console.error('Fetch error:', error);
         });
+
+        return false;
       }
+
+    function checkIfUserInputIsViable(fullName, email, username, password, confirmedPassword){
+      const passwordIsValid = checkIfPasswordIsValid(password);
+      
+      if(!checkIfAllFieldsAreFilledIn(fullName, email, username, password)) {
+        return 1;
+      } else if(!checkIfEmailAddressIsValid(email)) {
+        return 2;
+      } else if(!checkIfUserNameHasValidChars(username)) {
+        return 3;
+      } else if(!checkIfUserNameIsCorrectLength(username)) {
+        return 4;
+      } else if(!passwordIsValid) {
+        return 5;
+      } else if(!checkIfPasswordsMatch(password, confirmedPassword)) {
+        return 6;
+      }
+
+      return 0;
+    }
+
+    function getVerificationMessage(userInputViabilityNumber){
+      switch(userInputViabilityNumber){
+        case 1:
+          return 'Please make sure all fields are filled in.';
+        case 2:
+          return 'Please enter a valid email address.';
+        case 3:
+          return 'Username must not contain special characters.';
+        case 4:
+          return 'Please ensure that username is between 4 and 15 characters.';
+        case 5:
+          return 'Please ensure that password is between 8-15 characters, contains at least one capital and lowercase letter, and contains a number.';
+        case 6:
+          return 'Please ensure that passwords match.';
+        default:
+          return 'Success';
+      }
+    }
+
+    function checkIfAllFieldsAreFilledIn(fullName, email, username, password){
+      if(fullName === '' || email === '' || username === '' || password === ''){
+        console.log("fields not filled in");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfEmailAddressIsValid(email) {
+      // string@string.string is the meaning of the below variable
+      var validEmailFormat = /\S+@\S+\.\S+/;
+      if(!validEmailFormat.test(email)){
+        console.log("email not valid");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfUserNameHasValidChars(username) {
+      var alphaNumberic = /^[0-9a-z]+$/i;
+      if(!username.match(alphaNumberic)){
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfUserNameIsCorrectLength(username){
+      if(username.length > 15 || username.length < 4){
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordIsValid(password) {
+      // password minimum length is between 8 and 15 characters, has at least one number, one capital letter, and one lowercase letter
+      var hasNumber = /\d/;
+      var hasCapitalLetter = /[A-Z]/;
+      var hasLowercaseLetter = /[a-z]/;
+
+      if(!checkPasswordLength(password)){
+        return false;
+      }
+      if(!checkIfPasswordContainsNumber(password, hasNumber)){
+        return false;
+      }
+      if(!checkIfPasswordContainsCapitalLetter(password, hasCapitalLetter)){
+        return false;
+      }
+      if(!checkIfPasswordContainsLowercaseLetter(password, hasLowercaseLetter)){
+        return false;
+      }
+      
+      return true;
+    }
+
+    function checkPasswordLength(password){
+      if(password.length > 15 || password.length < 8){
+        console.log("password incorrect length");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordContainsNumber(password, hasNumber){
+      if(!hasNumber.test(password)){
+        console.log("no number in password");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordContainsCapitalLetter(password, hasCapitalLetter){
+      if(!hasCapitalLetter.test(password)){
+        console.log("no capital letter in password");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordContainsLowercaseLetter(password, hasLowercaseLetter){
+      if(!hasLowercaseLetter.test(password)){
+        console.log("no lowercase letter in password");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordsMatch(password, confirmedPassword){
+      if(password != confirmedPassword) { //Password verification
+        console.log("passwords don't match");
+        return false;
+      }
+      return true;
+    }
 
     return {
       newUser
