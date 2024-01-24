@@ -36,6 +36,9 @@ In total, there are four tabs that the user may interact with. The fourth tab en
 ### Developer Perspective
 The client uses the Fetch API to access server endpoints which provide the functionality of the application. The iOS mobile version of the application was created by using Ionic's Capacitor framework. No frameworks were used for the UI of the application. Javascript files corresponding to each HTML page can be found in the `processingAlgorithms` subdirectory inside the client. For continuity, the current user's username is passed in the URL of each HTML page.
 
+#### New User Signup and Existing User Login
+Data persistence now exists on reboot of server. When a new user signs up, a unique username and email must be provided. Additionally, the user must input their chosen password twice.
+
 ## Server
 
 ### Endpoints
