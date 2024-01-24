@@ -15,8 +15,10 @@ var loginHandler = (() => {
       const emailAddressIsValid = checkIfEmailAddressIsValid(email);
       const userNameHasValidChars = checkIfUserNameHasValidChars(username);
       const userNameIsCorrectLength = checkIfUserNameIsCorrectLength(username);
+      const passwordIsValid = checkIfPasswordIsValid(password);
+      const passwordsMatch = checkIfPasswordsMatch(password, confirmedPassword);
 
-      //Verification message
+      //Verification message - put this into its own method after refactoring
       if(!allFieldsAreFilledIn) {
         console.log("printing fields not filled in verification message");
         verificationMessage.innerHTML = 'Please make sure all fields are filled in.';
@@ -28,31 +30,16 @@ var loginHandler = (() => {
         verificationMessage.innerHTML = 'Username must not contain special characters.';
         return false;
       } else if(!userNameIsCorrectLength) {
-        verificationMessage.innerHTML = 'Please ensure username is between 4 and 15 characters.';
+        verificationMessage.innerHTML = 'Please ensure that username is between 4 and 15 characters.';
+        return false;
+      } else if(!passwordIsValid) {
+        verificationMessage.innerHTML = 'Please ensure that password is between 8-15 characters, contains at least one capital and lowercase letter, and contains a number.';
+        return false;
+      } else if(!passwordsMatch) {
+        verificationMessage.innerHTML = 'Please ensure that passwords match.';
+        return false;
       }
       
-
-      //Check for valid password
-      // password minimum length is between 8 and 15 characters, has at least one number, one capital letter, and one lowercase letter
-      var hasNumber = /\d/;
-      var hasCapitalLetter = /[A-Z]/;
-      var hasLowercaseLetter = /[a-z]/;
-      if(password.length > 15 || password.length < 8){
-        verificationMessage.innerHTML = 'Please ensure password is between 8 and 15 characters.';
-        return false;
-      } else if(!hasNumber.test(password)){
-        verificationMessage.innerHTML = 'Please ensure password contains at least one number.';
-        return false;
-      } else if(!hasCapitalLetter.test(password)){
-        verificationMessage.innerHTML = 'Please ensure password contains at least one capital letter.';
-        return false;
-      } else if(!hasLowercaseLetter.test(password)){
-        verificationMessage.innerHTML = 'Please ensure password contains at least one lowercase letter.';
-        return false;
-      } else if(password != confirmedPassword) { //Password verification
-        verificationMessage.innerHTML = 'Passwords do not match.';
-        return false;
-      }
 
      //If all fields are filled in, continue
       const newUserData = {
@@ -129,11 +116,10 @@ var loginHandler = (() => {
     }
 
     function checkIfEmailAddressIsValid(email) {
-      //Check for valid email address format
       // string@string.string is the meaning of the below variable
       var validEmailFormat = /\S+@\S+\.\S+/;
       if(!validEmailFormat.test(email)){
-        
+        console.log("email not valid");
         return false;
       }
       return true;
@@ -144,10 +130,73 @@ var loginHandler = (() => {
       if(!username.match(alphaNumberic)){
         return false;
       }
+      return true;
     }
 
     function checkIfUserNameIsCorrectLength(username){
       if(username.length > 15 || username.length < 4){
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordIsValid(password) {
+      // password minimum length is between 8 and 15 characters, has at least one number, one capital letter, and one lowercase letter
+      var hasNumber = /\d/;
+      var hasCapitalLetter = /[A-Z]/;
+      var hasLowercaseLetter = /[a-z]/;
+
+      if(!checkPasswordLength(password)){
+        return false;
+      }
+      if(!checkIfPasswordContainsNumber(password, hasNumber)){
+        return false;
+      }
+      if(!checkIfPasswordContainsCapitalLetter(password, hasCapitalLetter)){
+        return false;
+      }
+      if(!checkIfPasswordContainsLowercaseLetter(password, hasLowercaseLetter)){
+        return false;
+      }
+      
+      return true;
+    }
+
+    function checkPasswordLength(password){
+      if(password.length > 15 || password.length < 8){
+        console.log("password incorrect length");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordContainsNumber(password, hasNumber){
+      if(!hasNumber.test(password)){
+        console.log("no number in password");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordContainsCapitalLetter(password, hasCapitalLetter){
+      if(!hasCapitalLetter.test(password)){
+        console.log("no capital letter in password");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordContainsLowercaseLetter(password, hasLowercaseLetter){
+      if(!hasLowercaseLetter.test(password)){
+        console.log("no lowercase letter in password");
+        return false;
+      }
+      return true;
+    }
+
+    function checkIfPasswordsMatch(password, confirmedPassword){
+      if(password != confirmedPassword) { //Password verification
+        console.log("passwords don't match");
         return false;
       }
       return true;
