@@ -101,6 +101,8 @@ var loginHandler = (() => {
   
           // Check if the login button is already appended to avoid duplication
           if (!document.getElementById('loginButton')) {
+            const confirmationCodeDiv = document.getElementById('confirmationCode');
+            confirmationCodeDiv.style.display = 'block';
             // Show login button
             const loginButton = document.createElement('button');
             loginButton.textContent = 'Log In'; // Set button text
