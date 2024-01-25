@@ -27,7 +27,7 @@ var loginHandler = (() => {
       if (response.status !== 200) {
         const errorResponse = await response.json();
         console.error('Error logging in:', errorResponse.error);
-        loginValidation.textContent = errorResponse.error || 'Error logging in';
+        loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
         throw new Error(errorResponse.error || 'Error logging in');
       } else {
         return response.json();
@@ -40,7 +40,7 @@ var loginHandler = (() => {
     })
     .catch(error => {
       console.error('Fetch error:', error);
-      loginValidation.textContent = 'Fetch error: ' + error.message;
+      loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
     });
   
     return false;
