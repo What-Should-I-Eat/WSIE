@@ -40,7 +40,6 @@ var loginHandler = (() => {
     })
     .catch(error => {
       console.error('Fetch error:', error);
-      var newLine = "\r\n";
       loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
     });
   
