@@ -35,6 +35,7 @@ endpoints.post("/users/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
+    const confirmationCode = generateRandomConfirmationCode(); // can relocate this as needed
 
     const user = new User({
       id: req.body.id,
@@ -494,6 +495,10 @@ async function validatePassword(user, inputtedPassword) {
       }
     });
   });
+}
+
+function generateRandomConfirmationCode(){
+  return Math.floor(100000 + Math.random() * 900000);
 }
 
 module.exports = endpoints;
