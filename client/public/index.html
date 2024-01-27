@@ -22,10 +22,18 @@
             
             <br><br>
             <button type="submit" style="background-color:rgb(202, 214, 169);">Log In</button>
-        </form>  
+        </form>
+        <h3 id="login-validation"></h3>
+        <form onsubmit="return loginHandler.updateVerificationStatus(event)">
+            <div id="confirmationCode" style="display:none">
+                <input type="text" id="confirmationCodeInput" placeholder="######" style="background-color: rgb(223, 220, 195);">
+                <br>
+                <button type="submit" style="background-color:rgb(202, 214, 169);">Verify Profile</button>
+                <br><br>
+            </div>
+        </form>
         <br><br>
 
-        <h3 id="login-validation"></h3>
     </div>
 
     <div id="new-user-signup" class="new-user-signup">
