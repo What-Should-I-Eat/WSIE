@@ -529,39 +529,7 @@ function generateRandomConfirmationCode(){
 
 // TBD, definitely can update however we think is best but the smtp.js approach wasn't working for me
 function sendConfirmationCodeViaEmail(confirmationCode){
-  // const email = {
-  //   from: 'wsie.info@gmail.com',
-  //   to: 'ns3523@drexel.edu',
-  //   subject: 'Verify email',
-  //   text: confirmationCode,
-  // }
 
-  // const credentials = {
-  //   host: 'smtp.gmail.com',
-  //   port: 465,
-  //   secure: true,
-  //   auth: {
-  //     user: 'wsie.info@gmail.com',
-  //     pass: 'wsie123wsie'
-  //   }
-  // }
-
-  // smtp.connect(credentials)
-  // .then(() => smtp.sendMail(email))
-  // .then(info => console.log('Email sent!'))
-  // .catch(err => console.error(err));
-  
-  // Email.send({
-  //   Host: "smtp.elasticemail.com",
-  //   Username: "wsie.info@gmail.com",
-  //   Password: "wsie123wsie",
-  //   To: "ns3523@drexel.edu",
-  //   From: "wsie.info@gmail.com",
-  //   Subject: "Confirm Email Address",
-  //   Body: confirmationCode,
-  // }).then(
-  //   message => alert(message)
-  // );
   return true;
 }
 
