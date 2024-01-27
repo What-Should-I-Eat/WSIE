@@ -24,7 +24,12 @@ var loginHandler = (() => {
     .then(async response => {
       console.log("we are at the point of response. this is the response.status: ");
       console.log(response.status);
-      if (response.status !== 200) {
+      if(response.status == 450){
+        const errorResponse = await response.json();
+        console.error('User\'s account is not verified: ', errorResponse.error);
+        loginValidation.innerHTML = "Account is not yet verified.<br/>Please check your email and enter the 6 digit code below";
+        throw new Error(errorResponse.error || 'User account is not verified');
+      } else if (response.status !== 200) {
         const errorResponse = await response.json();
         console.error('Error logging in:', errorResponse.error);
         loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
@@ -40,7 +45,11 @@ var loginHandler = (() => {
     })
     .catch(error => {
       console.error('Fetch error:', error);
-      loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
+      if(error == 'Error: User account is not verified'){
+        loginValidation.innerHTML = "Account is not yet verified.<br/>Please check your email and enter the 6 digit code below";
+      } else{
+        loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
+      }
     });
   
     return false;

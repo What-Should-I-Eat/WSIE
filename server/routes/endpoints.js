@@ -44,7 +44,7 @@ endpoints.post("/users/register", async (req, res) => {
       userName: req.body.userName,
       password: hashedPassword, 
       email: req.body.email,
-      verified: true,
+      verified: false,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
@@ -81,7 +81,10 @@ endpoints.post('/users/find-username', async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
+    } else if(user.verified == false){
+      return res.status(450).json({error: 'User account is not verified'});
     }
+    
 
     try {
       const passwordValidated = await validatePassword(user, inputtedPassword);
