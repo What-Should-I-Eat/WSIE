@@ -254,7 +254,11 @@ var edamam = (() => {
   async function deleteInFavorites(json, ingredients, directions) {
 
     const recipeToDelete = {
-      recipeName: json.recipe.label
+      recipeName: json.recipe.label,
+      recipeIngredients: ingredients,
+      recipeDirections: directions.join(", "), //Directions array to string
+      recipeUri: json.recipe.uri,
+      recipeImage: (typeof  json.recipe.images.LARGE.url === 'undefined') ? "" : json.recipe.images.LARGE.url,
     };
   
     console.log("Deleting this: ", recipeToDelete);
@@ -278,7 +282,7 @@ var edamam = (() => {
       const updatedUser = await response.json();
       console.log('Updated user favorites:', updatedUser);
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error('There was a problem with the delete operation:', error);
     }
   }
   
