@@ -36,6 +36,7 @@ endpoints.post("/users/register", async (req, res) => {
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
     const confirmationCode = generateRandomConfirmationCode(); // can relocate this as needed
+    const sentEmail = sendConfirmationCodeViaEmail(confirmationCode);
 
     const user = new User({
       id: req.body.id,
@@ -43,6 +44,7 @@ endpoints.post("/users/register", async (req, res) => {
       userName: req.body.userName,
       password: hashedPassword, 
       email: req.body.email,
+      verified: true,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
@@ -499,6 +501,44 @@ async function validatePassword(user, inputtedPassword) {
 
 function generateRandomConfirmationCode(){
   return Math.floor(100000 + Math.random() * 900000);
+}
+
+// TBD, definitely can update however we think is best but the smtp.js approach wasn't working for me
+function sendConfirmationCodeViaEmail(confirmationCode){
+  // const email = {
+  //   from: 'wsie.info@gmail.com',
+  //   to: 'ns3523@drexel.edu',
+  //   subject: 'Verify email',
+  //   text: confirmationCode,
+  // }
+
+  // const credentials = {
+  //   host: 'smtp.gmail.com',
+  //   port: 465,
+  //   secure: true,
+  //   auth: {
+  //     user: 'wsie.info@gmail.com',
+  //     pass: 'wsie123wsie'
+  //   }
+  // }
+
+  // smtp.connect(credentials)
+  // .then(() => smtp.sendMail(email))
+  // .then(info => console.log('Email sent!'))
+  // .catch(err => console.error(err));
+  
+  // Email.send({
+  //   Host: "smtp.elasticemail.com",
+  //   Username: "wsie.info@gmail.com",
+  //   Password: "wsie123wsie",
+  //   To: "ns3523@drexel.edu",
+  //   From: "wsie.info@gmail.com",
+  //   Subject: "Confirm Email Address",
+  //   Body: confirmationCode,
+  // }).then(
+  //   message => alert(message)
+  // );
+  return true;
 }
 
 module.exports = endpoints;
