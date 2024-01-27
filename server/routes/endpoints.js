@@ -73,6 +73,27 @@ endpoints.post("/users/register", async (req, res) => {
   }
 });
 
+endpoints.put("/users/verify", async (req, res) => { 
+  
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const verificationUpdate =  { $set: {"verified": req.body.verified}};
+    const options =  { upsert: true, new: true};
+
+    const verifiedUser = await User.updateOne(user, verificationUpdate, options);
+    res.json(verifiedUser);
+    
+  } catch (error) {
+    console.error('Error fetching unique user: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 //~~~~~ POST specific user by user - changed from GET so we could have a body
 endpoints.post('/users/find-username', async (req, res) => {
   try {

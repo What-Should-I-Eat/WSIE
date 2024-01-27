@@ -27,14 +27,18 @@
             <input type="password" id="password-input2" placeholder="Confirm Password" style="background-color: rgb(223, 220, 195);">
             <br><br>
             <button type="submit" style="background-color:rgb(202, 214, 169);">Create Profile</button>
+        </form>  
+        <h4 id="verification-message" style="font-weight: 330;"></h4>
 
-            <h4 id="verification-message" style="font-weight: 330;"></h4>
-
+        <form onsubmit="return loginHandler.updateVerificationStatus(event)">
             <div id="confirmationCode" style="display:none">
                 <h4 id="confirmationCodePrompt" style="font-weight: 330">Please enter 6 digit code from email below:</h4>
                 <input type="text" id="confirmationCodeInput" placeholder="######" style="background-color: rgb(223, 220, 195);">
+                <br><br>
+                <button type="submit" style="background-color:rgb(202, 214, 169);">Verify Profile</button>
                 <br/>
             </div>
+        </form>
             
             <div id="login"></div>
             
@@ -44,7 +48,7 @@
                 </a>
             </div>
 
-        </form>  
+        
     </div>
 
     <br><br>
