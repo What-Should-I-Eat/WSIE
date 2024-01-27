@@ -1,3 +1,5 @@
+//const userModel = require("../../../server/src/models/userModel");
+
 const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
 
 var edamam = (() => {
@@ -151,13 +153,14 @@ var edamam = (() => {
 
               //CHANGE THIS: What to do when heart icon is clicked - put to favorites
               heartButton.addEventListener('click', function() {
-                const heartIcon = this.querySelector('img');
-                if (heartIcon.style.filter === 'sepia(100%)') {
+                const heartIcon = this.querySelector('img');              
+                if (heartIcon.style.filter === 'sepia(100%)') { //add to favorites
                   heartIcon.style.filter = 'none'; 
                   putToFavorites(json, ingredients, results);
                 } 
-                else {
+                else { // remove from favorites
                   heartIcon.style.filter = 'sepia(100%)';
+                  deleteInFavorites(json, ingredients, results); //remove
                 }
                 console.log('Heart button clicked!');
               });
@@ -211,8 +214,6 @@ var edamam = (() => {
 
     return ingredients;
 }
-
-
   async function putToFavorites(json, ingredients, directions) {
 
     console.log("DIRECTIONS OF RECIPE: " + directions);
@@ -222,21 +223,52 @@ var edamam = (() => {
       recipeIngredients: ingredients,
       recipeDirections: directions.join(", "), //Directions array to string
       recipeUri: json.recipe.uri,
-      recipeImage: json.recipe.images.LARGE.url,
+      recipeImage: (typeof  json.recipe.images.LARGE.url === 'undefined') ? "" : json.recipe.images.LARGE.url,
     };
-  
+
     console.log("favoritedRecipe: ", newFavoritedRecipe);
-  
+
     try {
       const username = await getUsername();
       const userId = await getUserId(username);
-  
+
       const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ favorites: newFavoritedRecipe })
+      });
+
+      if (!response.ok) {
+        throw new Error('There was a problem!!!');
+      }
+
+      const updatedUser = await response.json();
+      console.log('Updated user favorites:', updatedUser);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  }
+
+  async function deleteInFavorites(json, ingredients, directions) {
+
+    const recipeToDelete = {
+      recipeName: json.recipe.label
+    };
+  
+    console.log("Deleting this: ", recipeToDelete);
+  
+    try {
+      const username = await getUsername();
+      const userId = await getUserId(username);
+  
+      const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ favorites: recipeToDelete })
       });
   
       if (!response.ok) {
@@ -250,14 +282,12 @@ var edamam = (() => {
     }
   }
   
-
   function getHeartIcon(){
     const heartButton = document.createElement('button');
     const heartIcon = document.createElement('img');
 
     heartButton.classList.add('heart-button');
     heartButton.type = 'button';
-
     heartIcon.src = './assets/heart.png';
     heartIcon.alt = 'Heart Icon';
     heartIcon.style.width = `${10}vw`;
@@ -265,7 +295,6 @@ var edamam = (() => {
     heartButton.style.background = 'none';
     heartIcon.style.filter = 'sepia(100%)';
     heartIcon.classList.add('original-color');
-
     heartButton.appendChild(heartIcon);
 
     return heartButton;

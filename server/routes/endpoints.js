@@ -299,6 +299,32 @@ endpoints.put('/users/:id/favorites', async (req, res) => { //WORKS!
   }
 });
 
+//~~~~~ Remove a recipie from user's favorites
+endpoints.delete('/users/:id/favorites', async (req, res) => { 
+  const userId = req.params.id;
+  const removeId = req.body.favorites.recipeId; // recipie to remove
+
+  try {
+      const user = await mongoose.model('User').findById(userId);
+      if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+      }
+      const index = user.favorites.indexOf(removeId);
+      const x = user.favorites.splice(index, 1);
+      if(x == -1){
+        return res.status(404).json({error: 'favorite not found'});
+      }
+      console.log("x: ", x)
+      await user.save();
+      res.json(user);
+  } 
+  catch (error) {
+      console.error('Error updating favorites: ', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 
 //---------------------------------------------------------------------------------------------------------------------------------------
 
