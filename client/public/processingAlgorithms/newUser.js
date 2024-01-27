@@ -63,25 +63,10 @@ var loginHandler = (() => {
           console.log(userId);
   
           // After creating the user, handle UI changes
-          const loginSuccess = "We're happy to have you, " + fullName + "!<br>You have successfully created a WSIE profile.";
+          const loginSuccess = "You have successfully created a WSIE profile.<br>To verify your account, please enter the 6 digit code from your email below:";
           verificationMessage.innerHTML = loginSuccess;
-  
-          const loginDiv = document.getElementById('login');
-  
-          // Check if the login button is already appended to avoid duplication
-          if (!document.getElementById('loginButton')) {
-            const confirmationCodeDiv = document.getElementById('confirmationCode');
-            confirmationCodeDiv.style.display = 'block';
-            // Show login button
-            const loginButton = document.createElement('button');
-            loginButton.textContent = 'Log In'; 
-            loginButton.id = 'loginButton';
-            loginButton.addEventListener('click', function(event) {
-              event.preventDefault();
-              window.location.href = './index.html';
-            });
-            loginDiv.appendChild(loginButton);
-          }
+          const confirmationCodeDiv = document.getElementById('confirmationCode');
+          confirmationCodeDiv.style.display = 'block';
         })
         .catch(error => {
           console.error('Fetch error:', error);
@@ -94,42 +79,21 @@ var loginHandler = (() => {
         event.preventDefault();
         console.log('CALLING UPDATEVERIFICATIONSTATUS()');
   
-        const username = document.getElementById('username-input').value ?? '';        
+        const username = document.getElementById('username-input').value ?? '';
+        const fullName = document.getElementById('fullname-input').value ?? '';
         const verificationMessage = document.getElementById('verification-message');
-        const confirmationCodePrompt = document.getElementById('confirmationCodePrompt');
         const enteredCode = document.getElementById('confirmationCodeInput').value ?? '';
 
         if(isVerificationCodeEmpty(enteredCode)){
-          confirmationCodePrompt.innerHTML = "Verification code cannot be blank";
+          verificationMessage.innerHTML = "Verification code cannot be blank";
           return false;
         } else if(username === ''){
-          confirmationCodePrompt.innerHTML = "Username cannot be blank";
+          verificationMessage.innerHTML = "Username cannot be blank";
+          return false;
+        } else if(fullName === ''){
+          verificationMessage.innerHTML = "Name field cannot be blank";
           return false;
         }
-
-        
-        // const newUserData = {
-        //   fullName: fullName,
-        //   userName: username,
-        //   password: password,
-        //   email: email,
-        //   diet: [],
-        //   health: [],
-        //   favorites: []
-        // };
-
-        // fetch("http://192.168.0.11:8080/api/v1/films/" + updatedFilm.value, {
-        //             method: 'PUT',
-        //             body: JSON.stringify({
-        //                 name: updatedFilm.value,
-        //                 rating: updatedRating.value
-        //             }),
-        //             headers: {
-        //                 'Accept': 'application/json',
-        //                 'Content-Type': 'application/json',
-        //                 'Authorization': 'Bearer ' + jwtToken
-        //             }
-        //         }).
   
         fetch(`http://${host}/api/v1/users/verify`, {
           method: 'PUT',
@@ -153,15 +117,13 @@ var loginHandler = (() => {
             console.log('User verified: ', verifiedUser);
     
             // After creating the user, handle UI changes
-            const verificationSuccess = "We're happy to have you, " + username + "!<br>You have successfully verified your WSIE profile.";
+            const verificationSuccess = "You have successfully verified your WSIE profile, " + fullName +"!<br>Please continue to the Login page!";
             verificationMessage.innerHTML = verificationSuccess;
     
             const loginDiv = document.getElementById('login');
     
             // Check if the login button is already appended to avoid duplication
             if (!document.getElementById('loginButton')) {
-              const confirmationCodeDiv = document.getElementById('confirmationCode');
-              confirmationCodeDiv.style.display = 'block';
               // Show login button
               const loginButton = document.createElement('button');
               loginButton.textContent = 'Log In'; 
