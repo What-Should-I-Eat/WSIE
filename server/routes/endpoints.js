@@ -35,7 +35,13 @@ endpoints.post("/users/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
-    const confirmationCode = generateRandomConfirmationCode(); // can relocate this as needed
+    const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
+    const sentEmail = sendVerificationCodeViaEmail(verificationCode);
+
+    // the verification code will be hashed after email is sent
+    // can't be hashed yet so that we can still read the verification code (before email portion is implemented)
+    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
+
 
     const user = new User({
       id: req.body.id,
@@ -43,6 +49,8 @@ endpoints.post("/users/register", async (req, res) => {
       userName: req.body.userName,
       password: hashedPassword, 
       email: req.body.email,
+      verified: false,
+      verificationCode: verificationCode,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
@@ -71,6 +79,64 @@ endpoints.post("/users/register", async (req, res) => {
   }
 });
 
+endpoints.put("/users/verify", async (req, res) => { 
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const inputtedCode = req.body.verificationCode;
+
+    // can replace if statement parameters once email is added
+    const validatedVerificationCode = await validateVerificationCode(user, inputtedCode);
+
+    if(inputtedCode === user.verificationCode){
+      const verificationUpdate =  { $set: {"verified": true}};
+      const options =  { upsert: true, new: true};
+  
+      const verifiedUser = await User.updateOne(user, verificationUpdate, options);
+      res.json(verifiedUser);
+
+    } else{
+      return res.status(401).json({ error: 'Incorrect verification code' });
+    }
+  } catch (error) {
+    console.error('Error fetching unique user: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+endpoints.put("/users/sendVerificationCode", async (req, res) => { 
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
+    const sentEmail = sendVerificationCodeViaEmail(verificationCode);
+
+    // the verification code will be hashed after email is sent
+    // can't be hashed yet so that we can still read the verification code (before email portion is implemented)
+    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
+    
+
+    const verificationUpdate =  { $set: {"verificationCode": verificationCode}};
+    const options =  { upsert: true, new: true};
+
+    const verifiedUser = await User.updateOne(user, verificationUpdate, options);
+    res.json(verifiedUser);
+
+  
+    
+  } catch (error) {
+    console.error('Error fetching unique user: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 //~~~~~ POST specific user by user - changed from GET so we could have a body
 endpoints.post('/users/find-username', async (req, res) => {
   try {
@@ -79,7 +145,10 @@ endpoints.post('/users/find-username', async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
+    } else if(user.verified == false){
+      return res.status(450).json({error: 'User account is not verified'});
     }
+    
 
     try {
       const passwordValidated = await validatePassword(user, inputtedPassword);
@@ -546,8 +615,31 @@ async function validatePassword(user, inputtedPassword) {
   });
 }
 
-function generateRandomConfirmationCode(){
-  return Math.floor(100000 + Math.random() * 900000);
+async function validateVerificationCode(user, inputtedVerificationCode) {
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(inputtedVerificationCode, user.verificationCode, function(err, codesMatch) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (codesMatch) {
+        console.log("VERIFICATION CODES MATCH!");
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+  });
+}
+
+function generateRandomVerificationCode(){
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+// TBD, definitely can update however we think is best but the smtp.js approach wasn't working for me
+function sendVerificationCodeViaEmail(confirmationCode){
+
+  return true;
 }
 
 module.exports = endpoints;
