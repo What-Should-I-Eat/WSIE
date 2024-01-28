@@ -30,14 +30,18 @@
         </form>  
         <h4 id="verification-message" style="font-weight: 330;"></h4>
 
-        <form onsubmit="return loginHandler.updateVerificationStatus(event)">
-            <div id="confirmationCode" style="display:none">
+        <div id="confirmationCode" style="display:none">
+            <form onsubmit="return loginHandler.resendVerificationStatus(event)">
+                <button type="submit" style="background-color:rgb(255, 174, 174);">Resend Code</button>
+                <br><br>
+            </form>
+            <form onsubmit="return loginHandler.updateVerificationStatus(event)">
                 <input type="text" id="confirmationCodeInput" placeholder="######" style="background-color: rgb(223, 220, 195);">
                 <br>
-                <button type="submit" style="background-color:rgb(202, 214, 169);">Verify Profile</button>
+                <button type="submit" style="background-color:rgb(223, 220, 195);">Verify Profile</button>
                 <br><br>
-            </div>
-        </form>
+            </form>
+        </div>
             
             <div id="login"></div>
             

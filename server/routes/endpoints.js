@@ -80,7 +80,6 @@ endpoints.post("/users/register", async (req, res) => {
 });
 
 endpoints.put("/users/verify", async (req, res) => { 
-  
   try {
     const user = await User.findOne({ userName: req.body.userName });
 
@@ -102,8 +101,35 @@ endpoints.put("/users/verify", async (req, res) => {
     } else{
       return res.status(401).json({ error: 'Incorrect verification code' });
     }
+  } catch (error) {
+    console.error('Error fetching unique user: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
+endpoints.put("/users/sendVerificationCode", async (req, res) => { 
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
+    const sentEmail = sendVerificationCodeViaEmail(verificationCode);
+
+    // the verification code will be hashed after email is sent
+    // can't be hashed yet so that we can still read the verification code (before email portion is implemented)
+    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
     
+
+    const verificationUpdate =  { $set: {"verificationCode": verificationCode}};
+    const options =  { upsert: true, new: true};
+
+    const verifiedUser = await User.updateOne(user, verificationUpdate, options);
+    res.json(verifiedUser);
+
+  
     
   } catch (error) {
     console.error('Error fetching unique user: ', error);
