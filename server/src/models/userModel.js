@@ -10,6 +10,7 @@ const UserSchema = new Schema({
     password: String,
     email: String,
     verified: Boolean,
+    verificationCode: String,
     diet: [String],
     health: [String],
     favorites: [{

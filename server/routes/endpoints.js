@@ -35,8 +35,8 @@ endpoints.post("/users/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
-    const confirmationCode = generateRandomConfirmationCode(); // can relocate this as needed
-    const sentEmail = sendConfirmationCodeViaEmail(confirmationCode);
+    const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
+    const sentEmail = sendVerificationCodeViaEmail(verificationCode);
 
     const user = new User({
       id: req.body.id,
@@ -45,6 +45,7 @@ endpoints.post("/users/register", async (req, res) => {
       password: hashedPassword, 
       email: req.body.email,
       verified: false,
+      verificationCode: verificationCode,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
@@ -523,12 +524,12 @@ async function validatePassword(user, inputtedPassword) {
   });
 }
 
-function generateRandomConfirmationCode(){
+function generateRandomVerificationCode(){
   return Math.floor(100000 + Math.random() * 900000);
 }
 
 // TBD, definitely can update however we think is best but the smtp.js approach wasn't working for me
-function sendConfirmationCodeViaEmail(confirmationCode){
+function sendVerificationCodeViaEmail(confirmationCode){
 
   return true;
 }
