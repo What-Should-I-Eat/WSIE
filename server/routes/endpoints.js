@@ -38,6 +38,11 @@ endpoints.post("/users/register", async (req, res) => {
     const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
     const sentEmail = sendVerificationCodeViaEmail(verificationCode);
 
+    // the verification code will be hashed after email is sent
+    // can't be hashed yet so that we can still read the verification code (before email portion is implemented)
+    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
+
+
     const user = new User({
       id: req.body.id,
       fullName: req.body.fullName,
@@ -83,6 +88,9 @@ endpoints.put("/users/verify", async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
     const inputtedCode = req.body.verificationCode;
+
+    // can replace if statement parameters once email is added
+    const validatedVerificationCode = await validateVerificationCode(user, inputtedCode);
 
     if(inputtedCode === user.verificationCode){
       const verificationUpdate =  { $set: {"verified": true}};
@@ -524,6 +532,23 @@ async function validatePassword(user, inputtedPassword) {
       }
       if (passwordsMatch) {
         console.log("PASSWORDS MATCH!");
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+  });
+}
+
+async function validateVerificationCode(user, inputtedVerificationCode) {
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(inputtedVerificationCode, user.verificationCode, function(err, codesMatch) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (codesMatch) {
+        console.log("VERIFICATION CODES MATCH!");
         resolve(true);
       } else {
         resolve(false);
