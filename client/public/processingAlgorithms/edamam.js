@@ -142,25 +142,37 @@ var edamam = (() => {
               }
           })
           .then((resp) => resp.json())
-          .then((results) => {
+          .then(async (results) => {
               console.log("results: ", results);
               directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
 
               const recipeTitleHeader = document.getElementById('recipe-name');
-              const heartButton = getHeartIcon(recipeTitleHeader);
+              
+              const heartIcon = document.createElement('img');
+              const heartButton = getHeartIcon(heartIcon);
+            
+              const isAlreadyLiked = await isFavorited(json);
+              console.log("isAlreadyLiked: ", isAlreadyLiked);
+              console.log("test: ", isAlreadyLiked!=true)
+              if (isAlreadyLiked == true){
+                heartIcon.style.filter = 'none'; // red
+                console.log("changing color");
+              }else{
+                heartIcon.style.filter = 'sepia(100%)'; // grey
+                console.log("changing color");
+              }
               recipeTitleHeader.appendChild(heartButton);
               
-
-              //CHANGE THIS: What to do when heart icon is clicked - put to favorites
+              // When heart buttton is cliked toggle
               heartButton.addEventListener('click', function() {
                 const heartIcon = this.querySelector('img');              
-                if (heartIcon.style.filter === 'sepia(100%)') { //add to favorites
+                if (heartIcon.style.filter === 'sepia(100%)') { // add to favorites 
                   heartIcon.style.filter = 'none'; 
                   putToFavorites(json, ingredients, results);
                 } 
-                else { // remove from favorites
+                else {
                   heartIcon.style.filter = 'sepia(100%)';
-                  deleteInFavorites(json, ingredients, results); //remove
+                  deleteInFavorites(json, ingredients, results); // remove
                 }
                 console.log('Heart button clicked!');
               });
@@ -216,8 +228,6 @@ var edamam = (() => {
 }
   async function putToFavorites(json, ingredients, directions) {
 
-    console.log("DIRECTIONS OF RECIPE: " + directions);
-
     const newFavoritedRecipe = {
       recipeName: json.recipe.label,
       recipeIngredients: ingredients,
@@ -225,9 +235,7 @@ var edamam = (() => {
       recipeUri: json.recipe.uri,
       recipeImage: (typeof  json.recipe.images.LARGE.url === 'undefined') ? "" : json.recipe.images.LARGE.url,
     };
-
-    console.log("favoritedRecipe: ", newFavoritedRecipe);
-
+    console.log("adding to favorites: ", newFavoritedRecipe.recipeName);
     try {
       const username = await getUsername();
       const userId = await getUserId(username);
@@ -260,9 +268,7 @@ var edamam = (() => {
       recipeUri: json.recipe.uri,
       recipeImage: (typeof  json.recipe.images.LARGE.url === 'undefined') ? "" : json.recipe.images.LARGE.url,
     };
-  
-    console.log("Deleting this: ", recipeToDelete);
-  
+    
     try {
       const username = await getUsername();
       const userId = await getUserId(username);
@@ -285,11 +291,34 @@ var edamam = (() => {
       console.error('There was a problem with the delete operation:', error);
     }
   }
-  
-  function getHeartIcon(){
-    const heartButton = document.createElement('button');
-    const heartIcon = document.createElement('img');
 
+  async function isFavorited(json) {
+    const recipeToGet = {
+      recipeName: json.recipe.label,
+    };
+    try {
+      const username = await getUsername();
+      const userId = await getUserId(username);
+  
+      const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ favorites: recipeToGet })
+      });
+      if (!response.ok) {
+        throw new Error('There was a problem!!!');
+      }
+      const isFavorited = await response.json();
+      return isFavorited;
+    } catch (error) {
+      console.error('There was a problem with the delete operation:', error);
+    }
+  }
+  
+  function getHeartIcon(heartIcon){
+    const heartButton = document.createElement('button');
     heartButton.classList.add('heart-button');
     heartButton.type = 'button';
     heartIcon.src = './assets/heart.png';

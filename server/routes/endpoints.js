@@ -278,21 +278,44 @@ endpoints.put('/users/health', async (req, res) => {
   }
 });
 
-
-//~~~~~ PUT a change in a user's favorite recipes
-endpoints.put('/users/:id/favorites', async (req, res) => { //WORKS!
+//~~~~~ Check if user has already favorited this recipe
+endpoints.post('/users/:id/favorites', async (req, res) => { 
   const userId = req.params.id;
-  const newFavorites = req.body.favorites; // Array of objects
-
+  const recipeToAdd = req.body.favorites.recipeName;
   try {
       const user = await mongoose.model('User').findById(userId);
       if (!user) {
           return res.status(404).json({ error: 'User not found' });
       }
-      const index = user.favorites.indexOf(newFavorites.recipeId);
+      const index = user.favorites.findIndex(x => x.recipeName == recipeToAdd); 
       console.log("Index: ", index)
       if(index != -1){
-        console.log("already added");
+        console.log("Already favorited"); 
+        return res.json(true)
+      }else{
+        console.log("Not favorited yet"); 
+        return res.json(false)
+      }
+  } 
+  catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//~~~~~ PUT a change in a user's favorite recipes
+endpoints.put('/users/:id/favorites', async (req, res) => { 
+  const userId = req.params.id;
+  const newFavorites = req.body.favorites; 
+  const recipeToAdd = req.body.favorites.recipeName;
+  try {
+      const user = await mongoose.model('User').findById(userId);
+      if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+      }
+      const index = user.favorites.findIndex(x => x.recipeName == recipeToAdd); 
+      console.log("Index: ", index)
+      if(index != -1){
+        console.log("already added"); // don't add duplicates
       }else{
         user.favorites.push(newFavorites); 
       }
@@ -300,36 +323,29 @@ endpoints.put('/users/:id/favorites', async (req, res) => { //WORKS!
       res.json(user);
   } 
   catch (error) {
-      console.error('Error updating favorites: ', error);
       res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-//~~~~~ Remove a recipie from user's favorites
+//~~~~~ Delete a recipe from user's favorites
 endpoints.delete('/users/:id/favorites', async (req, res) => { 
   const userId = req.params.id;
-  const recipeToRemove = req.body.favorites.recipeName; // recipie to remove
-  console.log("got to delete endpoint")
-  console.log("-->Recipe To Remove: ", recipeToRemove);
-
+  const recipeToRemove = req.body.favorites.recipeName;
   try {
       const user = await mongoose.model('User').findById(userId);
       if (!user) {
           return res.status(404).json({ error: 'User not found' });
       }
-      console.log("user.favorites.recipeName: ", user.favorites);
+      // finds index where recipe names match the one to remove
       const index = user.favorites.findIndex(x => x.recipeName == recipeToRemove); 
-      console.log('index: ', index);
-      if(index == -1){
+      if(index == -1){ // no index found
         return res.status(404).json({error: 'favorite not found for user!'});
       }
       const x = user.favorites.splice(index, 1);
-      console.log("x: ", x)
       await user.save();
       res.json(user);
   } 
   catch (error) {
-      console.error('Error updating favorites: ', error);
       res.status(500).json({ error: 'Internal Server Error' });
   }
 });
