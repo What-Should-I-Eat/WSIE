@@ -288,13 +288,10 @@ endpoints.post('/users/:id/favorites', async (req, res) => {
           return res.status(404).json({ error: 'User not found' });
       }
       const index = user.favorites.findIndex(x => x.recipeName == recipeToAdd); 
-      console.log("Index: ", index)
-      if(index != -1){
-        console.log("Already favorited"); 
+      if(index != -1){ // found favorite already in list
         return res.json(true)
       }else{
-        console.log("Not favorited yet"); 
-        return res.json(false)
+        return res.json(false)  // not favorited yet
       }
   } 
   catch (error) {

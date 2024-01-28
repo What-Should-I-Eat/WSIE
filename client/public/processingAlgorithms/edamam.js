@@ -123,8 +123,6 @@ var edamam = (() => {
     }
 
     function showRecipe(json, source) {
-      console.log('recipe: ', json);
-
       const ingredients = setupRecipe(json); //Recipe name and ingredients 
       const directionsList = document.getElementById('directions-list'); // List of directions
       directionsList.innerHTML = '';
@@ -143,17 +141,12 @@ var edamam = (() => {
           })
           .then((resp) => resp.json())
           .then(async (results) => {
-              console.log("results: ", results);
               directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
-
               const recipeTitleHeader = document.getElementById('recipe-name');
               
               const heartIcon = document.createElement('img');
               const heartButton = getHeartIcon(heartIcon);
-            
               const isAlreadyLiked = await isFavorited(json);
-              console.log("isAlreadyLiked: ", isAlreadyLiked);
-              console.log("test: ", isAlreadyLiked!=true)
               if (isAlreadyLiked == true){
                 heartIcon.style.filter = 'none'; // red
                 console.log("changing color");
@@ -166,15 +159,14 @@ var edamam = (() => {
               // When heart buttton is cliked toggle
               heartButton.addEventListener('click', function() {
                 const heartIcon = this.querySelector('img');              
-                if (heartIcon.style.filter === 'sepia(100%)') { // add to favorites 
+                if (heartIcon.style.filter === 'sepia(100%)') { 
                   heartIcon.style.filter = 'none'; 
                   putToFavorites(json, ingredients, results);
                 } 
                 else {
                   heartIcon.style.filter = 'sepia(100%)';
-                  deleteInFavorites(json, ingredients, results); // remove
+                  deleteInFavorites(json, ingredients, results);
                 }
-                console.log('Heart button clicked!');
               });
           });
       } catch (e) {
@@ -227,7 +219,6 @@ var edamam = (() => {
     return ingredients;
 }
   async function putToFavorites(json, ingredients, directions) {
-
     const newFavoritedRecipe = {
       recipeName: json.recipe.label,
       recipeIngredients: ingredients,
@@ -239,7 +230,6 @@ var edamam = (() => {
     try {
       const username = await getUsername();
       const userId = await getUserId(username);
-
       const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
         method: 'PUT',
         headers: {
@@ -247,11 +237,9 @@ var edamam = (() => {
         },
         body: JSON.stringify({ favorites: newFavoritedRecipe })
       });
-
       if (!response.ok) {
-        throw new Error('There was a problem!!!');
+        throw new Error('There was a problem adding a new recipe to Favorites!');
       }
-
       const updatedUser = await response.json();
       console.log('Updated user favorites:', updatedUser);
     } catch (error) {
@@ -259,20 +247,13 @@ var edamam = (() => {
     }
   }
 
-  async function deleteInFavorites(json, ingredients, directions) {
-
+  async function deleteInFavorites(json) {
     const recipeToDelete = {
-      recipeName: json.recipe.label,
-      recipeIngredients: ingredients,
-      recipeDirections: directions.join(", "), //Directions array to string
-      recipeUri: json.recipe.uri,
-      recipeImage: (typeof  json.recipe.images.LARGE.url === 'undefined') ? "" : json.recipe.images.LARGE.url,
+      recipeName: json.recipe.label
     };
-    
     try {
       const username = await getUsername();
       const userId = await getUserId(username);
-  
       const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
         method: 'DELETE',
         headers: {
@@ -280,11 +261,9 @@ var edamam = (() => {
         },
         body: JSON.stringify({ favorites: recipeToDelete })
       });
-  
       if (!response.ok) {
-        throw new Error('There was a problem!!!');
+        throw new Error('There was a problem deleting a recipie from favorites!');
       }
-  
       const updatedUser = await response.json();
       console.log('Updated user favorites:', updatedUser);
     } catch (error) {
@@ -299,7 +278,6 @@ var edamam = (() => {
     try {
       const username = await getUsername();
       const userId = await getUserId(username);
-  
       const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
         method: 'POST',
         headers: {
@@ -308,12 +286,12 @@ var edamam = (() => {
         body: JSON.stringify({ favorites: recipeToGet })
       });
       if (!response.ok) {
-        throw new Error('There was a problem!!!');
+        throw new Error('There was a problem checking if recipe is favorited!');
       }
       const isFavorited = await response.json();
       return isFavorited;
     } catch (error) {
-      console.error('There was a problem with the delete operation:', error);
+      console.error('There was a problem with the isFavorited operation:', error);
     }
   }
   
@@ -329,7 +307,6 @@ var edamam = (() => {
     heartIcon.style.filter = 'sepia(100%)';
     heartIcon.classList.add('original-color');
     heartButton.appendChild(heartIcon);
-
     return heartButton;
   }
   
