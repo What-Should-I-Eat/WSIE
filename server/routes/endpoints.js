@@ -82,12 +82,20 @@ endpoints.put("/users/verify", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
+    const inputtedCode = req.body.verificationCode;
 
-    const verificationUpdate =  { $set: {"verified": req.body.verified}};
-    const options =  { upsert: true, new: true};
+    if(inputtedCode === user.verificationCode){
+      const verificationUpdate =  { $set: {"verified": true}};
+      const options =  { upsert: true, new: true};
+  
+      const verifiedUser = await User.updateOne(user, verificationUpdate, options);
+      res.json(verifiedUser);
 
-    const verifiedUser = await User.updateOne(user, verificationUpdate, options);
-    res.json(verifiedUser);
+    } else{
+      return res.status(401).json({ error: 'Incorrect verification code' });
+    }
+
+    
     
   } catch (error) {
     console.error('Error fetching unique user: ', error);
@@ -525,7 +533,7 @@ async function validatePassword(user, inputtedPassword) {
 }
 
 function generateRandomVerificationCode(){
-  return Math.floor(100000 + Math.random() * 900000);
+  return String(Math.floor(100000 + Math.random() * 900000));
 }
 
 // TBD, definitely can update however we think is best but the smtp.js approach wasn't working for me

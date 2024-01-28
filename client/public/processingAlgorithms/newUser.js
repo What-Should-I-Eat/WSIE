@@ -102,7 +102,7 @@ var loginHandler = (() => {
           },
           body: JSON.stringify({
             userName: username,            
-            verified: true
+            verificationCode: enteredCode
           }),
         })
           .then(response => {
