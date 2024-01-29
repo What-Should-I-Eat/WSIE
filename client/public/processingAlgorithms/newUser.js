@@ -19,8 +19,8 @@ var loginHandler = (() => {
       }
 
       //If viable user input, we continue with email verification HERE
-      
       //Email verification goes here
+      sendVerificationEmail(fullName, email)
     
       //After email verification, continue with registration
 

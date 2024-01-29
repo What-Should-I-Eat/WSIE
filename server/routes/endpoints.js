@@ -5,10 +5,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const endpoints = express.Router();
-const Ingredient = require("../src/models/ingredients_model"); //Need to keep this even though its greyed out
-const Restriction = require("../src/models/dietaryRestrictions_model");
 const RecipeInput = require("../src/models/recipeSearch_model.js"); 
-const RestrictionInput = require("../src/models/restrictionInput_model.js");
 const User = require("../src/models/userModel.js");
 const json = require("body-parser/lib/types/json");
 const bcrypt = require('bcrypt');
@@ -17,6 +14,19 @@ const session = require('express-session');
 //Endpoint Setup
 endpoints.use(bodyParser.json()); //express app uses the body parser
 endpoints.use(cors());
+
+// used to clear current database, can be deleted or commented out at the end of the project if needed
+endpoints.get('/clearUserDatabase', async (req, res) => {
+  try{
+    const cleared = await mongoose.model('User').deleteMany({});
+    res.json(cleared);
+
+  } catch(error){
+    console.log('Error clearing database: ', error);
+    res.status(500).json({error: 'error clearing database'});
+  }
+});
+
 
 //Session middleware
 endpoints.use(session({
@@ -36,7 +46,7 @@ endpoints.post("/users/register", async (req, res) => {
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
     const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
-    const sentEmail = sendVerificationCodeViaEmail(verificationCode);
+    //  const sentEmail = sendVerificationCodeViaEmail(verificationCode);
 
     // the verification code will be hashed after email is sent
     // can't be hashed yet so that we can still read the verification code (before email portion is implemented)
@@ -107,6 +117,8 @@ endpoints.put("/users/verify", async (req, res) => {
   }
 });
 
+//TORIE NOTE: I don't think we need this endpoint bc emailjs needs a browser but keeping it for now
+//Changing this: response is now the verification code
 endpoints.put("/users/sendVerificationCode", async (req, res) => { 
   try {
     const user = await User.findOne({ userName: req.body.userName });
@@ -116,7 +128,7 @@ endpoints.put("/users/sendVerificationCode", async (req, res) => {
     }
 
     const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
-    const sentEmail = sendVerificationCodeViaEmail(verificationCode);
+    // const sentEmail = sendVerificationCodeViaEmail(verificationCode);
 
     // the verification code will be hashed after email is sent
     // can't be hashed yet so that we can still read the verification code (before email portion is implemented)
@@ -126,13 +138,10 @@ endpoints.put("/users/sendVerificationCode", async (req, res) => {
     const verificationUpdate =  { $set: {"verificationCode": verificationCode}};
     const options =  { upsert: true, new: true};
 
-    const verifiedUser = await User.updateOne(user, verificationUpdate, options);
-    res.json(verifiedUser);
-
-  
-    
+    // const  = await User.updateOne(user, verificationUpdate, options);
+    res.json(verificationCode); //change to hashed code once I know this works
   } catch (error) {
-    console.error('Error fetching unique user: ', error);
+    console.error('Error fetching verification code: ', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -232,17 +241,6 @@ endpoints.use((req, res, next) => {
   }
 });
 
-// used to clear current database, can be deleted or commented out at the end of the project if needed
-endpoints.get('/clearUserDatabase', async (req, res) => {
-  try{
-    const cleared = await mongoose.model('User').deleteMany({});
-    res.json(cleared);
-
-  } catch(error){
-    console.log('Error clearing database: ', error);
-    res.status(500).json({error: 'error clearing database'});
-  }
-});
 
 
 //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
@@ -587,11 +585,12 @@ function generateRandomVerificationCode(){
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
+//Got rid of this method because emailjs needs to operate using xmlhttp in the browser
 // TBD, definitely can update however we think is best but the smtp.js approach wasn't working for me
-function sendVerificationCodeViaEmail(confirmationCode){
+// function sendVerificationCodeViaEmail(confirmationCode){
 
-  return true;
-}
+//   return true;
+// }
 
 module.exports = endpoints;
   
