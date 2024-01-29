@@ -1,5 +1,4 @@
 var loginHandler = (() => {
-
     var newUser = (event) => {
       event.preventDefault();
       console.log('CALLING NEWUSER()');
@@ -19,13 +18,15 @@ var loginHandler = (() => {
       }
 
       //If viable user input, we continue with email verification HERE
-      //Email verification goes here
+      //Get verification code to pass as email content
       const verificationCode = getVerificationCode();
-      console.log(verificationCode);
+      console.log(verificationCode); //take this out later - it will be hashed anyway once i make sure this works
+
+      const emailSent = sendEmail(fullName, email, verificationCode, emailjs);
+
+
     
       //After email verification, continue with registration
-
-      //
       const newUserData = {
         fullName: fullName,
         userName: username,
@@ -328,6 +329,7 @@ var loginHandler = (() => {
       return true;
     }
 
+    //Returns verficiation code from endpoint - hash in the server once this works
     function getVerificationCode(){
       fetch(`http://${host}/api/v1/users/getVerificationCode`, {
         method: 'GET',
@@ -348,6 +350,33 @@ var loginHandler = (() => {
         .catch(error => {
           console.error('Error fetching verification code:', error.message);
         });
+    }
+
+    //Returns boolean of email sent success/failure
+    function sendEmail(fullName, email, verificationCode, emailjs){
+      console.log("Attempting to send verification code");
+
+      const params = {
+        verificationCode: verificationCode,
+        userEmail: email,
+        userFullName: fullName,
+      }
+
+      const serviceID = "service_ms0318i";
+      const templateID = "template_7av6tqc";
+      const publicKey = "8nKeoQjoIWF1wyUpG";
+
+
+      emailjs.send(serviceID, templateID, params, publicKey)
+          .then(function(response) {
+            console.log('SUCCESS!', response.status, response.text);
+            return true;
+          }, function(error) {
+            console.log('FAILED...', error);
+          });
+
+
+      return false;
     }
 
     return {
