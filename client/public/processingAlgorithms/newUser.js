@@ -18,13 +18,17 @@ var loginHandler = (() => {
       }
 
       //If viable user input, we continue with email verification HERE
-      //Get verification code to pass as email content
-      const verificationCode = getVerificationCode();
-      console.log(verificationCode); //take this out later - it will be hashed anyway once i make sure this works
 
-      const emailSent = sendEmail(fullName, email, verificationCode, emailjs);
-
-
+      //Gets random code from server and sends user an email
+      getVerificationCode()
+        .then(verificationCode => {
+            console.log('Verification Code:', verificationCode);
+            //sendEmail
+            sendEmail(fullName, email, verificationCode, emailjs);
+          })
+          .catch(error => {
+              console.error('Error during verification code fetching:', error);
+          });
     
       //After email verification, continue with registration
       const newUserData = {
@@ -117,14 +121,12 @@ var loginHandler = (() => {
           })
           .then(verifiedUser => {
             console.log('User verified: ', verifiedUser);
-    
-            // After creating the user, handle UI changes
+  
             const verificationSuccess = "You have successfully verified your WSIE profile, " + fullName +"!<br>Please continue to the Login page!";
             verificationMessage.innerHTML = verificationSuccess;
     
             const loginDiv = document.getElementById('login');
     
-            // Check if the login button is already appended to avoid duplication
             if (!document.getElementById('loginButton')) {
               // Show login button
               const loginButton = document.createElement('button');
@@ -330,51 +332,52 @@ var loginHandler = (() => {
     }
 
     //Returns verficiation code from endpoint - hash in the server once this works
-    function getVerificationCode(){
-      fetch(`http://${host}/api/v1/users/getVerificationCode`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    function getVerificationCode() {
+      return fetch(`http://${host}/api/v1/users/getVerificationCode`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
       })
-        .then(response => {
+      .then(response => {
           if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+              throw new Error(`HTTP error! Status: ${response.status}`);
           }
           return response.json();
-        })
-        .then(verificationCode => {
+      })
+      .then(verificationCode => {
           console.log('Verification Code:', verificationCode);
           return verificationCode;
-        })
-        .catch(error => {
+      })
+      .catch(error => {
           console.error('Error fetching verification code:', error.message);
-        });
-    }
+          throw error;
+      });
+  }
 
     //Returns boolean of email sent success/failure
     function sendEmail(fullName, email, verificationCode, emailjs){
       console.log("Attempting to send verification code");
 
+      console.log("verification code: ", verificationCode);
       const params = {
-        verificationCode: verificationCode,
         userEmail: email,
         userFullName: fullName,
+        verificationCode: verificationCode,
       }
 
+      //need to get this out of the client
       const serviceID = "service_ms0318i";
       const templateID = "template_7av6tqc";
       const publicKey = "8nKeoQjoIWF1wyUpG";
 
-
       emailjs.send(serviceID, templateID, params, publicKey)
           .then(function(response) {
-            console.log('SUCCESS!', response.status, response.text);
+            console.log('SUCCESS: email sent', response.status, response.text);
             return true;
           }, function(error) {
-            console.log('FAILED...', error);
+            console.log('FAILED: email could not be sent', error);
           });
-
 
       return false;
     }
