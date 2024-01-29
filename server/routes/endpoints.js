@@ -27,6 +27,24 @@ endpoints.get('/clearUserDatabase', async (req, res) => {
   }
 });
 
+//TORIE NOTE: I don't think we need this endpoint bc emailjs needs a browser but keeping it for now
+//Changing this: response is now the verification code
+endpoints.get("/users/getVerificationCode", async (req, res) => { 
+  try {
+    const verificationCode = generateRandomVerificationCode(); 
+    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
+    
+
+    const verificationUpdate =  { $set: {"verificationCode": verificationCode}};
+    const options =  { upsert: true, new: true};
+
+    res.json(verificationCode); //change to hashed code once I know this works
+  } catch (error) {
+    console.error('Error fetching verification code: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 //Session middleware
 endpoints.use(session({
@@ -117,34 +135,34 @@ endpoints.put("/users/verify", async (req, res) => {
   }
 });
 
-//TORIE NOTE: I don't think we need this endpoint bc emailjs needs a browser but keeping it for now
-//Changing this: response is now the verification code
-endpoints.put("/users/sendVerificationCode", async (req, res) => { 
-  try {
-    const user = await User.findOne({ userName: req.body.userName });
+// //TORIE NOTE: I don't think we need this endpoint bc emailjs needs a browser but keeping it for now
+// //Changing this: response is now the verification code
+// endpoints.put("/users/sendVerificationCode", async (req, res) => { 
+//   try {
+//     const user = await User.findOne({ userName: req.body.userName });
 
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
 
-    const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
-    // const sentEmail = sendVerificationCodeViaEmail(verificationCode);
+//     const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
+//     // const sentEmail = sendVerificationCodeViaEmail(verificationCode);
 
-    // the verification code will be hashed after email is sent
-    // can't be hashed yet so that we can still read the verification code (before email portion is implemented)
-    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
+//     // the verification code will be hashed after email is sent
+//     // can't be hashed yet so that we can still read the verification code (before email portion is implemented)
+//     const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
     
 
-    const verificationUpdate =  { $set: {"verificationCode": verificationCode}};
-    const options =  { upsert: true, new: true};
+//     const verificationUpdate =  { $set: {"verificationCode": verificationCode}};
+//     const options =  { upsert: true, new: true};
 
-    // const  = await User.updateOne(user, verificationUpdate, options);
-    res.json(verificationCode); //change to hashed code once I know this works
-  } catch (error) {
-    console.error('Error fetching verification code: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+//     // const  = await User.updateOne(user, verificationUpdate, options);
+//     res.json(verificationCode); //change to hashed code once I know this works
+//   } catch (error) {
+//     console.error('Error fetching verification code: ', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 //~~~~~ POST specific user by user - changed from GET so we could have a body
 endpoints.post('/users/find-username', async (req, res) => {

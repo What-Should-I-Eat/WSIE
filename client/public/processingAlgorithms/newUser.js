@@ -20,7 +20,8 @@ var loginHandler = (() => {
 
       //If viable user input, we continue with email verification HERE
       //Email verification goes here
-      sendVerificationEmail(fullName, email)
+      const verificationCode = getVerificationCode();
+      console.log(verificationCode);
     
       //After email verification, continue with registration
 
@@ -325,6 +326,28 @@ var loginHandler = (() => {
         return false;
       }
       return true;
+    }
+
+    function getVerificationCode(){
+      fetch(`http://${host}/api/v1/users/getVerificationCode`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(verificationCode => {
+          console.log('Verification Code:', verificationCode);
+          return verificationCode;
+        })
+        .catch(error => {
+          console.error('Error fetching verification code:', error.message);
+        });
     }
 
     return {
