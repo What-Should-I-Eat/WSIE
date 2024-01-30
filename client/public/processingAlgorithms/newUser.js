@@ -18,24 +18,35 @@ var loginHandler = (() => {
       }
 
       //If viable user input, we continue with email verification HERE
-
+      const verificationCode = generateRandomVerificationCode();
+      sendEmail(fullName, email, verificationCode, emailjs);
       //Gets random code from server and sends user an email
-      getVerificationCode()
-        .then(verificationCode => {
-            console.log('Verification Code:', verificationCode);
-            //sendEmail
-            sendEmail(fullName, email, verificationCode, emailjs);
-          })
-          .catch(error => {
-              console.error('Error during verification code fetching:', error);
-          });
-    
+      // getVerificationCode()
+      //   .then(verificationCode => {
+      //       console.log('Verification Code:', verificationCode);
+      //       //sendEmail
+      //       sendEmail(fullName, email, verificationCode, emailjs);
+      //     })
+      //     .catch(error => {
+      //         console.error('Error during verification code fetching:', error);
+      //     });
+      // getVerificationCode()
+      //   .then(verificationCode => {
+      //       console.log('Verification Code:', verificationCode);
+      //       //sendEmail
+      //       sendEmail(fullName, email, verificationCode, emailjs);
+      //     })
+      //     .catch(error => {
+      //         console.error('Error during verification code fetching:', error);
+      //     });
+    console.log("this is the verification code ", verificationCode);
       //After email verification, continue with registration
       const newUserData = {
         fullName: fullName,
         userName: username,
         password: password,
         email: email,
+        verificationCode: verificationCode,
         diet: [],
         health: [],
         favorites: []
@@ -73,6 +84,20 @@ var loginHandler = (() => {
           verificationMessage.innerHTML = loginSuccess;
           const confirmationCodeDiv = document.getElementById('confirmationCode');
           confirmationCodeDiv.style.display = 'block';
+
+          //Gets random code from server and sends user an email
+          // getVerificationCode()
+          // .then(verificationCode => {
+          //     console.log('Verification Code:', verificationCode);
+          //     //sendEmail
+          //     sendEmail(fullName, email, verificationCode, emailjs);
+          //   })
+          //   .catch(error => {
+          //       console.error('Error during verification code fetching:', error);
+          //   });
+
+
+
         })
         .catch(error => {
           console.error('Fetch error:', error);
@@ -380,6 +405,9 @@ var loginHandler = (() => {
           });
 
       return false;
+    }
+    function generateRandomVerificationCode(){
+      return String(Math.floor(100000 + Math.random() * 900000));
     }
 
     return {

@@ -63,12 +63,12 @@ endpoints.post("/users/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
-    const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
+    // const verificationCode = generateRandomVerificationCode(); // can relocate this as needed
     //  const sentEmail = sendVerificationCodeViaEmail(verificationCode);
 
     // the verification code will be hashed after email is sent
     // can't be hashed yet so that we can still read the verification code (before email portion is implemented)
-    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
+    const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
 
 
     const user = new User({
@@ -78,7 +78,7 @@ endpoints.post("/users/register", async (req, res) => {
       password: hashedPassword, 
       email: req.body.email,
       verified: false,
-      verificationCode: verificationCode,
+      verificationCode: req.body.verificationCode,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
