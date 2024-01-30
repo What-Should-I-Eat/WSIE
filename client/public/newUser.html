@@ -4,6 +4,7 @@
   <title>New WSIE User</title>
   <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/newUser.js"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script> 
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -31,7 +32,7 @@
         <h4 id="verification-message" style="font-weight: 330;"></h4>
 
         <div id="confirmationCode" style="display:none">
-            <form onsubmit="return loginHandler.resendVerificationStatus(event)">
+            <form onsubmit="return loginHandler.resendVerificationCode(event)">
                 <button type="submit" style="background-color:rgb(255, 174, 174);">Resend Code</button>
                 <br><br>
             </form>

@@ -1,5 +1,4 @@
 var loginHandler = (() => {
-
     var newUser = (event) => {
       event.preventDefault();
       console.log('CALLING NEWUSER()');
@@ -19,17 +18,26 @@ var loginHandler = (() => {
       }
 
       //If viable user input, we continue with email verification HERE
+      const verificationCode = generateRandomVerificationCode();
+      sendEmail(fullName, email, verificationCode, emailjs);
+      //Gets random code from server and sends user an email
+      // getVerificationCode()
+      //   .then(verificationCode => {
+      //       console.log('Verification Code:', verificationCode);
+      //       //sendEmail
+      //       sendEmail(fullName, email, verificationCode, emailjs);
+      //     })
+      //     .catch(error => {
+      //         console.error('Error during verification code fetching:', error);
+      //     });
       
-      //Email verification goes here
-    
       //After email verification, continue with registration
-
-      //
       const newUserData = {
         fullName: fullName,
         userName: username,
         password: password,
         email: email,
+        verificationCode: verificationCode,
         diet: [],
         health: [],
         favorites: []
@@ -115,14 +123,12 @@ var loginHandler = (() => {
           })
           .then(verifiedUser => {
             console.log('User verified: ', verifiedUser);
-    
-            // After creating the user, handle UI changes
+  
             const verificationSuccess = "You have successfully verified your WSIE profile, " + fullName +"!<br>Please continue to the Login page!";
             verificationMessage.innerHTML = verificationSuccess;
     
             const loginDiv = document.getElementById('login');
     
-            // Check if the login button is already appended to avoid duplication
             if (!document.getElementById('loginButton')) {
               // Show login button
               const loginButton = document.createElement('button');
@@ -141,25 +147,38 @@ var loginHandler = (() => {
   
           return false;
         }
-        var resendVerificationStatus = (event) => {
+        var resendVerificationCode = (event) => {
           event.preventDefault();
           console.log('CALLING RESENDVERIFICATIONSTATUS()');
+
       
           const username = document.getElementById('username-input').value ?? '';
           const verificationMessage = document.getElementById('verification-message');
+          const fullName = document.getElementById('fullname-input').value ?? '';
+          const email = document.getElementById('email-input').value ?? '';
       
           if(username === ''){
             loginValidation.innerHTML = "Username cannot be blank";
             return false;
+          }else if(fullName === ''){
+            loginValidation.innerHTML = "Name cannot be blank";
+            return false;
+          }else if(email === ''){
+            loginValidation.innerHTML = "email cannot be blank";
+            return false;
           }
+
+          const verificationCode = generateRandomVerificationCode();
+          sendEmail(fullName, email, verificationCode, emailjs);
       
-          fetch(`http://${host}/api/v1/users/sendVerificationCode`, {
+          fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              userName: username,            
+              userName: username,
+              verificationCode: verificationCode,            
             }),
           })
             .then(response => {
@@ -327,9 +346,63 @@ var loginHandler = (() => {
       return true;
     }
 
+    //Returns verficiation code from endpoint - hash in the server once this works
+    function getVerificationCode() {
+      return fetch(`http://${host}/api/v1/users/getVerificationCode`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+      })
+      .then(verificationCode => {
+          console.log('Verification Code:', verificationCode);
+          return verificationCode;
+      })
+      .catch(error => {
+          console.error('Error fetching verification code:', error.message);
+          throw error;
+      });
+  }
+
+    //Returns boolean of email sent success/failure
+    function sendEmail(fullName, email, verificationCode, emailjs){
+      console.log("Attempting to send verification code");
+
+      console.log("verification code: ", verificationCode);
+      const params = {
+        userEmail: email,
+        userFullName: fullName,
+        verificationCode: verificationCode,
+      }
+
+      //need to get this out of the client
+      const serviceID = "service_ms0318i";
+      const templateID = "template_7av6tqc";
+      const publicKey = "8nKeoQjoIWF1wyUpG";
+
+      emailjs.send(serviceID, templateID, params, publicKey)
+          .then(function(response) {
+            console.log('SUCCESS: email sent', response.status, response.text);
+            return true;
+          }, function(error) {
+            console.log('FAILED: email could not be sent', error);
+          });
+
+      return false;
+    }
+    function generateRandomVerificationCode(){
+      return String(Math.floor(100000 + Math.random() * 900000));
+    }
+
     return {
       newUser,
       updateVerificationStatus,
-      resendVerificationStatus
+      resendVerificationCode
     }
 })();

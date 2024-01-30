@@ -73,6 +73,10 @@ The following endpoints provide functionality related to users of the applicatio
 
 `POST /users/:id/favorites`: Returns true if recipe is in favorites already, false otherwise. 
 
+`PUT /users/verify`: Updates a user's account verification status.
+
+`PUT /resendVerificationCode`: Updates a user's verification code.
+
 #### Edamam API Endpoints
 `GET /edamam`: Returns the Edamam API access link for this application.
 
@@ -89,6 +93,8 @@ The following endpoints provide functionality related to users of the applicatio
 * `userName` (String): User's chosen username.
 * `password` (String): User's chosen password that is stored as a hashed password via bcrypt framework.
 * `email` (String): User's email address.
+* `verified` (Boolean): User's account has been verified or not.
+* `verificationCode` (String): 6-digit verification code that is sent to the User's email and is stored as a hashed value via bcyrpt framework.
 * `diet` (String array): Array containing user's dietary selections (these identifiers follow query parameters passed to Edamam API).
 * `health` (String array): Array containing user's health selections (these identifiers follow query parameters passed to Edamam API).
 * `favorites` (object array): Array of objects representing recipes that the user has favorited.
