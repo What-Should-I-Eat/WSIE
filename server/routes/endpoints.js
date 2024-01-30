@@ -78,7 +78,7 @@ endpoints.post("/users/register", async (req, res) => {
       password: hashedPassword, 
       email: req.body.email,
       verified: false,
-      verificationCode: req.body.verificationCode,
+      verificationCode: hashedVerificationCode,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
@@ -119,7 +119,8 @@ endpoints.put("/users/verify", async (req, res) => {
     // can replace if statement parameters once email is added
     const validatedVerificationCode = await validateVerificationCode(user, inputtedCode);
 
-    if(inputtedCode === user.verificationCode){
+    // if(inputtedCode === user.verificationCode){
+    if(validatedVerificationCode){
       const verificationUpdate =  { $set: {"verified": true}};
       const options =  { upsert: true, new: true};
   
