@@ -147,25 +147,38 @@ var loginHandler = (() => {
   
           return false;
         }
-        var resendVerificationStatus = (event) => {
+        var resendVerificationCode = (event) => {
           event.preventDefault();
           console.log('CALLING RESENDVERIFICATIONSTATUS()');
+
       
           const username = document.getElementById('username-input').value ?? '';
           const verificationMessage = document.getElementById('verification-message');
+          const fullName = document.getElementById('fullname-input').value ?? '';
+          const email = document.getElementById('email-input').value ?? '';
       
           if(username === ''){
             loginValidation.innerHTML = "Username cannot be blank";
             return false;
+          }else if(fullName === ''){
+            loginValidation.innerHTML = "Name cannot be blank";
+            return false;
+          }else if(email === ''){
+            loginValidation.innerHTML = "email cannot be blank";
+            return false;
           }
+
+          const verificationCode = generateRandomVerificationCode();
+          sendEmail(fullName, email, verificationCode, emailjs);
       
-          fetch(`http://${host}/api/v1/users/sendVerificationCode`, {
+          fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              userName: username,            
+              userName: username,
+              verificationCode: verificationCode,            
             }),
           })
             .then(response => {
@@ -390,6 +403,6 @@ var loginHandler = (() => {
     return {
       newUser,
       updateVerificationStatus,
-      resendVerificationStatus
+      resendVerificationCode
     }
 })();
