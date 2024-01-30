@@ -67,12 +67,15 @@ The following endpoints provide functionality related to users of the applicatio
 
 `PUT /users/health`: Updates a user's health restrictions.
 
-`PUT /users/:id/favorites`: Updates a user's favorited recipes.
+`PUT /users/:id/favorites`: Adds a recipe to a user's favorited recipes.
+
+`DELETE /users/:id/favorites`: Removes a recipe from a user's favorited recipes
+
+`POST /users/:id/favorites`: Returns true if recipe is in favorites already, false otherwise. 
 
 `PUT /users/verify`: Updates a user's account verification status.
 
 `PUT /resendVerificationCode`: Updates a user's verification code.
-
 
 #### Edamam API Endpoints
 `GET /edamam`: Returns the Edamam API access link for this application.
