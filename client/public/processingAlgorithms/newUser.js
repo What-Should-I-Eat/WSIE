@@ -9,6 +9,7 @@ var loginHandler = (() => {
       const password = document.getElementById('password-input1').value ?? '';
       const confirmedPassword = document.getElementById('password-input2').value ?? '';
       const verificationMessage = document.getElementById('verification-message');
+      const passwordRequirement = document.getElementById('password-requirement');
       
       //USER INPUT viability - any userInputViabilityNumber other than 0 means user input is invalid;
       const userInputViabilityNumber = checkIfUserInputIsViable(fullName, email, username, password, confirmedPassword);
@@ -75,6 +76,7 @@ var loginHandler = (() => {
           verificationMessage.innerHTML = loginSuccess;
           const confirmationCodeDiv = document.getElementById('confirmationCode');
           confirmationCodeDiv.style.display = 'block';
+          passwordRequirement.style.display = 'none';
         })
         .catch(error => {
           console.error('Fetch error:', error);
@@ -400,9 +402,32 @@ var loginHandler = (() => {
       return String(Math.floor(100000 + Math.random() * 900000));
     }
 
+    function togglePassword1(){
+      var password1 = document.getElementById("password-input1");
+      var passwordToggler1 = document.getElementById("password-input1-toggler");
+      passwordToggler1.classList.toggle("bi-eye");
+      if(password1.type === "password"){
+        password1.type = "text";
+      } else{
+        password1.type = "password";
+      }
+    }
+    function togglePassword2(){
+      var password2 = document.getElementById("password-input2");
+      var passwordToggler2 = document.getElementById("password-input2-toggler");
+      passwordToggler2.classList.toggle("bi-eye");
+      if(password2.type === "password"){
+        password2.type = "text";
+      } else{
+        password2.type = "password";
+      }
+    }
+
     return {
       newUser,
       updateVerificationStatus,
-      resendVerificationCode
+      resendVerificationCode,
+      togglePassword1,
+      togglePassword2
     }
 })();
