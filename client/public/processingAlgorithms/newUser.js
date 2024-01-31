@@ -404,6 +404,8 @@ var loginHandler = (() => {
 
     function togglePassword1(){
       var password1 = document.getElementById("password-input1");
+      var passwordToggler1 = document.getElementById("password-input1-toggler");
+      passwordToggler1.classList.toggle("bi-eye");
       if(password1.type === "password"){
         password1.type = "text";
       } else{
@@ -412,6 +414,8 @@ var loginHandler = (() => {
     }
     function togglePassword2(){
       var password2 = document.getElementById("password-input2");
+      var passwordToggler2 = document.getElementById("password-input2-toggler");
+      passwordToggler2.classList.toggle("bi-eye");
       if(password2.type === "password"){
         password2.type = "text";
       } else{
