@@ -9,6 +9,7 @@ var loginHandler = (() => {
       const password = document.getElementById('password-input1').value ?? '';
       const confirmedPassword = document.getElementById('password-input2').value ?? '';
       const verificationMessage = document.getElementById('verification-message');
+      const passwordRequirement = document.getElementById('password-requirement');
       
       //USER INPUT viability - any userInputViabilityNumber other than 0 means user input is invalid;
       const userInputViabilityNumber = checkIfUserInputIsViable(fullName, email, username, password, confirmedPassword);
@@ -75,6 +76,7 @@ var loginHandler = (() => {
           verificationMessage.innerHTML = loginSuccess;
           const confirmationCodeDiv = document.getElementById('confirmationCode');
           confirmationCodeDiv.style.display = 'block';
+          passwordRequirement.style.display = 'none';
         })
         .catch(error => {
           console.error('Fetch error:', error);
