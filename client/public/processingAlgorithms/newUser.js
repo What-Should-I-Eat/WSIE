@@ -402,9 +402,28 @@ var loginHandler = (() => {
       return String(Math.floor(100000 + Math.random() * 900000));
     }
 
+    function togglePassword1(){
+      var password1 = document.getElementById("password-input1");
+      if(password1.type === "password"){
+        password1.type = "text";
+      } else{
+        password1.type = "password";
+      }
+    }
+    function togglePassword2(){
+      var password2 = document.getElementById("password-input2");
+      if(password2.type === "password"){
+        password2.type = "text";
+      } else{
+        password2.type = "password";
+      }
+    }
+
     return {
       newUser,
       updateVerificationStatus,
-      resendVerificationCode
+      resendVerificationCode,
+      togglePassword1,
+      togglePassword2
     }
 })();
