@@ -105,8 +105,6 @@ var edamam = (() => {
           return true;
         case 'Martha Stewart':
           return true;
-        case 'BBC Good Food':
-          return true;
         case 'Food Network':
           return true;
         case 'Simply Recipes':
