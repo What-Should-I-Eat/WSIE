@@ -544,10 +544,6 @@ endpoints.get('/ingredients', async (req, res) => {
           scraper = '#mntl-sc-block_3-0';
           findScraper = 'p.mntl-sc-block-html';
           break;
-        case 'bbc good food': //working
-          scraper = '.grouped-list li';
-          findScraper = 'p';
-          break;
         case 'martha stewart': //working
           scraper = 'div#recipe__steps-content_1-0 p';
           findScraper = '';
