@@ -45,7 +45,7 @@ endpoints.get("/users/getVerificationCode", async (req, res) => {
 });
 
 //Get user by email (for forgot username/password)
-endpoints.get('/users/forgotUserCredentials', async (req, res) => {
+endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
   try {
     const email = req.query.email;
     const user = await User.findOne({ email: email });
@@ -54,18 +54,19 @@ endpoints.get('/users/forgotUserCredentials', async (req, res) => {
     }
 
     const verificationCode = generateRandomVerificationCode();
+    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
 
     const forgotUserInfo = {
       username: user.userName,
       fullName: user.fullName,
       email: user.email,
-      verificationCode: bcrypt.hash(verificationCode), //this is currently hashed so it's not sent directly to client
+      verificationCode: hashedVerificationCode, //this is currently hashed so it's not sent directly to client
     };
 
     res.json(forgotUserInfo);
   } 
   catch (error) {
-    console.error('Error finding this username: ', error);
+    console.error('Error finding this email: ', error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
