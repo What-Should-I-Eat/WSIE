@@ -150,6 +150,22 @@ endpoints.put("/users/resendVerificationCode", async (req, res) => {
   }
 });
 
+endpoints.put("/users/getUserEmail", async (req, res) => { 
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const email = user.email;
+    res.json(email);
+  } catch (error) {
+    console.error('Error fetching verification code: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 //~~~~~ POST specific user by user - changed from GET so we could have a body
 endpoints.post('/users/find-username', async (req, res) => {
   try {
