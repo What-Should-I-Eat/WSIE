@@ -56,49 +56,6 @@ var loginHandler = (() => {
     return false;
   };
 
-  var resendVerificationStatus = (event) => {
-    event.preventDefault();
-    console.log('CALLING RESENDVERIFICATIONSTATUS()');
-
-    const username = document.getElementById('username-input').value ?? '';
-    const loginValidation = document.getElementById('login-validation');
-
-    if(username === ''){
-      loginValidation.innerHTML = "Username cannot be blank";
-      return false;
-    }
-
-    fetch(`http://${host}/api/v1/users/sendVerificationCode`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userName: username,            
-      }),
-    })
-      .then(response => {
-        if(response.status != 200){
-          console.log('Cannot resend code');
-          loginValidation.innerHTML = 'Could not resend code';
-          throw new Error('Cannot resend code');
-        }
-        return response.json();
-      })
-      .then(targetUser => {
-        console.log('User code resent: ', targetUser);
-
-        // After creating the user, handle UI changes
-        const resentCode = "Verification code has been resent.<br/>Please check your email and enter the 6 digit code below";
-        loginValidation.innerHTML = resentCode;
-      })
-      .catch(error => {
-        console.error('Fetch error:', error);
-      });
-
-      return false;
-    }
-
   function getProfilePageForThisUser(user){
     console.log("Inside getProfilePage()... ready to call profile endpoint");
     console.log("username: ", user);
@@ -130,7 +87,6 @@ var loginHandler = (() => {
 
   return {
     userLogin,
-    resendVerificationStatus
   };
 })();
 

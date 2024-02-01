@@ -150,7 +150,7 @@ endpoints.put("/users/resendVerificationCode", async (req, res) => {
   }
 });
 
-endpoints.put("/users/getUserEmail", async (req, res) => { 
+endpoints.post("/users/getUserEmail", async (req, res) => { 
   try {
     const user = await User.findOne({ userName: req.body.userName });
 

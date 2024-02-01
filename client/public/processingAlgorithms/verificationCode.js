@@ -116,7 +116,7 @@ var verificationHandler = (() => {
   var resendVerificationCodeNewUser = (event) => {
     event.preventDefault();
     console.log('CALLING RESENDVERIFICATIONSTATUS()');
-    
+
     const username = document.getElementById('username-input').value ?? '';
     const verificationMessage = document.getElementById('verification-message');
     const fullName = document.getElementById('fullname-input').value ?? '';
@@ -168,6 +168,56 @@ var verificationHandler = (() => {
         return false;
   }
 
+  var resendVerificationStatusLogin = (event) => {
+    event.preventDefault();
+    console.log('CALLING RESENDVERIFICATIONSTATUS()');
+
+    const username = document.getElementById('username-input').value ?? '';
+    const loginValidation = document.getElementById('login-validation');
+
+    if(username === ''){
+      loginValidation.innerHTML = "Username cannot be blank";
+      return false;
+    }
+
+    const email = getUserEmail(username); 
+    console.log(email);
+
+    const verificationCode = generateRandomVerificationCode();
+    sendEmail(username, email, verificationCode, emailjs);
+
+    fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
+        method: 'PUT',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        userName: username,
+        verificationCode: verificationCode,            
+        }),
+    })
+        .then(response => {
+        if(response.status != 200){
+            console.log('Cannot resend code');
+            verificationMessage.innerHTML = 'Could not resend code';
+            throw new Error('Cannot resend code');
+        }
+        return response.json();
+        })
+        .then(targetUser => {
+        console.log('User code resent: ', targetUser);
+
+        // After creating the user, handle UI changes
+        const resentCode = "Verification code has been resent.<br/>Please check your email and enter the 6 digit code below";
+        loginValidation.innerHTML = resentCode;
+        })
+        .catch(error => {
+        console.error('Fetch error:', error);
+        });
+
+      return false;
+    }
+
 
   function sendEmail(fullName, email, verificationCode, emailjs){
     console.log("Attempting to send verification code");
@@ -197,6 +247,29 @@ var verificationHandler = (() => {
 
   function generateRandomVerificationCode(){
     return String(Math.floor(100000 + Math.random() * 900000));
+  }
+  async function getUserEmail(username){
+    const email = await fetch(`http://${host}/api/v1/users/getUserEmail`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userName: username,            
+        }),
+      })
+        .then(response => {
+          if(response.status != 200){
+            console.log('Cannot verify user');
+            loginValidation.innerHTML = 'Could not verify user';
+            throw new Error('Cannot verify user');
+          }
+          return response.json();
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+        });
+        return email;
   }
 
   function isVerificationCodeEmpty(code){
@@ -233,6 +306,7 @@ var verificationHandler = (() => {
     updateVerificationStatusNewUser,
     updateVerificationStatusLogin,
     resendVerificationCodeNewUser,
+    resendVerificationStatusLogin
   }
 
 })();
