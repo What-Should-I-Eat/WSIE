@@ -19,10 +19,13 @@ var loginHandler = (() => {
 
         if(forgotCredentialsData.error){
             verificationMessage.innerHTML = "This email is not in our database. Please try again.";
+            return false;
         }
-        else {
-            verificationMessage.innerHTML = "Sending verification code!";
-        }
+    
+        verificationMessage.innerHTML = "Sending verification code!";
+        sendEmail(forgotCredentialsData.email, forgotCredentials.fullName, forgotCredentialsData.username, forgotCredentialsData.verificationCode, emailjs);
+        
+        
   
       return false;
     };
@@ -53,8 +56,37 @@ var loginHandler = (() => {
       } catch (error) {
         console.error('Fetch error:', error);
       }
-  
       return userInfo;
     }
+
+    //Returns boolean of email sent success/failure
+    function sendEmail(email, fullName, username, verificationCode, emailjs){
+        console.log("Attempting to send verification code");
+    
+        console.log("verification code: ", verificationCode);
+        const params = {
+            userEmail: email,
+            userFullName: fullName,
+            username: username,
+            verificationCode: verificationCode,
+        }
+    
+        //need to get this out of the client
+        const serviceID = "service_ms0318i";
+        const templateID = "template_u9dl10r";
+        const publicKey = "8nKeoQjoIWF1wyUpG";
+    
+        emailjs.send(serviceID, templateID, params, publicKey)
+            .then(function(response) {
+                console.log('SUCCESS: email sent', response.status, response.text);
+                return true;
+            }, function(error) {
+                console.log('FAILED: email could not be sent', error);
+            });
+    
+        return false;
+        }
+
+
   })();
   

@@ -21,17 +21,7 @@ var loginHandler = (() => {
       //If viable user input, we continue with email verification HERE
       const verificationCode = generateRandomVerificationCode();
       sendEmail(fullName, email, verificationCode, emailjs);
-      //Gets random code from server and sends user an email
-      // getVerificationCode()
-      //   .then(verificationCode => {
-      //       console.log('Verification Code:', verificationCode);
-      //       //sendEmail
-      //       sendEmail(fullName, email, verificationCode, emailjs);
-      //     })
-      //     .catch(error => {
-      //         console.error('Error during verification code fetching:', error);
-      //     });
-      
+
       //After email verification, continue with registration
       const newUserData = {
         fullName: fullName,
