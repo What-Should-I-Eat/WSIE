@@ -27,24 +27,6 @@ endpoints.get('/clearUserDatabase', async (req, res) => {
   }
 });
 
-//TORIE NOTE: I don't think we need this endpoint bc emailjs needs a browser but keeping it for now
-//Changing this: response is now the verification code
-endpoints.get("/users/getVerificationCode", async (req, res) => { 
-  try {
-    const verificationCode = generateRandomVerificationCode(); 
-    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
-    
-    const verificationUpdate =  { $set: {"verificationCode": verificationCode}};
-    const options =  { upsert: true, new: true};
-
-    res.json(verificationCode); //change to hashed code once I know this works
-  } catch (error) {
-    console.error('Error fetching verification code: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
 //Session middleware
 endpoints.use(session({
   secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
