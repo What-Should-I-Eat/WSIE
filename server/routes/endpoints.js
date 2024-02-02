@@ -60,7 +60,7 @@ endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
       username: user.userName,
       fullName: user.fullName,
       email: user.email,
-      verificationCode: hashedVerificationCode, //this is currently hashed so it's not sent directly to client
+      verificationCode: verificationCode, //need to hash 
     };
 
     res.json(forgotUserInfo);
@@ -70,6 +70,11 @@ endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
+//____________________________________________MIDDLEWARE____________________________________________________________
+//Everything after this point requires authentication_______________________________________________________________
 
 //Session middleware
 endpoints.use(session({
@@ -660,12 +665,6 @@ function generateRandomVerificationCode(){
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
-//Got rid of this method because emailjs needs to operate using xmlhttp in the browser
-// TBD, definitely can update however we think is best but the smtp.js approach wasn't working for me
-// function sendVerificationCodeViaEmail(confirmationCode){
-
-//   return true;
-// }
 
 module.exports = endpoints;
   

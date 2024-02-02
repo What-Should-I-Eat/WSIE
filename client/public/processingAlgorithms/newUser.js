@@ -1,5 +1,5 @@
 var loginHandler = (() => {
-    var newUser = (event) => {
+    var newUser = async (event) => {
       event.preventDefault();
       console.log('CALLING NEWUSER()');
 
@@ -19,8 +19,10 @@ var loginHandler = (() => {
       }
 
       //If viable user input, we continue with email verification HERE
-      const verificationCode = generateRandomVerificationCode();
+      const verificationCode = await getVerificationCode();
+      console.log("VC: ", verificationCode);
       sendEmail(fullName, email, verificationCode, emailjs);
+
 
       //After email verification, continue with registration
       const newUserData = {
@@ -339,27 +341,25 @@ var loginHandler = (() => {
     }
 
     //Returns verficiation code from endpoint - hash in the server once this works
-    function getVerificationCode() {
-      return fetch(`http://${host}/api/v1/users/getVerificationCode`, {
+    async function getVerificationCode() {
+      try {
+        const response = await fetch(`http://${host}/api/v1/users/getVerificationCode`, {
           method: 'GET',
           headers: {
-              'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
           },
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-      })
-      .then(verificationCode => {
-          console.log('Verification Code:', verificationCode);
-          return verificationCode;
-      })
-      .catch(error => {
-          console.error('Error fetching verification code:', error.message);
-          throw error;
-      });
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const verificationCode = response.json();
+        return verificationCode;
+
+      } 
+      catch (error) {
+        console.error('Error fetching verification code:', error.message);
+        throw error;
+      }
   }
 
     //Returns boolean of email sent success/failure
@@ -368,7 +368,7 @@ var loginHandler = (() => {
 
       console.log("verification code: ", verificationCode);
       const params = {
-        userEmail: email,
+        userEmail: email,       
         userFullName: fullName,
         verificationCode: verificationCode,
       }
@@ -387,9 +387,6 @@ var loginHandler = (() => {
           });
 
       return false;
-    }
-    function generateRandomVerificationCode(){
-      return String(Math.floor(100000 + Math.random() * 900000));
     }
 
     function togglePassword1(){

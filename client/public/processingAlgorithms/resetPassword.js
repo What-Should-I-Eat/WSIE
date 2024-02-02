@@ -24,8 +24,6 @@ var loginHandler = (() => {
     
         verificationMessage.innerHTML = "Sending verification code!";
         sendEmail(forgotCredentialsData.email, forgotCredentialsData.fullName, forgotCredentialsData.username, forgotCredentialsData.verificationCode, emailjs);
-        
-        
   
       return false;
     };
