@@ -168,7 +168,7 @@ var verificationHandler = (() => {
         return false;
   }
 
-  var resendVerificationStatusLogin = (event) => {
+  async function resendVerificationStatusLogin(event){
     event.preventDefault();
     console.log('CALLING RESENDVERIFICATIONSTATUS()');
 
@@ -179,9 +179,7 @@ var verificationHandler = (() => {
       loginValidation.innerHTML = "Username cannot be blank";
       return false;
     }
-
-    const email = getUserEmail(username); 
-    console.log(email);
+    const email = await getUserEmail(username); 
 
     const verificationCode = generateRandomVerificationCode();
     sendEmail(username, email, verificationCode, emailjs);
@@ -265,6 +263,8 @@ var verificationHandler = (() => {
             throw new Error('Cannot verify user');
           }
           return response.json();
+        }).then(user => {
+            return user.email;
         })
         .catch(error => {
           console.error('Fetch error:', error);

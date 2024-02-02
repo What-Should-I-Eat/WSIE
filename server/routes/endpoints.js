@@ -159,7 +159,8 @@ endpoints.post("/users/getUserEmail", async (req, res) => {
     }
 
     const email = user.email;
-    res.json(email);
+    console.log(email);
+    res.json(user);
   } catch (error) {
     console.error('Error fetching verification code: ', error);
     res.status(500).json({ error: 'Internal Server Error' });
