@@ -5,8 +5,9 @@
   <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/verificationCode.js"></script>
-  <script src="https://cdn.emailjs.com/dist/email.min.js"></script> 
-  <link rel="stylesheet" href="/stylesheets/styles.css">
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <link rel="stylesheet" href="/stylesheets/styles.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="background-color: rgb(162, 176, 121); color: white;" >
@@ -20,8 +21,8 @@
     <div class="user-login">
         <form onsubmit="return loginHandler.userLogin(event)">
             <input type="text" id="username-input" placeholder="Username" style="background-color: rgb(223, 220, 195);">
-            <input type="password" id="password-input" placeholder="Password" style="background-color: rgb(223, 220, 195);">
-            
+            <input type="password" id="password-input" placeholder="Password" style="background-color: rgb(223, 220, 195); margin-left: 0em">
+            <i class="bi bi-eye-slash" id="password-input-toggler" style="margin-left: -1.6em; color: black;" onclick="loginHandler.togglePassword()"></i>
             <br><br>
             <button type="submit" style="background-color:rgb(202, 214, 169);">Log In</button>
         </form>
