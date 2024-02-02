@@ -4,6 +4,8 @@
   <title>Login to WSIE</title>
   <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
   <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
+  <script type="text/javascript" src="./processingAlgorithms/verificationCode.js"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <link rel="stylesheet" href="/stylesheets/styles.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,11 +28,11 @@
         </form>
         <h3 id="login-validation"></h3>
         <div id="confirmationCode" style="display:none">
-            <form onsubmit="return loginHandler.resendVerificationStatus(event)">
+            <form onsubmit="return verificationHandler.resendVerificationStatusLogin(event)">
                 <button type="submit" style="background-color:rgb(255, 174, 174);">Resend Code</button>
                 <br><br>
             </form>
-            <form onsubmit="return loginHandler.updateVerificationStatus(event)">
+            <form onsubmit="return verificationHandler.updateVerificationStatusLogin(event)">
                 <input type="text" id="confirmationCodeInput" placeholder="######" style="background-color: rgb(223, 220, 195);">
                 <br>
                 <button type="submit" style="background-color:rgb(223, 220, 195);">Verify Profile</button>
