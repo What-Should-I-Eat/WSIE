@@ -73,6 +73,8 @@ The following endpoints provide functionality related to users of the applicatio
 
 `POST /users/:id/favorites`: Returns true if recipe is in favorites already, false otherwise. 
 
+`POST /users/getUserEmail`: Returns user's email based on username
+
 `PUT /users/verify`: Updates a user's account verification status.
 
 `PUT /resendVerificationCode`: Updates a user's verification code.
