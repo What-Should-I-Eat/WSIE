@@ -162,7 +162,7 @@ var loginHandler = (() => {
             return false;
           }
 
-          const verificationCode = generateRandomVerificationCode();
+          const verificationCode = getVerificationCode();
           sendEmail(fullName, email, verificationCode, emailjs);
       
           fetch(`http://${host}/api/v1/users/resendVerificationCode`, {

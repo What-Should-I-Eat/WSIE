@@ -11,6 +11,7 @@ var loginHandler = (() => {
     var forgotPassword = async (event) => {
       event.preventDefault();
   
+      //Get applicable user info from email
       const userEmail = document.getElementById('email-input').value;
       var verificationMessage = document.getElementById('valid-user-email');
   
@@ -21,9 +22,20 @@ var loginHandler = (() => {
             verificationMessage.innerHTML = "This email is not in our database. Please try again.";
             return false;
         }
-    
         verificationMessage.innerHTML = "Sending verification code!";
-        sendEmail(forgotCredentialsData.email, forgotCredentialsData.fullName, forgotCredentialsData.username, forgotCredentialsData.verificationCode, emailjs);
+
+        //Generate and send verification code, then update in server
+        const verificationCode = await getVerificationCode();
+        sendEmail(forgotCredentialsData.email, forgotCredentialsData.fullName, forgotCredentialsData.username, verificationCode, emailjs);
+        const verificationCodeIsUpdated = putVerificationCodeInDB(forgotCredentialsData.username, verificationCode);
+
+        if(!verificationCodeIsUpdated){
+            verificationMessage.innerHTML = "An error occurred. Please try again.";
+            return false;
+        }
+
+        
+
   
       return false;
     };
@@ -83,7 +95,56 @@ var loginHandler = (() => {
             });
     
         return false;
+    }
+
+    async function getVerificationCode() {
+        try {
+            const response = await fetch(`http://${host}/api/v1/users/getVerificationCode`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            });
+            if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const verificationCode = response.json();
+            return verificationCode;
+    
+        } 
+        catch (error) {
+            console.error('Error fetching verification code:', error.message);
+            throw error;
         }
+    }
+
+    function putVerificationCodeInDB(username, verificationCode){
+        fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userName: username,
+              verificationCode: verificationCode,            
+            }),
+          })
+            .then(response => {
+              if(response.status != 200){
+                console.log('Cannot resend code');
+                throw new Error('Cannot resend code');
+              }
+              return response.json();
+            })
+            .then(targetUser => {
+              console.log('User code resent: ', targetUser);
+              return true;
+            })
+            .catch(error => {
+              console.error('Error updating verification code:', error);
+              return false;
+            });
+    }
 
 
   })();

@@ -53,14 +53,10 @@ endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const verificationCode = generateRandomVerificationCode();
-    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
-
     const forgotUserInfo = {
       username: user.userName,
       fullName: user.fullName,
       email: user.email,
-      verificationCode: verificationCode, //need to hash 
     };
 
     res.json(forgotUserInfo);
@@ -70,6 +66,7 @@ endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 
@@ -158,7 +155,6 @@ endpoints.put("/users/verify", async (req, res) => {
   }
 });
 
-// //TORIE NOTE: I don't think we need this endpoint bc emailjs needs a browser but keeping it for now
 // //Changing this: response is now the verification code
 endpoints.put("/users/resendVerificationCode", async (req, res) => { 
   try {
