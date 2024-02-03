@@ -11,6 +11,7 @@ const UserSchema = new Schema({
     email: String,
     verified: Boolean,
     verificationCode: String,
+    verificationCodeTimestamp: String,
     diet: [String],
     health: [String],
     favorites: [{
