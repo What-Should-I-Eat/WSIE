@@ -45,6 +45,7 @@ endpoints.post("/users/register", async (req, res) => {
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
+    const currentTimestamp = new Date();
 
     const user = new User({
       id: req.body.id,
@@ -54,6 +55,7 @@ endpoints.post("/users/register", async (req, res) => {
       email: req.body.email,
       verified: false,
       verificationCode: hashedVerificationCode,
+      verificationCodeTimestamp: currentTimestamp,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
@@ -94,6 +96,9 @@ endpoints.put("/users/verify", async (req, res) => {
     const validatedVerificationCode = await validateVerificationCode(user, inputtedCode);
 
     if(validatedVerificationCode){
+      if(hasVerificationCodeExpired(user.verificationCodeTimestamp)){
+        return res.status(437).json({ error: 'Code has expired'});
+      }
       const verificationUpdate =  { $set: {"verified": true}};
       const options =  { upsert: true, new: true};
   
@@ -109,8 +114,6 @@ endpoints.put("/users/verify", async (req, res) => {
   }
 });
 
-// //TORIE NOTE: I don't think we need this endpoint bc emailjs needs a browser but keeping it for now
-// //Changing this: response is now the verification code
 endpoints.put("/users/resendVerificationCode", async (req, res) => { 
   try {
     const user = await User.findOne({ userName: req.body.userName });
@@ -120,11 +123,12 @@ endpoints.put("/users/resendVerificationCode", async (req, res) => {
     }
 
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
+    const currentTimestamp = new Date();
 
-    const verificationUpdate =  { $set: {"verificationCode": hashedVerificationCode}};
+    const verificationUpdate =  { $set: {"verificationCode": hashedVerificationCode, "verificationCodeTimestamp": currentTimestamp}};
     const options =  { upsert: true, new: true};
 
-    const updatedCode = await User.updateOne(user, verificationUpdate, options);
+    const updatedCode = await User.updateOne(user, verificationUpdate, options); 
     res.json(updatedCode);
   } catch (error) {
     console.error('Error fetching verification code: ', error);
@@ -629,16 +633,16 @@ async function validateVerificationCode(user, inputtedVerificationCode) {
   });
 }
 
-function generateRandomVerificationCode(){
-  return String(Math.floor(100000 + Math.random() * 900000));
+function hasVerificationCodeExpired(originalTimestamp){
+  const currentTimestamp = new Date().toISOString();
+  const tenMinutes = 60 * 10 * 1000;
+  const elapsedTimeInMilliseconds = (Date.parse(currentTimestamp) - Date.parse(originalTimestamp));
+  if(elapsedTimeInMilliseconds > tenMinutes){
+    return true;
+  } else{
+    return false;
+  }
 }
-
-//Got rid of this method because emailjs needs to operate using xmlhttp in the browser
-// TBD, definitely can update however we think is best but the smtp.js approach wasn't working for me
-// function sendVerificationCodeViaEmail(confirmationCode){
-
-//   return true;
-// }
 
 module.exports = endpoints;
   
