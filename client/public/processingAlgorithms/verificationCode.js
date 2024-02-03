@@ -2,6 +2,7 @@ var verificationHandler = (() => {
   var updateVerificationStatusNewUser = (event) => {
     event.preventDefault();
     console.log('CALLING UPDATEVERIFICATIONSTATUS()');
+    console.log(new Date().toISOString());
 
     const username = document.getElementById('username-input').value ?? '';
     const fullName = document.getElementById('fullname-input').value ?? '';
@@ -30,7 +31,11 @@ var verificationHandler = (() => {
         }),
     })
     .then(response => {
-    if(response.status != 200){
+    if(response.status == 437){
+      console.log('Code has expired');
+      verificationMessage.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
+      throw new Error('Code has expired');
+    }else if(response.status != 200){
         console.log('Cannot verify user');
         verificationMessage.innerHTML = 'Could not verify user';
         throw new Error('Cannot verify user');
@@ -59,6 +64,11 @@ var verificationHandler = (() => {
     })
     .catch(error => {
     console.error('Fetch error:', error);
+    if(error == 'Error: Code has expired'){
+      verificationMessage.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
+    } else{
+      verificationMessage.innerHTML = 'Could not verify user.<br/>Please check code is entered correctly';
+    }
     });
 
     return false;
@@ -92,7 +102,11 @@ var verificationHandler = (() => {
           }),
         })
           .then(response => {
-            if(response.status != 200){
+            if(response.status == 437){
+              console.log('Code has expired');
+              loginValidation.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
+              throw new Error('Code has expired');
+            } else if(response.status != 200){
               console.log('Cannot verify user');
               loginValidation.innerHTML = 'Could not verify user';
               throw new Error('Cannot verify user');
@@ -108,6 +122,11 @@ var verificationHandler = (() => {
           })
           .catch(error => {
             console.error('Fetch error:', error);
+            if(error == 'Error: Code has expired'){
+              loginValidation.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
+            } else{
+              loginValidation.innerHTML = 'Could not verify user.<br/>Please check code is entered correctly';
+            }
           });
     
           return false;
@@ -158,7 +177,7 @@ var verificationHandler = (() => {
         console.log('User code resent: ', targetUser);
 
         // After creating the user, handle UI changes
-        const resentCode = "Verification code has been resent.<br/>Please check your email and enter the 6 digit code below";
+        const resentCode = "Verification code has been resent.<br/>Please check your email and enter the 6 digit code below.<br/>Code expires after 10 minutes";
         verificationMessage.innerHTML = resentCode;
         })
         .catch(error => {
@@ -206,7 +225,7 @@ var verificationHandler = (() => {
         console.log('User code resent: ', targetUser);
 
         // After creating the user, handle UI changes
-        const resentCode = "Verification code has been resent.<br/>Please check your email and enter the 6 digit code below";
+        const resentCode = "Verification code has been resent.<br/>Please check your email and enter the 6 digit code below.<br/>Code expires after 10 minutes";
         loginValidation.innerHTML = resentCode;
         })
         .catch(error => {

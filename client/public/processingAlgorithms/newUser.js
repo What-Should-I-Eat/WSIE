@@ -2,7 +2,7 @@ var loginHandler = (() => {
     var newUser = (event) => {
       event.preventDefault();
       console.log('CALLING NEWUSER()');
-
+      console.log(new Date().toISOString());
       const fullName = document.getElementById('fullname-input').value ?? '';
       const email = document.getElementById('email-input').value ?? '';
       const username = document.getElementById('username-input').value ?? '';
@@ -61,7 +61,7 @@ var loginHandler = (() => {
           console.log(userId);
   
           // After creating the user, handle UI changes
-          const loginSuccess = "You have successfully created a WSIE profile.<br>To verify your account, please enter the 6 digit code from your email below:";
+          const loginSuccess = "You have successfully created a WSIE profile.<br>To verify your account, please enter the 6 digit code from your email below.<br/>Code expires in 10 minutes";
           verificationMessage.innerHTML = loginSuccess;
           const confirmationCodeDiv = document.getElementById('confirmationCode');
           confirmationCodeDiv.style.display = 'block';
