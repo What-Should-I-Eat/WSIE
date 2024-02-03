@@ -97,6 +97,7 @@ The following endpoints provide functionality related to users of the applicatio
 * `email` (String): User's email address.
 * `verified` (Boolean): User's account has been verified or not.
 * `verificationCode` (String): 6-digit verification code that is sent to the User's email and is stored as a hashed value via bcyrpt framework.
+* `verificationCodeTimestamp` (Date): Timestamp of when verification was sent (helps confirm code is past its 10 minute experiation)
 * `diet` (String array): Array containing user's dietary selections (these identifiers follow query parameters passed to Edamam API).
 * `health` (String array): Array containing user's health selections (these identifiers follow query parameters passed to Edamam API).
 * `favorites` (object array): Array of objects representing recipes that the user has favorited.
