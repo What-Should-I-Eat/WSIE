@@ -27,6 +27,75 @@ endpoints.get('/clearUserDatabase', async (req, res) => {
   }
 });
 
+//TORIE NOTE: I don't think we need this endpoint bc emailjs needs a browser but keeping it for now
+//Changing this: response is now the verification code
+endpoints.get("/users/getVerificationCode", async (req, res) => { 
+  try {
+    const verificationCode = generateRandomVerificationCode(); 
+    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
+    
+    const verificationUpdate =  { $set: {"verificationCode": verificationCode}};
+    const options =  { upsert: true, new: true};
+
+    res.json(verificationCode); //change to hashed code once I know this works
+  } catch (error) {
+    console.error('Error fetching verification code: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//Get user by email (for forgot username/password)
+endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
+  try {
+    const email = req.query.email;
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const forgotUserInfo = {
+      username: user.userName,
+      fullName: user.fullName,
+      email: user.email,
+    };
+
+    res.json(forgotUserInfo);
+  } 
+  catch (error) {
+    console.error('Error finding this email: ', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//Change password
+endpoints.put("/users/changePassword", async (req, res) => { 
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    if(!user.verified){
+      return res.status(404).json({ error: 'User not validated' });
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const passwordUpdate =  { $set: {"password": hashedPassword}};
+    const options = { upsert: true, new: true};
+
+    const updatedPassword = await User.updateOne(user, passwordUpdate, options);
+    res.json(updatedPassword);
+  } catch (error) {
+    console.error('Error changing password: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+//____________________________________________MIDDLEWARE____________________________________________________________
+//Everything after this point requires authentication_______________________________________________________________
+
 //Session middleware
 endpoints.use(session({
   secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
@@ -45,7 +114,6 @@ endpoints.post("/users/register", async (req, res) => {
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
-    const currentTimestamp = new Date();
 
     const user = new User({
       id: req.body.id,
@@ -55,7 +123,6 @@ endpoints.post("/users/register", async (req, res) => {
       email: req.body.email,
       verified: false,
       verificationCode: hashedVerificationCode,
-      verificationCodeTimestamp: currentTimestamp,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
@@ -96,9 +163,6 @@ endpoints.put("/users/verify", async (req, res) => {
     const validatedVerificationCode = await validateVerificationCode(user, inputtedCode);
 
     if(validatedVerificationCode){
-      if(hasVerificationCodeExpired(user.verificationCodeTimestamp)){
-        return res.status(437).json({ error: 'Code has expired'});
-      }
       const verificationUpdate =  { $set: {"verified": true}};
       const options =  { upsert: true, new: true};
   
@@ -114,6 +178,7 @@ endpoints.put("/users/verify", async (req, res) => {
   }
 });
 
+// //Changing this: response is now the verification code
 endpoints.put("/users/resendVerificationCode", async (req, res) => { 
   try {
     const user = await User.findOne({ userName: req.body.userName });
@@ -123,30 +188,12 @@ endpoints.put("/users/resendVerificationCode", async (req, res) => {
     }
 
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
-    const currentTimestamp = new Date();
 
-    const verificationUpdate =  { $set: {"verificationCode": hashedVerificationCode, "verificationCodeTimestamp": currentTimestamp}};
+    const verificationUpdate =  { $set: {"verificationCode": hashedVerificationCode}};
     const options =  { upsert: true, new: true};
 
-    const updatedCode = await User.updateOne(user, verificationUpdate, options); 
+    const updatedCode = await User.updateOne(user, verificationUpdate, options);
     res.json(updatedCode);
-  } catch (error) {
-    console.error('Error fetching verification code: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-endpoints.post("/users/getUserEmail", async (req, res) => { 
-  try {
-    const user = await User.findOne({ userName: req.body.userName });
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    const email = user.email;
-    console.log(email);
-    res.json(user);
   } catch (error) {
     console.error('Error fetching verification code: ', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -633,16 +680,10 @@ async function validateVerificationCode(user, inputtedVerificationCode) {
   });
 }
 
-function hasVerificationCodeExpired(originalTimestamp){
-  const currentTimestamp = new Date().toISOString();
-  const tenMinutes = 60 * 10 * 1000;
-  const elapsedTimeInMilliseconds = (Date.parse(currentTimestamp) - Date.parse(originalTimestamp));
-  if(elapsedTimeInMilliseconds > tenMinutes){
-    return true;
-  } else{
-    return false;
-  }
+function generateRandomVerificationCode(){
+  return String(Math.floor(100000 + Math.random() * 900000));
 }
+
 
 module.exports = endpoints;
   
