@@ -138,19 +138,25 @@ var edamam = (() => {
           .then((resp) => resp.json())
           .then(async (results) => {
               directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
-              const recipeTitleHeader = document.getElementById('recipe-name');
-              
+              const heartIconDiv = document.getElementById('heart-icon');
+
+              // Heart icon
               const heartIcon = document.createElement('img');
               const heartButton = getHeartIcon(heartIcon);
+              
               const isAlreadyLiked = await isFavorited(json);
               if (isAlreadyLiked == true){
                 heartIcon.style.filter = 'none'; // red
-                console.log("changing color");
               }else{
                 heartIcon.style.filter = 'sepia(100%)'; // grey
-                console.log("changing color");
               }
-              recipeTitleHeader.appendChild(heartButton);
+              heartIconDiv.appendChild(heartButton);
+
+              // tool tip for heart icon
+              const toolTipText = document.createElement('span'); 
+              toolTipText.className = "tooltiptext"; 
+              toolTipText.innerHTML = "Add to Favorites";
+              heartIconDiv.appendChild(toolTipText);              
               
               // When heart buttton is cliked toggle
               heartButton.addEventListener('click', function() {
