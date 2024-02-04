@@ -1,4 +1,3 @@
-
 //ensure email is valid wsie email
 //send verification code via email passing fullname, email, UN, and verification code
 //user puts code in
@@ -6,6 +5,8 @@
 //user inputs new password twice
 //server hashes password
 //new password saved
+
+var username;
 
 var loginHandler = (() => {
     var forgotPassword = async (event) => {
@@ -17,31 +18,67 @@ var loginHandler = (() => {
   
         const forgotCredentialsData = await getUserCredentials(userEmail);
         console.log("Here's our data", forgotCredentialsData);
+        username = forgotCredentialsData.username;
 
         if(forgotCredentialsData.error){
             verificationMessage.innerHTML = "This email is not in our database. Please try again.";
             return false;
         }
-        verificationMessage.innerHTML = "Sending verification code!";
 
-        //Generate and send verification code, then update in server
         const verificationCode = await getVerificationCode();
         sendEmail(forgotCredentialsData.email, forgotCredentialsData.fullName, forgotCredentialsData.username, verificationCode, emailjs);
-        const verificationCodeIsUpdated = putVerificationCodeInDB(forgotCredentialsData.username, verificationCode);
+        const verificationCodeIsUpdated = await putVerificationCodeInDB(forgotCredentialsData.username, verificationCode);
+
+        console.log("verification code is updated: ", verificationCodeIsUpdated);
 
         if(!verificationCodeIsUpdated){
             verificationMessage.innerHTML = "An error occurred. Please try again.";
             return false;
         }
 
-        
+        verificationMessage.innerHTML = "Sending verification code!";
+        showInputFormForVerification();
 
-  
       return false;
     };
   
+    var enterNewVerificationCode = async (event) => {
+        event.preventDefault();
+
+        //Verify verification code 
+        const verificationCodeInput = document.getElementById('vc-input').value;
+        const isValidated = await validateCode(username, verificationCodeInput);
+        console.log("user is verified: ", isValidated);
+
+        if(!isValidated){
+            //Add message in ui
+            console.log("verification code was not correct.");
+            return false;
+        }
+        
+        showInputFormForNewPassword();
+    };
+
+    var enterNewPassword = async (event) => {
+        event.preventDefault();
+
+        var verificationMessage = document.getElementById('verification-message').value;
+        const password1 = document.getElementById('password-input1').value;
+        const password2 = document.getElementById('password-input2').value;
+
+        if(password1 != password2){
+            verificationMessage.innerHTML = "Passwords do not match. Please try again.";
+            return false;
+        }
+
+        //UPDATE DB WITH NEW PW
+
+    };
+
     return {
       forgotPassword,
+      enterNewVerificationCode,
+      enterNewPassword,
     };
   
     async function getUserCredentials(email) {
@@ -118,33 +155,75 @@ var loginHandler = (() => {
         }
     }
 
-    function putVerificationCodeInDB(username, verificationCode){
-        fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userName: username,
-              verificationCode: verificationCode,            
-            }),
-          })
-            .then(response => {
-              if(response.status != 200){
+    async function putVerificationCodeInDB(username, verificationCode){
+        try {
+            const response = await fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userName: username,
+                    verificationCode: verificationCode,
+                }),
+            });
+            if(!response.ok) {
                 console.log('Cannot resend code');
                 throw new Error('Cannot resend code');
-              }
-              return response.json();
-            })
-            .then(targetUser => {
-              console.log('User code resent: ', targetUser);
-              return true;
-            })
-            .catch(error => {
-              console.error('Error updating verification code:', error);
-              return false;
-            });
+            }
+            const targetUser = await response.json();
+            console.log('User code resent: ', targetUser);
+            return true;
+        } catch (error) {
+            console.error('Error updating verification code:', error);
+            return false;
+        }
     }
+
+    async function validateCode(username, verificationCodeInput){
+        try {
+            const response = await fetch(`http://${host}/api/v1/users/verify`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userName: username,
+                    verificationCode: verificationCodeInput,
+                }),
+            });
+    
+            if(!response.ok) {
+                const errorData = await response.json();
+                console.error('Error verifying user:', errorData.error);
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const verifiedUserData = await response.json();
+            console.log('User verified:', verifiedUserData);
+            return true;
+    
+        } catch(error) {
+            console.error('Error verifying user:', error.message);
+            return false;
+        }
+    }
+
+    function showInputFormForVerification(){
+        const enterEmailDiv = document.getElementById('reset-enter-email');
+        const verificationCodeDiv = document.getElementById('password-reset-code');
+        enterEmailDiv.style.display = 'none';
+        verificationCodeDiv.style.display = 'block';
+    }
+
+    function showInputFormForNewPassword(){
+        const verificationCodeDiv = document.getElementById('password-reset-code');
+        const newPasswordDiv = document.getElementById('reset-password');
+        verificationCodeDiv.style.display = 'none';
+        newPasswordDiv.style.display = 'block';
+    }
+
+
 
 
   })();
