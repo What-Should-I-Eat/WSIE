@@ -51,7 +51,7 @@ var loginHandler = (() => {
         console.log("user is verified: ", isValidated);
 
         if(!isValidated){
-            //Add message in ui
+            //Add message in ui - TODO
             console.log("verification code was not correct.");
             return false;
         }
@@ -62,7 +62,8 @@ var loginHandler = (() => {
     var enterNewPassword = async (event) => {
         event.preventDefault();
 
-        var verificationMessage = document.getElementById('verification-message').value;
+        var verificationMessage = document.getElementById('verification-message');
+        const username = document.getElementById('username-input').value;
         const password1 = document.getElementById('password-input1').value;
         const password2 = document.getElementById('password-input2').value;
 
@@ -71,14 +72,15 @@ var loginHandler = (() => {
             return false;
         }
 
-        //UPDATE DB WITH NEW PW
+        //Update database with new password
+        const passwordUpdated = await putNewPasswordInDB(username, password1);
 
-    };
+        if(!passwordUpdated){
+            verificationMessage.innerHTML = "Error updating password. Please try again.";
+        }
 
-    return {
-      forgotPassword,
-      enterNewVerificationCode,
-      enterNewPassword,
+        verificationMessage.innerHTML = "Password updated! Please log in.";
+
     };
   
     async function getUserCredentials(email) {
@@ -223,7 +225,65 @@ var loginHandler = (() => {
         newPasswordDiv.style.display = 'block';
     }
 
+    async function putNewPasswordInDB(username, newPassword){
+        try {
+            const response = await fetch(`http://${host}/api/v1/users/changePassword`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userName: username,
+                    password: newPassword,
+                }),
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error changing password:', errorData.error);
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+    
+            const updatedPasswordData = await response.json();
+            console.log('Password changed:', updatedPasswordData);
+            return true;
+    
+        } catch (error) {
+            console.error('Error changing password:', error.message);
+            return false;
+        }
+    }
 
+    function togglePassword1(){
+        var password1 = document.getElementById("password-input1");
+        var passwordToggler1 = document.getElementById("password-input1-toggler");
+        passwordToggler1.classList.toggle("bi-eye");
+        if(password1.type === "password"){
+          password1.type = "text";
+        } else{
+          password1.type = "password";
+        }
+    }
+      
+    function togglePassword2() {
+        var password2 = document.getElementById("password-input2");
+        var passwordToggler2 = document.getElementById("password-input2-toggler");
+        passwordToggler2.classList.toggle("bi-eye");
+        if(password2.type === "password"){
+          password2.type = "text";
+        } else{
+          password2.type = "password";
+        }
+    }
+
+
+    return {
+        forgotPassword,
+        enterNewVerificationCode,
+        enterNewPassword,
+        togglePassword1,
+        togglePassword2,
+    };
 
 
   })();

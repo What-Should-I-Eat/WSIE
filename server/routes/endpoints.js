@@ -67,6 +67,29 @@ endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
   }
 });
 
+//Change password
+endpoints.put("/users/changePassword", async (req, res) => { 
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    if(!user.verified){
+      return res.status(404).json({ error: 'User not validated' });
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const passwordUpdate =  { $set: {"password": hashedPassword}};
+    const options = { upsert: true, new: true};
+
+    const updatedPassword = await User.updateOne(user, passwordUpdate, options);
+    res.json(updatedPassword);
+  } catch (error) {
+    console.error('Error changing password: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 
