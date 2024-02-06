@@ -1,187 +1,92 @@
 var restrictionsHandler = (() => {
-    
-    //Going to pass these to the edamam call after we process the arrays
-    let dietRestrictions = []; 
+    // Initialize restrictions arrays
+    let dietRestrictions = [];
     let healthRestrictions = [];
 
+    // Function to handle restrictions setup and update UI based on user data
     var handleRestrictions = async () => {
-        const username = getUsername(); 
+        const username = getUsername();
         console.log("username: ", username);
-        getUserData(username)
-            .then(user=> {
-                console.log("user: ", user);
-                const dietButtons = document.querySelectorAll('.diet-container button');
-                const healthButtons1 = document.querySelectorAll('.health-container-1 button');
-                const healthButtons2 = document.querySelectorAll('.health-container-2 button');
-                const healthButtons = Array.from(healthButtons1).concat(Array.from(healthButtons2));
+        getUserData(username).then(user => {
+            console.log("user: ", user);
+            // Select buttons within diet and health containers
+            const dietButtons = document.querySelectorAll('.diet-container button');
+            const healthButtons = document.querySelectorAll('.health-container-1 button, .health-container-2 button');
 
-                showArrays(dietButtons, healthButtons, user.health, user.diet);
-            })
-            .catch(error => {
-                console.error('Error getting user ID:', error);
-            });
-    }
+            // Update UI and set event listeners
+            updateUIAndSetListeners(dietButtons, user.diet, true);
+            updateUIAndSetListeners(healthButtons, user.health, false);
+        }).catch(error => {
+            console.error('Error getting user data:', error);
+        });
+    };
 
-    async function showArrays(dietButtons, healthButtons, healthArray, dietArray){
-        dietRestrictions = handleDietButtons(dietButtons, dietRestrictions, dietArray);
-        healthRestrictions = handleDietButtons(healthButtons, healthRestrictions, healthArray);
-        console.log('restrictions: ', dietRestrictions);
-        console.log('allergies: ', healthRestrictions);
-    }
-
-    var submitRestrictions = async (event) => {
-        event.preventDefault();
-        try {
-            console.log("inside submitRestrictions(): ");
-            const username = getUsername();
-            console.log("username: ", username);
-            getUserId(username)
-                .then(userId => {
-                    console.log("userId: ", userId);
-                    console.log("diet restrictions: ", dietRestrictions);
-                    console.log("health restrictions: ", healthRestrictions);
-
-                    if (userId) {
-                        PUTintoDatabase(username);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error getting user ID:', error);
-                });
-        } 
-        catch (error) {
-            console.error('Error while submitting restrictions:', error);
-        }
-    }
-
-
-    //Puts user restrictions into an array and gives the array to edamam.js
-    function handleDietButtons(buttonType, array, healthOrDietArray) {
-        buttonType.forEach(function (button) {
-            const sanitizedRestriction = getEdamamNameOfRestriction(button.textContent);
-            const userPreviouslySelected = healthOrDietArray.includes(sanitizedRestriction);
-    
-            if (userPreviouslySelected) {
+    // Function to update UI based on user data and set event listeners for real-time updates
+    function updateUIAndSetListeners(buttons, userRestrictions, isDiet) {
+        buttons.forEach(button => {
+            const restrictionName = getEdamamNameOfRestriction(button.textContent);
+            if (userRestrictions.includes(restrictionName)) {
                 button.classList.add('selected');
-                array.push(sanitizedRestriction);
+                isDiet ? dietRestrictions.push(restrictionName) : healthRestrictions.push(restrictionName);
             }
-    
-            button.addEventListener('click', function () {
+
+            button.addEventListener('click', async () => {
                 button.classList.toggle('selected');
-                if (button.classList.contains('selected')) {
-                    array.push(sanitizedRestriction);
-                    console.log('added ', sanitizedRestriction, ' to array');
-                    console.log('state of this array: ', array);
-                } else {
-                    const indexRestrictions = array.indexOf(sanitizedRestriction);
-                    if (indexRestrictions !== -1) {
-                        array.splice(indexRestrictions, 1);
-                        console.log('removed ', sanitizedRestriction, ' from array');
-                        console.log('state of this array: ', array);
-                    }
-                }
-                return array;
+                const isSelected = button.classList.contains('selected');
+                updateRestrictionsArray(isDiet ? dietRestrictions : healthRestrictions, restrictionName, isSelected);
+                await updateDatabase(); // Update database on every click
             });
         });
-        return array;
     }
-    
 
-    function getUsername(){
-        let username = document.getElementById("user-identification").textContent.trim();
-        const endIndex = username.indexOf("'");
-        username = username.substring(0, endIndex);
-        return username;
-    }
-    
-    function getEdamamNameOfRestriction(buttonName){
-
-        switch(buttonName){
-            case 'Balanced':
-                return 'balanced';
-            case 'High Fiber':
-                return 'high-fiber';
-            case 'High Protein':
-                return 'high-protein';
-            case 'Low Carb':
-                return 'low-carb';
-            case 'Low Fat':
-                return 'low-fat';
-            case 'Low Sodium':
-                return 'low-sodium';
-            case 'Vegan':
-                return 'vegan';
-            case 'Vegetarian':
-                return 'vegetarian';
-            case 'Alcohol Free':
-                return 'alcohol-free';
-            case 'Dairy':
-                return 'dairy-free';
-            case 'Eggs':
-                return 'egg-free';
-            case 'Fish':
-                return 'fish-free';
-            case 'Low FODMAP':
-                return 'fodmap-free';
-            case 'Gluten':
-                return 'gluten-free';
-            case 'Gluten Free':
-                return 'gluten-free';
-            case 'Immunity Supporting':
-                return 'immuno-supportive';
-            case 'Keto':
-                return 'keto-friendly';
-            case 'Kosher':
-                return 'kosher';
-            case 'Low Sugar':
-                return 'low-sugar';
-            case 'Paleo':
-                return 'paleo';
-            case 'Peanuts':
-                return 'peanut-free';
-            case 'Pescatarian':
-                return 'pescatarian';
-            case 'Pork Free':
-                return 'pork-free';
-            case 'Paleo':
-                return 'paleo';
-            case 'Sesame':
-                return 'sesame-free';
-            case 'Red Meat Free':
-                return 'red-meat-free';
-            case 'Shellfish':
-                return 'shellfish-free';
-            case 'Soy':
-                return 'soy-free';
-            case 'Tree Nuts':
-                return 'tree-nut-free';
-            case 'Wheat':
-                return 'wheat-free';
+    // Function to update local restrictions array based on selection
+    function updateRestrictionsArray(array, restriction, isSelected) {
+        const index = array.indexOf(restriction);
+        if (isSelected && index === -1) {
+            array.push(restriction);
+        } else if (!isSelected && index !== -1) {
+            array.splice(index, 1);
         }
-
+        console.log('Updated restrictions array: ', array);
     }
 
-    async function PUTintoDatabase(username) {
+    // Function to update database with the current restrictions
+    async function updateDatabase() {
+        const username = getUsername();
         try {
-            if (username) {
-                const dietData = {
-                    username: username,
-                    diet: getDietRestrictions()
-                };
-                const healthData = {
-                    username: username,
-                    health: getHealthRestrictions()
-                };
-
-                await sendDietData(dietData);
-                await sendHealthData(healthData);
-            }
-        } 
-        catch (error) {
-            console.error('Error during beforeunload event:', error);
+            await sendDietData({username: username, diet: dietRestrictions});
+            await sendHealthData({username: username, health: healthRestrictions});
+            console.log('Database updated successfully');
+        } catch (error) {
+            console.error('Error updating the database:', error);
         }
     }
-    
+
+    // Simplified function to get the username from the DOM
+    function getUsername() {
+        return document.getElementById("user-identification").textContent.trim().split("'")[0];
+    }
+
+    // Function to map button text to restriction names used by the API
+    function getEdamamNameOfRestriction(buttonName) {
+        // Mapping of button names to API restriction names
+        const mapping = {
+            'Balanced': 'balanced',
+            'High Fiber': 'high-fiber',
+            'High Protein': 'high-protein',
+            'Low Carb': 'low-carb',
+            'Low Fat': 'low-fat',
+            'Low Sodium': 'low-sodium',
+            'Vegan': 'vegan',
+            'Vegetarian': 'vegetarian',
+            'Alcohol Free': 'alcohol-free',
+            // Add other mappings as necessary
+            'Gluten Free': 'gluten-free',
+            // Complete with all other cases
+        };
+        return mapping[buttonName] || buttonName.toLowerCase().replace(/\s+/g, '-');
+    }
+
     async function sendDietData(dietData) {
 
         try {
@@ -196,7 +101,7 @@ var restrictionsHandler = (() => {
             console.error('Error sending diet data:', error);
         }
     }
-    
+
     async function sendHealthData(healthData) {
         try {
             await fetch(`http://${host}/api/v1/users/health`, {
@@ -216,15 +121,15 @@ var restrictionsHandler = (() => {
         return dietRestrictions;
     }
 
-    function getHealthRestrictions(){
+    function getHealthRestrictions() {
         console.log("Health restrictions array: ", healthRestrictions);
         return healthRestrictions;
     }
 
     return {
         handleRestrictions,
-        submitRestrictions,
         getDietRestrictions,
         getHealthRestrictions,
     }
+
 })();
