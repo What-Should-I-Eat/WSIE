@@ -4,7 +4,7 @@
     "description": "native application",
     "main": "./client/public/index.html",
     "scripts": {
-        "start": "node server/app.js",
+        "start": "docker-compose down && docker-compose build && docker-compose up",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
