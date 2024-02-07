@@ -4,6 +4,7 @@
     "description": "native application",
     "main": "./client/public/index.html",
     "scripts": {
+        "start": "node server/app.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
@@ -18,7 +19,10 @@
         "bcrypt": "^5.1.1",
         "bcryptjs": "^2.4.3",
         "cheerio": "^1.0.0-rc.12",
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
         "express-session": "^1.17.3",
+        "mongoose": "^8.1.1",
         "passport": "^0.7.0",
         "passport-local": "^1.0.0",
         "vue": "^3.3.11",
