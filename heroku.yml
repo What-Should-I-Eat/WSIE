@@ -1,2 +1,4 @@
-
+stack: heroku-20
+buildpacks:
+  - heroku/nodejs
 web: npm start
