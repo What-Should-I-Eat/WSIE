@@ -8,7 +8,7 @@ const endpoints = express.Router();
 const RecipeInput = require("../src/models/recipeSearch_model.js"); 
 const User = require("../src/models/userModel.js");
 const json = require("body-parser/lib/types/json");
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const session = require('express-session');
 
 //Endpoint Setup
