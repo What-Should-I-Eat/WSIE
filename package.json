@@ -4,9 +4,10 @@
     "description": "native application",
     "main": "./client/public/index.html",
     "scripts": {
-        "start": "docker compose down && docker compose build && docker compose up",
+        "start": "docker-compose down && docker-compose build && docker-compose up -d && sleep 5 && npm run open",
+        "open": "npm explore npm -g -- xdg-open http://localhost:8080 || open http://localhost:8080 || start http://localhost:8080",
         "test": "echo \"Error: no test specified\" && exit 1"
-    },
+    },    
     "author": "",
     "license": "ISC",
     "dependencies": {
@@ -23,6 +24,7 @@
         "express": "^4.18.2",
         "express-session": "^1.17.3",
         "mongoose": "^8.1.1",
+        "open": "^10.0.3",
         "passport": "^0.7.0",
         "passport-local": "^1.0.0",
         "vue": "^3.3.11",
