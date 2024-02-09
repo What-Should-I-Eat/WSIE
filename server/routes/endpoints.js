@@ -80,7 +80,7 @@ endpoints.put("/users/changePassword", async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    const passwordUpdate =  { $set: {"password": hashedPassword}};
+    const passwordUpdate =  { $set: {"password": hashedPassword, "incorrectPasswordAttempts": 0}};
     const options = { upsert: true, new: true};
 
     const updatedPassword = await User.updateOne(user, passwordUpdate, options);
@@ -168,7 +168,7 @@ endpoints.put("/users/verify", async (req, res) => {
 
     if(validatedVerificationCode){
 
-      if(hasVerificationCodeExpired(user.verificationCodeTimestamp)){
+      if(hasTenMinutesPassed(user.verificationCodeTimestamp)){
         return res.status(437).json({ error: 'Code has expired'});
       }
 
@@ -240,18 +240,19 @@ endpoints.post('/users/find-username', async (req, res) => {
         // Return the user object in the response
         return res.json(user);
       } else {
-
         const updatedAttempts = user.incorrectPasswordAttempts + 1;
-        const currentTimestamp = new Date();
 
+        if((updatedAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))){
+          return res.status(452).json({ error: '10 minute lockout' });
+        } else if(updatedAttempts >= 10){
+            return res.status(453).json({ error: 'Must reset password' });
+        }
+
+        const currentTimestamp = new Date();
         const passwordAttemptsUpdate =  { $set: {"incorrectPasswordAttempts": updatedAttempts, "incorrectPasswordAttemptTime": currentTimestamp}};
         const options =  { upsert: true, new: true};
     
         const updatedUser = await User.updateOne(user, passwordAttemptsUpdate, options);
-
-        if(updatedAttempts >= 10){
-          return res.status(453).json({ error: 'Must reset password' });
-        }
         
         return res.status(401).json({ error: 'Incorrect password' });
       }
@@ -703,9 +704,10 @@ async function validateVerificationCode(user, inputtedVerificationCode) {
   });
 }
 
-function hasVerificationCodeExpired(originalTimestamp){
+function hasTenMinutesPassed(originalTimestamp){
   const currentTimestamp = new Date().toISOString();
-  const tenMinutes = 60 * 10 * 1000;
+  // const tenMinutes = 60 * 10 * 1000;
+  const tenMinutes = 30 * 1000;
   const elapsedTimeInMilliseconds = (Date.parse(currentTimestamp) - Date.parse(originalTimestamp));
   if(elapsedTimeInMilliseconds > tenMinutes){
     return true;
