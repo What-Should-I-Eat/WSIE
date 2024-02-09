@@ -28,7 +28,11 @@ var loginHandler = (() => {
         console.error('User\'s account is not verified: ', errorResponse.error);
         loginValidation.innerHTML = "Account is not yet verified.<br/>Please check your email and enter the 6 digit code below<br/>Code expires in 10 minutes";
         throw new Error(errorResponse.error || 'User account is not verified');
-      } else if (response.status !== 200) {
+      } else if(response.status == 453){
+        loginValidation.innerHTML = "Sorry, you've attempted at least 10 incorrect password attempts in a row. Please reset your password to login.";
+        
+        
+      }else if (response.status !== 200) {
         const errorResponse = await response.json();
         console.error('Error logging in:', errorResponse.error);
         loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
@@ -48,7 +52,9 @@ var loginHandler = (() => {
         loginValidation.innerHTML = "Account is not yet verified.<br/>Please check your email and enter the 6 digit code below<br/>Code expires in 10 minutes";
         const confirmationCodeDiv = document.getElementById('confirmationCode');
           confirmationCodeDiv.style.display = 'block';
-      } else{
+      } else if(error == 'Error: Must reset password'){
+          loginValidation.innerHTML = "Sorry, you've attempted at least 10 incorrect password attempts in a row. Please reset your password to login.";
+        }else{
         loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
       }
     });

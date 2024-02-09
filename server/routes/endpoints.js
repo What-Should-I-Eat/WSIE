@@ -125,6 +125,8 @@ endpoints.post("/users/register", async (req, res) => {
       verified: false,
       verificationCode: hashedVerificationCode,
       verificationCodeTimestamp: currentTimestamp,
+      incorrectPasswordAttempts: 0,
+      incorrectPasswordAttemptTime: currentTimestamp,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
@@ -238,6 +240,19 @@ endpoints.post('/users/find-username', async (req, res) => {
         // Return the user object in the response
         return res.json(user);
       } else {
+
+        const updatedAttempts = user.incorrectPasswordAttempts + 1;
+        const currentTimestamp = new Date();
+
+        const passwordAttemptsUpdate =  { $set: {"incorrectPasswordAttempts": updatedAttempts, "incorrectPasswordAttemptTime": currentTimestamp}};
+        const options =  { upsert: true, new: true};
+    
+        const updatedUser = await User.updateOne(user, passwordAttemptsUpdate, options);
+
+        if(updatedAttempts >= 10){
+          return res.status(453).json({ error: 'Must reset password' });
+        }
+        
         return res.status(401).json({ error: 'Incorrect password' });
       }
     } catch (error) {
