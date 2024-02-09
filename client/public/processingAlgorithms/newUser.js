@@ -238,24 +238,24 @@ var loginHandler = (() => {
       return String(Math.floor(100000 + Math.random() * 900000));
     }
 
-    function togglePassword(){
-      var password1 = document.getElementById("password-input1");
-      var passwordToggler1 = document.getElementById("password-input1-toggler");
-      var password2 = document.getElementById("password-input2");
-      var passwordToggler2 = document.getElementById("password-input2-toggler");
-      passwordToggler1.classList.toggle("bi-eye");
-      passwordToggler2.classList.toggle("bi-eye");
-      if(password1.type === "password"){
-        password1.type = "text";
-        password2.type = "text";
-      } else{
-        password1.type = "password";
-        password2.type = "password";
-      }
-    }
+    // function togglePassword(){
+    //   var password1 = document.getElementById("password-input1");
+    //   var passwordToggler1 = document.getElementById("password-input1-toggler");
+    //   var password2 = document.getElementById("password-input2");
+    //   var passwordToggler2 = document.getElementById("password-input2-toggler");
+    //   passwordToggler1.classList.toggle("bi-eye");
+    //   passwordToggler2.classList.toggle("bi-eye");
+    //   if(password1.type === "password"){
+    //     password1.type = "text";
+    //     password2.type = "text";
+    //   } else{
+    //     password1.type = "password";
+    //     password2.type = "password";
+    //   }
+    // }
 
     return {
       newUser,
-      togglePassword
+      // togglePassword
     }
 })();
