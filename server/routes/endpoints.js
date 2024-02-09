@@ -165,6 +165,11 @@ endpoints.put("/users/verify", async (req, res) => {
     const validatedVerificationCode = await validateVerificationCode(user, inputtedCode);
 
     if(validatedVerificationCode){
+
+      if(hasVerificationCodeExpired(user.verificationCodeTimestamp)){
+        return res.status(437).json({ error: 'Code has expired'});
+      }
+
       const verificationUpdate =  { $set: {"verified": true}};
       const options =  { upsert: true, new: true};
   
@@ -190,8 +195,9 @@ endpoints.put("/users/resendVerificationCode", async (req, res) => {
     }
 
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
+    const currentTimestamp = new Date();
 
-    const verificationUpdate =  { $set: {"verificationCode": hashedVerificationCode}};
+    const verificationUpdate =  { $set: {"verificationCode": hashedVerificationCode, "verificationCodeTimestamp": currentTimestamp}};
     const options =  { upsert: true, new: true};
 
     const updatedCode = await User.updateOne(user, verificationUpdate, options);
@@ -681,6 +687,18 @@ async function validateVerificationCode(user, inputtedVerificationCode) {
     });
   });
 }
+
+function hasVerificationCodeExpired(originalTimestamp){
+  const currentTimestamp = new Date().toISOString();
+  const tenMinutes = 60 * 10 * 1000;
+  const elapsedTimeInMilliseconds = (Date.parse(currentTimestamp) - Date.parse(originalTimestamp));
+  if(elapsedTimeInMilliseconds > tenMinutes){
+    return true;
+  } else{
+    return false;
+  }
+}
+
 
 function generateRandomVerificationCode(){
   return String(Math.floor(100000 + Math.random() * 900000));
