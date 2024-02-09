@@ -114,6 +114,7 @@ endpoints.post("/users/register", async (req, res) => {
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
+    const currentTimestamp = new Date();
 
     const user = new User({
       id: req.body.id,
@@ -123,6 +124,7 @@ endpoints.post("/users/register", async (req, res) => {
       email: req.body.email,
       verified: false,
       verificationCode: hashedVerificationCode,
+      verificationCodeTimestamp: currentTimestamp,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
