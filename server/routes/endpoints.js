@@ -224,9 +224,15 @@ endpoints.post('/users/find-username', async (req, res) => {
     
 
     try {
+      if((user.incorrectPasswordAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))){
+        return res.status(452).json({ error: '10 minute lockout' });
+      } else if(user.incorrectPasswordAttempts >= 10){
+          return res.status(453).json({ error: 'Must reset password' });
+      }
       const passwordValidated = await validatePassword(user, inputtedPassword);
       if (passwordValidated) {
         console.log("Password is correct!");
+
         req.session.isLoggedIn = true;
         req.session.userId = user._id;
         req.session.username = user.userName;
@@ -242,17 +248,18 @@ endpoints.post('/users/find-username', async (req, res) => {
       } else {
         const updatedAttempts = user.incorrectPasswordAttempts + 1;
 
-        if((updatedAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))){
-          return res.status(452).json({ error: '10 minute lockout' });
-        } else if(updatedAttempts >= 10){
-            return res.status(453).json({ error: 'Must reset password' });
-        }
-
         const currentTimestamp = new Date();
         const passwordAttemptsUpdate =  { $set: {"incorrectPasswordAttempts": updatedAttempts, "incorrectPasswordAttemptTime": currentTimestamp}};
         const options =  { upsert: true, new: true};
     
         const updatedUser = await User.updateOne(user, passwordAttemptsUpdate, options);
+        console.log(updatedAttempts);
+
+        if((updatedAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))){
+          return res.status(452).json({ error: '10 minute lockout' });
+        } else if(updatedAttempts >= 10){
+            return res.status(453).json({ error: 'Must reset password' });
+        }
         
         return res.status(401).json({ error: 'Incorrect password' });
       }
@@ -706,8 +713,7 @@ async function validateVerificationCode(user, inputtedVerificationCode) {
 
 function hasTenMinutesPassed(originalTimestamp){
   const currentTimestamp = new Date().toISOString();
-  // const tenMinutes = 60 * 10 * 1000;
-  const tenMinutes = 30 * 1000;
+  const tenMinutes = 60 * 10 * 1000;
   const elapsedTimeInMilliseconds = (Date.parse(currentTimestamp) - Date.parse(originalTimestamp));
   if(elapsedTimeInMilliseconds > tenMinutes){
     return true;
