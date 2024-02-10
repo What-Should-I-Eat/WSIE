@@ -80,7 +80,7 @@ endpoints.put("/users/changePassword", async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    const passwordUpdate =  { $set: {"password": hashedPassword}};
+    const passwordUpdate =  { $set: {"password": hashedPassword, "incorrectPasswordAttempts": 0}};
     const options = { upsert: true, new: true};
 
     const updatedPassword = await User.updateOne(user, passwordUpdate, options);
@@ -114,6 +114,7 @@ endpoints.post("/users/register", async (req, res) => {
     const existingUsernameCheck = await User.findOne({ userName: req.body.userName });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
+    const currentTimestamp = new Date();
 
     const user = new User({
       id: req.body.id,
@@ -123,6 +124,9 @@ endpoints.post("/users/register", async (req, res) => {
       email: req.body.email,
       verified: false,
       verificationCode: hashedVerificationCode,
+      verificationCodeTimestamp: currentTimestamp,
+      incorrectPasswordAttempts: 0,
+      incorrectPasswordAttemptTime: currentTimestamp,
       diet: req.body.diet,
       health: req.body.health,
       favorites: [{
@@ -163,6 +167,11 @@ endpoints.put("/users/verify", async (req, res) => {
     const validatedVerificationCode = await validateVerificationCode(user, inputtedCode);
 
     if(validatedVerificationCode){
+
+      if(hasTenMinutesPassed(user.verificationCodeTimestamp)){
+        return res.status(437).json({ error: 'Code has expired'});
+      }
+
       const verificationUpdate =  { $set: {"verified": true}};
       const options =  { upsert: true, new: true};
   
@@ -188,8 +197,9 @@ endpoints.put("/users/resendVerificationCode", async (req, res) => {
     }
 
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
+    const currentTimestamp = new Date();
 
-    const verificationUpdate =  { $set: {"verificationCode": hashedVerificationCode}};
+    const verificationUpdate =  { $set: {"verificationCode": hashedVerificationCode, "verificationCodeTimestamp": currentTimestamp}};
     const options =  { upsert: true, new: true};
 
     const updatedCode = await User.updateOne(user, verificationUpdate, options);
@@ -214,9 +224,15 @@ endpoints.post('/users/find-username', async (req, res) => {
     
 
     try {
+      if((user.incorrectPasswordAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))){
+        return res.status(452).json({ error: '10 minute lockout' });
+      } else if(user.incorrectPasswordAttempts >= 10){
+          return res.status(453).json({ error: 'Must reset password' });
+      }
       const passwordValidated = await validatePassword(user, inputtedPassword);
       if (passwordValidated) {
         console.log("Password is correct!");
+
         req.session.isLoggedIn = true;
         req.session.userId = user._id;
         req.session.username = user.userName;
@@ -230,6 +246,21 @@ endpoints.post('/users/find-username', async (req, res) => {
         // Return the user object in the response
         return res.json(user);
       } else {
+        const updatedAttempts = user.incorrectPasswordAttempts + 1;
+
+        const currentTimestamp = new Date();
+        const passwordAttemptsUpdate =  { $set: {"incorrectPasswordAttempts": updatedAttempts, "incorrectPasswordAttemptTime": currentTimestamp}};
+        const options =  { upsert: true, new: true};
+    
+        const updatedUser = await User.updateOne(user, passwordAttemptsUpdate, options);
+        console.log(updatedAttempts);
+
+        if((updatedAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))){
+          return res.status(452).json({ error: '10 minute lockout' });
+        } else if(updatedAttempts >= 10){
+            return res.status(453).json({ error: 'Must reset password' });
+        }
+        
         return res.status(401).json({ error: 'Incorrect password' });
       }
     } catch (error) {
@@ -679,6 +710,18 @@ async function validateVerificationCode(user, inputtedVerificationCode) {
     });
   });
 }
+
+function hasTenMinutesPassed(originalTimestamp){
+  const currentTimestamp = new Date().toISOString();
+  const tenMinutes = 60 * 10 * 1000;
+  const elapsedTimeInMilliseconds = (Date.parse(currentTimestamp) - Date.parse(originalTimestamp));
+  if(elapsedTimeInMilliseconds > tenMinutes){
+    return true;
+  } else{
+    return false;
+  }
+}
+
 
 function generateRandomVerificationCode(){
   return String(Math.floor(100000 + Math.random() * 900000));
