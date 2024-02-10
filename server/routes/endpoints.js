@@ -233,6 +233,11 @@ endpoints.post('/users/find-username', async (req, res) => {
       if (passwordValidated) {
         console.log("Password is correct!");
 
+        const resetAttempts =  { $set: {"incorrectPasswordAttempts": 0}};
+        const options = { upsert: true, new: true};
+
+        const resetIncorrectAttempts = await User.updateOne(user, resetAttempts, options);
+
         req.session.isLoggedIn = true;
         req.session.userId = user._id;
         req.session.username = user.userName;
