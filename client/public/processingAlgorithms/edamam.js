@@ -138,24 +138,26 @@ var edamam = (() => {
           .then((resp) => resp.json())
           .then(async (results) => {
               directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
-              const heartIconDiv = document.getElementById('heart-icon');
+              const heartIconDiv = document.getElementById('heart-container');
 
               // Heart icon
               const heartIcon = document.createElement('img');
               const heartButton = getHeartIcon(heartIcon);
               
-              const isAlreadyLiked = await isFavorited(json);
-              if (isAlreadyLiked == true){
-                heartIcon.style.filter = 'none'; // red
-              }else{
-                heartIcon.style.filter = 'sepia(100%)'; // grey
-              }
-              heartIconDiv.appendChild(heartButton);
-
               // tool tip for heart icon
               const toolTipText = document.createElement('span'); 
               toolTipText.className = "tooltiptext"; 
-              toolTipText.innerHTML = "Add to Favorites";
+              toolTipText.id = "tooltiptextID";
+              
+              const isAlreadyLiked = await isFavorited(json);
+              if (isAlreadyLiked == true){
+                heartIcon.style.filter = 'none'; // red
+                toolTipText.innerHTML = "Remove From Favorites";
+              }else{
+                heartIcon.style.filter = 'sepia(100%)'; // grey
+                toolTipText.innerHTML = "Add to Favorites";
+              }
+              heartIconDiv.appendChild(heartButton);
               heartIconDiv.appendChild(toolTipText);              
               
               // When heart buttton is cliked toggle
@@ -164,10 +166,12 @@ var edamam = (() => {
                 if (heartIcon.style.filter === 'sepia(100%)') { 
                   heartIcon.style.filter = 'none'; 
                   putToFavorites(json, ingredients, results);
+                  toolTipText.innerHTML = "Remove From Favorites";
                 } 
                 else {
                   heartIcon.style.filter = 'sepia(100%)';
                   deleteInFavorites(json, ingredients, results);
+                  toolTipText.innerHTML = "Add to Favorites";
                 }
               });
           });
