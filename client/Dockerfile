@@ -1,11 +1,13 @@
 FROM node:14
 
-COPY . /src
+WORKDIR /usr/src/app
 
-WORKDIR /src
+COPY package*.json ./
 
-RUN npm install --production
+RUN npm install
+
+COPY . .
 
 EXPOSE 3000
 
-CMD npm start
+CMD ["npm", "start"]

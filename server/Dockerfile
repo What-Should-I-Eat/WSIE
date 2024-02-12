@@ -1,13 +1,13 @@
 FROM node:14
 
-COPY . /src
+WORKDIR /usr/src/app
 
-WORKDIR /src
+COPY package*.json ./
 
-#COPY initializedb.js /app
+RUN npm install
 
-RUN npm install --production
+COPY . .
 
-EXPOSE 3000
+EXPOSE 3001
 
-CMD npm start
+CMD ["npm", "start"]
