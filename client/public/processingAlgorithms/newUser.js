@@ -1,7 +1,7 @@
 var loginHandler = (() => {
     var newUser = async (event) => {
       event.preventDefault();
-      console.log('CALLING NEWUSER()');
+      
       console.log(new Date().toISOString());
       const fullName = document.getElementById('fullname-input').value ?? '';
       const email = document.getElementById('email-input').value ?? '';
@@ -28,7 +28,7 @@ var loginHandler = (() => {
 
       const verificationCode = await loginHandler2.getVerificationCode();
 
-      //sendEmail(fullName, email, verificationCode, emailjs);
+      loginHandler2.sendEmail(fullName, email, verificationCode, emailjs, "newuser");
       
       //After email verification, continue with registration
       const newUserData = {
@@ -82,33 +82,6 @@ var loginHandler = (() => {
 
         return false;
       }
-
-    //Returns boolean of email sent success/failure
-    function sendEmail(fullName, email, verificationCode, emailjs){
-      console.log("Attempting to send verification code");
-
-      console.log("verification code: ", verificationCode);
-      const params = {
-        userEmail: email,
-        userFullName: fullName,
-        verificationCode: verificationCode,
-      }
-
-      //need to get this out of the client
-      const serviceID = "service_ms0318i";
-      const templateID = "template_7av6tqc";
-      const publicKey = "8nKeoQjoIWF1wyUpG";
-
-      emailjs.send(serviceID, templateID, params, publicKey)
-          .then(function(response) {
-            console.log('SUCCESS: email sent', response.status, response.text);
-            return true;
-          }, function(error) {
-            console.log('FAILED: email could not be sent', error);
-          });
-
-      return false;
-    }
 
     return {
       newUser

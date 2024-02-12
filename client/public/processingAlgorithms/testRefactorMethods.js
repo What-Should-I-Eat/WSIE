@@ -74,8 +74,17 @@ var loginHandler2 = (() => {
         }
       }
 
-      function sendEmail(fullName, email, verificationCode, emailjs){
-        console.log("Attempting to send verification code");
+      function sendEmail(fullName, email, verificationCode, emailjs, template){
+
+        var templateID;
+        if(template === "newuser"){
+          templateID = "template_7av6tqc";
+        }
+        else if(template === "forgotpassword"){
+          templateID = "template_u9dl10r";
+        }
+
+        console.log("Attempting to send verification code with template ", template);
   
         console.log("verification code: ", verificationCode);
         const params = {
@@ -84,9 +93,7 @@ var loginHandler2 = (() => {
           verificationCode: verificationCode,
         }
   
-        //need to get this out of the client
         const serviceID = "service_ms0318i";
-        const templateID = "template_7av6tqc";
         const publicKey = "8nKeoQjoIWF1wyUpG";
   
         emailjs.send(serviceID, templateID, params, publicKey)
@@ -101,7 +108,7 @@ var loginHandler2 = (() => {
       }
 
 
-      //________________________________Helper Methods____________________________________________________-
+      //________________________________Helper Methods____________________________________________________
 
 
       function checkIfAllFieldsAreFilledIn(fullName, email, username, password){
@@ -192,7 +199,7 @@ var loginHandler2 = (() => {
       }
   
       function checkIfPasswordsMatch(password, confirmedPassword){
-        if(password != confirmedPassword) { //Password verification
+        if(password != confirmedPassword) { 
           console.log("passwords don't match");
           return false;
         }
