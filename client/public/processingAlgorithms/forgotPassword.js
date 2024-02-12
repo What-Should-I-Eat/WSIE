@@ -18,7 +18,8 @@ var loginHandler = (() => {
         }
 
         const verificationCode = await loginHandler2.getVerificationCode();
-        sendEmail(forgotCredentialsData.email, forgotCredentialsData.fullName, forgotCredentialsData.username, verificationCode, emailjs, "forgotpassword");
+        
+        loginHandler2.sendEmail(forgotCredentialsData.fullName, forgotCredentialsData.email, verificationCode, emailjs, "forgotpassword", username);
         const verificationCodeIsUpdated = await putVerificationCodeInDB(forgotCredentialsData.username, verificationCode);
 
         console.log("verification code is updated: ", verificationCodeIsUpdated);
@@ -47,7 +48,6 @@ var loginHandler = (() => {
             console.log("verification code was not correct.");
             return false;
         }
-        
         showInputFormForNewPassword();
     };
 
@@ -61,6 +61,11 @@ var loginHandler = (() => {
 
         if(password1 != password2){
             verificationMessage.innerHTML = "Passwords do not match. Please try again.";
+            return false;
+        }
+
+        if(!loginHandler2.checkIfPasswordIsValid(password1)){
+            verificationMessage.innerHTML = "Ensure that new password adheres to password requirements."
             return false;
         }
 

@@ -74,7 +74,7 @@ var loginHandler2 = (() => {
         }
       }
 
-      function sendEmail(fullName, email, verificationCode, emailjs, template){
+      function sendEmail(fullName, email, verificationCode, emailjs, template, username){
 
         var templateID;
         if(template === "newuser"){
@@ -91,6 +91,7 @@ var loginHandler2 = (() => {
           userEmail: email,
           userFullName: fullName,
           verificationCode: verificationCode,
+          username: username
         }
   
         const serviceID = "service_ms0318i";
@@ -162,6 +163,8 @@ var loginHandler2 = (() => {
         if(!checkIfPasswordContainsLowercaseLetter(password, hasLowercaseLetter)){
           return false;
         }
+
+        
         
         return true;
       }
@@ -212,5 +215,6 @@ var loginHandler2 = (() => {
         getVerificationMessage,
         getVerificationCode,
         sendEmail,
+        checkIfPasswordIsValid,
       };
 })();
