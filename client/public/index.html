@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login to WSIE</title>
+  <!-- defer keyword in the script tag ensures that testRefactorMethods load in order -->
+  <script type="text/javascript" src="./processingAlgorithms/testRefactorMethods.js" defer ></script> 
+  <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
+  <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
+  <script type="text/javascript" src="./processingAlgorithms/verificationCode.js"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <link rel="stylesheet" href="/stylesheets/styles.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="background-color: rgb(162, 176, 121); color: white;" >
+
+
+<div class="login-container">
+    <div class="login-title">
+        <h1>What Should I Eat?</h1>
+        <h2 style="font-size: 8vw;">Log In</h2>
+    </div>
+    <div class="user-login">
+        <form onsubmit="return loginHandler.userLogin(event)">
+            <input type="text" id="username-input" placeholder="Username" style="background-color: rgb(223, 220, 195);">
+            <input type="password" id="password-input" placeholder="Password" style="background-color: rgb(223, 220, 195); margin-left: 0em">
+            <i class="bi bi-eye-slash" id="password-input-toggler" style="margin-left: -1.6em; color: black;" onclick="loginHandler2.togglePassword('password-input', 'password-input-toggler')"></i>
+            <br><br>
+            <button type="submit" style="background-color:rgb(202, 214, 169);">Log In</button>
+        </form>
+        <h3 id="login-validation"></h3>
+        <div id="confirmationCode" style="display:none">
+            <form onsubmit="return verificationHandler.resendVerificationStatusLogin(event)">
+                <button type="submit" style="background-color:rgb(255, 174, 174);">Resend Code</button>
+                <br><br>
+            </form>
+            <form onsubmit="return verificationHandler.updateVerificationStatusLogin(event)">
+                <input type="text" id="confirmationCodeInput" placeholder="######" style="background-color: rgb(223, 220, 195);">
+                <br>
+                <button type="submit" style="background-color:rgb(223, 220, 195);">Verify Profile</button>
+                <br><br>
+            </form>
+        </div>
+        <br><br>
+
+    </div>
+
+    <div id="new-user-signup" class="new-user-signup">
+        <a href="./newUser.html">
+            <p>New to WSIE? Sign up!</p>
+        </a>
+    </div>
+
+    <div id="forgot-password" class="forgot-password">
+        <a href="./forgotPassword.html">
+            <p>Forgot username or password?</p>
+        </a>
+    </div>
+
+</div>
+</body>
+</html>
+

@@ -1,0 +1,24 @@
+steps:
+  - name: 'gcr.io/cloud-builders/git'
+    args: ['clone', 'https://github.com/torieee/WSIE.git']
+
+  # Build Docker image for the client
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/wsie-test/client-image', './client']
+
+  # Build Docker image for the server
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/wsie-test/server-image', './server']
+
+  # Additional steps for npm install and start (if needed)
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install', '--prefix', './client']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'build', '--prefix', './client']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install', '--prefix', './server']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['start', '--prefix', './server']
