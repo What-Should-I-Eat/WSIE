@@ -1,5 +1,5 @@
 var loginHandler = (() => {
-    var newUser = (event) => {
+    var newUser = async (event) => {
       event.preventDefault();
       console.log('CALLING NEWUSER()');
       console.log(new Date().toISOString());
@@ -26,7 +26,9 @@ var loginHandler = (() => {
         return false;
       }
 
-      sendEmail(fullName, email, verificationCode, emailjs);
+      const verificationCode = await loginHandler2.getVerificationCode();
+
+      //sendEmail(fullName, email, verificationCode, emailjs);
       
       //After email verification, continue with registration
       const newUserData = {

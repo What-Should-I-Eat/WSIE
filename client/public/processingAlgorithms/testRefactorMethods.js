@@ -14,7 +14,6 @@ var loginHandler2 = (() => {
         }
       }
 
-    
       function checkIfUserInputIsViable(fullName, email, username, password, confirmedPassword){
         const passwordIsValid = checkIfPasswordIsValid(password);
         
@@ -54,6 +53,52 @@ var loginHandler2 = (() => {
         }
       }
 
+      async function getVerificationCode() {
+        try {
+            const response = await fetch(`http://${host}/api/v1/users/getVerificationCode`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            });
+            if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const verificationCode = response.json();
+            console.log("Verification code response from server: ", verificationCode);
+            return verificationCode;
+        } 
+        catch (error) {
+            console.error('Error fetching verification code:', error.message);
+            throw error;
+        }
+      }
+
+      function sendEmail(fullName, email, verificationCode, emailjs){
+        console.log("Attempting to send verification code");
+  
+        console.log("verification code: ", verificationCode);
+        const params = {
+          userEmail: email,
+          userFullName: fullName,
+          verificationCode: verificationCode,
+        }
+  
+        //need to get this out of the client
+        const serviceID = "service_ms0318i";
+        const templateID = "template_7av6tqc";
+        const publicKey = "8nKeoQjoIWF1wyUpG";
+  
+        emailjs.send(serviceID, templateID, params, publicKey)
+            .then(function(response) {
+              console.log('SUCCESS: email sent', response.status, response.text);
+              return true;
+            }, function(error) {
+              console.log('FAILED: email could not be sent', error);
+            });
+  
+        return false;
+      }
 
 
       //________________________________Helper Methods____________________________________________________-
@@ -157,6 +202,8 @@ var loginHandler2 = (() => {
     return {
         togglePassword,
         checkIfUserInputIsViable,
-        getVerificationMessage
+        getVerificationMessage,
+        getVerificationCode,
+        sendEmail,
       };
 })();
