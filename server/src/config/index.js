@@ -1,4 +1,4 @@
-const host = 'localhost'
+const host = 'wsie-b9a65eafeffc.herokuapp.com'
 
 let DB_URI = "mongodb://" + host + ":27017/WSIE";
 

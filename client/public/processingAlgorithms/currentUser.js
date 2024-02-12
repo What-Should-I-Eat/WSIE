@@ -1,4 +1,4 @@
-const host = 'localhost:8080';
+const host = 'wsie-b9a65eafeffc.herokuapp.com';
 
 async function getUserId(username){
   try {

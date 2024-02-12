@@ -1,6 +1,6 @@
 "use strict";
 
-var host = 'localhost:8080';
+var host = 'wsie-b9a65eafeffc.herokuapp.com';
 
 function getUserId(username) {
   var response, data;

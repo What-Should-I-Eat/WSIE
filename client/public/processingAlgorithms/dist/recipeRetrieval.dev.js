@@ -9,7 +9,7 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 var Recipe = function () {
-  var host = 'localhost';
+  var host = 'wsie-b9a65eafeffc.herokuapp.com';
   var recipe = [];
   var NUT_BUTTER = ["peanut butter", "almond butter", "hazelnut butter", "coconut butter", "nut butter", "cookie butter"];
   var restrictionList = [];

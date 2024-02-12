@@ -1,7 +1,7 @@
 
 var Recipe = (() => {
 
-  const host = 'localhost';
+  const host = 'wsie-b9a65eafeffc.herokuapp.com';
   let recipe = [];
   const NUT_BUTTER = ["peanut butter", "almond butter", "hazelnut butter", "coconut butter", "nut butter", "cookie butter"];
   let restrictionList = [];
