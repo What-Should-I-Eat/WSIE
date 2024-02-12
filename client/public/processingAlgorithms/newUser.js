@@ -11,7 +11,7 @@ var loginHandler = (() => {
       const verificationMessage = document.getElementById('verification-message');
       const passwordRequirement = document.getElementById('password-requirement');
       
-      //USER INPUT viability - any userInputViabilityNumber other than 0 means user input is invalid;
+      //User input is invalid if function returns anything other than 0
       const userInputViabilityNumber = loginHandler2.checkIfUserInputIsViable(
         fullName,
         email,
@@ -20,6 +20,7 @@ var loginHandler = (() => {
         confirmedPassword
       );
   
+      //Depending on the userInputViabilityNumber, verification message shows
       if (userInputViabilityNumber !== 0) {
         verificationMessage.innerHTML = loginHandler2.getVerificationMessage(userInputViabilityNumber);
         return false;
@@ -80,8 +81,6 @@ var loginHandler = (() => {
         return false;
       }
 
-
-
     //Returns boolean of email sent success/failure
     function sendEmail(fullName, email, verificationCode, emailjs){
       console.log("Attempting to send verification code");
@@ -108,28 +107,8 @@ var loginHandler = (() => {
 
       return false;
     }
-    function generateRandomVerificationCode(){
-      return String(Math.floor(100000 + Math.random() * 900000));
-    }
-
-    // function togglePassword(){
-    //   var password1 = document.getElementById("password-input1");
-    //   var passwordToggler1 = document.getElementById("password-input1-toggler");
-    //   var password2 = document.getElementById("password-input2");
-    //   var passwordToggler2 = document.getElementById("password-input2-toggler");
-    //   passwordToggler1.classList.toggle("bi-eye");
-    //   passwordToggler2.classList.toggle("bi-eye");
-    //   if(password1.type === "password"){
-    //     password1.type = "text";
-    //     password2.type = "text";
-    //   } else{
-    //     password1.type = "password";
-    //     password2.type = "password";
-    //   }
-    // }
 
     return {
-      newUser,
-      // togglePassword
+      newUser
     }
 })();
