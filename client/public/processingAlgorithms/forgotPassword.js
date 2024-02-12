@@ -22,8 +22,6 @@ var loginHandler = (() => {
         loginHandler2.sendEmail(forgotCredentialsData.fullName, forgotCredentialsData.email, verificationCode, emailjs, "forgotpassword", username);
         const verificationCodeIsUpdated = await putVerificationCodeInDB(forgotCredentialsData.username, verificationCode);
 
-        console.log("verification code is updated: ", verificationCodeIsUpdated);
-
         if(!verificationCodeIsUpdated){
             verificationMessage.innerHTML = "An error occurred. Please try again.";
             return false;
@@ -38,14 +36,13 @@ var loginHandler = (() => {
     var enterNewVerificationCode = async (event) => {
         event.preventDefault();
 
-        //Verify verification code 
+        const verificationCodeVerificationMessage = document.getElementById('valid-vc');
         const verificationCodeInput = document.getElementById('vc-input').value;
         const isValidated = await validateCode(username, verificationCodeInput);
         console.log("user is verified: ", isValidated);
 
         if(!isValidated){
-            //Add message in ui - TODO
-            console.log("verification code was not correct.");
+            verificationCodeVerificationMessage.innerHTML = "The verification code is incorrect. Please try again.";
             return false;
         }
         showInputFormForNewPassword();
@@ -71,11 +68,9 @@ var loginHandler = (() => {
 
         //Update database with new password
         const passwordUpdated = await putNewPasswordInDB(username, password1);
-
         if(!passwordUpdated){
             verificationMessage.innerHTML = "Error updating password. Please try again.";
         }
-
         verificationMessage.innerHTML = "Password updated! Please log in.";
 
     };
