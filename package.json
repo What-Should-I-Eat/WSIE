@@ -4,8 +4,10 @@
     "description": "native application",
     "main": "./client/public/index.html",
     "scripts": {
+        "start": "npm run start-client-server",
+        "start-client-server": "npm --prefix ./client start && npm --prefix ./server start",
         "test": "echo \"Error: no test specified\" && exit 1"
-    },    
+    },  
     "author": "",
     "license": "ISC",
     "dependencies": {
