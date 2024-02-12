@@ -1,11 +1,3 @@
-//ensure email is valid wsie email
-//send verification code via email passing fullname, email, UN, and verification code
-//user puts code in
-//user enters username from email
-//user inputs new password twice
-//server hashes password
-//new password saved
-
 var username;
 
 var loginHandler = (() => {
@@ -25,8 +17,8 @@ var loginHandler = (() => {
             return false;
         }
 
-        const verificationCode = await getVerificationCode();
-        sendEmail(forgotCredentialsData.email, forgotCredentialsData.fullName, forgotCredentialsData.username, verificationCode, emailjs);
+        const verificationCode = await loginHandler2.getVerificationCode();
+        sendEmail(forgotCredentialsData.email, forgotCredentialsData.fullName, forgotCredentialsData.username, verificationCode, emailjs, "forgotpassword");
         const verificationCodeIsUpdated = await putVerificationCodeInDB(forgotCredentialsData.username, verificationCode);
 
         console.log("verification code is updated: ", verificationCodeIsUpdated);
@@ -106,55 +98,6 @@ var loginHandler = (() => {
         console.error('Fetch error:', error);
       }
       return userInfo;
-    }
-
-    //Returns boolean of email sent success/failure
-    function sendEmail(email, fullName, username, verificationCode, emailjs){
-        console.log("Attempting to send verification code");
-    
-        console.log("verification code: ", verificationCode);
-        const params = {
-            userEmail: email,
-            userFullName: fullName,
-            username: username,
-            verificationCode: verificationCode,
-        }
-    
-        //need to get this out of the client
-        const serviceID = "service_ms0318i";
-        const templateID = "template_u9dl10r";
-        const publicKey = "8nKeoQjoIWF1wyUpG";
-    
-        emailjs.send(serviceID, templateID, params, publicKey)
-            .then(function(response) {
-                console.log('SUCCESS: email sent', response.status, response.text);
-                return true;
-            }, function(error) {
-                console.log('FAILED: email could not be sent', error);
-            });
-    
-        return false;
-    }
-
-    async function getVerificationCode() {
-        try {
-            const response = await fetch(`http://${host}/api/v1/users/getVerificationCode`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            });
-            if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const verificationCode = response.json();
-            return verificationCode;
-    
-        } 
-        catch (error) {
-            console.error('Error fetching verification code:', error.message);
-            throw error;
-        }
     }
 
     async function putVerificationCodeInDB(username, verificationCode){
@@ -254,35 +197,12 @@ var loginHandler = (() => {
         }
     }
 
-    function togglePassword1(){
-        var password1 = document.getElementById("password-input1");
-        var passwordToggler1 = document.getElementById("password-input1-toggler");
-        passwordToggler1.classList.toggle("bi-eye");
-        if(password1.type === "password"){
-          password1.type = "text";
-        } else{
-          password1.type = "password";
-        }
-    }
-      
-    function togglePassword2() {
-        var password2 = document.getElementById("password-input2");
-        var passwordToggler2 = document.getElementById("password-input2-toggler");
-        passwordToggler2.classList.toggle("bi-eye");
-        if(password2.type === "password"){
-          password2.type = "text";
-        } else{
-          password2.type = "password";
-        }
-    }
 
 
     return {
         forgotPassword,
         enterNewVerificationCode,
         enterNewPassword,
-        togglePassword1,
-        togglePassword2,
     };
 
 

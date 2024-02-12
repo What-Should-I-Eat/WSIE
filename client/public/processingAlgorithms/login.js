@@ -98,20 +98,10 @@ var loginHandler = (() => {
     window.location.href = `./profile.html?name=${user}`;
   }
 
-  function togglePassword(){
-    var password = document.getElementById("password-input");
-    var passwordToggler = document.getElementById("password-input-toggler");
-    passwordToggler.classList.toggle("bi-eye");
-    if(password.type === "password"){
-      password.type = "text";
-    } else{
-      password.type = "password";
-    }
-  }
 
   return {
     userLogin,
-    togglePassword
+    //togglePassword
   };
 })();
 
