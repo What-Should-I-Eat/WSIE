@@ -1,4 +1,16 @@
-stack: heroku-20
-buildpacks:
-  - heroku/nodejs
-web: npm start
+setup:
+  addons:
+    - plan: mongolab:sandbox
+      as: MONGODB_URI
+build:
+  docker:
+    client: client/Dockerfile
+    server: server/Dockerfile
+  config:
+    NODE_ENV: production
+release:
+  command:
+    - echo "Release phase commands here"
+run:
+  client: npm start
+  server: npm start
