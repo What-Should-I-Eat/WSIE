@@ -138,19 +138,27 @@ var edamam = (() => {
           .then((resp) => resp.json())
           .then(async (results) => {
               directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
-              const recipeTitleHeader = document.getElementById('recipe-name');
-              
+              const heartIconDiv = document.getElementById('heart-container');
+
+              // Heart icon
               const heartIcon = document.createElement('img');
               const heartButton = getHeartIcon(heartIcon);
+              
+              // tool tip for heart icon
+              const toolTipText = document.createElement('span'); 
+              toolTipText.className = "tooltiptext"; 
+              toolTipText.id = "tooltiptextID";
+              
               const isAlreadyLiked = await isFavorited(json);
               if (isAlreadyLiked == true){
                 heartIcon.style.filter = 'none'; // red
-                console.log("changing color");
+                toolTipText.innerHTML = "Remove From Favorites";
               }else{
                 heartIcon.style.filter = 'sepia(100%)'; // grey
-                console.log("changing color");
+                toolTipText.innerHTML = "Add to Favorites";
               }
-              recipeTitleHeader.appendChild(heartButton);
+              heartIconDiv.appendChild(heartButton);
+              heartIconDiv.appendChild(toolTipText);              
               
               // When heart buttton is cliked toggle
               heartButton.addEventListener('click', function() {
@@ -158,10 +166,12 @@ var edamam = (() => {
                 if (heartIcon.style.filter === 'sepia(100%)') { 
                   heartIcon.style.filter = 'none'; 
                   putToFavorites(json, ingredients, results);
+                  toolTipText.innerHTML = "Remove From Favorites";
                 } 
                 else {
                   heartIcon.style.filter = 'sepia(100%)';
                   deleteInFavorites(json, ingredients, results);
+                  toolTipText.innerHTML = "Add to Favorites";
                 }
               });
           });

@@ -116,7 +116,6 @@ endpoints.post("/users/register", async (req, res) => {
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
     const currentTimestamp = new Date();
 
-
     const user = new User({
       id: req.body.id,
       fullName: req.body.fullName,
