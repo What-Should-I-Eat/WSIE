@@ -5,7 +5,7 @@
     "main": "./client/public/index.html",
     "scripts": {
         "start": "docker-compose down && docker-compose build && docker-compose up",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "jest --coverage"
     },
     "author": "",
     "license": "ISC",
@@ -28,5 +28,9 @@
         "vue": "^3.3.11",
         "vue-router": "^4.2.5",
         "xmlbuilder": "^15.1.1"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "supertest": "^6.3.4"
     }
 }
