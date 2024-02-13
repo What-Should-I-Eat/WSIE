@@ -56,7 +56,7 @@ var loginHandler = (() => {
         const password1 = document.getElementById('password-input1').value;
         const password2 = document.getElementById('password-input2').value;
 
-        if(password1 != password2){
+        if(!loginHandler2.checkIfPasswordsMatch(password1, password2)){
             verificationMessage.innerHTML = "Passwords do not match. Please try again.";
             return false;
         }

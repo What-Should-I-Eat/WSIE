@@ -216,5 +216,6 @@ var loginHandler2 = (() => {
         getVerificationCode,
         sendEmail,
         checkIfPasswordIsValid,
+        checkIfPasswordsMatch
       };
 })();
