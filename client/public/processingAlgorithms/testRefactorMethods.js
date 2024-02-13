@@ -224,3 +224,7 @@ var loginHandler2 = (() => {
         isInputEmpty
       };
 })();
+
+if(typeof module === 'object'){
+  module.exports = loginHandler2;
+}
