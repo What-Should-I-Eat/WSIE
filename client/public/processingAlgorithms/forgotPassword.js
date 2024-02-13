@@ -6,14 +6,14 @@ var loginHandler = (() => {
   
       //Get applicable user info from email
       const userEmail = document.getElementById('email-input').value;
-      var verificationMessage = document.getElementById('valid-user-email');
+      var feedbackMessage = document.getElementById('feedback-message');
   
         const forgotCredentialsData = await getUserCredentials(userEmail);
         console.log("Here's our data", forgotCredentialsData);
         username = forgotCredentialsData.username;
 
         if(forgotCredentialsData.error){
-            verificationMessage.innerHTML = "This email is not in our database. Please try again.";
+            feedbackMessage.innerHTML = "This email is not in our database. Please try again.";
             return false;
         }
 
@@ -23,11 +23,11 @@ var loginHandler = (() => {
         const verificationCodeIsUpdated = await putVerificationCodeInDB(forgotCredentialsData.username, verificationCode);
 
         if(!verificationCodeIsUpdated){
-            verificationMessage.innerHTML = "An error occurred. Please try again.";
+            feedbackMessage.innerHTML = "An error occurred. Please try again.";
             return false;
         }
 
-        verificationMessage.innerHTML = "Sending verification code!";
+        feedbackMessage.innerHTML = "Sending verification code!";
         showInputFormForVerification();
 
       return false;
@@ -37,8 +37,8 @@ var loginHandler = (() => {
         event.preventDefault();
 
         const verificationCodeVerificationMessage = document.getElementById('valid-vc');
-        const verificationCodeInput = document.getElementById('vc-input').value;
-        const isValidated = await validateCode(username, verificationCodeInput);
+        const enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
+        const isValidated = await validateCode(username, enteredVerificationCode);
         console.log("user is verified: ", isValidated);
 
         if(!isValidated){
@@ -51,27 +51,29 @@ var loginHandler = (() => {
     var enterNewPassword = async (event) => {
         event.preventDefault();
 
-        var verificationMessage = document.getElementById('verification-message');
+        var feedbackMessage = document.getElementById('feedback-message');
         const username = document.getElementById('username-input').value;
         const password1 = document.getElementById('password-input1').value;
         const password2 = document.getElementById('password-input2').value;
 
-        if(password1 != password2){
-            verificationMessage.innerHTML = "Passwords do not match. Please try again.";
+        if(!loginHandler2.checkIfPasswordsMatch(password1, password2)){
+            feedbackMessage.innerHTML = "Passwords do not match. Please try again.";
             return false;
         }
 
         if(!loginHandler2.checkIfPasswordIsValid(password1)){
-            verificationMessage.innerHTML = "Ensure that new password adheres to password requirements."
+            feedbackMessage.innerHTML = "Ensure that new password adheres to password requirements."
             return false;
         }
 
         //Update database with new password
         const passwordUpdated = await putNewPasswordInDB(username, password1);
         if(!passwordUpdated){
-            verificationMessage.innerHTML = "Error updating password. Please try again.";
+            feedbackMessage.innerHTML = "Error updating password. Please try again.";
         }
-        verificationMessage.innerHTML = "Password updated! Please log in.";
+        feedbackMessage.innerHTML = "Password updated! Please log in.";
+        const passwordRequirement = document.getElementById('password-requirement');
+        passwordRequirement.style.display = 'none';
 
     };
   

@@ -6,17 +6,17 @@ var verificationHandler = (() => {
 
     const username = document.getElementById('username-input').value ?? '';
     const fullName = document.getElementById('fullname-input').value ?? '';
-    const verificationMessage = document.getElementById('verification-message');
-    const enteredCode = document.getElementById('confirmationCodeInput').value ?? '';
+    const feedbackMessage = document.getElementById('feedback-message');
+    const enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
 
-    if(isVerificationCodeEmpty(enteredCode)){
-        verificationMessage.innerHTML = "Verification code cannot be blank";
+    if(loginHandler2.isInputEmpty(enteredVerificationCode)){
+        feedbackMessage.innerHTML = "Verification code cannot be blank";
         return false;
-    } else if(isUsernameEmpty(username)){
-        verificationMessage.innerHTML = "Username cannot be blank";
+    } else if(loginHandler2.isInputEmpty(username)){
+        feedbackMessage.innerHTML = "Username cannot be blank";
         return false;
-    } else if(isFullNameEmpty(fullName)){
-        verificationMessage.innerHTML = "Name field cannot be blank";
+    } else if(loginHandler2.isInputEmpty(fullName)){
+        feedbackMessage.innerHTML = "Name field cannot be blank";
         return false;
     }
 
@@ -27,17 +27,17 @@ var verificationHandler = (() => {
         },
         body: JSON.stringify({
         userName: username,            
-        verificationCode: enteredCode
+        verificationCode: enteredVerificationCode
         }),
     })
     .then(response => {
     if(response.status == 437){
       console.log('Code has expired');
-      verificationMessage.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
+      feedbackMessage.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
       throw new Error('Code has expired');
     }else if(response.status != 200){
         console.log('Cannot verify user');
-        verificationMessage.innerHTML = 'Could not verify user';
+        feedbackMessage.innerHTML = 'Could not verify user';
         throw new Error('Cannot verify user');
     }
     return response.json();
@@ -46,7 +46,7 @@ var verificationHandler = (() => {
     console.log('User verified: ', verifiedUser);
 
     const verificationSuccess = "You have successfully verified your WSIE profile, " + fullName +"!<br>Please continue to the Login page!";
-    verificationMessage.innerHTML = verificationSuccess;
+    feedbackMessage.innerHTML = verificationSuccess;
 
     const loginDiv = document.getElementById('login');
 
@@ -65,9 +65,9 @@ var verificationHandler = (() => {
     .catch(error => {
     console.error('Fetch error:', error);
     if(error == 'Error: Code has expired'){
-      verificationMessage.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
+      feedbackMessage.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
     } else{
-      verificationMessage.innerHTML = 'Could not verify user.<br/>Please check code is entered correctly';
+      feedbackMessage.innerHTML = 'Could not verify user.<br/>Please check code is entered correctly';
     }
     });
 
@@ -79,15 +79,15 @@ var verificationHandler = (() => {
         console.log('CALLING UPDATEVERIFICATIONSTATUS()');
     
         const username = document.getElementById('username-input').value ?? '';
-        const loginValidation = document.getElementById('login-validation');
+        const feedbackMessage = document.getElementById('feedback-message');
     
-        const enteredCode = document.getElementById('confirmationCodeInput').value ?? '';
+        const enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
     
-        if(isVerificationCodeEmpty(enteredCode)){
-          loginValidation.innerHTML = "Verification code cannot be blank";
+        if(loginHandler2.isInputEmpty(enteredVerificationCode)){
+          feedbackMessage.innerHTML = "Verification code cannot be blank";
           return false;
-        } else if(isUsernameEmpty(username)){
-          loginValidation.innerHTML = "Username cannot be blank";
+        } else if(loginHandler2.isInputEmpty(username)){
+          feedbackMessage.innerHTML = "Username cannot be blank";
           return false;
         }
     
@@ -98,17 +98,17 @@ var verificationHandler = (() => {
           },
           body: JSON.stringify({
             userName: username,            
-            verificationCode: enteredCode
+            verificationCode: enteredVerificationCode
           }),
         })
           .then(response => {
             if(response.status == 437){
               console.log('Code has expired');
-              loginValidation.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
+              feedbackMessage.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
               throw new Error('Code has expired');
             } else if(response.status != 200){
               console.log('Cannot verify user');
-              loginValidation.innerHTML = 'Could not verify user';
+              feedbackMessage.innerHTML = 'Could not verify user';
               throw new Error('Cannot verify user');
             }
             return response.json();
@@ -118,41 +118,41 @@ var verificationHandler = (() => {
     
             // After creating the user, handle UI changes
             const verificationSuccess = "You have successfully verified your WSIE profile!<br>Please continue to the Login!";
-            loginValidation.innerHTML = verificationSuccess;
+            feedbackMessage.innerHTML = verificationSuccess;
           })
           .catch(error => {
             console.error('Fetch error:', error);
             if(error == 'Error: Code has expired'){
-              loginValidation.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
+              feedbackMessage.innerHTML = 'Code has expired after 10 minutes.<br/>Please click resend code for a new code.';
             } else{
-              loginValidation.innerHTML = 'Could not verify user.<br/>Please check code is entered correctly';
+              feedbackMessage.innerHTML = 'Could not verify user.<br/>Please check code is entered correctly';
             }
           });
     
           return false;
   }
 
-  var resendVerificationCodeNewUser = (event) => {
+  var resendVerificationCodeNewUser = async (event) => {
     event.preventDefault();
     console.log('CALLING RESENDVERIFICATIONSTATUS()');
 
     const username = document.getElementById('username-input').value ?? '';
-    const verificationMessage = document.getElementById('verification-message');
+    const feedbackMessage = document.getElementById('feedback-message');
     const fullName = document.getElementById('fullname-input').value ?? '';
     const email = document.getElementById('email-input').value ?? '';
 
-    if(isFullNameEmpty(fullName)){
-        verificationMessage.innerHTML = "Verification code cannot be blank";
+    if(loginHandler2.isInputEmpty(fullName)){
+        feedbackMessage.innerHTML = "Verification code cannot be blank";
         return false;
-    } else if(isUsernameEmpty(username)){
-        verificationMessage.innerHTML = "Username cannot be blank";
+    } else if(loginHandler2.isInputEmpty(username)){
+        feedbackMessage.innerHTML = "Username cannot be blank";
         return false;
-    } else if(isEmailEmpty(email)){
-        verificationCode.innerHTML = "Email cannot be blank";
+    } else if(loginHandler2.isInputEmpty(email)){
+        feedbackMessage.innerHTML = "Email cannot be blank";
         return false;
     }
 
-    const verificationCode = generateRandomVerificationCode();
+    const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(fullName, email, verificationCode, emailjs);
 
     fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
@@ -168,7 +168,7 @@ var verificationHandler = (() => {
         .then(response => {
         if(response.status != 200){
             console.log('Cannot resend code');
-            verificationMessage.innerHTML = 'Could not resend code';
+            feedbackMessage.innerHTML = 'Could not resend code';
             throw new Error('Cannot resend code');
         }
         return response.json();
@@ -178,7 +178,7 @@ var verificationHandler = (() => {
 
         // After creating the user, handle UI changes
         const resentCode = "Verification code has been resent.<br/>Please check your email and enter the 6 digit code below.<br/>Code expires after 10 minutes";
-        verificationMessage.innerHTML = resentCode;
+        feedbackMessage.innerHTML = resentCode;
         })
         .catch(error => {
         console.error('Fetch error:', error);
@@ -192,15 +192,15 @@ var verificationHandler = (() => {
     console.log('CALLING RESENDVERIFICATIONSTATUS()');
 
     const username = document.getElementById('username-input').value ?? '';
-    const loginValidation = document.getElementById('login-validation');
+    const feedbackMessage = document.getElementById('feedback-message');
 
-    if(username === ''){
-      loginValidation.innerHTML = "Username cannot be blank";
+    if(loginHandler2.isInputEmpty(username)){
+      feedbackMessage.innerHTML = "Username cannot be blank";
       return false;
     }
     const email = await getUserEmail(username); 
 
-    const verificationCode = generateRandomVerificationCode();
+    const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(username, email, verificationCode, emailjs);
 
     fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
@@ -216,7 +216,7 @@ var verificationHandler = (() => {
         .then(response => {
         if(response.status != 200){
             console.log('Cannot resend code');
-            verificationMessage.innerHTML = 'Could not resend code';
+            feedbackMessage.innerHTML = 'Could not resend code';
             throw new Error('Cannot resend code');
         }
         return response.json();
@@ -226,7 +226,7 @@ var verificationHandler = (() => {
 
         // After creating the user, handle UI changes
         const resentCode = "Verification code has been resent.<br/>Please check your email and enter the 6 digit code below.<br/>Code expires after 10 minutes";
-        loginValidation.innerHTML = resentCode;
+        feedbackMessage.innerHTML = resentCode;
         })
         .catch(error => {
         console.error('Fetch error:', error);
@@ -262,9 +262,6 @@ var verificationHandler = (() => {
     return false;
   }
 
-  function generateRandomVerificationCode(){
-    return String(Math.floor(100000 + Math.random() * 900000));
-  }
   async function getUserEmail(username){
     const email = await fetch(`http://${host}/api/v1/users/getUserEmail`, {
         method: 'POST',
@@ -278,7 +275,7 @@ var verificationHandler = (() => {
         .then(response => {
           if(response.status != 200){
             console.log('Cannot verify user');
-            loginValidation.innerHTML = 'Could not verify user';
+            feedbackMessage.innerHTML = 'Could not verify user';
             throw new Error('Cannot verify user');
           }
           return response.json();
@@ -289,36 +286,6 @@ var verificationHandler = (() => {
           console.error('Fetch error:', error);
         });
         return email;
-  }
-
-  function isVerificationCodeEmpty(code){
-    if(code === ''){
-        return true;
-    } else{
-        return false;
-    }
-  }
-
-  function isUsernameEmpty(username){
-    if(username === ''){
-        return true;
-    } else{
-        return false;
-    }
-  }
-  function isFullNameEmpty(fullName){
-    if(fullName === ''){
-        return true;
-    } else{
-        return false;
-    }
-  }
-  function isEmailEmpty(email){
-    if(email === ''){
-        return true;
-    } else{
-        return false;
-    }
   }
 
   return {

@@ -208,6 +208,10 @@ var loginHandler2 = (() => {
         }
         return true;
       }
+
+      function isInputEmpty(input){
+        return input === '';
+      }
     
     return {
         togglePassword,
@@ -216,5 +220,7 @@ var loginHandler2 = (() => {
         getVerificationCode,
         sendEmail,
         checkIfPasswordIsValid,
+        checkIfPasswordsMatch,
+        isInputEmpty
       };
 })();
