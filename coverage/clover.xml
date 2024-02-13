@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1707796395173" clover="3.2.0">
-  <project timestamp="1707796395173" name="All files">
-    <metrics statements="105" coveredstatements="6" conditionals="63" coveredconditionals="1" methods="19" coveredmethods="2" elements="187" coveredelements="9" complexity="0" loc="105" ncloc="105" packages="1" files="1" classes="1"/>
+<coverage generated="1707796525899" clover="3.2.0">
+  <project timestamp="1707796525900" name="All files">
+    <metrics statements="105" coveredstatements="10" conditionals="63" coveredconditionals="3" methods="19" coveredmethods="3" elements="187" coveredelements="16" complexity="0" loc="105" ncloc="105" packages="1" files="1" classes="1"/>
     <file name="testRefactorMethods.js" path="/Users/nick/Documents/capstone/WSIE/client/public/processingAlgorithms/testRefactorMethods.js">
-      <metrics statements="105" coveredstatements="6" conditionals="63" coveredconditionals="1" methods="19" coveredmethods="2"/>
+      <metrics statements="105" coveredstatements="10" conditionals="63" coveredconditionals="3" methods="19" coveredmethods="3"/>
       <line num="1" count="1" type="stmt"/>
       <line num="5" count="1" type="stmt"/>
       <line num="7" count="0" type="stmt"/>
@@ -101,10 +101,10 @@
       <line num="198" count="0" type="stmt"/>
       <line num="199" count="0" type="stmt"/>
       <line num="201" count="0" type="stmt"/>
-      <line num="205" count="0" type="cond" truecount="0" falsecount="2"/>
-      <line num="206" count="0" type="stmt"/>
-      <line num="207" count="0" type="stmt"/>
-      <line num="209" count="0" type="stmt"/>
+      <line num="205" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="206" count="1" type="stmt"/>
+      <line num="207" count="1" type="stmt"/>
+      <line num="209" count="1" type="stmt"/>
       <line num="213" count="2" type="stmt"/>
       <line num="216" count="1" type="stmt"/>
       <line num="228" count="1" type="cond" truecount="1" falsecount="1"/>
