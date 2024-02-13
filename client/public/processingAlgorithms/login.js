@@ -6,7 +6,7 @@ var loginHandler = (() => {
   
     const usernameInput = document.getElementById('username-input').value;
     const passwordInput = document.getElementById('password-input').value;
-    const loginValidation = document.getElementById('login-validation');
+    const feedbackMessage = document.getElementById('feedback-message');
   
     const userLoginRequest = {
       userName: usernameInput,
@@ -26,12 +26,12 @@ var loginHandler = (() => {
       if(response.status == 450){
         const errorResponse = await response.json();
         console.error('User\'s account is not verified: ', errorResponse.error);
-        loginValidation.innerHTML = "Account is not yet verified.<br/>Please check your email and enter the 6 digit code below<br/>Code expires in 10 minutes";
+        feedbackMessage.innerHTML = "Account is not yet verified.<br/>Please check your email and enter the 6 digit code below<br/>Code expires in 10 minutes";
         throw new Error(errorResponse.error || 'User account is not verified');
       } else if (response.status !== 200) {
         const errorResponse = await response.json();
         console.error('Error logging in:', errorResponse.error);
-        loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
+        feedbackMessage.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
         throw new Error(errorResponse.error || 'Error logging in');
       } else {
         return response.json();
@@ -45,11 +45,11 @@ var loginHandler = (() => {
     .catch(error => {
       console.error('Fetch error:', error);
       if(error == 'Error: User account is not verified'){
-        loginValidation.innerHTML = "Account is not yet verified.<br/>Please check your email and enter the 6 digit code below<br/>Code expires in 10 minutes";
+        feedbackMessage.innerHTML = "Account is not yet verified.<br/>Please check your email and enter the 6 digit code below<br/>Code expires in 10 minutes";
         const confirmationCodeDiv = document.getElementById('confirmationCode');
           confirmationCodeDiv.style.display = 'block';
       } else{
-        loginValidation.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
+        feedbackMessage.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
       }
     });
   

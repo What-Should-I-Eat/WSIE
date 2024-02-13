@@ -8,7 +8,7 @@ var loginHandler = (() => {
       const username = document.getElementById('username-input').value ?? '';
       const password = document.getElementById('password-input1').value ?? '';
       const confirmedPassword = document.getElementById('password-input2').value ?? '';
-      const verificationMessage = document.getElementById('verification-message');
+      const feedbackMessage = document.getElementById('feedback-message');
       const passwordRequirement = document.getElementById('password-requirement');
       
       //User input is invalid if function returns anything other than 0
@@ -22,7 +22,7 @@ var loginHandler = (() => {
   
       //Depending on the userInputViabilityNumber, verification message shows
       if (userInputViabilityNumber !== 0) {
-        verificationMessage.innerHTML = loginHandler2.getVerificationMessage(userInputViabilityNumber);
+        feedbackMessage.innerHTML = loginHandler2.getVerificationMessage(userInputViabilityNumber);
         return false;
       }
 
@@ -52,11 +52,11 @@ var loginHandler = (() => {
         .then(response => {
           if(response.status == 444){
             console.log('444 sent');
-            verificationMessage.innerHTML = 'Username already exists in database.';
+            feedbackMessage.innerHTML = 'Username already exists in database.';
             throw new Error('User already exists');
           } else if(response.status == 445){
             console.log('445 sent');
-            verificationMessage.innerHTML = 'Email already exists in database.';
+            feedbackMessage.innerHTML = 'Email already exists in database.';
             throw new Error('Email already exists');
           }else if (!response.ok) {
             throw new Error('Error adding new user');
@@ -71,7 +71,7 @@ var loginHandler = (() => {
   
           // After creating the user, handle UI changes
           const loginSuccess = "You have successfully created a WSIE profile.<br>To verify your account, please enter the 6 digit code from your email below.<br/>Code expires in 10 minutes";
-          verificationMessage.innerHTML = loginSuccess;
+          feedbackMessage.innerHTML = loginSuccess;
           const confirmationCodeDiv = document.getElementById('confirmationCode');
           confirmationCodeDiv.style.display = 'block';
           passwordRequirement.style.display = 'none';
