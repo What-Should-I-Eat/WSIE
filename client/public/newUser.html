@@ -37,13 +37,13 @@
         <p id="password-requirement", style="font-size: 1.25em; color:rgba(132, 46, 7, 0.708); font-weight: 400; width: 80%">Please ensure password is between 8-15 characters and contains at least one capital letter, one lowercase letter, and one number.</p>
         <h4 id="feedback-message" style="font-weight: 330;"></h4>
 
-        <div id="confirmationCode" style="display:none">
+        <div id="verificationCodeDiv" style="display:none">
             <form onsubmit="return verificationHandler.resendVerificationCodeNewUser(event)">
                 <button type="submit" style="background-color:rgb(255, 174, 174);">Resend Code</button>
                 <br><br>
             </form>
             <form onsubmit="return verificationHandler.updateVerificationStatusNewUser(event)">
-                <input type="text" id="confirmationCodeInput" placeholder="######" style="background-color: rgb(223, 220, 195);">
+                <input type="text" id="verificationCodeInput" placeholder="######" style="background-color: rgb(223, 220, 195);">
                 <br>
                 <button type="submit" style="background-color:rgb(223, 220, 195);">Verify Profile</button>
                 <br><br>

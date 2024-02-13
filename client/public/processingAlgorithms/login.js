@@ -46,8 +46,8 @@ var loginHandler = (() => {
       console.error('Fetch error:', error);
       if(error == 'Error: User account is not verified'){
         feedbackMessage.innerHTML = "Account is not yet verified.<br/>Please check your email and enter the 6 digit code below<br/>Code expires in 10 minutes";
-        const confirmationCodeDiv = document.getElementById('confirmationCode');
-          confirmationCodeDiv.style.display = 'block';
+        const verificationCodeDiv = document.getElementById('verificationCodeDiv');
+        verificationCodeDiv.style.display = 'block';
       } else{
         feedbackMessage.innerHTML = "Unable to verify login credentials.<br/>Username or password is incorrect.";
       }

@@ -37,8 +37,8 @@ var loginHandler = (() => {
         event.preventDefault();
 
         const verificationCodeVerificationMessage = document.getElementById('valid-vc');
-        const verificationCodeInput = document.getElementById('vc-input').value;
-        const isValidated = await validateCode(username, verificationCodeInput);
+        const enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
+        const isValidated = await validateCode(username, enteredVerificationCode);
         console.log("user is verified: ", isValidated);
 
         if(!isValidated){
@@ -72,6 +72,8 @@ var loginHandler = (() => {
             feedbackMessage.innerHTML = "Error updating password. Please try again.";
         }
         feedbackMessage.innerHTML = "Password updated! Please log in.";
+        const passwordRequirement = document.getElementById('password-requirement');
+        passwordRequirement.style.display = 'none';
 
     };
   

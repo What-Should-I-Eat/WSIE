@@ -7,9 +7,9 @@ var verificationHandler = (() => {
     const username = document.getElementById('username-input').value ?? '';
     const fullName = document.getElementById('fullname-input').value ?? '';
     const feedbackMessage = document.getElementById('feedback-message');
-    const enteredCode = document.getElementById('confirmationCodeInput').value ?? '';
+    const enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
 
-    if(loginHandler2.isInputEmpty(enteredCode)){
+    if(loginHandler2.isInputEmpty(enteredVerificationCode)){
         feedbackMessage.innerHTML = "Verification code cannot be blank";
         return false;
     } else if(loginHandler2.isInputEmpty(username)){
@@ -27,7 +27,7 @@ var verificationHandler = (() => {
         },
         body: JSON.stringify({
         userName: username,            
-        verificationCode: enteredCode
+        verificationCode: enteredVerificationCode
         }),
     })
     .then(response => {
@@ -81,9 +81,9 @@ var verificationHandler = (() => {
         const username = document.getElementById('username-input').value ?? '';
         const feedbackMessage = document.getElementById('feedback-message');
     
-        const enteredCode = document.getElementById('confirmationCodeInput').value ?? '';
+        const enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
     
-        if(loginHandler2.isInputEmpty(enteredCode)){
+        if(loginHandler2.isInputEmpty(enteredVerificationCode)){
           feedbackMessage.innerHTML = "Verification code cannot be blank";
           return false;
         } else if(loginHandler2.isInputEmpty(username)){
@@ -98,7 +98,7 @@ var verificationHandler = (() => {
           },
           body: JSON.stringify({
             userName: username,            
-            verificationCode: enteredCode
+            verificationCode: enteredVerificationCode
           }),
         })
           .then(response => {
@@ -132,7 +132,7 @@ var verificationHandler = (() => {
           return false;
   }
 
-  var resendVerificationCodeNewUser = (event) => {
+  var resendVerificationCodeNewUser = async (event) => {
     event.preventDefault();
     console.log('CALLING RESENDVERIFICATIONSTATUS()');
 
@@ -152,7 +152,7 @@ var verificationHandler = (() => {
         return false;
     }
 
-    const verificationCode = generateRandomVerificationCode();
+    const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(fullName, email, verificationCode, emailjs);
 
     fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
@@ -200,7 +200,7 @@ var verificationHandler = (() => {
     }
     const email = await getUserEmail(username); 
 
-    const verificationCode = generateRandomVerificationCode();
+    const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(username, email, verificationCode, emailjs);
 
     fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
@@ -262,9 +262,6 @@ var verificationHandler = (() => {
     return false;
   }
 
-  function generateRandomVerificationCode(){
-    return String(Math.floor(100000 + Math.random() * 900000));
-  }
   async function getUserEmail(username){
     const email = await fetch(`http://${host}/api/v1/users/getUserEmail`, {
         method: 'POST',

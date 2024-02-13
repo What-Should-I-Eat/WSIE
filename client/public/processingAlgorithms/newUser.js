@@ -72,8 +72,8 @@ var loginHandler = (() => {
           // After creating the user, handle UI changes
           const loginSuccess = "You have successfully created a WSIE profile.<br>To verify your account, please enter the 6 digit code from your email below.<br/>Code expires in 10 minutes";
           feedbackMessage.innerHTML = loginSuccess;
-          const confirmationCodeDiv = document.getElementById('confirmationCode');
-          confirmationCodeDiv.style.display = 'block';
+          const verificationCodeDiv = document.getElementById('verificationCodeDiv');
+          verificationCodeDiv.style.display = 'block';
           passwordRequirement.style.display = 'none';
         })
         .catch(error => {
