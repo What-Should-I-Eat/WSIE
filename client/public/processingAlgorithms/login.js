@@ -88,7 +88,6 @@ var loginHandler = (() => {
 
   return {
     userLogin,
-    //togglePassword
   };
 })();
 

@@ -9,13 +9,13 @@ var verificationHandler = (() => {
     const verificationMessage = document.getElementById('verification-message');
     const enteredCode = document.getElementById('confirmationCodeInput').value ?? '';
 
-    if(isVerificationCodeEmpty(enteredCode)){
+    if(loginHandler2.isInputEmpty(enteredCode)){
         verificationMessage.innerHTML = "Verification code cannot be blank";
         return false;
-    } else if(isUsernameEmpty(username)){
+    } else if(loginHandler2.isInputEmpty(username)){
         verificationMessage.innerHTML = "Username cannot be blank";
         return false;
-    } else if(isFullNameEmpty(fullName)){
+    } else if(loginHandler2.isInputEmpty(fullName)){
         verificationMessage.innerHTML = "Name field cannot be blank";
         return false;
     }
@@ -83,10 +83,10 @@ var verificationHandler = (() => {
     
         const enteredCode = document.getElementById('confirmationCodeInput').value ?? '';
     
-        if(isVerificationCodeEmpty(enteredCode)){
+        if(loginHandler2.isInputEmpty(enteredCode)){
           loginValidation.innerHTML = "Verification code cannot be blank";
           return false;
-        } else if(isUsernameEmpty(username)){
+        } else if(loginHandler2.isInputEmpty(username)){
           loginValidation.innerHTML = "Username cannot be blank";
           return false;
         }
@@ -141,13 +141,13 @@ var verificationHandler = (() => {
     const fullName = document.getElementById('fullname-input').value ?? '';
     const email = document.getElementById('email-input').value ?? '';
 
-    if(isFullNameEmpty(fullName)){
+    if(loginHandler2.isInputEmpty(fullName)){
         verificationMessage.innerHTML = "Verification code cannot be blank";
         return false;
-    } else if(isUsernameEmpty(username)){
+    } else if(loginHandler2.isInputEmpty(username)){
         verificationMessage.innerHTML = "Username cannot be blank";
         return false;
-    } else if(isEmailEmpty(email)){
+    } else if(loginHandler2.isInputEmpty(email)){
         verificationCode.innerHTML = "Email cannot be blank";
         return false;
     }
@@ -194,7 +194,7 @@ var verificationHandler = (() => {
     const username = document.getElementById('username-input').value ?? '';
     const loginValidation = document.getElementById('login-validation');
 
-    if(username === ''){
+    if(loginHandler2.isInputEmpty(username)){
       loginValidation.innerHTML = "Username cannot be blank";
       return false;
     }
@@ -289,36 +289,6 @@ var verificationHandler = (() => {
           console.error('Fetch error:', error);
         });
         return email;
-  }
-
-  function isVerificationCodeEmpty(code){
-    if(code === ''){
-        return true;
-    } else{
-        return false;
-    }
-  }
-
-  function isUsernameEmpty(username){
-    if(username === ''){
-        return true;
-    } else{
-        return false;
-    }
-  }
-  function isFullNameEmpty(fullName){
-    if(fullName === ''){
-        return true;
-    } else{
-        return false;
-    }
-  }
-  function isEmailEmpty(email){
-    if(email === ''){
-        return true;
-    } else{
-        return false;
-    }
   }
 
   return {
