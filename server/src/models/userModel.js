@@ -12,6 +12,8 @@ const UserSchema = new Schema({
     verified: Boolean,
     verificationCode: String,
     verificationCodeTimestamp: Date,
+    incorrectPasswordAttempts: Number,
+    incorrectPasswordAttemptTime: Date,
     diet: [String],
     health: [String],
     favorites: [{
