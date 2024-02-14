@@ -69,7 +69,6 @@ var restrictionsHandler = (() => {
 
     // Function to map button text to restriction names used by the API
     function getEdamamNameOfRestriction(buttonName) {
-        // Mapping of button names to API restriction names
         const mapping = {
             'Balanced': 'balanced',
             'High Fiber': 'high-fiber',
@@ -80,9 +79,26 @@ var restrictionsHandler = (() => {
             'Vegan': 'vegan',
             'Vegetarian': 'vegetarian',
             'Alcohol Free': 'alcohol-free',
-            // Add other mappings as necessary
+            'Dairy': 'dairy-free',
+            'Eggs': 'egg-free',
+            'Fish': 'fish-free',
+            'Low FODMAP': 'fodmap-free',
+            'Gluten': 'gluten-free',
             'Gluten Free': 'gluten-free',
-            // Complete with all other cases
+            'Immunity Supporting': 'immuno-supportive',
+            'Keto': 'keto-friendly',
+            'Kosher': 'kosher',
+            'Low Sugar': 'low-sugar',
+            'Paleo': 'paleo',
+            'Peanuts': 'peanut-free',
+            'Pescatarian': 'pescatarian',
+            'Pork Free': 'pork-free',
+            'Sesame': 'sesame-free',
+            'Red Meat Free': 'red-meat-free',
+            'Shellfish': 'shellfish-free',
+            'Soy': 'soy-free',
+            'Tree Nuts': 'tree-nut-free',
+            'Wheat': 'wheat-free',
         };
         return mapping[buttonName] || buttonName.toLowerCase().replace(/\s+/g, '-');
     }
