@@ -39,3 +39,47 @@ test('check invalid password - no lowercase', () => {
 test('check invalid password - no capital', () => {
     expect(loginHandler2.checkIfPasswordIsValid("alllowercase")).toBe(false);
 });
+
+test('check fully valid user input', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("nick sonsini", "nick@gmail.com", "nick", "Password1", "Password1")).toBe(0);
+});
+
+test('check full user input - empty name', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("", "nick@gmail.com", "nick", "Password1", "Password1")).toBe(1);
+});
+
+test('check full user input - empty email', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("Nick", "", "nick", "Password1", "Password1")).toBe(1);
+});
+
+test('check full user input - empty username', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("Nick", "nick@nick.com", "", "Password1", "Password1")).toBe(1);
+});
+
+test('check full user input - empty password', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("Nick", "nick@nick.com", "nick", "", "")).toBe(1);
+});
+
+test('check full user input - invalid email', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("Nick", "nickwithoutAT.com", "nick", "Password1", "Password1")).toBe(2);
+});
+
+test('check full user input - invalid characters in username', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("Nick", "nick@nick.com", "Nick!@#$%", "Password1", "Password1")).toBe(3);
+});
+
+test('check full user input - invalid too short username', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("Nick", "nick@nick.com", "Nic", "Password1", "Password1")).toBe(4);
+});
+
+test('check full user input - invalid too long in username', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("Nick", "nick@nick.com", "NickNickNickNick", "Password1", "Password1")).toBe(4);
+});
+
+test('check full user input - invalid password', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("Nick", "nick@nick.com", "Nick", "noNumberInPS", "noNumberInPS")).toBe(5);
+});
+
+test('check full user input - invalid mismatching passwords', () => {
+    expect(loginHandler2.checkIfUserInputIsViable("Nick", "nick@nick.com", "Nick", "Password1", "Password2")).toBe(6);
+});
