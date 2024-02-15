@@ -37,7 +37,7 @@ test('check invalid password - no lowercase', () => {
 });
 
 test('check invalid password - no capital', () => {
-    expect(loginHandler2.checkIfPasswordIsValid("alllowercase")).toBe(false);
+    expect(loginHandler2.checkIfPasswordIsValid("alllowercase1")).toBe(false);
 });
 
 test('check fully valid user input', () => {
@@ -82,4 +82,32 @@ test('check full user input - invalid password', () => {
 
 test('check full user input - invalid mismatching passwords', () => {
     expect(loginHandler2.checkIfUserInputIsViable("Nick", "nick@nick.com", "Nick", "Password1", "Password2")).toBe(6);
+});
+
+test('test verification message - success', () => {
+    expect(loginHandler2.getVerificationMessage(0)).toBe('Success');
+});
+
+test('test verification message - fields not all filled in', () => {
+    expect(loginHandler2.getVerificationMessage(1)).toBe('Please make sure all fields are filled in.');
+});
+
+test('test verification message - invalid email address', () => {
+    expect(loginHandler2.getVerificationMessage(2)).toBe('Please enter a valid email address.');
+});
+
+test('test verification message - special characters in username', () => {
+    expect(loginHandler2.getVerificationMessage(3)).toBe('Username must not contain special characters.');
+});
+
+test('test verification message - username length', () => {
+    expect(loginHandler2.getVerificationMessage(4)).toBe('Please ensure that username is between 4 and 15 characters.');
+});
+
+test('test verification message - invalid password', () => {
+    expect(loginHandler2.getVerificationMessage(5)).toBe('Please ensure that password is between 8-15 characters, contains at least one capital and lowercase letter, and contains a number.');
+});
+
+test('test verification message - passwords do not match', () => {
+    expect(loginHandler2.getVerificationMessage(6)).toBe('Please ensure that passwords match.');
 });

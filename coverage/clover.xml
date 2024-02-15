@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1707964107687" clover="3.2.0">
-  <project timestamp="1707964107687" name="All files">
-    <metrics statements="105" coveredstatements="65" conditionals="63" coveredconditionals="45" methods="19" coveredmethods="13" elements="187" coveredelements="123" complexity="0" loc="105" ncloc="105" packages="1" files="1" classes="1"/>
+<coverage generated="1707964513340" clover="3.2.0">
+  <project timestamp="1707964513341" name="All files">
+    <metrics statements="105" coveredstatements="76" conditionals="63" coveredconditionals="54" methods="19" coveredmethods="14" elements="187" coveredelements="144" complexity="0" loc="105" ncloc="105" packages="1" files="1" classes="1"/>
     <file name="testRefactorMethods.js" path="/Users/nick/Documents/capstone/WSIE/client/public/processingAlgorithms/testRefactorMethods.js">
-      <metrics statements="105" coveredstatements="65" conditionals="63" coveredconditionals="45" methods="19" coveredmethods="13"/>
+      <metrics statements="105" coveredstatements="76" conditionals="63" coveredconditionals="54" methods="19" coveredmethods="14"/>
       <line num="1" count="1" type="stmt"/>
       <line num="5" count="1" type="stmt"/>
       <line num="7" count="0" type="stmt"/>
@@ -26,14 +26,14 @@
       <line num="30" count="2" type="cond" truecount="2" falsecount="0"/>
       <line num="31" count="1" type="stmt"/>
       <line num="34" count="1" type="stmt"/>
-      <line num="38" count="0" type="cond" truecount="0" falsecount="7"/>
-      <line num="40" count="0" type="stmt"/>
-      <line num="42" count="0" type="stmt"/>
-      <line num="44" count="0" type="stmt"/>
-      <line num="46" count="0" type="stmt"/>
-      <line num="48" count="0" type="stmt"/>
-      <line num="50" count="0" type="stmt"/>
-      <line num="52" count="0" type="stmt"/>
+      <line num="38" count="7" type="cond" truecount="7" falsecount="0"/>
+      <line num="40" count="1" type="stmt"/>
+      <line num="42" count="1" type="stmt"/>
+      <line num="44" count="1" type="stmt"/>
+      <line num="46" count="1" type="stmt"/>
+      <line num="48" count="1" type="stmt"/>
+      <line num="50" count="1" type="stmt"/>
+      <line num="52" count="1" type="stmt"/>
       <line num="57" count="0" type="stmt"/>
       <line num="58" count="0" type="stmt"/>
       <line num="64" count="0" type="cond" truecount="0" falsecount="2"/>
@@ -79,9 +79,9 @@
       <line num="154" count="17" type="cond" truecount="2" falsecount="0"/>
       <line num="155" count="3" type="stmt"/>
       <line num="157" count="14" type="cond" truecount="2" falsecount="0"/>
-      <line num="158" count="3" type="stmt"/>
-      <line num="160" count="11" type="cond" truecount="1" falsecount="1"/>
-      <line num="161" count="0" type="stmt"/>
+      <line num="158" count="2" type="stmt"/>
+      <line num="160" count="12" type="cond" truecount="2" falsecount="0"/>
+      <line num="161" count="1" type="stmt"/>
       <line num="163" count="11" type="cond" truecount="2" falsecount="0"/>
       <line num="164" count="1" type="stmt"/>
       <line num="169" count="10" type="stmt"/>
@@ -90,12 +90,12 @@
       <line num="175" count="3" type="stmt"/>
       <line num="177" count="14" type="stmt"/>
       <line num="181" count="14" type="cond" truecount="2" falsecount="0"/>
-      <line num="182" count="3" type="stmt"/>
-      <line num="183" count="3" type="stmt"/>
-      <line num="185" count="11" type="stmt"/>
-      <line num="189" count="11" type="cond" truecount="1" falsecount="1"/>
-      <line num="190" count="0" type="stmt"/>
-      <line num="191" count="0" type="stmt"/>
+      <line num="182" count="2" type="stmt"/>
+      <line num="183" count="2" type="stmt"/>
+      <line num="185" count="12" type="stmt"/>
+      <line num="189" count="12" type="cond" truecount="2" falsecount="0"/>
+      <line num="190" count="1" type="stmt"/>
+      <line num="191" count="1" type="stmt"/>
       <line num="193" count="11" type="stmt"/>
       <line num="197" count="11" type="cond" truecount="2" falsecount="0"/>
       <line num="198" count="1" type="stmt"/>
