@@ -133,3 +133,9 @@ describe('#getVerificationCode() endpoint', () => {
         })
     })
 });
+
+///// need to figure out how to pass emailjs to this, eventually can delete if not figured out
+// test('test sendEmail returns true', () => {
+//     const emailjs = 'https://cdn.emailjs.com/dist/email.min.js';
+//     expect(loginHandler2.sendEmail("nick sonsini", "nicksonsini97@gmail.com", "123456", emailjs, "newuser", null)).toBe(true);
+// });
