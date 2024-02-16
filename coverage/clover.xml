@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1708115084329" clover="3.2.0">
-  <project timestamp="1708115084329" name="All files">
+<coverage generated="1708116856267" clover="3.2.0">
+  <project timestamp="1708116856268" name="All files">
     <metrics statements="105" coveredstatements="82" conditionals="63" coveredconditionals="55" methods="19" coveredmethods="15" elements="187" coveredelements="152" complexity="0" loc="105" ncloc="105" packages="1" files="1" classes="1"/>
     <file name="testRefactorMethods.js" path="/Users/nick/Documents/capstone/WSIE/client/public/processingAlgorithms/testRefactorMethods.js">
       <metrics statements="105" coveredstatements="82" conditionals="63" coveredconditionals="55" methods="19" coveredmethods="15"/>
