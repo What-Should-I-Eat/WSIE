@@ -111,3 +111,15 @@ test('test verification message - invalid password', () => {
 test('test verification message - passwords do not match', () => {
     expect(loginHandler2.getVerificationMessage(6)).toBe('Please ensure that passwords match.');
 });
+
+describe('#getVerificationCode() endpoint', () => {
+    it('should return verification code', () => {
+        // const host = 'localhost:8080';
+        return loginHandler2.getVerificationCode()
+        .then(returnedCode => {
+            expect(returnedCode).toBeDefined();
+            console.log(returnedCode);
+            expect(returnedCode).toHaveLength(6);
+        })
+    })
+});
