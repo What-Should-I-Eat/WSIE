@@ -61,6 +61,8 @@ The following endpoints provide functionality related to users of the applicatio
 
 `GET /users/findUserId`: Returns the `_id` parameter of a user.
 
+`GET /users/getVerificationCode`: Returns random 6-digit code for account verification.
+
 `DELETE /users/:id`: Deletes a user by their user ID.
 
 `PUT /users/diet`: Updates a user's diet restrictions.
@@ -77,7 +79,7 @@ The following endpoints provide functionality related to users of the applicatio
 
 `PUT /users/verify`: Updates a user's account verification status.
 
-`PUT /resendVerificationCode`: Updates a user's verification code.
+`PUT /resendVerificationCode`: Updates a user's verification code and corresponding send time.
 
 #### Edamam API Endpoints
 `GET /edamam`: Returns the Edamam API access link for this application.
@@ -98,6 +100,8 @@ The following endpoints provide functionality related to users of the applicatio
 * `verified` (Boolean): User's account has been verified or not.
 * `verificationCode` (String): 6-digit verification code that is sent to the User's email and is stored as a hashed value via bcyrpt framework.
 * `verificationCodeTimestamp` (Date): Timestamp of when verification was sent (helps confirm code is past its 10 minute experiation)
+* `incorrectPasswordAttempts` (Number): Documents number of consecutive incorrect password attempts a user makes prior to logging in or restting password; after 5 incorrect attemps in a row, there is a 10 minute account lockout; after 10 total incorrect attempts in a row, the user must reset his/her password
+* `incorrectPasswordAttemptTime` (Date): Used in conjunction with incorrectPasswordAttempts to assist in account lockout as applicable
 * `diet` (String array): Array containing user's dietary selections (these identifiers follow query parameters passed to Edamam API).
 * `health` (String array): Array containing user's health selections (these identifiers follow query parameters passed to Edamam API).
 * `favorites` (object array): Array of objects representing recipes that the user has favorited.
