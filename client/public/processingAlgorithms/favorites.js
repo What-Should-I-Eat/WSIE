@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const username = getUsername('name');
 
-  fetch(`http://${host}/api/v1/users/findUser/${username}`, {
+  fetch(`${host}/api/v1/users/findUser/${username}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
