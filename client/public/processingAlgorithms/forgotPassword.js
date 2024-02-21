@@ -82,7 +82,7 @@ var loginHandler = (() => {
       let userInfo;
   
       try {
-        const response = await fetch(`http://${host}/api/v1/users/requestInfoForPasswordReset?email=${email}`, {
+        const response = await fetch(`${host}/api/v1/users/requestInfoForPasswordReset?email=${email}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ var loginHandler = (() => {
 
     async function putVerificationCodeInDB(username, verificationCode){
         try {
-            const response = await fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
+            const response = await fetch(`${host}/api/v1/users/resendVerificationCode`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ var loginHandler = (() => {
 
     async function validateCode(username, verificationCodeInput){
         try {
-            const response = await fetch(`http://${host}/api/v1/users/verify`, {
+            const response = await fetch(`${host}/api/v1/users/verify`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ var loginHandler = (() => {
 
     async function putNewPasswordInDB(username, newPassword){
         try {
-            const response = await fetch(`http://${host}/api/v1/users/changePassword`, {
+            const response = await fetch(`${host}/api/v1/users/changePassword`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

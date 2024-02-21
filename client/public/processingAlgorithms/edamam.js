@@ -125,7 +125,7 @@ var edamam = (() => {
       const link = json.recipe.url;
   
       // Create the URL with the recipeLink and source parameters
-      const recipeSiteEndpoint = `http://${host}/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
+      const recipeSiteEndpoint = `${host}/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
   
       try {
           fetch(recipeSiteEndpoint, {
@@ -236,7 +236,7 @@ var edamam = (() => {
     try {
       const username = await getUsername();
       const userId = await getUserId(username);
-      const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
+      const response = await fetch(`${host}/api/v1/users/${userId}/favorites`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -260,7 +260,7 @@ var edamam = (() => {
     try {
       const username = await getUsername();
       const userId = await getUserId(username);
-      const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
+      const response = await fetch(`${host}/api/v1/users/${userId}/favorites`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -284,7 +284,7 @@ var edamam = (() => {
     try {
       const username = await getUsername();
       const userId = await getUserId(username);
-      const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
+      const response = await fetch(`${host}/api/v1/users/${userId}/favorites`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

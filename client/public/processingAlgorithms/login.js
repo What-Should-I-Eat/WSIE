@@ -13,7 +13,7 @@ var loginHandler = (() => {
       password: passwordInput
     };
   
-    fetch(`http://${host}/api/v1/users/find-username`, {
+    fetch(`${host}/api/v1/users/find-username`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ var loginHandler = (() => {
   function getProfilePageForThisUser(user){
     console.log("Inside getProfilePage()... ready to call profile endpoint");
     console.log("username: ", user);
-    fetch(`http://${host}/api/v1/users/profile`, {
+    fetch(`${host}/api/v1/users/profile`, {
       method: 'GET',
       credentials: 'include',
       headers: {
