@@ -3,7 +3,6 @@ var loginHandler2 = (() => {
   //_____________________________________________Exported Methods_______________________________________________________
 
     var togglePassword = (passwordInput, idString) => {
-
         var password = document.getElementById(passwordInput);
         var passwordToggler = document.getElementById(idString);
         passwordToggler.classList.toggle("bi-eye");
@@ -77,13 +76,12 @@ var loginHandler2 = (() => {
       }
 
       function sendEmail(fullName, email, verificationCode, emailjs, template, username){
-
         var templateID;
         if(template === "newuser"){
-          templateID = "template_7av6tqc";
+          templateID = "template_lfefu0m";
         }
         else if(template === "forgotpassword"){
-          templateID = "template_u9dl10r";
+          templateID = "template_zekzics";
         }
 
         console.log("Attempting to send verification code with template ", template);
@@ -91,13 +89,19 @@ var loginHandler2 = (() => {
         console.log("verification code: ", verificationCode);
         const params = {
           userEmail: email,
+          username: username,
           userFullName: fullName,
           verificationCode: verificationCode,
-          username: username
         }
   
-        const serviceID = "service_ms0318i";
-        const publicKey = "8nKeoQjoIWF1wyUpG";
+        console.log("email params: ", params);
+        console.log("Type of fullName: ", typeof fullName);
+        console.log("Type of verificationCode: ", typeof verificationCode);
+        console.log("Type of userEmail: ", typeof email);
+        console.log("Type of username: ", typeof username);
+
+        const serviceID = "service_6ivuvhw";
+        const publicKey = "YaAzvO7B3lldSIpqe";
   
         emailjs.send(serviceID, templateID, params, publicKey)
             .then(function(response) {
@@ -109,10 +113,7 @@ var loginHandler2 = (() => {
   
         return false;
       }
-
-
       //________________________________Helper Methods____________________________________________________
-
 
       function checkIfAllFieldsAreFilledIn(fullName, email, username, password){
         if(fullName === '' || email === '' || username === '' || password === ''){
@@ -152,23 +153,18 @@ var loginHandler2 = (() => {
         var hasNumber = /\d/;
         var hasCapitalLetter = /[A-Z]/;
         var hasLowercaseLetter = /[a-z]/;
-  
-        if(!checkPasswordLength(password)){
-          return false;
-        }
-        if(!checkIfPasswordContainsNumber(password, hasNumber)){
-          return false;
-        }
-        if(!checkIfPasswordContainsCapitalLetter(password, hasCapitalLetter)){
-          return false;
-        }
-        if(!checkIfPasswordContainsLowercaseLetter(password, hasLowercaseLetter)){
-          return false;
-        }
 
-        
-        
-        return true;
+        var isValidPassword = true;
+        if(!checkPasswordLength(password)){
+          isValidPassword = false;
+        } else if(!checkIfPasswordContainsNumber(password, hasNumber)){
+          isValidPassword = false;
+        } else if(!checkIfPasswordContainsCapitalLetter(password, hasCapitalLetter)){
+          isValidPassword = false;
+        } else if(!checkIfPasswordContainsLowercaseLetter(password, hasLowercaseLetter)){
+          isValidPassword = false;
+        }
+        return isValidPassword;
       }
 
       function checkPasswordLength(password){

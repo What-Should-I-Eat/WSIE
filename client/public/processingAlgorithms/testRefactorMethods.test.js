@@ -131,11 +131,30 @@ describe('#getVerificationCode() endpoint', () => {
             console.log(returnedCode);
             expect(returnedCode).toHaveLength(6);
         })
-    })
+    });
+
+    // it('mock return verification code', () => {
+    //     // const host = 'localhost:8080';
+    //     jest.mock(loginHandler2);
+    //     return loginHandler2.getVerificationCode()
+    //     .then(returnedCode => {
+    //         expect(returnedCode).toBeDefined();
+    //         console.log(returnedCode);
+    //         expect(returnedCode).toHaveLength(6);
+    //     })
+    // });
 });
 
+
+
+
+
+
 ///// need to figure out how to pass emailjs to this, eventually can delete if not figured out
-// test('test sendEmail returns true', () => {
-//     const emailjs = 'https://cdn.emailjs.com/dist/email.min.js';
-//     expect(loginHandler2.sendEmail("nick sonsini", "nicksonsini97@gmail.com", "123456", emailjs, "newuser", null)).toBe(true);
-// });
+test('test sendEmail calls emailjs.send()', () => {
+    // const emailjs = 'https://cdn.emailjs.com/dist/email.min.js';
+    const emailjs = require('@emailjs/browser');
+    console.log('never reached');
+
+    return loginHandler2.sendEmail("nick sonsini", "nicksonsini97@gmail.com", "123456", emailjs, "newuser", null).then(expect(emailjs.send).toHaveBeenCalled());
+});
