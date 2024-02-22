@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1708485330504" clover="3.2.0">
-  <project timestamp="1708485330504" name="All files">
-    <metrics statements="111" coveredstatements="94" conditionals="63" coveredconditionals="55" methods="19" coveredmethods="16" elements="193" coveredelements="165" complexity="0" loc="111" ncloc="111" packages="1" files="1" classes="1"/>
+<coverage generated="1708569176721" clover="3.2.0">
+  <project timestamp="1708569176721" name="All files">
+    <metrics statements="111" coveredstatements="97" conditionals="63" coveredconditionals="55" methods="19" coveredmethods="17" elements="193" coveredelements="169" complexity="0" loc="111" ncloc="111" packages="1" files="1" classes="1"/>
     <file name="testRefactorMethods.js" path="/Users/nick/Documents/capstone/WSIE/client/public/processingAlgorithms/testRefactorMethods.js">
-      <metrics statements="111" coveredstatements="94" conditionals="63" coveredconditionals="55" methods="19" coveredmethods="16"/>
+      <metrics statements="111" coveredstatements="97" conditionals="63" coveredconditionals="55" methods="19" coveredmethods="17"/>
       <line num="1" count="1" type="stmt"/>
       <line num="5" count="1" type="stmt"/>
       <line num="6" count="0" type="stmt"/>
@@ -58,10 +58,10 @@
       <line num="103" count="1" type="stmt"/>
       <line num="104" count="1" type="stmt"/>
       <line num="106" count="1" type="stmt"/>
-      <line num="108" count="0" type="stmt"/>
-      <line num="109" count="0" type="stmt"/>
+      <line num="108" count="1" type="stmt"/>
+      <line num="109" count="1" type="stmt"/>
       <line num="111" count="0" type="stmt"/>
-      <line num="114" count="0" type="stmt"/>
+      <line num="114" count="1" type="stmt"/>
       <line num="119" count="11" type="cond" truecount="6" falsecount="0"/>
       <line num="120" count="4" type="stmt"/>
       <line num="121" count="4" type="stmt"/>
