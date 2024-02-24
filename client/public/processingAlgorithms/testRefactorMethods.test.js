@@ -123,15 +123,40 @@ describe('verification/feedback message tests', () => {
 });
 
 describe('#getVerificationCode() endpoint', () => {
-    it('should return verification code', () => {
-        // const host = 'localhost:8080';
-        return loginHandler2.getVerificationCode()
-        .then(returnedCode => {
-            expect(returnedCode).toBeDefined();
-            console.log(returnedCode);
-            expect(returnedCode).toHaveLength(6);
-        })
+    // it('should return verification code', () => {
+    //     // const host = 'localhost:8080';
+    //     return loginHandler2.getVerificationCode()
+    //     .then(returnedCode => {
+    //         expect(returnedCode).toBeDefined();
+    //         console.log(returnedCode);
+    //         expect(returnedCode).toHaveLength(6);
+    //     })
+    // });
+
+    it('mocked return verification code', async () => {
+        jest.clearAllMocks();
+
+         global.fetch = jest.fn().mockImplementationOnce(() =>
+            Promise.resolve({
+                status: 200,
+                json: () => Promise.resolve("555555"),
+            })
+        )
+
+        const returnedCode = await loginHandler2.getVerificationCode();
+
+        console.log('here');
+        console.log(returnedCode);
+        expect(returnedCode).toBe("555555");
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/getVerificationCode', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
     });
+    jest.clearAllMocks();
 });
 
 describe('test sendEmail call', () => {

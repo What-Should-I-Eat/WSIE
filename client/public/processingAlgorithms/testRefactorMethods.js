@@ -62,7 +62,7 @@ var loginHandler2 = (() => {
                 'Content-Type': 'application/json',
             },
             });
-            if (!response.ok) {
+            if (response.status != 200) {
             throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const verificationCode = response.json();
