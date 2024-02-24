@@ -1,3 +1,6 @@
+// const loginHandler2 = require('./testRefactorMethods');
+// const emailjs = require('@emailjs/browser');
+
 var verificationHandler = (() => {
   var updateVerificationStatusNewUser = (event) => {
     event.preventDefault();
@@ -20,7 +23,8 @@ var verificationHandler = (() => {
         return false;
     }
 
-    fetch(`http://${host}/api/v1/users/verify`, {
+    // fetch(`http://${host}/api/v1/users/verify`, {
+    fetch(`http://localhost:8080/api/v1/users/verify`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
@@ -47,20 +51,6 @@ var verificationHandler = (() => {
 
     const verificationSuccess = "You have successfully verified your WSIE profile, " + fullName +"!<br>Please continue to the Login page!";
     feedbackMessage.innerHTML = verificationSuccess;
-
-    const loginDiv = document.getElementById('login');
-
-    if (!document.getElementById('loginButton')) {
-        // Show login button
-        const loginButton = document.createElement('button');
-        loginButton.textContent = 'Log In'; 
-        loginButton.id = 'loginButton';
-        loginButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        window.location.href = './index.html';
-        });
-        loginDiv.appendChild(loginButton);
-    }
     })
     .catch(error => {
     console.error('Fetch error:', error);
@@ -142,8 +132,8 @@ var verificationHandler = (() => {
     const email = document.getElementById('email-input').value ?? '';
 
     if(loginHandler2.isInputEmpty(fullName)){
-        feedbackMessage.innerHTML = "Verification code cannot be blank";
-        return false;
+      feedbackMessage.innerHTML = "Verification code cannot be blank";
+      return false;
     } else if(loginHandler2.isInputEmpty(username)){
         feedbackMessage.innerHTML = "Username cannot be blank";
         return false;
@@ -151,11 +141,14 @@ var verificationHandler = (() => {
         feedbackMessage.innerHTML = "Email cannot be blank";
         return false;
     }
-
+    console.log('157');
     const verificationCode = await loginHandler2.getVerificationCode();
+    console.log('159');
     sendEmail(fullName, email, verificationCode, emailjs);
+    console.log('161');
 
-    fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
+    // fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
+    fetch(`http://localhost:8080/api/v1/users/resendVerificationCode`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
@@ -171,6 +164,10 @@ var verificationHandler = (() => {
             feedbackMessage.innerHTML = 'Could not resend code';
             throw new Error('Cannot resend code');
         }
+        console.log(response);
+        console.log('here');
+        console.log(response.status);
+        console.log(response.json());
         return response.json();
         })
         .then(targetUser => {
@@ -296,3 +293,7 @@ var verificationHandler = (() => {
   }
 
 })();
+
+if(typeof module === 'object'){
+  module.exports = verificationHandler;
+}

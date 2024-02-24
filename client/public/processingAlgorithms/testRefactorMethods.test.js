@@ -123,16 +123,6 @@ describe('verification/feedback message tests', () => {
 });
 
 describe('#getVerificationCode() endpoint', () => {
-    // it('should return verification code', () => {
-    //     // const host = 'localhost:8080';
-    //     return loginHandler2.getVerificationCode()
-    //     .then(returnedCode => {
-    //         expect(returnedCode).toBeDefined();
-    //         console.log(returnedCode);
-    //         expect(returnedCode).toHaveLength(6);
-    //     })
-    // });
-
     it('mocked return verification code', async () => {
         jest.clearAllMocks();
 
@@ -145,8 +135,6 @@ describe('#getVerificationCode() endpoint', () => {
 
         const returnedCode = await loginHandler2.getVerificationCode();
 
-        console.log('here');
-        console.log(returnedCode);
         expect(returnedCode).toBe("555555");
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/getVerificationCode', {
@@ -165,11 +153,12 @@ describe('test sendEmail call', () => {
         const responseExpected = {response: {status: 200, text: 'OK'}};
     
         jest.mock('@emailjs/browser', () => ({
-            send: jest.fn().mockImplementation(() => Promise.resolve({ 
-                response: {status: 200, text: 'OK'}
-            }))
+            send: jest.fn().mockImplementation(() => 
+                Promise.resolve({ 
+                    response: {status: 200, text: 'OK'}
+                }))
         }));
-    
+
         expect(loginHandler2.sendEmail("test", "test@gmail.com", "123456", emailjs, "newuser", null)).toBe(false);
     
         expect(emailjs.send()).resolves.toEqual(responseExpected);
