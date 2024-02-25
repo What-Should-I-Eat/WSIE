@@ -2,8 +2,6 @@
  * @jest-environment jsdom
  */
 
-// const loginHandler2 = require('./testRefactorMethods.js');
-const loginHandler2 = require('./testRefactorMethods');
 const verificationHandler = require('./verificationCode');
 
 beforeEach(() => {

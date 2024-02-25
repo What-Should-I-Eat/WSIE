@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 const loginHandler2 = require("./testRefactorMethods");
 
 describe('input box tests', () => {
@@ -163,5 +167,41 @@ describe('test sendEmail call', () => {
         expect(loginHandler2.sendEmail("test", "test@gmail.com", "123456", emailjs, "newuser", null)).toBe(false);
     
         expect(emailjs.send()).resolves.toEqual(responseExpected);
+    });
+})
+
+describe('test password toggler', () => {
+    test('test password toggler starting as type = password', () => {
+        const passwordId = 'password-input';
+        const passwordTogglerId = 'password-input-toggler';
+        document.body.innerHTML = `
+            <input id="password-input" />
+            <i id="password-input-toggler" />
+
+        `;
+        const password = document.getElementById(passwordId);
+        const passwordToggler = document.getElementById(passwordTogglerId);
+        password.type = 'password';
+
+        loginHandler2.togglePassword(passwordId, passwordTogglerId);
+
+        expect(password.type).toBe('text');
+    });
+
+    test('test password toggler starting as type = text', () => {
+        const passwordId = 'password-input';
+        const passwordTogglerId = 'password-input-toggler';
+        document.body.innerHTML = `
+            <input id="password-input" />
+            <i id="password-input-toggler" />
+
+        `;
+        const password = document.getElementById(passwordId);
+        const passwordToggler = document.getElementById(passwordTogglerId);
+        password.type = 'text';
+
+        loginHandler2.togglePassword(passwordId, passwordTogglerId);
+
+        expect(password.type).toBe('password');
     });
 })
