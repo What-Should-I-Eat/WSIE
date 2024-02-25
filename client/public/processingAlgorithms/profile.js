@@ -29,30 +29,30 @@ var restrictionsHandler = (() => {
         console.log('allergies: ', healthRestrictions);
     }
 
-    var submitRestrictions = async (event) => {
-        event.preventDefault();
-        try {
-            console.log("inside submitRestrictions(): ");
-            const username = getUsername();
-            console.log("username: ", username);
-            getUserId(username)
-                .then(userId => {
-                    console.log("userId: ", userId);
-                    console.log("diet restrictions: ", dietRestrictions);
-                    console.log("health restrictions: ", healthRestrictions);
-
-                    if (userId) {
-                        PUTintoDatabase(username);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error getting user ID:', error);
-                });
-        } 
-        catch (error) {
-            console.error('Error while submitting restrictions:', error);
-        }
-    }
+    // var submitRestrictions = async (event) => {
+    //     event.preventDefault();
+    //     try {
+    //         console.log("inside submitRestrictions(): ");
+    //         const username = getUsername();
+    //         console.log("username: ", username);
+    //         getUserId(username)
+    //             .then(userId => {
+    //                 console.log("userId: ", userId);
+    //                 console.log("diet restrictions: ", dietRestrictions);
+    //                 console.log("health restrictions: ", healthRestrictions);
+    //
+    //                 if (userId) {
+    //                     PUTintoDatabase(username);
+    //                 }
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error getting user ID:', error);
+    //             });
+    //     }
+    //     catch (error) {
+    //         console.error('Error while submitting restrictions:', error);
+    //     }
+    // }
 
 
     //Puts user restrictions into an array and gives the array to edamam.js
@@ -79,6 +79,27 @@ var restrictionsHandler = (() => {
                         console.log('removed ', sanitizedRestriction, ' from array');
                         console.log('state of this array: ', array);
                     }
+                }
+                try {
+                    console.log("inside submitRestrictions(): ");
+                    const username = getUsername();
+                    console.log("username: ", username);
+                    getUserId(username)
+                        .then(userId => {
+                            console.log("userId: ", userId);
+                            console.log("diet restrictions: ", dietRestrictions);
+                            console.log("health restrictions: ", healthRestrictions);
+
+                            if (userId) {
+                                PUTintoDatabase(username);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error getting user ID:', error);
+                        });
+                }
+                catch (error) {
+                    console.error('Error while submitting restrictions:', error);
                 }
                 return array;
             });
@@ -126,7 +147,7 @@ var restrictionsHandler = (() => {
             case 'Gluten':
                 return 'gluten-free';
             case 'Gluten Free':
-                return 'gluten-free';
+                return 'gluten-free-1';
             case 'Immunity Supporting':
                 return 'immuno-supportive';
             case 'Keto':
@@ -223,7 +244,7 @@ var restrictionsHandler = (() => {
 
     return {
         handleRestrictions,
-        submitRestrictions,
+        // submitRestrictions,
         getDietRestrictions,
         getHealthRestrictions,
     }
