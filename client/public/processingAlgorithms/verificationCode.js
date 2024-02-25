@@ -185,10 +185,8 @@ var verificationHandler = (() => {
       return false;
     }
     const email = await getUserEmail(username); 
-
     const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(username, email, verificationCode, emailjs);
-
     fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
         method: 'PUT',
         headers: {
