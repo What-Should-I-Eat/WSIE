@@ -2,14 +2,22 @@
  * @jest-environment jsdom
  */
 
+// const loginHandler2 = require('./testRefactorMethods.js');
 const verificationHandler = require('./verificationCode');
 
 beforeEach(() => {
     jest.clearAllMocks();
-});
 
+    global.loginHandler2 = require('./testRefactorMethods');
+    global.loginHandler2.isInputEmpty = require('./testRefactorMethods');
+
+    global.loginHandler2.isInputEmpty = jest.fn(() => false);
+
+    global.host = "localhost:8080";
+});
 afterEach(() => {
     jest.clearAllMocks();
+    global.loginHandler2 = require('./testRefactorMethods');
 });
 
 // describe('#resendVerificationCode() endpoint', () => {
@@ -76,33 +84,25 @@ describe('#verify() endpoint', () => {
         document.body.innerHTML = `
             <input id="username-input" />
             <h4 id="feedback-message" />
-            <input id="fullname-input" />
             <input id="verificationCodeInput" />
-            <div id="login" />
-            <button id="loginButton" />
         `;
       
         const username = document.getElementById('username-input');
         const feedbackMessage = document.getElementById('feedback-message');
-        const fullName = document.getElementById('fullname-input');
         const enteredVerificationCode = document.getElementById('verificationCodeInput');
-        const loginDiv = document.getElementById('login');
-        const loginButton = document.getElementById('loginButton');
       
         username.value = 'userTest';
-        fullName.value = 'Full Name Test';
         enteredVerificationCode.value = '333333';
 
-        global.fetch = jest.fn().mockImplementationOnce(() =>
+        global.fetch = jest.fn().mockImplementation(() =>
             Promise.resolve({
                 status: 200,
                 json: () => Promise.resolve(JSON.stringify(updatedDataResponse)),
             })
         )
-
-        const response = verificationHandler.updateVerificationStatusNewUser(event);
-
-        expect(response).toBe(updatedDataResponse);
+        const response = verificationHandler.updateVerificationStatusLogin(event);
+        
+        expect(response).toBe(false);
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/verify', {
           method: 'PUT',
@@ -110,8 +110,54 @@ describe('#verify() endpoint', () => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            userName: username,
-            verificationCode: verificationCode,            
+            userName: username.value,
+            verificationCode: enteredVerificationCode.value,            
+            }),
+        });
+    });
+
+    it('mocked update verification status Login', async () => {
+
+        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+
+        const event = {
+            preventDefault: jest.fn()
+          };
+
+        document.body.innerHTML = `
+            <input id="username-input" />
+            <h4 id="feedback-message" />
+            <input id="fullname-input" />
+            <input id="verificationCodeInput" />
+        `;
+      
+        const username = document.getElementById('username-input');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const fullName = document.getElementById('fullname-input');
+        const enteredVerificationCode = document.getElementById('verificationCodeInput');
+      
+        username.value = 'userTest';
+        fullName.value = 'Full Name Test';
+        enteredVerificationCode.value = '333333';
+
+        global.fetch = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                status: 200,
+                json: () => Promise.resolve(JSON.stringify(updatedDataResponse)),
+            })
+        )
+        const response = verificationHandler.updateVerificationStatusNewUser(event);
+        
+        expect(response).toBe(false);
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/verify', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userName: username.value,
+            verificationCode: enteredVerificationCode.value,            
             }),
         });
     });

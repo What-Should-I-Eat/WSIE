@@ -11,7 +11,6 @@ var verificationHandler = (() => {
     const fullName = document.getElementById('fullname-input').value ?? '';
     const feedbackMessage = document.getElementById('feedback-message');
     const enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
-
     if(loginHandler2.isInputEmpty(enteredVerificationCode)){
         feedbackMessage.innerHTML = "Verification code cannot be blank";
         return false;
@@ -23,8 +22,7 @@ var verificationHandler = (() => {
         return false;
     }
 
-    // fetch(`http://${host}/api/v1/users/verify`, {
-    fetch(`http://localhost:8080/api/v1/users/verify`, {
+    fetch(`http://${host}/api/v1/users/verify`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
@@ -60,7 +58,6 @@ var verificationHandler = (() => {
       feedbackMessage.innerHTML = 'Could not verify user.<br/>Please check code is entered correctly';
     }
     });
-
     return false;
   }
 
@@ -141,11 +138,8 @@ var verificationHandler = (() => {
         feedbackMessage.innerHTML = "Email cannot be blank";
         return false;
     }
-    console.log('157');
     const verificationCode = await loginHandler2.getVerificationCode();
-    console.log('159');
     sendEmail(fullName, email, verificationCode, emailjs);
-    console.log('161');
 
     // fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
     fetch(`http://localhost:8080/api/v1/users/resendVerificationCode`, {

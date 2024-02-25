@@ -54,9 +54,7 @@ var loginHandler2 = (() => {
 
       async function getVerificationCode() {
         try {
-          ///// this is temporary until I figure out how to get $host value within test case
-            // const response = await fetch(`http://${host}/api/v1/users/getVerificationCode`, {
-            const response = await fetch(`http://localhost:8080/api/v1/users/getVerificationCode`, {
+            const response = await fetch(`http://${host}/api/v1/users/getVerificationCode`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
