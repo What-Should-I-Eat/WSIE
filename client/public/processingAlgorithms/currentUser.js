@@ -40,13 +40,19 @@ async function getUserData(username){
   }
 }
 
+function getUserNameFromCookie() {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; userName=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
 
 function getUsername(){
-  const urlString = window.location.href;
-  const url = new URL(urlString);
-  const username = url.searchParams.get('name');
-  console.log(username);
-  return username;
+  // const urlString = window.location.href;
+  // const url = new URL(urlString);
+  // const username = url.searchParams.get('name');
+  // console.log(username);
+  // return username;
+  return getUserNameFromCookie();
 }
 
 function getUserObject(username){

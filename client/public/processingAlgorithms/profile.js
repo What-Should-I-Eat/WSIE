@@ -85,13 +85,21 @@ var restrictionsHandler = (() => {
         });
         return array;
     }
+
+    function getUserNameFromCookie() {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; userName=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
     
 
     function getUsername(){
-        let username = document.getElementById("user-identification").textContent.trim();
-        const endIndex = username.indexOf("'");
-        username = username.substring(0, endIndex);
-        return username;
+        // let username = document.getElementById("user-identification").textContent.trim();
+        // const endIndex = username.indexOf("'");
+        // username = username.substring(0, endIndex);
+        // return username;
+
+        return getUserNameFromCookie();
     }
     
     function getEdamamNameOfRestriction(buttonName){

@@ -94,7 +94,7 @@ var loginHandler = (() => {
       console.error('Error fetching profile data:', error);
     });
 
-    window.location.href = `./profile.html?name=${user}`;
+    window.location.href = `./profile.html`;
   }
 
 
