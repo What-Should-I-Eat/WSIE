@@ -141,8 +141,7 @@ var verificationHandler = (() => {
     const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(fullName, email, verificationCode, emailjs);
 
-    // fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
-    fetch(`http://localhost:8080/api/v1/users/resendVerificationCode`, {
+    fetch(`http://${host}/api/v1/users/resendVerificationCode`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
@@ -158,10 +157,6 @@ var verificationHandler = (() => {
             feedbackMessage.innerHTML = 'Could not resend code';
             throw new Error('Cannot resend code');
         }
-        console.log(response);
-        console.log('here');
-        console.log(response.status);
-        console.log(response.json());
         return response.json();
         })
         .then(targetUser => {
