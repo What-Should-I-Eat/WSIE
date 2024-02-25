@@ -249,6 +249,7 @@ var verificationHandler = (() => {
   }
 
   async function getUserEmail(username){
+    const feedbackMessage = document.getElementById('feedback-message');
     const email = await fetch(`http://${host}/api/v1/users/getUserEmail`, {
         method: 'POST',
         headers: {
