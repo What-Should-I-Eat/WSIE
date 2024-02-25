@@ -278,7 +278,9 @@ var verificationHandler = (() => {
     updateVerificationStatusNewUser,
     updateVerificationStatusLogin,
     resendVerificationCodeNewUser,
-    resendVerificationStatusLogin
+    resendVerificationStatusLogin,
+    getUserEmail,
+    sendEmail
   }
 
 })();

@@ -187,7 +187,7 @@ describe('#verify() endpoint', () => {
 
 
 
-    
+
 
 
 
@@ -236,5 +236,57 @@ describe('#verify() endpoint', () => {
             verificationCode: enteredVerificationCode.value,            
             }),
         });
+    });
+});
+
+
+
+describe('helper functions within verificationCode', () => {
+    it('mocked successful getUserEmail', async () => {
+        const desiredEmail = "test@email.com";
+        const usernamePassedIn = "test user";
+
+         global.fetch = jest.fn().mockImplementationOnce(() =>
+            Promise.resolve({
+                status: 200,
+                json: () => Promise.resolve({email: desiredEmail}),
+            })
+        )
+
+        const returnedEmail = await verificationHandler.getUserEmail(usernamePassedIn);
+        expect(returnedEmail).toBe(desiredEmail);
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/getUserEmail', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }, body: JSON.stringify({
+            userName: usernamePassedIn   
+            }),
+        });
+    });
+
+
+
+
+    
+
+
+
+
+    test('test sendEmail calls emailjs.send()', () => {
+        const emailjs = require('@emailjs/browser');
+        const responseExpected = {response: {status: 200, text: 'OK'}};
+    
+        jest.mock('@emailjs/browser', () => ({
+            send: jest.fn().mockImplementation(() => 
+                Promise.resolve({ 
+                    response: {status: 200, text: 'OK'}
+                }))
+        }));
+
+        expect(verificationHandler.sendEmail("test", "test@gmail.com", "123456", emailjs)).toBe(false);
+    
+        expect(emailjs.send()).resolves.toEqual(responseExpected);
     });
 });
