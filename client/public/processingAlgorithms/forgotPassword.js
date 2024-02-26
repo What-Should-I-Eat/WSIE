@@ -205,8 +205,12 @@ var loginHandler = (() => {
         forgotPassword,
         enterNewVerificationCode,
         enterNewPassword,
+        showInputFormForVerification,
+        showInputFormForNewPassword
     };
 
 
   })();
-  
+  if(typeof module === 'object'){
+    module.exports = loginHandler;
+  }
