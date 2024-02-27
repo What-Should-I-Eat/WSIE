@@ -72,8 +72,9 @@ var loginHandler = (() => {
             feedbackMessage.innerHTML = "Error updating password. Please try again.";
         }
         feedbackMessage.innerHTML = "Password updated! Please log in.";
-        const passwordRequirement = document.getElementById('password-requirement');
-        passwordRequirement.style.display = 'none';
+        // var passwordRequirement = document.getElementById('password-requirement');
+        // passwordRequirement.style.display = 'none';
+        document.getElementById('password-requirement').style.display = 'none';
 
     };
   
@@ -183,7 +184,7 @@ var loginHandler = (() => {
                 }),
             });
     
-            if (!response.ok) {
+            if (response.status != 200) {
                 const errorData = await response.json();
                 console.error('Error changing password:', errorData.error);
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -199,17 +200,14 @@ var loginHandler = (() => {
         }
     }
 
-
-
     return {
         forgotPassword,
         enterNewVerificationCode,
         enterNewPassword,
         showInputFormForVerification,
-        showInputFormForNewPassword
+        showInputFormForNewPassword,
+        putNewPasswordInDB
     };
-
-
   })();
   if(typeof module === 'object'){
     module.exports = loginHandler;

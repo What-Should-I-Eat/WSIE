@@ -4,6 +4,171 @@
 
 const loginHandler = require('./forgotPassword');
 
+beforeEach(() => {
+    jest.clearAllMocks();
+
+    global.loginHandler2 = require('./testRefactorMethods');
+    global.loginHandler2.isInputEmpty = require('./testRefactorMethods');
+    global.loginHandler2.isInputEmpty = jest.fn().mockReturnValue(false);
+
+    global.host = "localhost:8080";
+});
+
+afterEach(() => {
+    jest.clearAllMocks();
+    global.loginHandler2 = require('./testRefactorMethods');
+});
+
+describe('enter new password', () => {
+    it('password do not match - unsuccessful', async () => {
+        const event = {
+            preventDefault: jest.fn()
+          };
+
+        document.body.innerHTML = `
+            <input id="username-input" />
+            <h4 id="feedback-message" />
+            <input id="password-input1" />
+            <input id="password-input2" />
+        `;
+      
+        const username = document.getElementById('username-input');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const password1 = document.getElementById('password-input1');
+        const password2 = document.getElementById('password-input2');
+      
+        username.value = 'userTest';
+        password1.value = 'Password123';
+        password2.value = 'Password123';
+
+        global.loginHandler2.checkIfPasswordsMatch = jest.fn().mockReturnValueOnce(false);
+
+        const response = await loginHandler.enterNewPassword(event);
+
+        expect(response).toBe(false);
+        expect(feedbackMessage.innerHTML).toBe("Passwords do not match. Please try again.")
+    });
+
+    it('password is not valid - unsuccessful', async () => {
+        const event = {
+            preventDefault: jest.fn()
+          };
+
+        document.body.innerHTML = `
+            <input id="username-input" />
+            <h4 id="feedback-message" />
+            <input id="password-input1" />
+            <input id="password-input2" />
+        `;
+      
+        const username = document.getElementById('username-input');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const password1 = document.getElementById('password-input1');
+        const password2 = document.getElementById('password-input2');
+      
+        username.value = 'userTest';
+        password1.value = 'Password123';
+        password2.value = 'Password123';
+
+        global.loginHandler2.checkIfPasswordsMatch = jest.fn().mockReturnValueOnce(true);
+        global.loginHandler2.checkIfPasswordIsValid = jest.fn().mockReturnValueOnce(false);
+
+        const response = await loginHandler.enterNewPassword(event);
+
+        expect(response).toBe(false);
+        expect(feedbackMessage.innerHTML).toBe("Ensure that new password adheres to password requirements.")
+    });
+
+    it('enter new password - successful', async () => {
+        const event = {
+            preventDefault: jest.fn()
+          };
+
+        document.body.innerHTML = `
+            <input id="username-input" />
+            <h4 id="feedback-message" />
+            <input id="password-input1" />
+            <input id="password-input2" />
+            <h4 id="password-requirement" />
+        `;
+        const username = document.getElementById('username-input');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const password1 = document.getElementById('password-input1');
+        const password2 = document.getElementById('password-input2');
+        var passwordRequirement = document.getElementById('password-requirement');      
+        username.value = 'userTest';
+        password1.value = 'Password123';
+        password2.value = 'Password123';
+        passwordRequirement.style.display = 'block';
+
+        global.loginHandler2.checkIfPasswordsMatch = jest.fn().mockReturnValueOnce(true);
+        global.loginHandler2.checkIfPasswordIsValid = jest.fn().mockReturnValueOnce(true);
+        const response = await loginHandler.enterNewPassword(event);
+
+        expect(passwordRequirement.style.display).toBe('none');
+        expect(feedbackMessage.innerHTML).toBe("Password updated! Please log in.")
+    });
+})
+
+
+describe('put new password in database', () => {
+    it('put new password in database - successful', async () => {
+        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+
+        global.fetch = jest.fn().mockImplementationOnce(() =>
+            Promise.resolve({
+                status: 200,
+                json: () => Promise.resolve(JSON.stringify(updatedDataResponse)),
+            })
+        )
+        const username = 'testuser';
+        const newPassword = 'newPassword';
+
+        const response = await loginHandler.putNewPasswordInDB(username, newPassword);
+
+        expect(response).toBe(true);
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/changePassword', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userName: username,
+            password: newPassword,            
+            }),
+        });
+    });
+
+    it('put new password in database - unsuccesful', async () => {
+        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+
+        global.fetch = jest.fn().mockImplementationOnce(() =>
+            Promise.resolve({
+                status: 404,
+                json: () => Promise.reject(new Error('HTTP error! Status: 404')),
+            })
+        )
+        const username = 'testuser';
+        const newPassword = 'newPassword';
+
+        const response = await loginHandler.putNewPasswordInDB(username, newPassword);
+
+        expect(response).toBe(false);
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/changePassword', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userName: username,
+            password: newPassword,            
+            }),
+        });
+    });
+})
+
 describe('input form showers', () => {
     test('show input form verification', () => {
         document.body.innerHTML = `
