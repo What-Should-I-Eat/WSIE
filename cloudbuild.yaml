@@ -11,14 +11,14 @@ steps:
     args: ['build', '-t', 'gcr.io/wsie-test/server-image', './server']
 
   # Additional steps for npm install and start (if needed)
-  - name: 'gcr.io/cloud-builders/npm'
-    args: ['install', '--prefix', './client']
+  # - name: 'gcr.io/cloud-builders/npm'
+  #   args: ['install', '--prefix', './client']
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['run', 'build', '--prefix', './client']
 
-  - name: 'gcr.io/cloud-builders/npm'
-    args: ['install', '--prefix', './server']
+  # - name: 'gcr.io/cloud-builders/npm'
+  #   args: ['install', '--prefix', './server']
 
   - name: 'gcr.io/cloud-builders/npm'
     args: ['start', '--prefix', './server']
