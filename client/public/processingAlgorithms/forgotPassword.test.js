@@ -110,6 +110,63 @@ describe('enter new password', () => {
     });
 })
 
+describe('get user credentials', () => {
+    it('get user credentials - successful', async () => {
+        const forgotUserInfo = {
+            username: 'test user',
+            fullName: 'test full name',
+            email: 'test@test.com',
+          };
+
+        global.fetch = jest.fn().mockImplementationOnce(() =>
+            Promise.resolve({
+                status: 200,
+                json: () => Promise.resolve(JSON.stringify(forgotUserInfo)),
+            })
+        )
+        const email = 'test@test.com';
+
+        const response = await loginHandler.getUserCredentials(email);
+
+        expect(response).toBe(JSON.stringify(forgotUserInfo));
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/requestInfoForPasswordReset?email=test@test.com', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+    });
+
+    it('get user credentials - unsuccessful', async () => {
+        const forgotUserInfo = {
+            username: 'test user',
+            fullName: 'test full name',
+            email: 'test@test.com',
+          };
+
+        global.fetch = jest.fn().mockImplementationOnce(() =>
+            Promise.resolve({
+                status: 404,
+                json: () => Promise.reject(),
+            })
+        )
+        const email = 'test@test.com';
+
+        const response = await loginHandler.getUserCredentials(email);
+
+        expect(response).toBeNull();
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/requestInfoForPasswordReset?email=test@test.com', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+    });
+
+})
+
 
 describe('put new password in database', () => {
     it('put new password in database - successful', async () => {

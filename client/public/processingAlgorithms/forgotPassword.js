@@ -72,10 +72,8 @@ var loginHandler = (() => {
             feedbackMessage.innerHTML = "Error updating password. Please try again.";
         }
         feedbackMessage.innerHTML = "Password updated! Please log in.";
-        // var passwordRequirement = document.getElementById('password-requirement');
-        // passwordRequirement.style.display = 'none';
-        document.getElementById('password-requirement').style.display = 'none';
-
+        var passwordRequirement = document.getElementById('password-requirement');
+        passwordRequirement.style.display = 'none';
     };
   
     async function getUserCredentials(email) {
@@ -206,7 +204,8 @@ var loginHandler = (() => {
         enterNewPassword,
         showInputFormForVerification,
         showInputFormForNewPassword,
-        putNewPasswordInDB
+        putNewPasswordInDB,
+        getUserCredentials
     };
   })();
   if(typeof module === 'object'){
