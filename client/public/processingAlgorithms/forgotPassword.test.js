@@ -11,7 +11,7 @@ beforeEach(() => {
     global.loginHandler2.isInputEmpty = require('./testRefactorMethods');
     global.loginHandler2.isInputEmpty = jest.fn().mockReturnValue(false);
 
-    global.host = "localhost:8080";
+    global.host = "http://localhost:8080";
 });
 
 afterEach(() => {
