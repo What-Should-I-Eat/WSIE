@@ -36,7 +36,7 @@ var loginHandler = (() => {
         event.preventDefault();
 
         var verificationCodeVerificationMessage = document.getElementById('valid-vc');
-        var enteredVerificationCode = document.getElementById('verificationCodeInput').value;
+        var enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
         const isValidated = await validateCode(username, enteredVerificationCode);
         console.log("user is verified: ", isValidated);
 

@@ -477,7 +477,6 @@ describe('#resendVerificationCode() endpoint', () => {
 
 describe('#verify() endpoint', () => {
     it('mocked update verification status Login - successful', async () => {
-
         const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
 
         const event = {
@@ -518,7 +517,6 @@ describe('#verify() endpoint', () => {
             }),
         });
     });
-
     it('mocked update verification status Login - unsuccessful empty code', async () => {
         global.loginHandler2.isInputEmpty = jest.fn().mockReturnValueOnce(true);
         const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
@@ -561,7 +559,6 @@ describe('#verify() endpoint', () => {
             }),
         });
     });
-
     it('mocked update verification status Login - unsuccessful empty username', async () => {
         global.loginHandler2.isInputEmpty = jest.fn().mockReturnValueOnce(false).mockReturnValueOnce(true);
         const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
@@ -604,8 +601,6 @@ describe('#verify() endpoint', () => {
             }),
         });
     });
-
-
     it('mocked update verification status Login - generic failure', async () => {
         const event = {
             preventDefault: jest.fn()
@@ -645,7 +640,6 @@ describe('#verify() endpoint', () => {
             }),
         });
     });
-
     it('mocked update verification status Login - expired code', async () => {
         const event = {
             preventDefault: jest.fn()

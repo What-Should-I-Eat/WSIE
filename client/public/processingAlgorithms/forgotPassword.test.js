@@ -427,51 +427,6 @@ describe('get user credentials', () => {
 })
 
 describe('forgot password', () => {
-    // it('forgot password - successful', async () => {
-    //     const event = {
-    //         preventDefault: jest.fn()
-    //     };
-    //     const forgotUserInfo = {
-    //         username: 'test user',
-    //         fullName: 'test full name',
-    //         email: 'test@test.com',
-    //     };
-
-    //     global.document.body.innerHTML = `
-    //       <div id="email-input" />
-    //       <div id="feedback-message" />
-    //       <div id='reset-enter-email' />
-    //       <div id='password-reset-code' />
-    //     `;
-    //     const userEmail = document.getElementById('email-input');
-    //     const feedbackMessage = document.getElementById('feedback-message');
-    //     const enterEmailDiv = document.getElementById('reset-enter-email');
-    //     const verificationCodeDiv = document.getElementById('password-reset-code');
-
-    //     global.loginHandler2.sendEmail = require('./testRefactorMethods');
-    //     global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
-    //     global.loginHandler2.sendEmail = jest.fn();
-    //     global.emailjs = jest.fn();
-    //     global.emailjs.send = jest.fn().mockImplementation(() => 
-    //     Promise.resolve({ 
-    //         response: {status: 200, text: 'OK'}
-    //     }));
-    //     global.loginHandler2.getVerificationCode = jest.fn(() => "33333");
-    //     global.verificationCode = "33333";
-
-    //     global.fetch = jest.fn().mockImplementation(() =>
-    //         Promise.resolve({
-    //             status: 200,
-    //             json: () => Promise.resolve(JSON.stringify(forgotUserInfo)),
-    //         })
-    //     )
-    //     const email = 'test@test.com';
-
-    //     const response = await loginHandler.forgotPassword(event);
-
-    //     expect(response).toBe(false);
-    //     expect(feedbackMessage.innerHTML).toBe("Sending verification code!");
-    // });
     it('forgot password credentials error - unsuccessful', async () => {
         const event = {
             preventDefault: jest.fn()
