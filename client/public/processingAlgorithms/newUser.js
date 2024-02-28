@@ -19,6 +19,7 @@ var loginHandler = (() => {
         password,
         confirmedPassword
       );
+
   
       //Depending on the userInputViabilityNumber, verification message shows
       if (userInputViabilityNumber !== 0) {
@@ -28,8 +29,10 @@ var loginHandler = (() => {
 
       const verificationCode = await loginHandler2.getVerificationCode();
 
-      loginHandler2.sendEmail(fullName, email, verificationCode, emailjs, "newuser", null);
       
+      loginHandler2.sendEmail(fullName, email, verificationCode, emailjs, "newuser", username);
+
+
       //After email verification, continue with registration
       const newUserData = {
         fullName: fullName,
@@ -42,7 +45,7 @@ var loginHandler = (() => {
         favorites: []
       };
 
-      fetch(`http://${host}/api/v1/users/register`, {
+      fetch(`${host}/api/v1/users/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

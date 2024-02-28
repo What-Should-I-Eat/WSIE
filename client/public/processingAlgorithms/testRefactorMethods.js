@@ -54,7 +54,7 @@ var loginHandler2 = (() => {
 
       async function getVerificationCode() {
         try {
-            const response = await fetch(`http://${host}/api/v1/users/getVerificationCode`, {
+            const response = await fetch(`${host}/api/v1/users/getVerificationCode`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -77,6 +77,51 @@ var loginHandler2 = (() => {
         var templateID;
         if(template === "newuser"){
           templateID = "template_lfefu0m";
+        }
+        else if(template === "forgotpassword"){
+          templateID = "template_zekzics";
+        }
+
+        console.log("Attempting to send verification code with template ", template);
+  
+        console.log("verification code: ", verificationCode);
+        const params = {
+          userEmail: email,
+          username: username,
+          userFullName: fullName,
+          verificationCode: verificationCode,
+        }
+  
+        console.log("email params: ", params);
+        console.log("Type of fullName: ", typeof fullName);
+        console.log("Type of verificationCode: ", typeof verificationCode);
+        console.log("Type of userEmail: ", typeof email);
+        console.log("Type of username: ", typeof username);
+
+        const serviceID = "service_6ivuvhw";
+        const publicKey = "YaAzvO7B3lldSIpqe";
+  
+        emailjs.send(serviceID, templateID, params, publicKey)
+            .then(function(response) {
+              console.log('SUCCESS: email sent', response.status, response.text);
+              return true;
+            }, function(error) {
+              console.log('FAILED: email could not be sent', error);
+            });
+  
+        return false;
+      }
+
+
+      //NOTE: This method contains authentication for the old emailjs account. It is currently not being called.
+      //Once the 200 emails reset for the next month, we can switch back to this one. The idea is with the two 
+      //accounts we have a total of 400 monthly emails and we can call sendEmail()
+      //or sendEmail2() based on which account has remaining emails for the month.
+      function sendEmail2(fullName, email, verificationCode, emailjs, template, username){
+
+        var templateID;
+        if(template === "newuser"){
+          templateID = "template_7av6tqc";
         }
         else if(template === "forgotpassword"){
           templateID = "template_zekzics";
