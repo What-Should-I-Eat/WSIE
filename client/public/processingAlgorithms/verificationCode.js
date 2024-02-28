@@ -1,3 +1,4 @@
+
 var verificationHandler = (() => {
   var updateVerificationStatusNewUser = (event) => {
     event.preventDefault();
@@ -8,7 +9,6 @@ var verificationHandler = (() => {
     const fullName = document.getElementById('fullname-input').value ?? '';
     const feedbackMessage = document.getElementById('feedback-message');
     const enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
-
     if(loginHandler2.isInputEmpty(enteredVerificationCode)){
         feedbackMessage.innerHTML = "Verification code cannot be blank";
         return false;
@@ -47,20 +47,6 @@ var verificationHandler = (() => {
 
     const verificationSuccess = "You have successfully verified your WSIE profile, " + fullName +"!<br>Please continue to the Login page!";
     feedbackMessage.innerHTML = verificationSuccess;
-
-    const loginDiv = document.getElementById('login');
-
-    if (!document.getElementById('loginButton')) {
-        // Show login button
-        const loginButton = document.createElement('button');
-        loginButton.textContent = 'Log In'; 
-        loginButton.id = 'loginButton';
-        loginButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        window.location.href = './index.html';
-        });
-        loginDiv.appendChild(loginButton);
-    }
     })
     .catch(error => {
     console.error('Fetch error:', error);
@@ -70,7 +56,6 @@ var verificationHandler = (() => {
       feedbackMessage.innerHTML = 'Could not verify user.<br/>Please check code is entered correctly';
     }
     });
-
     return false;
   }
 
@@ -142,8 +127,8 @@ var verificationHandler = (() => {
     const email = document.getElementById('email-input').value ?? '';
 
     if(loginHandler2.isInputEmpty(fullName)){
-        feedbackMessage.innerHTML = "Verification code cannot be blank";
-        return false;
+      feedbackMessage.innerHTML = "Verification code cannot be blank";
+      return false;
     } else if(loginHandler2.isInputEmpty(username)){
         feedbackMessage.innerHTML = "Username cannot be blank";
         return false;
@@ -151,7 +136,6 @@ var verificationHandler = (() => {
         feedbackMessage.innerHTML = "Email cannot be blank";
         return false;
     }
-
     const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(fullName, email, verificationCode, emailjs);
 
@@ -199,7 +183,6 @@ var verificationHandler = (() => {
       return false;
     }
     const email = await getUserEmail(username); 
-
     const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(username, email, verificationCode, emailjs);
 
@@ -263,6 +246,7 @@ var verificationHandler = (() => {
   }
 
   async function getUserEmail(username){
+    const feedbackMessage = document.getElementById('feedback-message');
     const email = await fetch(`${host}/api/v1/users/getUserEmail`, {
         method: 'POST',
         headers: {
@@ -292,7 +276,13 @@ var verificationHandler = (() => {
     updateVerificationStatusNewUser,
     updateVerificationStatusLogin,
     resendVerificationCodeNewUser,
-    resendVerificationStatusLogin
+    resendVerificationStatusLogin,
+    getUserEmail,
+    sendEmail
   }
 
 })();
+
+if(typeof module === 'object'){
+  module.exports = verificationHandler;
+}

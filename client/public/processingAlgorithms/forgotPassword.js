@@ -10,13 +10,12 @@ var loginHandler = (() => {
   
         const forgotCredentialsData = await getUserCredentials(userEmail);
         console.log("Here's our data", forgotCredentialsData);
-        username = forgotCredentialsData.username;
 
         if(forgotCredentialsData.error){
             feedbackMessage.innerHTML = "This email is not in our database. Please try again.";
             return false;
         }
-
+        username = forgotCredentialsData.username;
         const verificationCode = await loginHandler2.getVerificationCode();
         
         loginHandler2.sendEmail(forgotCredentialsData.fullName, forgotCredentialsData.email, verificationCode, emailjs, "forgotpassword", username);
@@ -36,16 +35,17 @@ var loginHandler = (() => {
     var enterNewVerificationCode = async (event) => {
         event.preventDefault();
 
-        const verificationCodeVerificationMessage = document.getElementById('valid-vc');
-        const enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
+        var verificationCodeVerificationMessage = document.getElementById('valid-vc');
+        var enteredVerificationCode = document.getElementById('verificationCodeInput').value ?? '';
         const isValidated = await validateCode(username, enteredVerificationCode);
         console.log("user is verified: ", isValidated);
 
         if(!isValidated){
             verificationCodeVerificationMessage.innerHTML = "The verification code is incorrect. Please try again.";
             return false;
+        } else{
+            showInputFormForNewPassword();
         }
-        showInputFormForNewPassword();
     };
 
     var enterNewPassword = async (event) => {
@@ -68,13 +68,14 @@ var loginHandler = (() => {
 
         //Update database with new password
         const passwordUpdated = await putNewPasswordInDB(username, password1);
+        console.log(passwordUpdated);
         if(!passwordUpdated){
             feedbackMessage.innerHTML = "Error updating password. Please try again.";
+        } else{
+            feedbackMessage.innerHTML = "Password updated! Please log in.";
+            var passwordRequirement = document.getElementById('password-requirement');
+            passwordRequirement.style.display = 'none';
         }
-        feedbackMessage.innerHTML = "Password updated! Please log in.";
-        const passwordRequirement = document.getElementById('password-requirement');
-        passwordRequirement.style.display = 'none';
-
     };
   
     async function getUserCredentials(email) {
@@ -114,7 +115,7 @@ var loginHandler = (() => {
                     verificationCode: verificationCode,
                 }),
             });
-            if(!response.ok) {
+            if(response.status != 200) {
                 console.log('Cannot resend code');
                 throw new Error('Cannot resend code');
             }
@@ -140,7 +141,7 @@ var loginHandler = (() => {
                 }),
             });
     
-            if(!response.ok) {
+            if(response.status != 200) {
                 const errorData = await response.json();
                 console.error('Error verifying user:', errorData.error);
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -183,7 +184,7 @@ var loginHandler = (() => {
                 }),
             });
     
-            if (!response.ok) {
+            if (response.status != 200) {
                 const errorData = await response.json();
                 console.error('Error changing password:', errorData.error);
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -199,14 +200,18 @@ var loginHandler = (() => {
         }
     }
 
-
-
     return {
         forgotPassword,
         enterNewVerificationCode,
         enterNewPassword,
+        showInputFormForVerification,
+        showInputFormForNewPassword,
+        putNewPasswordInDB,
+        getUserCredentials,
+        putVerificationCodeInDB,
+        validateCode
     };
-
-
   })();
-  
+  if(typeof module === 'object'){
+    module.exports = loginHandler;
+  }
