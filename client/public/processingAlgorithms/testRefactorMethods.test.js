@@ -129,7 +129,7 @@ describe('verification/feedback message tests', () => {
 describe('#getVerificationCode() endpoint', () => {
     it('mocked return verification code', async () => {
         jest.clearAllMocks();
-        global.host = "http://localhost:8080";
+        global.host = "localhost:8080";
 
          global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({

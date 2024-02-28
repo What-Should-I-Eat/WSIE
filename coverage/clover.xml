@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1709083440469" clover="3.2.0">
-  <project timestamp="1709083440469" name="All files">
+<coverage generated="1709085056753" clover="3.2.0">
+  <project timestamp="1709085056753" name="All files">
     <metrics statements="372" coveredstatements="338" conditionals="147" coveredconditionals="124" methods="56" coveredmethods="51" elements="575" coveredelements="513" complexity="0" loc="372" ncloc="372" packages="1" files="3" classes="3"/>
     <file name="forgotPassword.js" path="/Users/nick/Documents/capstone/WSIE/client/public/processingAlgorithms/forgotPassword.js">
       <metrics statements="102" coveredstatements="94" conditionals="24" coveredconditionals="20" methods="10" coveredmethods="10"/>
