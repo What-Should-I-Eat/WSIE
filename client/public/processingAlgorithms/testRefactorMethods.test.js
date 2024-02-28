@@ -168,6 +168,22 @@ describe('test sendEmail call', () => {
     
         expect(emailjs.send()).resolves.toEqual(responseExpected);
     });
+
+    test('test sendEmail2 calls emailjs.send()', () => {
+        const emailjs = require('@emailjs/browser');
+        const responseExpected = {response: {status: 200, text: 'OK'}};
+    
+        jest.mock('@emailjs/browser', () => ({
+            send: jest.fn().mockImplementation(() => 
+                Promise.resolve({ 
+                    response: {status: 200, text: 'OK'}
+                }))
+        }));
+
+        expect(loginHandler2.sendEmail2("test", "test@gmail.com", "123456", emailjs, "newuser", null)).toBe(false);
+    
+        expect(emailjs.send()).resolves.toEqual(responseExpected);
+    });
 })
 
 describe('test password toggler', () => {

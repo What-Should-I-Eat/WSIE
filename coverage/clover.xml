@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1709085056753" clover="3.2.0">
-  <project timestamp="1709085056753" name="All files">
-    <metrics statements="372" coveredstatements="338" conditionals="147" coveredconditionals="124" methods="56" coveredmethods="51" elements="575" coveredelements="513" complexity="0" loc="372" ncloc="372" packages="1" files="3" classes="3"/>
+<coverage generated="1709085555385" clover="3.2.0">
+  <project timestamp="1709085555385" name="All files">
+    <metrics statements="372" coveredstatements="354" conditionals="147" coveredconditionals="125" methods="56" coveredmethods="53" elements="575" coveredelements="532" complexity="0" loc="372" ncloc="372" packages="1" files="3" classes="3"/>
     <file name="forgotPassword.js" path="/Users/nick/Documents/capstone/WSIE/client/public/processingAlgorithms/forgotPassword.js">
       <metrics statements="102" coveredstatements="94" conditionals="24" coveredconditionals="20" methods="10" coveredmethods="10"/>
       <line num="3" count="1" type="stmt"/>
@@ -108,7 +108,7 @@
       <line num="216" count="1" type="stmt"/>
     </file>
     <file name="testRefactorMethods.js" path="/Users/nick/Documents/capstone/WSIE/client/public/processingAlgorithms/testRefactorMethods.js">
-      <metrics statements="130" coveredstatements="105" conditionals="67" coveredconditionals="58" methods="22" coveredmethods="18"/>
+      <metrics statements="130" coveredstatements="121" conditionals="67" coveredconditionals="59" methods="22" coveredmethods="20"/>
       <line num="1" count="3" type="stmt"/>
       <line num="5" count="3" type="stmt"/>
       <line num="6" count="2" type="stmt"/>
@@ -167,25 +167,25 @@
       <line num="107" count="1" type="stmt"/>
       <line num="109" count="0" type="stmt"/>
       <line num="112" count="1" type="stmt"/>
-      <line num="123" count="0" type="cond" truecount="0" falsecount="2"/>
-      <line num="124" count="0" type="stmt"/>
+      <line num="123" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="124" count="1" type="stmt"/>
       <line num="126" count="0" type="cond" truecount="0" falsecount="2"/>
       <line num="127" count="0" type="stmt"/>
-      <line num="130" count="0" type="stmt"/>
-      <line num="132" count="0" type="stmt"/>
-      <line num="133" count="0" type="stmt"/>
-      <line num="140" count="0" type="stmt"/>
-      <line num="141" count="0" type="stmt"/>
-      <line num="142" count="0" type="stmt"/>
-      <line num="143" count="0" type="stmt"/>
-      <line num="144" count="0" type="stmt"/>
-      <line num="146" count="0" type="stmt"/>
-      <line num="147" count="0" type="stmt"/>
-      <line num="149" count="0" type="stmt"/>
-      <line num="151" count="0" type="stmt"/>
-      <line num="152" count="0" type="stmt"/>
+      <line num="130" count="1" type="stmt"/>
+      <line num="132" count="1" type="stmt"/>
+      <line num="133" count="1" type="stmt"/>
+      <line num="140" count="1" type="stmt"/>
+      <line num="141" count="1" type="stmt"/>
+      <line num="142" count="1" type="stmt"/>
+      <line num="143" count="1" type="stmt"/>
+      <line num="144" count="1" type="stmt"/>
+      <line num="146" count="1" type="stmt"/>
+      <line num="147" count="1" type="stmt"/>
+      <line num="149" count="1" type="stmt"/>
+      <line num="151" count="1" type="stmt"/>
+      <line num="152" count="1" type="stmt"/>
       <line num="154" count="0" type="stmt"/>
-      <line num="157" count="0" type="stmt"/>
+      <line num="157" count="1" type="stmt"/>
       <line num="162" count="11" type="cond" truecount="6" falsecount="0"/>
       <line num="163" count="4" type="stmt"/>
       <line num="164" count="4" type="stmt"/>
@@ -237,8 +237,8 @@
       <line num="250" count="2" type="stmt"/>
       <line num="254" count="2" type="stmt"/>
       <line num="257" count="3" type="stmt"/>
-      <line num="269" count="3" type="cond" truecount="1" falsecount="1"/>
-      <line num="270" count="3" type="stmt"/>
+      <line num="270" count="3" type="cond" truecount="1" falsecount="1"/>
+      <line num="271" count="3" type="stmt"/>
     </file>
     <file name="verificationCode.js" path="/Users/nick/Documents/capstone/WSIE/client/public/processingAlgorithms/verificationCode.js">
       <metrics statements="140" coveredstatements="139" conditionals="56" coveredconditionals="46" methods="24" coveredmethods="23"/>

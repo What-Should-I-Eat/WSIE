@@ -262,7 +262,8 @@ var loginHandler2 = (() => {
         sendEmail,
         checkIfPasswordIsValid,
         checkIfPasswordsMatch,
-        isInputEmpty
+        isInputEmpty,
+        sendEmail2
       };
 })();
 
