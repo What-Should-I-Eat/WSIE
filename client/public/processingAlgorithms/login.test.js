@@ -152,7 +152,7 @@ describe('userLogin() endpoint', () => {
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
                 status: 453,
-                json: () => Promise.reject(new Error("Sorry, you've attempted at least 10 incorrect password attempts in a row. Please reset your password to login.")),
+                json: () => Promise.reject(new Error("Must reset password")),
             })
         )
         const response = loginHandler.userLogin(event);
