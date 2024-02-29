@@ -59,6 +59,30 @@ var loginHandler = (() => {
             console.log('445 sent');
             feedbackMessage.innerHTML = 'Email already exists in database.';
             throw new Error('Email already exists');
+          } else if(response.status == 500){
+            console.log('500 sent');
+            feedbackMessage.innerHTML = 'Server error.';
+            throw new Error('Server error.');
+          } else if(response.status == 400){
+            console.log('400 sent');
+            feedbackMessage.innerHTML = 'Bad Request.';
+            throw new Error('Bad Request.');
+          } else if(response.status == 401){
+            console.log('401 sent');
+            feedbackMessage.innerHTML = 'Unauthorized.';
+            throw new Error('Unauthorized.');
+          } else if(response.status == 404){
+            console.log('404 sent');
+            feedbackMessage.innerHTML = 'Not found.';
+            throw new Error('Not found.');
+          } else if(response.status == 408){
+            console.log('408 sent');
+            feedbackMessage.innerHTML = 'Request timeout error.';
+            throw new Error('Request timeout error.');
+          } else if(response.status == 429){
+            console.log('429 sent');
+            feedbackMessage.innerHTML = 'Too many requests.';
+            throw new Error('Too many requests.');
           }else if (response.status != 200) {
             throw new Error('Error adding new user');
           }
