@@ -62,26 +62,29 @@ describe('getProfilePageForUser() endpoint', () => {
 
 
 describe('userLogin() endpoint', () => {
-    // it('mocked user login - successful', () => {
-    //     // global.window.location.href = jest.fn();
-    //     const userBeingPassed = "testUser";
-    //     global.fetch = jest.fn().mockImplementationOnce(() =>
-    //         Promise.resolve({
-    //             status: 200,
-    //             json: () => (userBeingPassed),
-    //         })
-    //     )
-    //     const response = loginHandler.getProfilePageForThisUser(userBeingPassed);
-    //     expect(fetch).toHaveBeenCalledTimes(1);
-    //     expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/profile', {
-    //         method: 'GET',
-    //         credentials: 'include',
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //         },
-    //     });
-    //     // expect(response).toBe(userBeingPassed); 
-    // });
+    it('mocked user login - successful', () => {
+        delete global.window.location;
+        global.window = Object.create(window);
+        global.window.location = {
+            href: "./profile.html?name=testUser"
+        };
+        const userBeingPassed = "testUser";
+        global.fetch = jest.fn().mockImplementationOnce(() =>
+            Promise.resolve({
+                status: 200,
+                json: () => (userBeingPassed),
+            })
+        )
+        const response = loginHandler.getProfilePageForThisUser(userBeingPassed);
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/profile', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+        });
+    });
 
     it('mocked user login - unsuccesful account not verified', async () => {
         const event = {
