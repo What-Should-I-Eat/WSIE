@@ -19,14 +19,12 @@ var loginHandler = (() => {
         password,
         confirmedPassword
       );
-
-  
+    
       //Depending on the userInputViabilityNumber, verification message shows
       if (userInputViabilityNumber !== 0) {
         feedbackMessage.innerHTML = loginHandler2.getVerificationMessage(userInputViabilityNumber);
         return false;
       }
-
       const verificationCode = await loginHandler2.getVerificationCode();
 
       
@@ -61,7 +59,7 @@ var loginHandler = (() => {
             console.log('445 sent');
             feedbackMessage.innerHTML = 'Email already exists in database.';
             throw new Error('Email already exists');
-          }else if (!response.ok) {
+          }else if (response.status != 200) {
             throw new Error('Error adding new user');
           }
 
@@ -90,3 +88,6 @@ var loginHandler = (() => {
       newUser
     }
 })();
+if(typeof module === 'object'){
+  module.exports = loginHandler;
+}
