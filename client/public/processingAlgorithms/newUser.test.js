@@ -435,7 +435,7 @@ describe('newUser() front end endpoint', () => {
         const response = await loginHandler.newUser(event);
 
         expect(response).toBe(false);
-        expect(feedbackMessage.innerHTML).toBe('Server error.');
+        expect(feedbackMessage.innerHTML).toBe('Sorry, there\'s a problem on our end. Please try again later.');
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
@@ -507,7 +507,7 @@ describe('newUser() front end endpoint', () => {
         const response = await loginHandler.newUser(event);
 
         expect(response).toBe(false);
-        expect(feedbackMessage.innerHTML).toBe('Bad Request.');
+        expect(feedbackMessage.innerHTML).toBe('Sorry, it looks like there\'s a problem on your end. Please try again later.');
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
@@ -579,7 +579,7 @@ describe('newUser() front end endpoint', () => {
         const response = await loginHandler.newUser(event);
 
         expect(response).toBe(false);
-        expect(feedbackMessage.innerHTML).toBe('Unauthorized.');
+        expect(feedbackMessage.innerHTML).toBe('Sorry, it looks like there\'s a problem on your end. Please try again later.');
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
@@ -651,7 +651,7 @@ describe('newUser() front end endpoint', () => {
         const response = await loginHandler.newUser(event);
 
         expect(response).toBe(false);
-        expect(feedbackMessage.innerHTML).toBe('Not found.');
+        expect(feedbackMessage.innerHTML).toBe('Sorry, it looks like there\'s a problem on your end. Please try again later.');
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
@@ -723,7 +723,7 @@ describe('newUser() front end endpoint', () => {
         const response = await loginHandler.newUser(event);
 
         expect(response).toBe(false);
-        expect(feedbackMessage.innerHTML).toBe('Request timeout error.');
+        expect(feedbackMessage.innerHTML).toBe('Sorry, the request timed out. Please try again later.');
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
@@ -795,7 +795,7 @@ describe('newUser() front end endpoint', () => {
         const response = await loginHandler.newUser(event);
 
         expect(response).toBe(false);
-        expect(feedbackMessage.innerHTML).toBe('Too many requests.');
+        expect(feedbackMessage.innerHTML).toBe('Sorry, it looks like you have made too many requests. Please try again later.');
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',

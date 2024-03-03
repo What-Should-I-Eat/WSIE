@@ -61,27 +61,27 @@ var loginHandler = (() => {
             throw new Error('Email already exists');
           } else if(response.status == 500){
             console.log('500 sent');
-            feedbackMessage.innerHTML = 'Server error.';
+            feedbackMessage.innerHTML = 'Sorry, there\'s a problem on our end. Please try again later.';
             throw new Error('Server error.');
           } else if(response.status == 400){
             console.log('400 sent');
-            feedbackMessage.innerHTML = 'Bad Request.';
+            feedbackMessage.innerHTML = 'Sorry, it looks like there\'s a problem on your end. Please try again later.';
             throw new Error('Bad Request.');
           } else if(response.status == 401){
             console.log('401 sent');
-            feedbackMessage.innerHTML = 'Unauthorized.';
+            feedbackMessage.innerHTML = 'Sorry, it looks like there\'s a problem on your end. Please try again later.';
             throw new Error('Unauthorized.');
           } else if(response.status == 404){
             console.log('404 sent');
-            feedbackMessage.innerHTML = 'Not found.';
+            feedbackMessage.innerHTML = 'Sorry, it looks like there\'s a problem on your end. Please try again later.';
             throw new Error('Not found.');
           } else if(response.status == 408){
             console.log('408 sent');
-            feedbackMessage.innerHTML = 'Request timeout error.';
+            feedbackMessage.innerHTML = 'Sorry, the request timed out. Please try again later.';
             throw new Error('Request timeout error.');
           } else if(response.status == 429){
             console.log('429 sent');
-            feedbackMessage.innerHTML = 'Too many requests.';
+            feedbackMessage.innerHTML = 'Sorry, it looks like you have made too many requests. Please try again later.';
             throw new Error('Too many requests.');
           }else if (response.status != 200) {
             throw new Error('Error adding new user');
