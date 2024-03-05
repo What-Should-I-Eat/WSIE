@@ -1,4 +1,4 @@
-const host = 'http://localhost:8080';
+const host = '34.162.229.43:8080';
 
 async function getUserId(username){
   try {
