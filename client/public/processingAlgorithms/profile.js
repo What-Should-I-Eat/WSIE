@@ -244,7 +244,6 @@ var restrictionsHandler = (() => {
 
     return {
         handleRestrictions,
-        // submitRestrictions,
         getDietRestrictions,
         getHealthRestrictions,
     }
