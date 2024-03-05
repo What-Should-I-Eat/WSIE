@@ -43,7 +43,7 @@ var loginHandler = (() => {
         favorites: []
       };
 
-      fetch(`${host}/api/v1/users/register`, {
+      fetch(`${host1}/api/v1/users/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

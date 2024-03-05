@@ -53,10 +53,10 @@ var loginHandler2 = (() => {
       }
 
       async function getVerificationCode() {
-        console.log('HOST: ', host);
+        console.log('HOST: ', host1);
         
         try {
-            const response = await fetch(`${host}/api/v1/users/getVerificationCode`, {
+            const response = await fetch(`${host1}/api/v1/users/getVerificationCode`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

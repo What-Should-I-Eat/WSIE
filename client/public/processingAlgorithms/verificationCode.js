@@ -20,7 +20,7 @@ var verificationHandler = (() => {
         return false;
     }
 
-    fetch(`${host}/api/v1/users/verify`, {
+    fetch(`${host1}/api/v1/users/verify`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ var verificationHandler = (() => {
           return false;
         }
     
-        fetch(`${host}/api/v1/users/verify`, {
+        fetch(`${host1}/api/v1/users/verify`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ var verificationHandler = (() => {
     const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(fullName, email, verificationCode, emailjs);
 
-    fetch(`${host}/api/v1/users/resendVerificationCode`, {
+    fetch(`${host1}/api/v1/users/resendVerificationCode`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ var verificationHandler = (() => {
     const verificationCode = await loginHandler2.getVerificationCode();
     sendEmail(username, email, verificationCode, emailjs);
 
-    fetch(`${host}/api/v1/users/resendVerificationCode`, {
+    fetch(`${host1}/api/v1/users/resendVerificationCode`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
@@ -247,7 +247,7 @@ var verificationHandler = (() => {
 
   async function getUserEmail(username){
     const feedbackMessage = document.getElementById('feedback-message');
-    const email = await fetch(`${host}/api/v1/users/getUserEmail`, {
+    const email = await fetch(`${host1}/api/v1/users/getUserEmail`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

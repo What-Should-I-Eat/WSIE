@@ -180,7 +180,7 @@ var restrictionsHandler = (() => {
     async function sendDietData(dietData) {
 
         try {
-            await fetch(`${host}/api/v1/users/diet`, {
+            await fetch(`${host1}/api/v1/users/diet`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -194,7 +194,7 @@ var restrictionsHandler = (() => {
     
     async function sendHealthData(healthData) {
         try {
-            await fetch(`${host}/api/v1/users/health`, {
+            await fetch(`${host1}/api/v1/users/health`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
