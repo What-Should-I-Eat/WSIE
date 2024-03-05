@@ -1,4 +1,4 @@
-const host1 = 'localhost';
+const host1 = '';
 
 //const host = '';
 
