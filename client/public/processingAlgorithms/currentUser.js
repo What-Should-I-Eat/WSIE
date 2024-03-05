@@ -1,6 +1,6 @@
-//const host = '34.162.229.43:8080';
+const host = '34.162.229.43:8080';
 
-const host = '';
+//const host = '';
 
 async function getUserId(username){
   try {
