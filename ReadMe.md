@@ -127,6 +127,14 @@ The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains 
 ## Nginx
 Nginx is used as a reverse proxy and enables both the client and server to be accessed via a single host variable, which is currently set to `localhost:8080`. Internally, the client runs on port `3000` and the server runs on port `3001`.
 
+## Testing
+The testing of our application relies on the JavaScript testing framework `Jest`. We also leverage `jsdom` for HTML related testing and `supertest` for server endpoint testing.
+To observe the test suite performance, run:
+
+`npm test`
+
+This action will return a coverage report, including statement, branch, function, and line coverage information, as well as the total number of tests and test suites ran.
+
 ## Software Architecture
 The following diagram shows the software architecture of the application.
 
