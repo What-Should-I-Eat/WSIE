@@ -8,11 +8,15 @@ After cloning, run `npm install` in the root, client, and server directories.
 
 Ensure Docker Desktop is available. Use the following commands to run the application in the root directory:
 
+`npm start`
+
+This command will run `docker compose down`, `docker compose build`, and `docker compose up` in sequence. Alternatively, one can individually run:
+
 `docker compose build`
 
 `docker compose up`
 
-This will build and start the 4 Docker containers of the root directory:
+Both methods will build and start the 4 Docker containers of the root directory:
 1. `db-1`
 2. `server-1`
 3. `client-1`
@@ -75,11 +79,11 @@ The following endpoints provide functionality related to users of the applicatio
 
 `POST /users/:id/favorites`: Returns true if recipe is in favorites already, false otherwise. 
 
-`POST /users/getUserEmail`: Returns user's email based on username
+`POST /users/getUserEmail`: Returns user's email based on username.
 
 `PUT /users/verify`: Updates a user's account verification status.
 
-`PUT /resendVerificationCode`: Updates a user's verification code and corresponding send time.
+`PUT /resendVerificationCode`: Updates and resends a user's verification code while also resetting the code expiration time.
 
 #### Edamam API Endpoints
 `GET /edamam`: Returns the Edamam API access link for this application.
