@@ -122,7 +122,7 @@ The following endpoints provide functionality related to users of the applicatio
 `userModel.js` also contains a helper method for password validation.
 
 ### Server Setup
-`server.js` and `app.js` set up middleware and provide logic for connection to the database. The server also contains `userModel.js`, which defines the collection Users in MongoDB, and `endpoints.js`, which define the endpoints of the application and associated logic of the server.
+`server.js` and `app.js` set up middleware and provide logic for connection to the database. 
 
 ## Database
 The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains one collection called `Users`, which contains all data associated with registered users of the application.
