@@ -17,7 +17,6 @@ describe('getUsername', () => {
             if (id === "user-identification") {
                 return {textContent: "TestUser"};
             }
-    });
 
     const username = profile2.getUsername();
     expect(profile2.getUsername()).toBe("TestUser");
