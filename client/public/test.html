@@ -12,7 +12,7 @@
 <body>
 
   <header>
-    <h1>What Should I Eat?</h1>
+    <h1 id="profile-header">What Should I Eat?</h1>
     <nav class="nav-header">
       <ul>
         <li><a href="test.html" id="test">Search</a></li>
@@ -26,7 +26,7 @@
   <div class="search-recipe">
     <form onsubmit="return edamam.searchRecipe(event)">
       <input type="text" id="search-input" placeholder="Enter recipe to search">
-      <button type="submit">Search</button>
+      <button id="recipe-search-button" type="submit">Search</button>
 
     <div class="recipe-list" id="recipe-list"> 
     <br><br><br>
@@ -40,7 +40,7 @@
   <div id="selected-recipe-details">
     <br>
     <div id="recipe-image"></div>
-    <h2 id="recipe-name"  style="font-size: 10vw;"></h2>
+    <h2 id="recipe-name"></h2>
     <div id="heart-container" class ="tooltip">
     </div>
     <div class="ingredient-details">
@@ -55,7 +55,7 @@
 
   <br><br><br><br><br><br>
 
-  <footer>
+  <footer id="edamam-footer">
     <div class="badge" id="edamam-badge" data-color="white"></div>
 
   </footer>
