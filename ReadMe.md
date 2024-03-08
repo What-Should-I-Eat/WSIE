@@ -1,10 +1,13 @@
 # What Should I Eat? Documentation
 
 ## Overview
-What Should I Eat? is a web and iOS mobile application dedicated to assisting people with dietary restrictions with finding diverse food to make and eat. 
+What Should I Eat? is a web application dedicated to assisting dietary restricted people with finding diverse food to make and eat. 
 
-## Run the Web Application Version
-After cloning, run `npm install` in the root, client, and server directories.
+## Run the Web Application via the Web
+Navigate to `http://34.162.229.43:8080` to begin using the application. Alias `whatshouldieat.org` is processing. 
+
+## Run the Web Application Locally
+After cloning, run `npm install` in the root directory.
 
 Ensure Docker Desktop is available. Use the following commands to run the application in the root directory:
 
@@ -119,10 +122,10 @@ The following endpoints provide functionality related to users of the applicatio
 `userModel.js` also contains a helper method for password validation.
 
 ### Server Setup
-`server.js` and `app.js` set up middleware and provide logic for connection to the database.
+`server.js` and `app.js` set up middleware and provide logic for connection to the database. 
 
 ## Database
-The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains one collection called `Users`. 
+The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains one collection called `Users`, which contains all data associated with registered users of the application.
 
 ## Nginx
 Nginx is used as a reverse proxy and enables both the client and server to be accessed via a single host variable, which is currently set to `localhost:8080`. Internally, the client runs on port `3000` and the server runs on port `3001`.

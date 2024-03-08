@@ -33,16 +33,12 @@
   </footer>
 
   <script>
-    function getUserName(name) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(name);
-    }
-    const username = getUserName('name');
+    const username = getUserNameFromCookie();
     document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('search').href = "index.html";
-        document.getElementById('test').href = `test.html?name=${username}`;
-        document.getElementById('favorites').href = `favorites.html?name=${username}`;
-        document.getElementById('profile').href = `profile.html?name=${username}`;
+        document.getElementById('test').href = `test.html`;
+        document.getElementById('favorites').href = `favorites.html`;
+        document.getElementById('profile').href = `profile.html`;
     });
 </script>
 </body>

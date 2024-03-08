@@ -1,5 +1,11 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  const username = getUsername('name');
+  function getUserNameFromCookie() {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; userName=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  const username = getUserNameFromCookie();
 
   fetch(`${host}/api/v1/users/findUser/${username}`, {
     method: 'GET',
