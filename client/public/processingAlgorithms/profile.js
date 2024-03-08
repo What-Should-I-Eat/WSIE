@@ -56,7 +56,7 @@ var restrictionsHandler = (() => {
                 }
                 try {
                     console.log("inside submitRestrictions(): ");
-                    const username = getUsername();
+                    const username = getUserNameFromCookie();
                     console.log("username: ", username);
                     getUserId(username)
                         .then(userId => {
