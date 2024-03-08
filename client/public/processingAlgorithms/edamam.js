@@ -30,6 +30,9 @@ var edamam = (() => {
         const recipeList = document.getElementById('recipeList');
         recipeList.innerHTML = '';
 
+        // Get the no-recipe element
+        const noRecipeElement = document.getElementById('no-recipe-found');
+
         const searchParam = document.getElementById('search-input').value;
 
         //Call restricitons file to get array HERE
@@ -45,31 +48,38 @@ var edamam = (() => {
               }
             }).then(resp => resp.json())
               .then(results => {
-                results.hits.forEach(data => {
-                  const source = data.recipe.source;
-                  const viableSource = sourceIsViable(source);
-                  if(viableSource)
-                  {
-                    console.log(source, " - ", data.recipe.label);
-                    const recipeName = document.createElement('li');
-                    
-                    //Image
-                    if (data.recipe.images && data.recipe.images.LARGE && data.recipe.images.LARGE.url) {
-                      const imageElement = document.createElement('img');
-                      imageElement.src = data.recipe.images.LARGE.url;
-                      imageElement.alt = data.recipe.label;
-                      imageElement.style.display = 'block';
-                      imageElement.style.margin = '0 auto';
-                      recipeName.appendChild(imageElement);
+                if (results.count == 0) {
+                  console.log("No results found!");
+                  noRecipeElement.style.display = 'block';
+                }
+                else {
+                  noRecipeElement.style.display = 'none';
+                  results.hits.forEach(data => {
+                    const source = data.recipe.source;
+                    const viableSource = sourceIsViable(source);
+                    if(viableSource)
+                    {
+                      console.log(source, " - ", data.recipe.label);
+                      const recipeName = document.createElement('li');
+                      
+                      //Image
+                      if (data.recipe.images && data.recipe.images.LARGE && data.recipe.images.LARGE.url) {
+                        const imageElement = document.createElement('img');
+                        imageElement.src = data.recipe.images.LARGE.url;
+                        imageElement.alt = data.recipe.label;
+                        imageElement.style.display = 'block';
+                        imageElement.style.margin = '0 auto';
+                        recipeName.appendChild(imageElement);
+                      }
+            
+                      const link = document.createElement('a');
+                      link.textContent = data.recipe.label;
+                      recipeName.appendChild(link);
+                      recipeList.appendChild(recipeName);
+                      link.onclick = () => showRecipe(data, data.recipe.source);
                     }
-          
-                    const link = document.createElement('a');
-                    link.textContent = data.recipe.label;
-                    recipeName.appendChild(link);
-                    recipeList.appendChild(recipeName);
-                    link.onclick = () => showRecipe(data, data.recipe.source);
-                  }
-                });
+                  });
+                }
             });
         } catch (e) {
           console.log(e);
