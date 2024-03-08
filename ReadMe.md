@@ -4,7 +4,7 @@
 What Should I Eat? is a web application dedicated to assisting dietary restricted people with finding diverse food to make and eat. 
 
 ## Run the Web Application via the Web
-Navigate to `http://34.162.229.43:8080` to begin using the application. Alias `whatshouldieat.org` is processing. 
+Navigate to `http://whatshouldieat.org` to begin using the application.  
 
 ## Run the Web Application Locally
 After cloning, run `npm install` in the root directory.
