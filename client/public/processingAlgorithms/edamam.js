@@ -5,7 +5,7 @@ var edamam = (() => {
     var searchRecipe = (event) => {
       event.preventDefault();
 
-      const username = getUsername();
+      const username = getUserNameFromCookie();
 
       getUserData(username)
       .then(async (userData) => {
@@ -234,7 +234,7 @@ var edamam = (() => {
     };
     console.log("adding to favorites: ", newFavoritedRecipe.recipeName);
     try {
-      const username = await getUsername();
+      const username = await getUserNameFromCookie();
       const userId = await getUserId(username);
       const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
         method: 'PUT',
@@ -258,7 +258,7 @@ var edamam = (() => {
       recipeName: json.recipe.label
     };
     try {
-      const username = await getUsername();
+      const username = await getUserNameFromCookie();
       const userId = await getUserId(username);
       const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
         method: 'DELETE',
@@ -282,7 +282,7 @@ var edamam = (() => {
       recipeName: json.recipe.label,
     };
     try {
-      const username = await getUsername();
+      const username = await getUserNameFromCookie();
       const userId = await getUserId(username);
       const response = await fetch(`http://${host}/api/v1/users/${userId}/favorites`, {
         method: 'POST',

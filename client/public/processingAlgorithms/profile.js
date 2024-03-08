@@ -5,7 +5,7 @@ var restrictionsHandler = (() => {
     let healthRestrictions = [];
 
     var handleRestrictions = async () => {
-        const username = getUsername(); 
+        const username = getUserNameFromCookie(); 
         console.log("username: ", username);
         getUserData(username)
             .then(user=> {
@@ -33,7 +33,7 @@ var restrictionsHandler = (() => {
         event.preventDefault();
         try {
             console.log("inside submitRestrictions(): ");
-            const username = getUsername();
+            const username = getUserNameFromCookie();
             console.log("username: ", username);
             getUserId(username)
                 .then(userId => {
@@ -86,21 +86,6 @@ var restrictionsHandler = (() => {
         return array;
     }
 
-    function getUserNameFromCookie() {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; userName=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-    
-
-    function getUsername(){
-        // let username = document.getElementById("user-identification").textContent.trim();
-        // const endIndex = username.indexOf("'");
-        // username = username.substring(0, endIndex);
-        // return username;
-
-        return getUserNameFromCookie();
-    }
     
     function getEdamamNameOfRestriction(buttonName){
 

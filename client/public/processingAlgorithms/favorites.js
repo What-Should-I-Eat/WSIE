@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (parts.length === 2) return parts.pop().split(';').shift();
   }
 
-  //const username = getUsername('name');
   const username = getUserNameFromCookie();
 
   fetch(`http://${host}/api/v1/users/findUser/${username}`, {

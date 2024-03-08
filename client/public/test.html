@@ -67,12 +67,6 @@
       if (parts.length === 2) return parts.pop().split(';').shift();
     }
 
-    // function getUserName(name) {
-    //     const params = new URLSearchParams(window.location.search);
-    //     return params.get(name);
-    // }
-    // const username = getUserName('name');
-
     const username = getUserNameFromCookie();
 
     document.addEventListener('DOMContentLoaded', () => {

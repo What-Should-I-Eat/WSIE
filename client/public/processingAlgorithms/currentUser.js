@@ -46,14 +46,6 @@ function getUserNameFromCookie() {
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-function getUsername(){
-  // const urlString = window.location.href;
-  // const url = new URL(urlString);
-  // const username = url.searchParams.get('name');
-  // console.log(username);
-  // return username;
-  return getUserNameFromCookie();
-}
 
 function getUserObject(username){
     fetch(`http://${host}/api/v1/users/findUser/${username}`, {
