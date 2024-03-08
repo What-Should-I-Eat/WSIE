@@ -1,18 +1,25 @@
 # What Should I Eat? Documentation
 
 ## Overview
-What Should I Eat? is a web and iOS mobile application dedicated to assisting people with dietary restrictions with finding diverse food to make and eat. 
+What Should I Eat? is a web application dedicated to assisting dietary restricted people with finding diverse food to make and eat. 
 
-## Run the Web Application Version
-After cloning, run `npm install` in the root, client, and server directories.
+## Run the Web Application via the Web
+Navigate to `http://34.162.229.43:8080` to begin using the application. Alias `whatshouldieat.org` is processing. 
+
+## Run the Web Application Locally
+After cloning, run `npm install` in the root directory.
 
 Ensure Docker Desktop is available. Use the following commands to run the application in the root directory:
+
+`npm start`
+
+This command will run `docker compose down`, `docker compose build`, and `docker compose up` in sequence. Alternatively, one can individually run:
 
 `docker compose build`
 
 `docker compose up`
 
-This will build and start the 4 Docker containers of the root directory:
+Both methods will build and start the 4 Docker containers of the root directory:
 1. `db-1`
 2. `server-1`
 3. `client-1`
@@ -75,11 +82,11 @@ The following endpoints provide functionality related to users of the applicatio
 
 `POST /users/:id/favorites`: Returns true if recipe is in favorites already, false otherwise. 
 
-`POST /users/getUserEmail`: Returns user's email based on username
+`POST /users/getUserEmail`: Returns user's email based on username.
 
 `PUT /users/verify`: Updates a user's account verification status.
 
-`PUT /resendVerificationCode`: Updates a user's verification code and corresponding send time.
+`PUT /resendVerificationCode`: Updates and resends a user's verification code while also resetting the code expiration time.
 
 #### Edamam API Endpoints
 `GET /edamam`: Returns the Edamam API access link for this application.
@@ -115,13 +122,21 @@ The following endpoints provide functionality related to users of the applicatio
 `userModel.js` also contains a helper method for password validation.
 
 ### Server Setup
-`server.js` and `app.js` set up middleware and provide logic for connection to the database.
+`server.js` and `app.js` set up middleware and provide logic for connection to the database. 
 
 ## Database
-The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains one collection called `Users`. 
+The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains one collection called `Users`, which contains all data associated with registered users of the application.
 
 ## Nginx
 Nginx is used as a reverse proxy and enables both the client and server to be accessed via a single host variable, which is currently set to `localhost:8080`. Internally, the client runs on port `3000` and the server runs on port `3001`.
+
+## Testing
+The testing of our application relies on the JavaScript testing framework `Jest`. We also leverage `jsdom` for HTML related testing and `supertest` for server endpoint testing.
+To observe the test suite performance, run:
+
+`npm test`
+
+This action will return a coverage report, including statement, branch, function, and line coverage information, as well as the total number of tests and test suites ran.
 
 ## Software Architecture
 The following diagram shows the software architecture of the application.

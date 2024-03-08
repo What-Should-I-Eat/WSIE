@@ -1,8 +1,8 @@
-const host = 'localhost:8080';
+const host = 'http://localhost:8080';
 
 async function getUserId(username){
   try {
-      const response = await fetch(`http://${host}/api/v1/users/findUserId?username=${username}`, {
+      const response = await fetch(`${host}/api/v1/users/findUserId?username=${username}`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ async function getUserId(username){
 
 async function getUserData(username){
   try {
-      const response = await fetch(`http://${host}/api/v1//users/findUserData?username=${username}`, {
+      const response = await fetch(`${host}/api/v1//users/findUserData?username=${username}`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ function getUserNameFromCookie() {
 
 
 function getUserObject(username){
-    fetch(`http://${host}/api/v1/users/findUser/${username}`, {
+    fetch(`${host}/api/v1/users/findUser/${username}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

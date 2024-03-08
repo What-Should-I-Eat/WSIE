@@ -90,6 +90,21 @@ endpoints.put("/users/changePassword", async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+// gets user's email based on username - needed for login
+endpoints.post("/users/getUserEmail", async (req, res) => { 
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error('Error finding user: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 

@@ -10,7 +10,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/wsie-test/server-image', './server']
 
-  # Additional steps for npm install and start (if needed)
+  # NPM Install and Start (run build is failing)
   - name: 'gcr.io/cloud-builders/npm'
     args: ['install', '--prefix', './client']
 
