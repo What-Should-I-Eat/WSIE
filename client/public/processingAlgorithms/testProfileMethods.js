@@ -70,14 +70,6 @@ var profile2 = (() => {
 
     }
 
-    function getUsername(){
-        let username = document.getElementById("user-identification").textContent.trim();
-        const endIndex = username.indexOf("'");
-        username = username.substring(0, endIndex);
-        return username;
-    }
-
-
     async function PUTintoDatabase(username) {
         try {
             if (username) {
@@ -98,10 +90,40 @@ var profile2 = (() => {
             console.error('Error during beforeunload event:', error);
         }
     }
+
+    async function sendDietData(dietData) {
+
+        try {
+            await fetch(`${host}/api/v1/users/diet`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dietData),
+            });
+        } catch (error) {
+            console.error('Error sending diet data:', error);
+        }
+    }
+    async function sendHealthData(healthData) {
+        try {
+            await fetch(`${host}/api/v1/users/health`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(healthData),
+            });
+        } catch (error) {
+            console.error('Error sending health data:', error);
+        }
+    }
+
     return {
         getEdamamNameOfRestriction,
-        getUsername,
-        PUTintoDatabase
+        PUTintoDatabase,
+        sendDietData,
+        sendHealthData
     }
 })();
 
