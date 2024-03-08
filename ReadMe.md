@@ -32,19 +32,20 @@ To end the Docker containers, run `docker compose down` in the root directory.
 ## Client
 
 ### User Perspective
-Once an existing user is successfully logged in (or a new user is created then logs in), the application redirects to that user's profile page, where dietary restrictions may be selected. Available dietary restricitons include popular diets, religious diets, and allergies. Currently, these restrictions are constrained by the available restrictions from the Edamam API. 
+A new user selects the link to sign up for the application, and inputs a full name, email, username, and password. A verification code is sent to the new user's email, which is inputted in the verification code input box. Once a new user is verified, they may log in to the application. 
+
+After logging in, the application redirects to the user's profile page, where dietary restrictions may be selected. Available dietary restricitons include popular diets, religious diets, and allergies. Currently, these restrictions are constrained by the available restrictions from the Edamam API. 
 
 After choosing dietary restrictions, the user may navigate to the Search tab, where they can search any food or recipe. Displayed results adhere to the user's selected dietary restrictions. Upon selecting a recipe from the results, the user will be presented with the list of ingredients and directions for that recipe. A heart icon will appear next to the recipe's name, which the user may click if they want to "favorite" that recipe.
 
 Favorited recipes appear in the Favorites tab. The user can browse their favorited recipes there.
 
-In total, there are four tabs that the user may interact with. The fourth tab enables the user to log out of the application and be redirected to the login page. 
+In total, there are four tabs that the user may interact with. The fourth tab enables the user to log out of the application and be redirected to the login page, which contains links to new user signup and forgot password. 
+
+If a user forgets their password upon attempting to log in, they may enter their email to receive a new verification code which is used to reset the password.
 
 ### Developer Perspective
-The client uses the Fetch API to access server endpoints which provide the functionality of the application. The iOS mobile version of the application was created by using Ionic's Capacitor framework. No frameworks were used for the UI of the application. Javascript files corresponding to each HTML page can be found in the `processingAlgorithms` subdirectory inside the client. For continuity, the current user's username is passed in the URL of each HTML page.
-
-#### New User Signup and Existing User Login
-Data persistence now exists on reboot of server. When a new user signs up, a unique username and email must be provided. Additionally, the user must input their chosen password twice.
+The client uses the Fetch API to access server endpoints which provide the functionality of the application. No frameworks were used for the UI of the application. Javascript files corresponding to each HTML page can be found in the `processingAlgorithms` subdirectory inside the client. 
 
 ## Server
 
@@ -128,7 +129,7 @@ The following endpoints provide functionality related to users of the applicatio
 The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains one collection called `Users`, which contains all data associated with registered users of the application.
 
 ## Nginx
-Nginx is used as a reverse proxy and enables both the client and server to be accessed via a single host variable, which is currently set to `localhost:8080`. Internally, the client runs on port `3000` and the server runs on port `3001`.
+Nginx is used as a reverse proxy and enables both the client and server to be accessed via a single host variable, which is currently set to `localhost:8080` in the local verion (branch `main`) and to the IP address of the virtual machine that hosts the deployed version. Internally, the client runs on port `3000` and the server runs on port `3001`.
 
 ## Testing
 The testing of our application relies on the JavaScript testing framework `Jest`. We also leverage `jsdom` for HTML related testing and `supertest` for server endpoint testing.
