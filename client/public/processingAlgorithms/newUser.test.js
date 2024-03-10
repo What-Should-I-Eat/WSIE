@@ -6,7 +6,7 @@ const loginHandler = require('./newUser');
 
 beforeEach(() => {
     jest.clearAllMocks();
-    global.loginHandler2 = require('./testRefactorMethods');
+    global.loginHandler2 = require('./helperMethods');
     global.host = "http://localhost:8080";
 });
 
@@ -42,9 +42,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
@@ -113,9 +113,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 1);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "invalid input message");
 
@@ -185,9 +185,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
@@ -257,9 +257,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
@@ -329,9 +329,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
@@ -400,9 +400,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
@@ -472,9 +472,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
@@ -544,9 +544,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
@@ -616,9 +616,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
@@ -688,9 +688,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
@@ -760,9 +760,9 @@ describe('newUser() front end endpoint', () => {
         username.value = "userTest";
         password.value = "Password1234";
         confirmedPassword.value = "Password1234";
-        global.loginHandler2.checkIfUserInputIsViable = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationMessage = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.checkIfUserInputIsViable = require('./helperMethods');
+        global.loginHandler2.getVerificationMessage = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.checkIfUserInputIsViable = jest.fn(() => 0);
         global.loginHandler2.getVerificationMessage = jest.fn(() => "valid input message");
 
