@@ -42,14 +42,12 @@ async function getUserData(username){
   }
 }
 
-
-function getUsername(){
-  const urlString = window.location.href;
-  const url = new URL(urlString);
-  const username = url.searchParams.get('name');
-  console.log(username);
-  return username;
+function getUserNameFromCookie() {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; userName=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
 }
+
 
 function getUserObject(username){
     fetch(`${host1}/api/v1/users/findUser/${username}`, {

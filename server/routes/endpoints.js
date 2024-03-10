@@ -263,6 +263,11 @@ endpoints.post('/users/find-username', async (req, res) => {
           maxAge: 24 * 60 * 60 * 1000,
         });
 
+        res.cookie('userName', req.session.username, {
+          // httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+
         // Return the user object in the response
         return res.json(user);
       } else {
@@ -365,6 +370,7 @@ endpoints.get('/users', async (req, res) => { //WORKS!
 endpoints.get('/users/findUserId', async (req, res) => {
   try {
     const username = req.query.username; // Access the username from query parameters
+    // const username_cookie = req.headers.getSetCookie();
     const user = await User.findOne({ userName: username });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });

@@ -39,12 +39,10 @@
                     <button class="lowcarb-button">Low Carb</button>
                     <button class="lowfat-button">Low Fat</button>
                     <button class="lowsodium-button">Low Sodium</button>
-                    <button class="lowsugar-button">Low Sugar</button>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <button class="alcoholfree-button">Alcohol Free</button>
                     <button class="balanced-button">Balanced</button>
                     <button class="highfiber-button">High Fiber</button>
                     <button class="highprotein-button">High Protein</button>
@@ -104,6 +102,8 @@
                     <td>
                         <button class="peanuts-button">Peanuts</button>
                         <button class="sesame-button">Sesame</button>
+                        <button class="lowsugar-button">Low Sugar</button>
+                        <button class="alcoholfree-button">Alcohol Free</button>
                     </td>
                 </tr>
         </table>
@@ -115,11 +115,13 @@
     </footer>
 
     <script>
-        function getUserName(name) {
-            const params = new URLSearchParams(window.location.search);
-            return params.get(name);
+        function getUserNameFromCookie() {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; userName=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
         }
-        const username = getUserName('name');
+
+        const username = getUserNameFromCookie();
 
         const userIdentification = document.getElementById('user-identification');
         userIdentification.textContent = username ? `${username}'s Dietary Profile` : 'User Profile';
@@ -128,9 +130,9 @@
             restrictionsHandler.handleRestrictions();
             
             document.getElementById('search').href = "index.html";
-            document.getElementById('test').href = `test.html?name=${username}`;
-            document.getElementById('favorites').href = `favorites.html?name=${username}`;
-            document.getElementById('profile').href = `profile.html?name=${username}`;
+            document.getElementById('test').href = `test.html`;
+            document.getElementById('favorites').href = `favorites.html`;
+            document.getElementById('profile').href = `profile.html`;
         });
     </script>
 
