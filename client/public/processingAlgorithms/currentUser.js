@@ -8,7 +8,7 @@ async function getUserId(username){
               'Content-Type': 'application/json',
           },
       });
-      if (!response.ok) {
+      if (response.status != 200) {
           throw new Error('Network response was not ok');
       }
       const data = await response.json();
@@ -22,13 +22,13 @@ async function getUserId(username){
 
 async function getUserData(username){
   try {
-      const response = await fetch(`${host}/api/v1//users/findUserData?username=${username}`, {
+      const response = await fetch(`${host}/api/v1/users/findUserData?username=${username}`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
           },
       });
-      if (!response.ok) {
+      if (response.status != 200) {
           throw new Error('Network response was not ok');
       }
       const data = await response.json();
