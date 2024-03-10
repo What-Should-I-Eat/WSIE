@@ -142,4 +142,4 @@ This action will return a coverage report, including statement, branch, function
 ## Software Architecture
 The following diagram shows the software architecture of the application.
 
-![Alt text](<WSIE-arch.jpg>)
+![Alt text](<WSIE Architecture-2.jpg>)
