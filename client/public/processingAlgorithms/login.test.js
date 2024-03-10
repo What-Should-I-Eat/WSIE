@@ -15,7 +15,6 @@ afterEach(() => {
 
 describe('getProfilePageForUser() endpoint', () => {
     it('mocked get profile page for user - successful', () => {
-        // global.window.location.href = jest.fn();
         const userBeingPassed = "testUser";
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -32,7 +31,6 @@ describe('getProfilePageForUser() endpoint', () => {
               'Content-Type': 'application/json',
             },
         });
-        // expect(response).toBe(userBeingPassed); 
     });
 
     it('mocked get profile page for user - successful', () => {
@@ -126,8 +124,6 @@ describe('userLogin() endpoint', () => {
                 password: passwordInput.value
         })
         });
-        // expect(feedbackMessage.innerHTML).toBe("Account is not yet verified.<br/>Please check your email and enter the 6 digit code below<br/>Code expires in 10 minutes");
-        // expect(verificationCodeDiv.style.display).toBe('block');
     });
 
 
@@ -160,7 +156,6 @@ describe('userLogin() endpoint', () => {
         )
         const response = loginHandler.userLogin(event);
         
-        // expect(response).toBe(false);
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/find-username', {
             method: 'POST',
@@ -200,7 +195,6 @@ describe('userLogin() endpoint', () => {
         )
         const response = loginHandler.userLogin(event);
         
-        // expect(response).toBe(false);
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/find-username', {
             method: 'POST',
@@ -240,7 +234,6 @@ describe('userLogin() endpoint', () => {
         )
         const response = loginHandler.userLogin(event);
         
-        // expect(response).toBe({});
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/find-username', {
             method: 'POST',

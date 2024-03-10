@@ -7,8 +7,8 @@ const loginHandler = require('./forgotPassword');
 beforeEach(() => {
     jest.clearAllMocks();
 
-    global.loginHandler2 = require('./testRefactorMethods');
-    global.loginHandler2.isInputEmpty = require('./testRefactorMethods');
+    global.loginHandler2 = require('./helperMethods');
+    global.loginHandler2.isInputEmpty = require('./helperMethods');
     global.loginHandler2.isInputEmpty = jest.fn().mockReturnValue(false);
 
     global.host = "http://localhost:8080";
@@ -16,7 +16,7 @@ beforeEach(() => {
 
 afterEach(() => {
     jest.clearAllMocks();
-    global.loginHandler2 = require('./testRefactorMethods');
+    global.loginHandler2 = require('./helperMethods');
 });
 
 describe('put new password in database', () => {
@@ -444,8 +444,8 @@ describe('forgot password', () => {
         const userEmail = document.getElementById('email-input');
         const feedbackMessage = document.getElementById('feedback-message');
 
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.emailjs.send = jest.fn().mockImplementation(() => 
@@ -490,8 +490,8 @@ describe('forgot password', () => {
         const enterEmailDiv = document.getElementById('reset-enter-email');
         const verificationCodeDiv = document.getElementById('password-reset-code');
 
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.emailjs.send = jest.fn().mockImplementation(() => 

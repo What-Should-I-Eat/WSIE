@@ -7,8 +7,8 @@ const verificationHandler = require('./verificationCode');
 beforeEach(() => {
     jest.clearAllMocks();
 
-    global.loginHandler2 = require('./testRefactorMethods');
-    global.loginHandler2.isInputEmpty = require('./testRefactorMethods');
+    global.loginHandler2 = require('./helperMethods');
+    global.loginHandler2.isInputEmpty = require('./helperMethods');
     global.loginHandler2.isInputEmpty = jest.fn().mockReturnValue(false);
 
     global.host = "http://localhost:8080";
@@ -16,7 +16,7 @@ beforeEach(() => {
 
 afterEach(() => {
     jest.clearAllMocks();
-    global.loginHandler2 = require('./testRefactorMethods');
+    global.loginHandler2 = require('./helperMethods');
 });
 
 describe('#resendVerificationCode() endpoint', () => {
@@ -51,8 +51,8 @@ describe('#resendVerificationCode() endpoint', () => {
             })
         )
 
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.emailjs.send = jest.fn().mockImplementation(() => 
@@ -111,8 +111,8 @@ describe('#resendVerificationCode() endpoint', () => {
             })
         )
 
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.emailjs.send = jest.fn().mockImplementation(() => 
@@ -171,8 +171,8 @@ describe('#resendVerificationCode() endpoint', () => {
             })
         )
 
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.emailjs.send = jest.fn().mockImplementation(() => 
@@ -231,8 +231,8 @@ describe('#resendVerificationCode() endpoint', () => {
             })
         )
 
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.emailjs.send = jest.fn().mockImplementation(() => 
@@ -289,8 +289,8 @@ describe('#resendVerificationCode() endpoint', () => {
             })
         )
 
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.emailjs.send = jest.fn().mockImplementation(() => 
@@ -334,8 +334,8 @@ describe('#resendVerificationCode() endpoint', () => {
         const feedbackMessage = document.getElementById('feedback-message');
         username.value = 'userTest';
         global.email = 'test@test.com';
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.getUserEmail = jest.fn();
@@ -385,8 +385,8 @@ describe('#resendVerificationCode() endpoint', () => {
         const feedbackMessage = document.getElementById('feedback-message');
         username.value = 'userTest';
         global.email = 'test@test.com';
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.getUserEmail = jest.fn();
@@ -437,8 +437,8 @@ describe('#resendVerificationCode() endpoint', () => {
       
         username.value = 'userTest';
         global.email = 'test@test.com';
-        global.loginHandler2.sendEmail = require('./testRefactorMethods');
-        global.loginHandler2.getVerificationCode = require('./testRefactorMethods');
+        global.loginHandler2.sendEmail = require('./helperMethods');
+        global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
         global.getUserEmail = jest.fn();

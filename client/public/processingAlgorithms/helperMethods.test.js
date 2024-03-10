@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-const loginHandler2 = require("./testRefactorMethods");
+const loginHandler2 = require("./helperMethods");
 
 describe('input box tests', () => {
     test('check input box is identified as empty', () => {
