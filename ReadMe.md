@@ -6,6 +6,8 @@ What Should I Eat? is a web application dedicated to assisting dietary restricte
 ## Run the Web Application via the Web
 Navigate to `http://whatshouldieat.org` to begin using the application.  
 
+This URL aliases a Google Cloud Platform virtual machine which is running the application on a public IP address.
+
 ## Run the Web Application Locally
 After cloning, run `npm install` in the root directory.
 
