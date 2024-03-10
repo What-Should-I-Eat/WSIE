@@ -55,7 +55,7 @@ function getUserObject(username){
       },
     })
       .then(response => {
-        if (!response.ok) {
+        if (response.status != 200) {
           throw new Error('Cannot find user');
         }
         return response.json();
@@ -68,4 +68,13 @@ function getUserObject(username){
       .catch(error => {
         console.error('Fetch error: ', error);
       });
+}
+
+if(typeof module === 'object'){
+  module.exports = {
+    getUserId,
+    getUserData,
+    getUserNameFromCookie,
+    getUserObject
+  }
 }
