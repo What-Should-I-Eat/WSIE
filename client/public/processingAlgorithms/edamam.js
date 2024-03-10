@@ -128,67 +128,71 @@ var edamam = (() => {
       }
     }
 
-    function showRecipe(json, source) {
-      const ingredients = setupRecipe(json); //Recipe name and ingredients 
-      const directionsList = document.getElementById('directions-list'); // List of directions
-      directionsList.innerHTML = '';
-      const link = json.recipe.url;
-  
-      // Create the URL with the recipeLink and source parameters
-      const recipeSiteEndpoint = `${host}/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
-  
+    async function showRecipe(json, source) {
       try {
-          fetch(recipeSiteEndpoint, {
+          const ingredients = setupRecipe(json); // Recipe name and ingredients 
+          const directionsList = document.getElementById('directions-list'); // List of directions
+          directionsList.innerHTML = '';
+          const link = json.recipe.url;
+          console.log("full json: ", json);
+          const lowerCaseSource = source.toLowerCase().trim();
+          console.log("lowercasesource: ", lowerCaseSource);
+          // Create the URL with the recipeLink and source parameters
+          const recipeSiteEndpoint = `${host}/api/v1/scrape-recipe/?recipeLink=${link}&source=${lowerCaseSource}`;
+          console.log("recipe endpoint: ", recipeSiteEndpoint);
+          
+          const resp = await fetch(recipeSiteEndpoint, {
               method: 'GET',
               headers: {
                   'Accept': 'application/json',
                   'Content-Type': 'application/json'
               }
-          })
-          .then((resp) => resp.json())
-          .then(async (results) => {
-              directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
-              const heartIconDiv = document.getElementById('heart-container');
-
-              // Heart icon
-              const heartIcon = document.createElement('img');
-              const heartButton = getHeartIcon(heartIcon);
-              
-              // tool tip for heart icon
-              const toolTipText = document.createElement('span'); 
-              toolTipText.className = "tooltiptext"; 
-              toolTipText.id = "tooltiptextID";
-              
-              const isAlreadyLiked = await isFavorited(json);
-              if (isAlreadyLiked == true){
-                heartIcon.style.filter = 'none'; // red
-                toolTipText.innerHTML = "Remove From Favorites";
-              }else{
-                heartIcon.style.filter = 'sepia(100%)'; // grey
-                toolTipText.innerHTML = "Add to Favorites";
-              }
-              heartIconDiv.appendChild(heartButton);
-              heartIconDiv.appendChild(toolTipText);              
-              
-              // When heart buttton is cliked toggle
-              heartButton.addEventListener('click', function() {
-                const heartIcon = this.querySelector('img');              
-                if (heartIcon.style.filter === 'sepia(100%)') { 
-                  heartIcon.style.filter = 'none'; 
-                  putToFavorites(json, ingredients, results);
-                  toolTipText.innerHTML = "Remove From Favorites";
-                } 
-                else {
-                  heartIcon.style.filter = 'sepia(100%)';
-                  deleteInFavorites(json, ingredients, results);
-                  toolTipText.innerHTML = "Add to Favorites";
-                }
-              });
           });
-      } catch (e) {
-        console.log(e);
+          
+          if (!resp.ok) {
+              throw new Error('Failed to fetch recipe directions');
+          }
+          
+          const results = await resp.json();
+          directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
+          
+          const heartIconDiv = document.getElementById('heart-container');
+          // Heart icon
+          const heartIcon = document.createElement('img');
+          const heartButton = getHeartIcon(heartIcon);
+          // Tooltip for heart icon
+          const toolTipText = document.createElement('span'); 
+          toolTipText.className = "tooltiptext"; 
+          toolTipText.id = "tooltiptextID";
+          
+          const isAlreadyLiked = await isFavorited(json);
+          if (isAlreadyLiked) {
+              heartIcon.style.filter = 'none'; // red
+              toolTipText.innerHTML = "Remove From Favorites";
+          } else {
+              heartIcon.style.filter = 'sepia(100%)'; // grey
+              toolTipText.innerHTML = "Add to Favorites";
+          }
+          heartIconDiv.appendChild(heartButton);
+          heartIconDiv.appendChild(toolTipText);              
+          
+          // When heart button is clicked, toggle
+          heartButton.addEventListener('click', async function() {
+              const heartIcon = this.querySelector('img');              
+              if (heartIcon.style.filter === 'sepia(100%)') { 
+                  heartIcon.style.filter = 'none'; 
+                  await putToFavorites(json, ingredients, results);
+                  toolTipText.innerHTML = "Remove From Favorites";
+              } else {
+                  heartIcon.style.filter = 'sepia(100%)';
+                  await deleteInFavorites(json, ingredients, results);
+                  toolTipText.innerHTML = "Add to Favorites";
+              }
+          });
+      } catch (error) {
+          console.error('Error fetching and processing recipe:', error);
       }
-    return false;
+      return false;
   }
     
   function setupRecipe(json){

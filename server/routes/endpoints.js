@@ -642,10 +642,10 @@ endpoints.get('/ingredients', async (req, res) => {
     let findScraper;
 
     try {
-      switch(source.toLowerCase().trim()){
+      switch(source){
         case 'food52': //working
-          scraper = '.recipe__list.recipe__list--steps li';
-          findScraper = 'span';
+          scraper = '.recipe__list.recipe__list--ingredients ul li';
+          findScraper = null;
           break;
         case 'simply recipes': //working
           scraper = '#mntl-sc-block_3-0';
@@ -683,10 +683,13 @@ async function getRecipeDirectionsFromSource(link, scraper, findScraper){
   console.log(`Made it to get data. Link = ${link}`);
 
   try {
+    console.log("here")
     const response = await axios.get(link);
+    console.log("get data response: ", response);
     const html = response.data;
     const $ = cheerio.load(html);
     const recipeDirections = [];
+    console.log("after cherrio,");
 
     $(scraper).each((index, element) => {
       const directionElement = findScraper ? $(element).find(findScraper) : $(element);
