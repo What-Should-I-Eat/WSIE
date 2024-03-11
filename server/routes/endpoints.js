@@ -554,7 +554,7 @@ endpoints.delete('/users/:id/favorites', async (req, res) => {
     try {
       switch(source){
         case 'bbc good food': //need to test 3/11
-          scraper = '.grouped-list li';
+          scraper = '.js-piano-recipe-method .grouped-list__list li';
           findScraper = 'p';
           break;
         case 'simply recipes': //working
@@ -612,21 +612,6 @@ async function getRecipeDirectionsFromSource(link, scraper, findScraper){
     console.error(`Error in scraping recipe directions: ${error}`);
     throw error;
   }
-}
-
-async function preLoadSite(source) {
-  if(source == 'food52'){
-    console.log('Preloading food 52: ');
-    try {
-      const response = await axios.get('https://food52.com/');
-      console.log(response);
-    } catch (error) {
-      console.error(`Error getting food52: ${error}`);
-    }
-  } else {
-    console.log('you screwed up this if statement');
-  }
-
 }
 
 //Validates password from find-username endpoint
