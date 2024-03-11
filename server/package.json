@@ -23,6 +23,7 @@
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "playwright": "^1.42.1",
     "pug": "^2.0.4"
   }
 }
