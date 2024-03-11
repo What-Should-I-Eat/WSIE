@@ -56,7 +56,8 @@ var edamam = (() => {
                   noRecipeElement.style.display = 'none';
                   results.hits.forEach(data => {
                     const source = data.recipe.source;
-                    const viableSource = sourceIsViable(source);
+                    const sourceURL = data.recipe.url;
+                    const viableSource = sourceIsViable(source, sourceURL);
                     if(viableSource)
                     {
                       console.log(source, " - ", data.recipe.label);
@@ -109,10 +110,13 @@ var edamam = (() => {
     }
     
 
-    function sourceIsViable(source){
+    function sourceIsViable(source, sourceURL){
       switch(source) {
-        case 'Food52':
-          return true;
+        case 'BBC Good Food':
+          if(sourceURLIsViable(sourceURL)){
+            return true;
+          }
+          return false;
         case 'Martha Stewart':
           return true;
         case 'Food Network':
@@ -126,6 +130,16 @@ var edamam = (() => {
         default:
           return false;
       }
+    }
+
+    //this is to see if bbc good food link actually works
+    function sourceURLIsViable(sourceURL){
+      const penultimateChar = sourceURL.charAt(sourceURL.length - 2);
+      console.log("penultimate char: ", penultimateChar);
+      if (penultimateChar >= '0' && penultimateChar <= '9') {
+        return false;
+      }
+      else {return true;}
     }
 
     async function showRecipe(json, source) {

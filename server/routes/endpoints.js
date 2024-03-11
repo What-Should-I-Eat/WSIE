@@ -10,6 +10,7 @@ const User = require("../src/models/userModel.js");
 const json = require("body-parser/lib/types/json");
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
+const { chromium } = require('playwright');
 
 //Endpoint Setup
 endpoints.use(bodyParser.json()); //express app uses the body parser
@@ -351,8 +352,6 @@ endpoints.use((req, res, next) => {
   }
 });
 
-
-
 //------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
 //~~~~~ GET all users
 endpoints.get('/users', async (req, res) => { //WORKS!
@@ -525,100 +524,12 @@ endpoints.delete('/users/:id/favorites', async (req, res) => {
   }
 });
 
-
-
 //---------------------------------------------------------------------------------------------------------------------------------------
 
-//-------------------------------------------------------------Original Endpoints--------------------------------------------------------
-endpoints.get('/ingredients', async (req, res) => {
-    try {
-      const ingredients = await mongoose.model('Ingredient').find();
-      res.json(ingredients);
-    } 
-    catch (error) {
-      console.error('Error fetching ingredients:', error);
-      res.status(500).json({ error: 'ingredients - Internal Server Error' });
-    }
-  });
-  
-  //returns restrictions
-  endpoints.get('/restrictions', async (req, res) => {
-    try {
-      const restrictions = await mongoose.model('Restriction').find();
-      res.json(restrictions);
-    } 
-    catch (error) {
-      console.error('Error fetching restrictions:', error);
-      res.status(500).json({ error: 'restrictions - Internal Server Error' });
-    }
-  });
-  
-  //This is where we want to pass a search so that we can see the options for recipes
-  endpoints.get('/search-simply-recipes/:searchQuery', async (req, res) => {
-    const searchQuery = encodeURIComponent(req.params.searchQuery);
-    console.log("searchQuery = " + searchQuery);
-    
-    const url = 'https://www.simplyrecipes.com/search?q=' + searchQuery;
-    console.log("searching url: " + url);
-
-    axios.get(url)
-      .then((response) => {
-        if (response.status === 200) {
-          const html = response.data; //all html from the page
-          const $ = cheerio.load(html);
-          const searchResultsSection = $('.comp.search-results-list-1.card-list'); //list of search results
-          const items = searchResultsSection.find('.comp.card-list__item'); //each item in the list
-          const results = []; //json array to store data
-  
-          //Iterating through the list of search results
-          items.each((index, element) => {
-            const title = $(element).find('span.card__title').text().trim(); //Name of the recipe
-            const link = $(element).find('.comp.card').attr('href'); //Link to recipe page
-            results.push({ title, link });
-          });
-  
-          res.json(results); //json array of recipe names and links 
-        } else {
-          console.error('Request failed with status code', response.status);
-          res.status(500).json({ error: 'Internal Server Error' });
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'search - Internal Server Error' });
-      });
-  });
-
-  endpoints.post("/search-input", async(req, res) => {
-    const recipeInput = new RecipeInput({ input: req.body.input });
-    const savedRecipeInput = await recipeInput.save();
-    res.json(savedRecipeInput);
-  });
-
-  endpoints.get("/restriction-input", async (req, res) => {
-    try {
-      const restrictionInputs = await mongoose.model('RestrictionInput').find();
-      res.json(restrictionInputs)
-    } 
-    catch (error) {
-      console.error('Error fetching search input:', error);
-      res.status(500).json({ error: 'search input - Internal Server Error' });
-    }
-  });
-
-  endpoints.post("/restriction-input", async(req, res) => {
-    const restrictionInput = new RestrictionInput({ input: req.body.input });
-    const savedRestrictionInput = await restrictionInput.save();
-    res.json(savedRestrictionInput);
-  });
-//---------------------------------------------------------------------------------------------------------------------------------------
- 
 //-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
 
   endpoints.get('/edamam', async (req, res) => {
     const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
-    
-
   });
 
   endpoints.get('/scrape-recipe', async (req, res) => {
@@ -629,7 +540,6 @@ endpoints.get('/ingredients', async (req, res) => {
 
     console.log("SCRAPED DATA: " + data);
     res.json(data);      
-    
 });
 
   //Support methods
@@ -643,9 +553,9 @@ endpoints.get('/ingredients', async (req, res) => {
 
     try {
       switch(source){
-        case 'food52': //working
-          scraper = '.recipe__list.recipe__list--ingredients ul li';
-          findScraper = null;
+        case 'bbc good food': //need to test 3/11
+          scraper = '.grouped-list li';
+          findScraper = 'p';
           break;
         case 'simply recipes': //working
           scraper = '#mntl-sc-block_3-0';
@@ -667,7 +577,6 @@ endpoints.get('/ingredients', async (req, res) => {
           scraper = 'div#recipe__steps-content_1-0 ol li';
           findScraper = 'p';
           break;
-
       }
 
       data = await getRecipeDirectionsFromSource(link, scraper, findScraper);
@@ -703,6 +612,21 @@ async function getRecipeDirectionsFromSource(link, scraper, findScraper){
     console.error(`Error in scraping recipe directions: ${error}`);
     throw error;
   }
+}
+
+async function preLoadSite(source) {
+  if(source == 'food52'){
+    console.log('Preloading food 52: ');
+    try {
+      const response = await axios.get('https://food52.com/');
+      console.log(response);
+    } catch (error) {
+      console.error(`Error getting food52: ${error}`);
+    }
+  } else {
+    console.log('you screwed up this if statement');
+  }
+
 }
 
 //Validates password from find-username endpoint
