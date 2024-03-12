@@ -131,7 +131,7 @@ The following endpoints provide functionality related to users of the applicatio
 The database is a NoSQL MongoDB called `WSIE` (What Should I Eat?). It contains one collection called `Users`, which contains all data associated with registered users of the application.
 
 ## Nginx
-Nginx is used as a reverse proxy and enables both the client and server to be accessed via a single host variable, which is currently set to `localhost:8080` in the local verion (branch `main`) and to the IP address of the virtual machine that hosts the deployed version. Internally, the client runs on port `3000` and the server runs on port `3001`.
+Nginx is used as a reverse proxy and enables both the client and server to be accessed via a single host variable, which is set to `8080` in the local verion (branch `main`) and to the IP address of the virtual machine that hosts the deployed version. Internally, the client runs on port `3000` and the server runs on port `3001`.
 
 ## Testing
 The testing of our application relies on the JavaScript testing framework `Jest`. We also leverage `jsdom` for HTML related testing and `supertest` for server endpoint testing.
