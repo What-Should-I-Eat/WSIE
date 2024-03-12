@@ -11,7 +11,7 @@ This URL aliases a Google Cloud Platform virtual machine which is running the ap
 ## Run the Application Locally
 After cloning, run `npm install` in the root directory.
 
-Ensure Docker Desktop is available. Use the following commands to run the application in the root directory:
+Ensure Docker Desktop and the Docker CLI are available locally. Use the following commands to run the application in the root directory:
 
 `npm start`
 
