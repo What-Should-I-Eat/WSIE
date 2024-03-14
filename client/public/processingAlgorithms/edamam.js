@@ -174,7 +174,13 @@ var edamam = (() => {
           // Heart icon
           const heartIcon = document.createElement('img');
           const heartButton = getHeartIcon(heartIcon);
+
           // Tooltip for heart icon
+          const existingToolTip = document.getElementById('tooltiptextID');
+          if (existingToolTip) {
+            existingToolTip.remove();
+          }
+      
           const toolTipText = document.createElement('span'); 
           toolTipText.className = "tooltiptext"; 
           toolTipText.id = "tooltiptextID";
@@ -330,6 +336,11 @@ var edamam = (() => {
   }
   
   function getHeartIcon(heartIcon){
+    const existingHeartButton = document.querySelector('.heart-button');
+    if (existingHeartButton) {
+      return existingHeartButton;
+    }
+
     const heartButton = document.createElement('button');
     heartButton.classList.add('heart-button');
     heartButton.type = 'button';
@@ -341,6 +352,7 @@ var edamam = (() => {
     heartIcon.style.filter = 'sepia(100%)';
     heartIcon.classList.add('original-color');
     heartButton.appendChild(heartIcon);
+    console.log("Adding heart button!!!!!!!!!!!!!!!!!!!");
     return heartButton;
   }
   
