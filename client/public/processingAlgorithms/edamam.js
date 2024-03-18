@@ -2,10 +2,18 @@ const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd
 
 var edamam = (() => {
 
+      function getUserNameFromCookie() {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; userName=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
     var searchRecipe = (event) => {
       event.preventDefault();
 
       const username = getUserNameFromCookie();
+
+      const userData = getUserId(username);
 
       getUserData(username)
       .then(async (userData) => {
@@ -56,8 +64,7 @@ var edamam = (() => {
                   noRecipeElement.style.display = 'none';
                   results.hits.forEach(data => {
                     const source = data.recipe.source;
-                    const sourceURL = data.recipe.url;
-                    const viableSource = sourceIsViable(source, sourceURL);
+                    const viableSource = sourceIsViable(source);
                     if(viableSource)
                     {
                       console.log(source, " - ", data.recipe.label);
@@ -110,13 +117,10 @@ var edamam = (() => {
     }
     
 
-    function sourceIsViable(source, sourceURL){
+    function sourceIsViable(source){
       switch(source) {
-        case 'BBC Good Food':
-          if(sourceURLIsViable(sourceURL)){
-            return true;
-          }
-          return false;
+        case 'Food52':
+          return true;
         case 'Martha Stewart':
           return true;
         case 'Food Network':
@@ -132,87 +136,67 @@ var edamam = (() => {
       }
     }
 
-    //this is to see if bbc good food link actually works
-    function sourceURLIsViable(sourceURL){
-      const penultimateChar = sourceURL.charAt(sourceURL.length - 2);
-      console.log("penultimate char: ", penultimateChar);
-      if (penultimateChar >= '0' && penultimateChar <= '9') {
-        return false;
-      }
-      else {return true;}
-    }
+    function showRecipe(json, source) {
+      const ingredients = setupRecipe(json); //Recipe name and ingredients 
+      const directionsList = document.getElementById('directions-list'); // List of directions
+      directionsList.innerHTML = '';
+      const link = json.recipe.url;
 
-    async function showRecipe(json, source) {
+      // Create the URL with the recipeLink and source parameters
+      const recipeSiteEndpoint = `${host}/api/v1/scrape-recipe/?recipeLink=${link}&source=${source}`;
+  
       try {
-          const ingredients = setupRecipe(json); // Recipe name and ingredients 
-          const directionsList = document.getElementById('directions-list'); // List of directions
-          directionsList.innerHTML = '';
-          const link = json.recipe.url;
-          console.log("full json: ", json);
-          const lowerCaseSource = source.toLowerCase().trim();
-          console.log("lowercasesource: ", lowerCaseSource);
-          // Create the URL with the recipeLink and source parameters
-          const recipeSiteEndpoint = `${host}/api/v1/scrape-recipe/?recipeLink=${link}&source=${lowerCaseSource}`;
-          console.log("recipe endpoint: ", recipeSiteEndpoint);
-          
-          const resp = await fetch(recipeSiteEndpoint, {
+          fetch(recipeSiteEndpoint, {
               method: 'GET',
               headers: {
                   'Accept': 'application/json',
                   'Content-Type': 'application/json'
               }
-          });
-          
-          if (!resp.ok) {
-              throw new Error('Failed to fetch recipe directions');
-          }
-          
-          const results = await resp.json();
-          directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
-          
-          const heartIconDiv = document.getElementById('heart-container');
-          // Heart icon
-          const heartIcon = document.createElement('img');
-          const heartButton = getHeartIcon(heartIcon);
+          })
+          .then((resp) => resp.json())
+          .then(async (results) => {
+              directionsList.innerHTML = '<ul>' + results.map(item => `<li>${item[0]}</li>`).join('') + '</ul>';
+              const heartIconDiv = document.getElementById('heart-container');
 
-          // Tooltip for heart icon
-          const existingToolTip = document.getElementById('tooltiptextID');
-          if (existingToolTip) {
-            existingToolTip.remove();
-          }
-      
-          const toolTipText = document.createElement('span'); 
-          toolTipText.className = "tooltiptext"; 
-          toolTipText.id = "tooltiptextID";
-          
-          const isAlreadyLiked = await isFavorited(json);
-          if (isAlreadyLiked) {
-              heartIcon.style.filter = 'none'; // red
-              toolTipText.innerHTML = "Remove From Favorites";
-          } else {
-              heartIcon.style.filter = 'sepia(100%)'; // grey
-              toolTipText.innerHTML = "Add to Favorites";
-          }
-          heartIconDiv.appendChild(heartButton);
-          heartIconDiv.appendChild(toolTipText);              
-          
-          // When heart button is clicked, toggle
-          heartButton.addEventListener('click', async function() {
-              const heartIcon = this.querySelector('img');              
-              if (heartIcon.style.filter === 'sepia(100%)') { 
-                  heartIcon.style.filter = 'none'; 
-                  await putToFavorites(json, ingredients, results);
-                  toolTipText.innerHTML = "Remove From Favorites";
-              } else {
-                  heartIcon.style.filter = 'sepia(100%)';
-                  await deleteInFavorites(json, ingredients, results);
-                  toolTipText.innerHTML = "Add to Favorites";
+              // Heart icon
+              const heartIcon = document.createElement('img');
+              const heartButton = getHeartIcon(heartIcon);
+              
+              // tool tip for heart icon
+              const toolTipText = document.createElement('span'); 
+              toolTipText.className = "tooltiptext"; 
+              toolTipText.id = "tooltiptextID";
+              
+              const isAlreadyLiked = await isFavorited(json);
+              if (isAlreadyLiked == true){
+                heartIcon.style.filter = 'none'; // red
+                toolTipText.innerHTML = "Remove From Favorites";
+              }else{
+                heartIcon.style.filter = 'sepia(100%)'; // grey
+                toolTipText.innerHTML = "Add to Favorites";
               }
+              heartIconDiv.appendChild(heartButton);
+              heartIconDiv.appendChild(toolTipText);              
+              
+              // When heart buttton is cliked toggle
+              heartButton.addEventListener('click', function() {
+                const heartIcon = this.querySelector('img');              
+                if (heartIcon.style.filter === 'sepia(100%)') { 
+                  heartIcon.style.filter = 'none'; 
+                  putToFavorites(json, ingredients, results);
+                  toolTipText.innerHTML = "Remove From Favorites";
+                } 
+                else {
+                  heartIcon.style.filter = 'sepia(100%)';
+                  deleteInFavorites(json, ingredients, results);
+                  toolTipText.innerHTML = "Add to Favorites";
+                }
+              });
           });
-      } catch (error) {
-          console.error('Error fetching and processing recipe:', error);
+      } catch (e) {
+        console.log(e);
       }
-      return false;
+    return false;
   }
     
   function setupRecipe(json){
@@ -262,9 +246,9 @@ var edamam = (() => {
     const newFavoritedRecipe = {
       recipeName: json.recipe.label,
       recipeIngredients: ingredients,
-      recipeDirections: directions.join(", "), //Directions array to string
+      recipeDirections: Array.isArray(directions) ? directions.join(", ") : "", //Directions array to string
       recipeUri: json.recipe.uri,
-      recipeImage: (typeof  json.recipe.images.REGULAR.url === 'undefined') ? "" : json.recipe.images.REGULAR.url,
+      recipeImage: (typeof  json.recipe.images.LARGE.url === 'undefined') ? "" : json.recipe.images.LARGE.url,
     };
     console.log("adding to favorites: ", newFavoritedRecipe.recipeName);
     try {
@@ -336,11 +320,6 @@ var edamam = (() => {
   }
   
   function getHeartIcon(heartIcon){
-    const existingHeartButton = document.querySelector('.heart-button');
-    if (existingHeartButton) {
-      return existingHeartButton;
-    }
-
     const heartButton = document.createElement('button');
     heartButton.classList.add('heart-button');
     heartButton.type = 'button';
@@ -352,11 +331,26 @@ var edamam = (() => {
     heartIcon.style.filter = 'sepia(100%)';
     heartIcon.classList.add('original-color');
     heartButton.appendChild(heartIcon);
-    console.log("Adding heart button!!!!!!!!!!!!!!!!!!!");
     return heartButton;
   }
   
   return {
     searchRecipe,
+    getDietString,
+    getHealthString,
+    sourceIsViable, 
+    putToFavorites,
+    getHeartIcon,
+    isFavorited,
+    setupRecipe,
+    showRecipe,
+    putToFavorites,
+    deleteInFavorites,
+    isFavorited, 
+    getUserNameFromCookie
   }
 })();
+
+if(typeof module === 'object'){
+  module.exports = edamam;
+  }
