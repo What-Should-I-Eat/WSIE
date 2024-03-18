@@ -69,30 +69,6 @@ describe('send health data endpoint', () => {
     jest.clearAllMocks();
 });
 
-// describe('PUTintoDatabase', () => {
-//         profile2.getDietRestrictions = jest.fn().mockReturnValue(['low-carb']);
-//         profile2.getHealthRestrictions = jest.fn().mockReturnValue(['gluten-free']);
-//         profile2.sendDietData = jest.fn();
-//         profile2.sendHealthData = jest.fn();
-//
-//
-//     test('successfully calls sendDietData and sendHealthData with correct data', async () => {
-//         const username = 'testuser';
-//
-//         // Perform the operation
-//         await profile2.PUTintoDatabase(username);
-//
-//         // Assertions
-//         expect(profile2.sendDietData).toHaveBeenCalledWith({
-//             username: username,
-//             diet: ['low-carb'],
-//         });
-//         expect(profile2.sendHealthData).toHaveBeenCalledWith({
-//             username: username,
-//             health: ['gluten-free'],
-//         });
-//     });
-// });
 
 describe('Button Click Tests', () => {
     beforeEach(() => {
@@ -231,4 +207,28 @@ describe('sendHealthData', () => {
 //     });
 // });
 
-
+// second try
+// describe('PUTintoDatabase', () => {
+//         profile2.getDietRestrictions = jest.fn().mockReturnValue(['low-carb']);
+//         profile2.getHealthRestrictions = jest.fn().mockReturnValue(['gluten-free']);
+//         profile2.sendDietData = jest.fn();
+//         profile2.sendHealthData = jest.fn();
+//
+//
+//     test('successfully calls sendDietData and sendHealthData with correct data', async () => {
+//         const username = 'testuser';
+//
+//         // Perform the operation
+//         await profile2.PUTintoDatabase(username);
+//
+//         // Assertions
+//         expect(profile2.sendDietData).toHaveBeenCalledWith({
+//             username: username,
+//             diet: ['low-carb'],
+//         });
+//         expect(profile2.sendHealthData).toHaveBeenCalledWith({
+//             username: username,
+//             health: ['gluten-free'],
+//         });
+//     });
+// });
