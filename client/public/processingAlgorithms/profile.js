@@ -98,7 +98,6 @@ var restrictionsHandler = (() => {
             'Fish': 'fish-free',
             'Low FODMAP': 'fodmap-free',
             'Gluten': 'gluten-free',
-            'Gluten Free': 'gluten-free-1',
             'Immunity Supporting': 'immuno-supportive',
             'Keto': 'keto-friendly',
             'Kosher': 'kosher',
