@@ -140,7 +140,7 @@ To observe the test suite performance, run:
 This action will return a coverage report, including statement, branch, function, and line coverage information, as well as the total number of tests and test suites ran.
 
 ## Hosting
-The browser-accessible hosted version of the application is hosted on a Google Cloud Platform virtual machine. The virtual machine runs the Docker containers and Nginx references the public IP address of the virtual machine for client-server communication. The DNS, GoDaddy, aliases the public IP address's port 8080 to allow the whatshouldieat.org URL to access the application. This is not a full CI/CD solution. 
+The browser-accessible hosted version of the application is hosted on a Google Cloud Platform virtual machine. The virtual machine runs the Docker containers and Nginx references the public IP address of the virtual machine for client-server communication. The DNS, GoDaddy, aliases the public IP address's port `8080` to allow the whatshouldieat.org URL to access the application. This is not a full CI/CD solution. 
 
 ## Software Architecture
 The following diagram shows the software architecture of the application.
