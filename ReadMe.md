@@ -4,7 +4,7 @@
 What Should I Eat? is a web application dedicated to assisting dietary restricted people with finding diverse food to make and eat. 
 
 ## Run the Application via the Web
-Navigate to whatshouldieat.org to begin using the application.  
+Navigate to [whatshouldieat.org] to begin using the application.  
 
 This URL aliases a Google Cloud Platform virtual machine which is running the application on a public IP address.
 
