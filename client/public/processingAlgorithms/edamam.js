@@ -1,12 +1,17 @@
 const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
 
 var edamam = (() => {
+  function getUserNameFromCookie() {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; userName=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
 
     var searchRecipe = (event) => {
       event.preventDefault();
 
       const username = getUserNameFromCookie();
-
+      const userData = getUserId(username);
       getUserData(username)
       .then(async (userData) => {
         console.log(userData);
@@ -262,7 +267,7 @@ var edamam = (() => {
     const newFavoritedRecipe = {
       recipeName: json.recipe.label,
       recipeIngredients: ingredients,
-      recipeDirections: directions.join(", "), //Directions array to string
+      recipeDirections: Array.isArray(directions) ? directions.join(", ") : "", //Directions array to string
       recipeUri: json.recipe.uri,
       recipeImage: (typeof  json.recipe.images.REGULAR.url === 'undefined') ? "" : json.recipe.images.REGULAR.url,
     };
@@ -358,5 +363,21 @@ var edamam = (() => {
   
   return {
     searchRecipe,
+    getDietString,
+    getHealthString,
+    sourceIsViable, 
+    putToFavorites,
+    getHeartIcon,
+    isFavorited,
+    setupRecipe,
+    showRecipe,
+    putToFavorites,
+    deleteInFavorites,
+    isFavorited, 
+    getUserNameFromCookie
   }
 })();
+
+if(typeof module === 'object'){
+  module.exports = edamam;
+  }
