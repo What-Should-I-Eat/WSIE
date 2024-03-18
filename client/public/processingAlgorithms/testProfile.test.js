@@ -140,59 +140,95 @@ describe('Button Click Tests', () => {
 
 });
 
-describe('#PUTintoDatabase', () => {
-    beforeEach(() => {
-        // Reset mocks before each test
-        jest.clearAllMocks();
-        global.host = "http://localhost:8080";
 
-        // Mock fetch to handle both diet and health data calls
-        global.fetch = jest.fn()
-            .mockResolvedValueOnce({
-                status: 200,
-                json: () => Promise.resolve("First call response")
-            })
-            .mockResolvedValueOnce({
-                status: 200,
-                json: () => Promise.resolve("Second call response")
-            });
-
-        // Mock dependency functions to return expected values
-        profile2.getDietRestrictions = jest.fn().mockReturnValue(['low-carb']);
-        profile2.getHealthRestrictions = jest.fn().mockReturnValue(['gluten-free']);
-    });
-
-    test('should call fetch with correct parameters for diet and health data', async () => {
-        const username = 'testuser';
-
-        const dietData = {
-            username: username,
-            diet: profile2.getDietRestrictions(),
-        };
-        const healthData = {
-            username: username,
-            health: profile2.getHealthRestrictions(),
-        };
-
-        await profile2.PUTintoDatabase(username);
-
-        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/diet', {
+describe('sendDietData', () => {
+    test('sends correct diet data', async () => {
+        const dietData = { username: 'testUser', diet: 'vegan' };
+        await profile2.sendDietData(dietData);
+        expect(fetch).toHaveBeenCalledWith(`${host}/api/v1/users/diet`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(dietData),
         });
+    });
+});
 
-        expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/health', {
+describe('sendHealthData', () => {
+    test('sends correct health data', async () => {
+        const healthData = { username: 'testUser', health: 'low-sugar' };
+        await profile2.sendHealthData(healthData);
+        expect(fetch).toHaveBeenCalledWith(`${host}/api/v1/users/health`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(healthData),
         });
-
-        // Verify fetch was called twice
-        expect(fetch).toHaveBeenCalledTimes(2);
     });
 });
+
+// describe('#PUTintoDatabase', () => {
+//     beforeEach(() => {
+//         // Reset mocks before each test
+//         jest.clearAllMocks();
+//         global.host = "http://localhost:8080";
+//
+//         // Mock fetch to handle both diet and health data calls
+//         global.fetch = jest.fn()
+//             .mockResolvedValueOnce({
+//                 status: 200,
+//                 json: () => Promise.resolve("First call response")
+//             })
+//             .mockResolvedValueOnce({
+//                 status: 200,
+//                 json: () => Promise.resolve("Second call response")
+//             });
+//
+//         // Mock dependency functions to return expected values
+//         profile2.getDietRestrictions = jest.fn().mockReturnValue(['low-carb']);
+//         profile2.getHealthRestrictions = jest.fn().mockReturnValue(['gluten-free']);
+//     });
+
+// test('should call fetch with correct parameters for diet and health data', async () => {
+//     const username = 'testuser';
+//
+//     const dietData = {
+//         username: username,
+//         diet: profile2.getDietRestrictions(),
+//     };
+//     const healthData = {
+//         username: username,
+//         health: profile2.getHealthRestrictions(),
+//     };
+//
+//     await profile2.PUTintoDatabase(username);
+//
+//     expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/diet', {
+//         method: 'PUT',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(dietData),
+//     });
+//
+//     expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/health', {
+//         method: 'PUT',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(healthData),
+//     });
+//
+//     // Verify fetch was called twice
+//     expect(fetch).toHaveBeenCalledTimes(2);
+// });
+//     test('handles username correctly', async () => {
+//         await profile2.PUTintoDatabase('testUser');
+//         // Expect fetch to have been called twice (once for diet data, once for health data)
+//         expect(fetch).toHaveBeenCalledTimes(2);
+//     });
+// });
+
+

@@ -34,26 +34,26 @@ var profile2 = (() => {
         return nameMap[buttonName]
     }
 
-    async function PUTintoDatabase(username) {
-        try {
-            if (username) {
-                const dietData = {
-                    username: username,
-                    diet: getDietRestrictions()
-                };
-                const healthData = {
-                    username: username,
-                    health: getHealthRestrictions()
-                };
-
-                await sendDietData(dietData);
-                await sendHealthData(healthData);
-            }
-        }
-        catch (error) {
-            console.error('Error during beforeunload event:', error);
-        }
-    }
+    // async function PUTintoDatabase(username) {
+    //     try {
+    //         if (username) {
+    //             const dietData = {
+    //                 username: username,
+    //                 diet: getDietRestrictions()
+    //             };
+    //             const healthData = {
+    //                 username: username,
+    //                 health: getHealthRestrictions()
+    //             };
+    //
+    //             await sendDietData(dietData);
+    //             await sendHealthData(healthData);
+    //         }
+    //     }
+    //     catch (error) {
+    //         console.error('Error during beforeunload event:', error);
+    //     }
+    // }
 
     async function sendDietData(dietData) {
 
@@ -85,7 +85,7 @@ var profile2 = (() => {
 
     return {
         getEdamamNameOfRestriction,
-        PUTintoDatabase,
+        // PUTintoDatabase,
         sendDietData,
         sendHealthData
     }
