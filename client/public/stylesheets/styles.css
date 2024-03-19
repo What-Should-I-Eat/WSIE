@@ -398,16 +398,22 @@
   
   .back-to-login p{
     color: white;
-    font-size: 4vw;
-  }
-  
-  .new-user-signup p{
-    color: white;
-    font-size: 4vw;
+    font-size: 3vw;
   }
 
+  .new-user-signup p{
+    color: white;
+    font-size: 3vw;
+    margin-top: -1;
+  }
+
+  .forgot-password p{
+    color: white;
+    font-size: 3vw;
+    margin-top: -1vw;
+  }
   
-  
+
   h1 {
     font-weight: 350;
     font-size: 11vw;
@@ -498,12 +504,13 @@
   }
   
   .login-title h1{
-    padding-top: 20vw;
-    margin-top: 10vw;
+    padding-top: 8.5vw;
+    margin-top: 6vw;
     font-size: 9vw;
   }
   .login-title h2{
     font-size: 5vw;
+    margin: 0vw;
   }
   
   .user-login {
@@ -515,7 +522,7 @@
     text-align: center;
     font-size: 3vw;
     width: auto;
-    height: 6vw;
+    height: 5.5vw;
   }
   
   .new-user{
