@@ -26,23 +26,23 @@
             <input type="text" id="username-input" placeholder="Username" style="background-color: rgb(223, 220, 195);">
             <input type="password" id="password-input" placeholder="Password" style="background-color: rgb(223, 220, 195); margin-left: 0em">
             <i class="bi bi-eye-slash" id="password-input-toggler" style="margin-left: -1.6em; color: black;" onclick="loginHandler2.togglePassword('password-input', 'password-input-toggler')"></i>
-            <br><br>
+            <br>
             <button type="submit" style="background-color:rgb(202, 214, 169);">Log In</button>
         </form>
         <h4 id="feedback-message" style="font-weight: 330;"></h4>
         <div id="verificationCodeDiv" style="display:none">
             <form onsubmit="return verificationHandler.resendVerificationStatusLogin(event)">
                 <button type="submit" style="background-color:rgb(255, 174, 174);">Resend Code</button>
-                <br><br>
+                <br>
             </form>
             <form onsubmit="return verificationHandler.updateVerificationStatusLogin(event)">
                 <input type="text" id="verificationCodeInput" placeholder="######" style="background-color: rgb(223, 220, 195);">
                 <br>
                 <button type="submit" style="background-color:rgb(223, 220, 195);">Verify Profile</button>
-                <br><br>
+                <br>
             </form>
         </div>
-        <br><br>
+        
 
     </div>
 
@@ -51,7 +51,6 @@
             <p>New to WSIE? Sign up!</p>
         </a>
     </div>
-
     <div id="forgot-password" class="forgot-password">
         <a href="./forgotPassword.html">
             <p>Forgot username or password?</p>
