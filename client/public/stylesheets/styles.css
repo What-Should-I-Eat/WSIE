@@ -142,6 +142,8 @@
     margin-top: 5vw; 
     text-align: center;
   }
+
+
   
   .new-user{
     display: flex;
@@ -496,15 +498,24 @@
   }
   
   .login-title h1{
-    font-size: 15vw;
+    padding-top: 20vw;
+    margin-top: 10vw;
+    font-size: 9vw;
   }
   .login-title h2{
-    font-size: 10vw;
+    font-size: 5vw;
   }
   
   .user-login {
     margin-top: 5vw; 
     text-align: center;
+  }
+
+  .user-login button{
+    text-align: center;
+    font-size: 3vw;
+    width: auto;
+    height: 6vw;
   }
   
   .new-user{
@@ -562,7 +573,6 @@
   
 
   #selected-recipe-details *{
-    
     align-content: center;
   }
   
@@ -573,28 +583,31 @@
   }
 
   #heart-container button{
+    margin-top: .5vw;
     width: auto;
     height: 3vw;
   }
-  #ingredients {
-    font-size: 2em;
+  #ingredients, #directions {
+    
+    font-size: 3vw;
+    font-weight: 375;
   }
-  #directions {
-    font-size: 2em;
+
+  #ingredient-list *, 
+  #directions-list *
+  {
+    margin-right: 0%;
+    font-size: 2vw;
+    margin: .5vw;
   }
-  #ingredient-list *{
-    font-size: 1em;
-  }
-  #directions-list *{
-    font-size: 1em;
-  }
-  
+ 
   .recipe-details h4{
     font-size: 3vw;
   }
 
   #recipe-name {
-    font-size: 2.5em;
+    font-size: 4vw;
+    font-weight: 375;
   }
   
   #favorites-container p {
@@ -655,7 +668,8 @@
   #recipe-search-button {
     font-size: 1em;
   }
-  
+
+
   /* Tooltip container */
   .tooltip {
     position: relative;
@@ -663,9 +677,6 @@
   }
   
   .heart-button{
-    width: auto;
-    height: 2vw;
-  
     transition-duration: 0.4s;
   }
   
@@ -715,7 +726,7 @@
     justify-content: center;
   }
   #edamam-footer {
-    height: 5vw;
+    height: 2.5vw;
   }
   
   footer img {
