@@ -351,7 +351,7 @@ var edamam = (() => {
     heartButton.type = 'button';
     heartIcon.src = './assets/heart.png';
     heartIcon.alt = 'Heart Icon';
-    heartIcon.style.width = `${10}vw`;
+    heartIcon.style.width = `${6.5}vw`;
     heartIcon.style.marginLeft = `${3}vw`;
     heartButton.style.background = 'none';
     heartIcon.style.filter = 'sepia(100%)';

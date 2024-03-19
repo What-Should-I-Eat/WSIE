@@ -10,7 +10,7 @@
     color: #a08b6f;
     text-align: center;
     font-weight: 200;
-    font-size: 3vw;
+    font-size: 2vw;
     margin: 0;
   }
   
@@ -142,6 +142,8 @@
     margin-top: 5vw; 
     text-align: center;
   }
+
+
   
   .new-user{
     display: flex;
@@ -235,7 +237,7 @@
   th {
     text-align: center;
     font-weight: 350;
-    font-size: 5vw;
+    font-size: 3vw;
     max-width: 5vw;
     white-space: normal;
     overflow: hidden;
@@ -323,7 +325,7 @@
 
 
 /* computer */
-@media screen and (min-width: 500px){
+@media screen and (min-width: 700px){
   html {
     font-size: 2vw;
   }
@@ -334,7 +336,7 @@
     color: #a08b6f;
     text-align: center;
     font-weight: 200;
-    font-size: 3vw;
+    font-size: 2vw;
     margin: 0;
   }
   
@@ -351,6 +353,7 @@
   
   .title {
     padding-top: 1vw;
+    font-weight: 500;
     position: sticky;
   }
 
@@ -360,6 +363,7 @@
 
   #profile-header {
     font-size: 2.5em;
+    font-weight: 400;
   }
   
   .nav-header {
@@ -380,7 +384,7 @@
   nav.nav-header ul li {
     display: inline;
     margin: 2vw;
-    font-size: 4vw;
+    font-size: 3.25vw;
   }
   
   nav.nav-header a {
@@ -412,7 +416,7 @@
   
   h2 {
     font-weight: 350;
-    font-size: 6vw;
+    font-size: 5.5vw;
   }
   
   h4 {
@@ -422,10 +426,10 @@
   
   li {
     text-align: center;
-    margin-top: 1.5vw;
-    font-size: 5.5vw;
+    margin-top: 2vw;
+    font-size: 3vw;
     list-style-type: none;
-    margin-right: 18%;
+    margin-right: 0%;
   }
   
   a {
@@ -446,8 +450,8 @@
   input {
     background-color: #9ec9532e;
     width: auto;
-    height: 8vw;
-    font-size: 2.5vw;
+    height: 6vw;
+    font-size: 2vw;
     text-align: center;
     border: 1px solid rgb(134, 126, 107);
     border-radius: 0.075rem;
@@ -494,15 +498,24 @@
   }
   
   .login-title h1{
-    font-size: 15vw;
+    padding-top: 20vw;
+    margin-top: 10vw;
+    font-size: 9vw;
   }
   .login-title h2{
-    font-size: 10vw;
+    font-size: 5vw;
   }
   
   .user-login {
     margin-top: 5vw; 
     text-align: center;
+  }
+
+  .user-login button{
+    text-align: center;
+    font-size: 3vw;
+    width: auto;
+    height: 6vw;
   }
   
   .new-user{
@@ -536,9 +549,9 @@
   .health-container-2 button {
     font: inherit;
     color: inherit;
-    font-size: 2.25vw;
-    height: 7vw;
-    width: 15vw;
+    font-size: 1.8vw;
+    height: 6vw;
+    width: 12vw;
     background-color: #9ec95359;
     border-width: 0.5vw;
     border-style: dotted;
@@ -558,19 +571,7 @@
     padding-top: 7vw;
   }
   
-  .submit-restrictions button{
-    font: inherit;
-    color: inherit;
-    font-size: 2.25vw;
-    font-weight: 600;
-    height: 10vw;
-    width: 20vw;
-    background-color: #9ec95359;
-    border-width: 2vw;
-    border-style: dotted;
-    border: rgb(134, 126, 107);
-    padding: 0.25vw;
-  }
+
   #selected-recipe-details *{
     align-content: center;
   }
@@ -580,27 +581,51 @@
     padding-bottom: 0vw;
     font-size: 3vw;
   }
-  #ingredients {
-    font-size: 2em;
+
+  #heart-container button{
+    margin-top: .5vw;
+    width: auto;
+    height: 3vw;
   }
-  #directions {
-    font-size: 2em;
+  #ingredients, #directions {
+    
+    font-size: 3vw;
+    font-weight: 375;
   }
-  #ingredient-list *{
-    font-size: 1em;
+
+  #ingredient-list *, 
+  #directions-list *
+  {
+    margin-right: 0%;
+    font-size: 2vw;
+    margin: .5vw;
   }
-  #directions-list *{
-    font-size: 1em;
-  }
-  
+ 
   .recipe-details h4{
     font-size: 3vw;
   }
 
   #recipe-name {
-    font-size: 2.5em;
+    font-size: 4vw;
+    font-weight: 375;
   }
   
+  #favorites-container p {
+      padding-left: 17vw;
+      padding-right: 17vw;
+      font-size: 1.75vw;
+  }
+
+  #favorites-container h2 {
+    font-size: 3.5vw;
+    font-weight: 400;
+}
+
+  #favorites-header h2{
+    font-size: 4.5vw;
+    font-weight: 400;
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -615,8 +640,8 @@
   
   th {
     text-align: center;
-    font-weight: 350;
-    font-size: 5vw;
+    font-weight: 400;
+    font-size: 3vw;
     max-width: 5vw;
     white-space: normal;
     overflow: hidden;
@@ -628,7 +653,7 @@
     color: inherit;
     font-size: 5vw; 
     height: auto;
-    width: 16vw;
+    width: 12vw;
     padding: 1vw;
     background-color: #9ec95359;
     border: none;
@@ -641,9 +666,10 @@
     background-color: #e7ebe0;
   }
   #recipe-search-button {
-    font-size: 1.25em;
+    font-size: 1em;
   }
-  
+
+
   /* Tooltip container */
   .tooltip {
     position: relative;
@@ -700,7 +726,7 @@
     justify-content: center;
   }
   #edamam-footer {
-    height: 5vw;
+    height: 2.5vw;
   }
   
   footer img {
