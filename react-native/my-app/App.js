@@ -26,6 +26,9 @@ import LoginScreen from './components/LoginScreen';
 import ForgotPasswordScreen from './components/ForgotPasswordScreen';
 import NewUserScreen from './components/NewUserScreen';
 import Home from './components/Home';
+import RecipeSearchScreen from './components/RecipeSearchScreen';
+import DietaryRestrictionsScreen from './components/DietaryRestrictionsScreen';
+import FavoritesScreen from './components/FavoritesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -82,30 +85,42 @@ export default function App() {
                 }
               }}
           />
-         {/* <Stack.Screen 
-            name="AddFilmScreen" 
-            component={AddFilmScreen} 
+           <Stack.Screen 
+            name="RecipeSearchScreen" 
+            component={RecipeSearchScreen} 
             options={
               {
-                title: courseTitle,
+                title: appTitle,
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
                 }
               }}
           />
-          <Stack.Screen 
-            name="UpdateFilmScreen" 
-            component={UpdateFilmScreen} 
+           <Stack.Screen 
+            name="DietaryRestrictionsScreen" 
+            component={DietaryRestrictionsScreen} 
             options={
               {
-                title: courseTitle,
+                title: appTitle,
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
                 }
               }}
-          /> */}
+          />
+           <Stack.Screen 
+            name="FavoritesScreen" 
+            component={FavoritesScreen} 
+            options={
+              {
+                title: appTitle,
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                }
+              }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );

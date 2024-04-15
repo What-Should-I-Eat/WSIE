@@ -52,7 +52,7 @@ export default function NewUserScreen({ navigation }) {
                 defaultValue={textEmail}
             />
             <Text style={newUserStyles.inputLabel}>
-              Desired Password:
+              Enter Password:
             </Text>
             <TextInput
                 style={newUserStyles.loginBox}
@@ -73,7 +73,7 @@ export default function NewUserScreen({ navigation }) {
                 onChangeText={value => setPasswordTwoText(value)}
                 defaultValue={textPasswordTwo}
             />
-            <Pressable style={newUserStyles.loginButton} 
+            <Pressable style={newUserStyles.submitButton} 
                 // onPress={() => onLogin(textUsername, setUsernameText)}
             >
               <Text style={newUserStyles.buttonText}>Submit</Text>
@@ -89,7 +89,7 @@ export default function NewUserScreen({ navigation }) {
       alignItems: 'center',
       justifyContent: 'top',
     },
-    loginButton: {
+    submitButton: {
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 4,

@@ -6,28 +6,28 @@ export default function Home({ navigation }) {
     <View style={styles.containerHome}>
       <Pressable
         title="Go to Dietary Restrictions"
-        // onPress={() => navigation.navigate("UpdateFilmScreen")}
+        onPress={() => navigation.navigate("DietaryRestrictionsScreen")}
         style={[styles.goToButton, styles.goToDietaryRestrictions]}
       >
         <Text style={styles.buttonText}>Dietary Restrictions</Text>
       </Pressable>
       <Pressable
         title="Go to Recipe Search"
-        // onPress={() => navigation.navigate("LoginScreen")}
+        onPress={() => navigation.navigate("RecipeSearchScreen")}
         style={[styles.goToButton, styles.goToRecipeSearch]}
       >
         <Text style={styles.buttonText}>Search Recipes</Text>
       </Pressable>
       <Pressable
         title="Go to Favorites"
-        // onPress={() => navigation.navigate("ViewFilmsScreen")}
+        onPress={() => navigation.navigate("FavoritesScreen")}
         style={[styles.goToButton, styles.goToFavorites]}
       >
         <Text style={styles.buttonText}>View Favorites</Text>
         </Pressable>
       <Pressable
         title="Logout"
-        // onPress={() => navigation.navigate("AddFilmScreen")}
+        onPress={() => navigation.navigate("LoginScreen")}
         style={[styles.goToButton, styles.goToLogin]}
       >
         <Text style={styles.buttonText}>Logout</Text>
@@ -52,7 +52,10 @@ const styles = StyleSheet.create({
     },
     buttonText:{
         fontSize: 40,
-        fontWeight: '600'
+        fontWeight: '600',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center'
     },
     goToRecipeSearch: {
         backgroundColor: '#3cdfff',

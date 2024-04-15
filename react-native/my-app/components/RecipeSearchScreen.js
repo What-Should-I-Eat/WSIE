@@ -1,44 +1,41 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
 
-export default function ForgotPasswordScreen({ navigation }) {
+export default function RecipeSearchScreen({ navigation }) {
 
-    const [textEmail, setEmailText] = useState('');
+    const [textInput, setInputText] = useState('');
 
     return (
         <ScrollView>
-        <View style={forgotPasswordStyles.container}>
-            <Text style={forgotPasswordStyles.instructions}>
-               Please follow the directions below to reset your password.
-            </Text>
-            <Text style={forgotPasswordStyles.inputLabel}>
-              Enter Account Email:
+        <View style={RecipeSearchStyles.container}>
+            <Text style={RecipeSearchStyles.instructions}>
+               Search for your favorite recipe below:
             </Text>
             <TextInput
-                style={forgotPasswordStyles.inputBox}
-                placeholder="hello@gmail.com"
+                style={RecipeSearchStyles.inputBox}
+                placeholder="chicken"
                 placeholderTextColor={"#8c8c8c"}
                 placeholderFon
-                onChangeText={value => setEmailText(value)}
-                defaultValue={textEmail}
+                onChangeText={value => setInputText(value)}
+                defaultValue={textInput}
             />
-            <Pressable style={forgotPasswordStyles.submitButton} 
+            <Pressable style={RecipeSearchStyles.searchButton} 
                 // onPress={() => onLogin(textUsername, setUsernameText)}
             >
-              <Text style={forgotPasswordStyles.buttonText}>Submit</Text>
+              <Text style={RecipeSearchStyles.buttonText}>Search</Text>
             </Pressable>
       </View>
       </ScrollView>
     );
   }
-  const forgotPasswordStyles = StyleSheet.create({
+  const RecipeSearchStyles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#e6faff',
       alignItems: 'center',
       justifyContent: 'top',
     },
-    submitButton: {
+    searchButton: {
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 4,
@@ -46,16 +43,11 @@ export default function ForgotPasswordScreen({ navigation }) {
         width: 300,
         height: 100,
         margin: 30,     
-        backgroundColor: '#0000ff' 
+        backgroundColor: '#3cdfff' 
     },
     buttonText:{
         fontSize: 40,
         fontWeight: '600',
-        color: '#ffffff'
-    },
-    buttonTextSmall:{
-        fontSize: 30,
-        fontWeight: '500',
         color: '#ffffff'
     },
     inputBox: {
@@ -84,12 +76,5 @@ export default function ForgotPasswordScreen({ navigation }) {
         marginTop: 30,
         textAlign: 'center'
     },
-    title: {
-        fontSize: 30,
-        fontWeight: '600',
-        width: 350,
-        marginTop: 30,
-        textAlign: 'center'
-    }
   }
 );
