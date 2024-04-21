@@ -25,6 +25,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './components/LoginScreen';
 import ForgotPasswordScreen from './components/ForgotPasswordScreen';
 import NewUserScreen from './components/NewUserScreen';
+import VerificationCodeScreen from './components/VerificationCodeScreen';
 import Home from './components/Home';
 import RecipeSearchScreen from './components/RecipeSearchScreen';
 import DietaryRestrictionsScreen from './components/DietaryRestrictionsScreen';
@@ -76,6 +77,18 @@ export default function App() {
            <Stack.Screen 
             name="NewUserScreen" 
             component={NewUserScreen} 
+            options={
+              {
+                title: appTitle,
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                }
+              }}
+          />
+           <Stack.Screen 
+            name="VerificationCodeScreen" 
+            component={VerificationCodeScreen} 
             options={
               {
                 title: appTitle,
