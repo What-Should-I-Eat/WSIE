@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+
+import { onNewUserCalls } from '../calls/newUserCalls';
 
 export default function NewUserScreen({ navigation }) {
 
@@ -8,6 +11,13 @@ export default function NewUserScreen({ navigation }) {
     const [textEmail, setEmailText] = useState('');
     const [textPasswordOne, setPasswordOneText] = useState('');
     const [textPasswordTwo, setPasswordTwoText] = useState('');
+
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const togglePasswordVisibility = () => {
+      setPasswordVisible(!passwordVisible);
+    };
+
+
 
     return (
         <ScrollView>
@@ -25,9 +35,8 @@ export default function NewUserScreen({ navigation }) {
                 style={newUserStyles.loginBox}
                 placeholder="Username"
                 placeholderTextColor={"#8c8c8c"}
-                placeholderFon
-                onChangeText={value => setRealNameText(value)}
-                defaultValue={textRealName}
+                onChangeText={value => setUsernameText(value)}
+                defaultValue={textUsername}
             />
             <Text style={newUserStyles.inputLabel}>
               Real Name:
@@ -36,9 +45,8 @@ export default function NewUserScreen({ navigation }) {
                 style={newUserStyles.loginBox}
                 placeholder="John Smith"
                 placeholderTextColor={"#8c8c8c"}
-                placeholderFon
-                onChangeText={value => setUsernameText(value)}
-                defaultValue={textUsername}
+                onChangeText={value => setRealNameText(value)}
+                defaultValue={textRealName}
             />
             <Text style={newUserStyles.inputLabel}>
               Email Address:
@@ -47,34 +55,55 @@ export default function NewUserScreen({ navigation }) {
                 style={newUserStyles.loginBox}
                 placeholder="hello@gmail.com"
                 placeholderTextColor={"#8c8c8c"}
-                placeholderFon
                 onChangeText={value => setEmailText(value)}
                 defaultValue={textEmail}
             />
             <Text style={newUserStyles.inputLabel}>
               Enter Password:
             </Text>
-            <TextInput
-                style={newUserStyles.loginBox}
-                placeholder="Password1"
-                placeholderTextColor={"#8c8c8c"}
-                placeholderFon
-                onChangeText={value => setPasswordOneText(value)}
-                defaultValue={textPasswordOne}
-            />
+            <View style={newUserStyles.passwordOneBox}>
+              <TextInput
+                  style={newUserStyles.loginBox}
+                  placeholder="Password1"
+                  placeholderTextColor={"#8c8c8c"}
+                  secureTextEntry={!passwordVisible}
+                  onChangeText={value => setPasswordOneText(value)}
+                  defaultValue={textPasswordOne}
+              />
+              <MaterialCommunityIcons 
+                name={passwordVisible ? 'eye-off' : 'eye'} 
+                size={24} 
+                color="#aaa"
+                style={newUserStyles.icon} 
+                onPress={togglePasswordVisibility} 
+              />
+
+            </View>
+            
             <Text style={newUserStyles.inputLabel}>
               Confirm Password:
             </Text>
-            <TextInput
-                style={newUserStyles.loginBox}
-                placeholder="Password1"
-                placeholderTextColor={"#8c8c8c"}
-                placeholderFon
-                onChangeText={value => setPasswordTwoText(value)}
-                defaultValue={textPasswordTwo}
-            />
+            <View style={newUserStyles.passwordTwoBox}>
+              <TextInput
+                  style={newUserStyles.loginBox}
+                  placeholder="Password1"
+                  placeholderTextColor={"#8c8c8c"}
+                  secureTextEntry={!passwordVisible}
+                  onChangeText={value => setPasswordTwoText(value)}
+                  defaultValue={textPasswordTwo}
+              />
+              <MaterialCommunityIcons 
+                name={passwordVisible ? 'eye-off' : 'eye'} 
+                size={24} 
+                color="#aaa"
+                style={newUserStyles.icon} 
+                onPress={togglePasswordVisibility} 
+              />
+
+            </View>
+            
             <Pressable style={newUserStyles.submitButton} 
-                // onPress={() => onLogin(textUsername, setUsernameText)}
+                onPress={() => onNewUserCalls(textUsername, textRealName, textEmail, textPasswordOne, textPasswordTwo)}
             >
               <Text style={newUserStyles.buttonText}>Submit</Text>
             </Pressable>
@@ -118,29 +147,44 @@ export default function NewUserScreen({ navigation }) {
       borderColor: '#404040',
       backgroundColor: '#f9f9f9',
       width: 300,
-      height: 90,
+      height: 70,
       fontSize: 30,
       borderRadius: 5,
     },
     inputLabel: {
         fontSize: 30,
         fontWeight: '500',
-        margin: 10,
-        marginTop: 30
+        margin: 1,
     },
     instructions: {
         fontSize: 30,
         fontWeight: '600',
         width: 350,
         marginTop: 30,
+        marginBottom: 20,
         textAlign: 'center'
     },
     title: {
         fontSize: 30,
         fontWeight: '600',
         width: 350,
-        marginTop: 30,
+        marginTop: 15,
         textAlign: 'center'
-    }
+    },
+    passwordOneBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: -10,
+    },
+    passwordTwoBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: -10,
+    },
+    icon: {
+      marginLeft: -40,
+    },
   }
 );

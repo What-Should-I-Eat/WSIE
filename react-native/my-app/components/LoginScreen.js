@@ -1,10 +1,23 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+
+import { onLogin } from '../calls/loginCalls';
 
 export default function LoginScreen({ navigation }) {
 
     const [textUsername, setUsernameText] = useState('');
     const [textPassword, setPasswordText] = useState('');
+
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const togglePasswordVisibility = () => {
+      setPasswordVisible(!passwordVisible);
+    };
+
+    const resetStates = () => {
+      setUsernameText('');
+      setPasswordText('');
+    };
 
     return (
       <ScrollView>
@@ -20,24 +33,31 @@ export default function LoginScreen({ navigation }) {
                 style={loginStyles.loginBox}
                 placeholder="Username"
                 placeholderTextColor={"#8c8c8c"}
-                placeholderFon
                 onChangeText={value => setUsernameText(value)}
                 defaultValue={textUsername}
             />
             <Text style={loginStyles.inputLabel}>
               Enter Password:
             </Text>
-            <TextInput
-                style={loginStyles.loginBox}
-                placeholder="Password1"
-                placeholderTextColor={"#8c8c8c"}
-                placeholderFon
-                onChangeText={value => setPasswordText(value)}
-                defaultValue={textPassword}
-            />
+            <View style={loginStyles.passwordInputContainer}>
+              <TextInput
+                  style={loginStyles.loginBox}
+                  placeholder="Password1"
+                  placeholderTextColor={"#8c8c8c"}
+                  secureTextEntry={!passwordVisible}
+                  onChangeText={value => setPasswordText(value)}
+                  defaultValue={textPassword}
+              />
+              <MaterialCommunityIcons 
+                name={passwordVisible ? 'eye-off' : 'eye'} 
+                size={24} 
+                color="#aaa"
+                style={loginStyles.icon} 
+                onPress={togglePasswordVisibility} 
+              />
+              </View>
             <Pressable style={loginStyles.loginButton} 
-                // onPress={() => onLogin(textUsername, setUsernameText)}
-                onPress={() => navigation.navigate("Home")}
+                onPress={() => onLogin(textUsername, setUsernameText, textPassword, setPasswordText, navigation)}
             >
               <Text style={loginStyles.buttonText}>Login</Text>
             </Pressable>
@@ -63,6 +83,9 @@ export default function LoginScreen({ navigation }) {
       alignItems: 'center',
       justifyContent: 'top',
     },
+    icon: {
+      marginLeft: -40,
+    },
     loginButton: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -71,7 +94,7 @@ export default function LoginScreen({ navigation }) {
         width: 300,
         height: 100,
         margin: 10,
-        marginTop: 30,   
+        marginTop: 20,   
         backgroundColor: '#3cb04c' 
     },
     forgotPasswordButton: {
@@ -83,6 +106,12 @@ export default function LoginScreen({ navigation }) {
         height: 100,
         margin: 10, 
         backgroundColor: '#ff0000' 
+    },
+    passwordInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: -10,
     },
     newUserButton: {
       alignItems: 'center',
@@ -113,7 +142,7 @@ export default function LoginScreen({ navigation }) {
       borderColor: '#404040',
       backgroundColor: '#f9f9f9',
       width: 300,
-      height: 90,
+      height: 70,
       fontSize: 30,
       borderRadius: 5,
     },
@@ -121,7 +150,7 @@ export default function LoginScreen({ navigation }) {
         fontSize: 30,
         fontWeight: '500',
         margin: 10,
-        marginTop: 30
+        marginTop: 20
     },
     instructions: {
         fontSize: 35,
