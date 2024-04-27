@@ -1,5 +1,6 @@
 import { Alert } from "react-native";
 import { getVerificationCode } from "./verificationCodeCalls";
+import { hostForAppCalls } from "./hostCallConst";
 
 const onNewUserCalls = async (textUsername, textRealName, textEmail, textPasswordOne, textPasswordTwo, navigation) => {
 
@@ -16,7 +17,7 @@ const onNewUserCalls = async (textUsername, textRealName, textEmail, textPasswor
             favorites: []
           };
     
-          fetch(`http:localhost:8080/api/v1/users/register`, {
+          fetch(`${hostForAppCalls}/api/v1/users/register`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

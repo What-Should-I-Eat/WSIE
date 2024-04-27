@@ -1,9 +1,10 @@
 import { Alert } from "react-native";
+import { hostForAppCalls } from "./hostCallConst";
 
 const onVerifyUser = (textUsername, textVerificationCode, navigation) => {
 
     if(areInputsFilledIn(textUsername, textVerificationCode)){
-    fetch(`http:localhost:8080/api/v1/users/verify`, {
+    fetch(`${hostForAppCalls}/api/v1/users/verify`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
@@ -34,7 +35,7 @@ const onVerifyUser = (textUsername, textVerificationCode, navigation) => {
             Alert.alert(verificationError, 'Could not verify user.\nPlease check code is entered correctly');
         }
     });
-  }
+  } 
 }
 
 // const setUsernameFromFile = (inputtedUsername, setUsernameText) => {
@@ -53,7 +54,7 @@ const onResendCode = async (textUsername) => {
         const newlyGeneratedVerificationCode = await getVerificationCode();
         sendEmail(textUsername, email, newlyGeneratedVerificationCode, emailjs);
 
-        fetch(`http:localhost:8080/api/v1/users/resendVerificationCode`, {
+        fetch(`${hostForAppCalls}/api/v1/users/resendVerificationCode`, {
             method: 'PUT',
             headers: {
             'Content-Type': 'application/json',
@@ -82,7 +83,7 @@ const onResendCode = async (textUsername) => {
 
 async function getVerificationCode() {
     try {
-        const response = await fetch(`http:localhost:8080/api/v1/users/getVerificationCode`, {
+        const response = await fetch(`${hostForAppCalls}/api/v1/users/getVerificationCode`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ function areInputsFilledIn(textUsername, textVerificationCode){
 }
 
 async function getUserEmail(username){
-    const email = await fetch(`http:localhost:8080/api/v1/users/getUserEmail`, {
+    const email = await fetch(`${hostForAppCalls}/api/v1/users/getUserEmail`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

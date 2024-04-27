@@ -1,5 +1,6 @@
 import { Alert } from "react-native";
 import { onResendCode } from "./verificationCodeCalls";
+import { hostForAppCalls } from "./hostCallConst";
 
 const onLogin = (textUsername, textPassword, navigation) => {
 
@@ -8,7 +9,7 @@ const onLogin = (textUsername, textPassword, navigation) => {
             userName: textUsername,
             password: textPassword
         };
-        fetch(`http://localhost:8080/api/v1/users/find-username`, {
+        fetch(`${hostForAppCalls}/api/v1/users/find-username`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
