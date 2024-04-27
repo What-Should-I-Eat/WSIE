@@ -21,7 +21,6 @@ export default function LoginScreen({ navigation }) {
 
     return (
       <ScrollView>
-
         <View style={loginStyles.container}>
             <Text style={loginStyles.instructions}>
               Please proceed to the WSIE login below
@@ -57,7 +56,7 @@ export default function LoginScreen({ navigation }) {
               />
               </View>
             <Pressable style={loginStyles.loginButton} 
-                onPress={() => onLogin(textUsername, setUsernameText, textPassword, setPasswordText, navigation)}
+                onPress={() => onLogin(textUsername, textPassword, navigation)}
             >
               <Text style={loginStyles.buttonText}>Login</Text>
             </Pressable>

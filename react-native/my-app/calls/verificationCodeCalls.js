@@ -1,0 +1,167 @@
+import { Alert } from "react-native";
+
+const onVerifyUser = (textUsername, textVerificationCode, navigation) => {
+
+    if(areInputsFilledIn(textUsername, textVerificationCode)){
+    fetch(`http:localhost:8080/api/v1/users/verify`, {
+        method: 'PUT',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            userName: textUsername,            
+            verificationCode: textVerificationCode
+        }),
+    })
+    .then(response => {
+    if(response.status == 437){
+      throw new Error('Code has expired');
+    }else if(response.status != 200){
+        throw new Error('Cannot verify user');
+    }
+    return response.json();
+    })
+    .then(verifiedUser => {
+        console.log('User verified: ', verifiedUser);
+        Alert.alert("Account Verified", "You have successfully verified your WSIE profile!\nPlease continue to the Login page!");
+        navigation.navigate("LoginScreen");
+    })
+    .catch(error => {
+        const verificationError = 'Verification Error';
+        if(error == 'Error: Code has expired'){
+            Alert.alert(verificationError, 'Code has expired after 10 minutes.\nPlease click resend code for a new code.');
+        } else{
+            Alert.alert(verificationError, 'Could not verify user.\nPlease check code is entered correctly');
+        }
+    });
+  }
+}
+
+// const setUsernameFromFile = (inputtedUsername, setUsernameText) => {
+//     setUsernameText(inputtedUsername);
+// }
+
+const onResendCode = async (textUsername) => {
+
+    const inputError = 'Input Error';
+    if (textUsername.trim() === '') {
+        Alert.alert(inputError, "Username cannot be left empty.");
+        return false;
+    } else {
+
+        const email = await getUserEmail(textUsername); 
+        const newlyGeneratedVerificationCode = await getVerificationCode();
+        sendEmail(textUsername, email, newlyGeneratedVerificationCode, emailjs);
+
+        fetch(`http:localhost:8080/api/v1/users/resendVerificationCode`, {
+            method: 'PUT',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userName: textUsername,            
+                verificationCode: newlyGeneratedVerificationCode
+            }),
+        })
+        .then(response => {
+            if(response.status != 200){
+            throw new Error('Could not resend code');
+            }
+            return response.json();
+        })
+        .then(targetUser => {
+            console.log('User code resent to: ', targetUser);
+            Alert.alert("Verification Code Sent", "Please check your email for your new verification code.\nCodes expire after 10 minutes.");
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            Alert.alert('Error Sending Code', 'Sorry, there was a problem sending the code. Please try again later.');
+        });
+    }
+}
+
+async function getVerificationCode() {
+    try {
+        const response = await fetch(`http:localhost:8080/api/v1/users/getVerificationCode`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        });
+        if (response.status != 200) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const verificationCode = response.json();
+        console.log("Verification code response from server: ", verificationCode);
+        return verificationCode;
+    } 
+    catch (error) {
+        console.error('Error fetching verification code:', error.message);
+        throw error;
+    }
+}
+
+function areInputsFilledIn(textUsername, textVerificationCode){
+    const inputError = 'Input Error';
+    if (textUsername.trim() === '') {
+        Alert.alert(inputError, "Username cannot be left empty.");
+        return false;
+    } else if (textVerificationCode.trim() === '') {
+        Alert.alert(inputError, "Verification Code cannot be left empty.");
+        return false;
+    }
+    return true;
+}
+
+async function getUserEmail(username){
+    const email = await fetch(`http:localhost:8080/api/v1/users/getUserEmail`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userName: username,            
+        }),
+      })
+        .then(response => {
+          if(response.status != 200){
+            throw new Error('Cannot find user');
+          }
+          return response.json();
+        }).then(user => {
+            return user.email;
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+          Alert.alert('Error Sending Code', 'Sorry, there was a problem sending the code. Please try again later.');
+        });
+    return email;
+}
+
+function sendEmail(fullName, email, verificationCode, emailjs){
+    console.log("Attempting to send verification code");
+
+    console.log("verification code: ", verificationCode);
+    const params = {
+        userEmail: email,
+        userFullName: fullName,
+        verificationCode: verificationCode,
+    }
+
+    //need to get this out of the client
+    const serviceID = "service_ms0318i";
+    const templateID = "template_7av6tqc";
+    const publicKey = "8nKeoQjoIWF1wyUpG";
+
+    emailjs.send(serviceID, templateID, params, publicKey)
+        .then(function(response) {
+            console.log('SUCCESS: email sent', response.status, response.text);
+            return true;
+        }, function(error) {
+            console.log('FAILED: email could not be sent', error);
+        });
+
+    return false;
+  }
+
+export{ onVerifyUser, onResendCode, getVerificationCode };

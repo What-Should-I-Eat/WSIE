@@ -17,8 +17,6 @@ export default function NewUserScreen({ navigation }) {
       setPasswordVisible(!passwordVisible);
     };
 
-
-
     return (
         <ScrollView>
         <View style={newUserStyles.container}>
@@ -77,9 +75,7 @@ export default function NewUserScreen({ navigation }) {
                 style={newUserStyles.icon} 
                 onPress={togglePasswordVisibility} 
               />
-
             </View>
-            
             <Text style={newUserStyles.inputLabel}>
               Confirm Password:
             </Text>
@@ -99,11 +95,9 @@ export default function NewUserScreen({ navigation }) {
                 style={newUserStyles.icon} 
                 onPress={togglePasswordVisibility} 
               />
-
             </View>
-            
             <Pressable style={newUserStyles.submitButton} 
-                onPress={() => onNewUserCalls(textUsername, textRealName, textEmail, textPasswordOne, textPasswordTwo)}
+                onPress={() => onNewUserCalls(textUsername, textRealName, textEmail, textPasswordOne, textPasswordTwo, navigation)}
             >
               <Text style={newUserStyles.buttonText}>Submit</Text>
             </Pressable>

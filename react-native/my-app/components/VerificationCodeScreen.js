@@ -1,47 +1,45 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
+import { onResendCode, onVerifyUser } from '../calls/verificationCodeCalls';
 
 export default function VerificationCodeScreen({ navigation }) {
 
-    const [textEmail, setEmailText] = useState('');
+    const [textUsername, setUsernameText] = useState('');
     const [textVerificationCode, setVerificationCodeText] = useState('');
 
     return (
       <ScrollView>
         <View style={verificationCodeStyles.container}>
             <Text style={verificationCodeStyles.instructions}>
-              Please proceed to the WSIE login below
+              Please proceed to verify your WSIE account below
             </Text>
-            
             <Text style={verificationCodeStyles.inputLabel}>
-              Account email:
+              Account username:
             </Text>
             <TextInput
                   style={verificationCodeStyles.loginBox}
-                  placeholder="Password1"
+                  placeholder="mydiet45"
                   placeholderTextColor={"#8c8c8c"}
-                  onChangeText={value => setEmailText(value)}
-                  defaultValue={textEmail}
+                  onChangeText={value => setUsernameText(value)}
+                  defaultValue={textUsername}
             />
-
             <Text style={verificationCodeStyles.inputLabel}>
-              Enter verification code:
+              Verification code:
             </Text>
             <TextInput
                 style={verificationCodeStyles.loginBox}
-                placeholder="Username"
+                placeholder="123456"
                 placeholderTextColor={"#8c8c8c"}
                 onChangeText={value => setVerificationCodeText(value)}
                 defaultValue={textVerificationCode}
             />
-
             <Pressable style={verificationCodeStyles.submitCodeButton} 
-                // onPress={() => onLogin(textVerificationCode, setVerificationCodeText, textPassword, setPasswordText, navigation)}
+                onPress={() => onVerifyUser(textUsername, textVerificationCode, navigation)}
             >
               <Text style={verificationCodeStyles.buttonTextSmall}>Verify Account</Text>
             </Pressable>
             <Pressable style={verificationCodeStyles.resendCodeButton} 
-            //   onPress={() => navigation.navigate("ForgotPasswordScreen")}
+              onPress={() => onResendCode(textUsername)}
             >
               <Text style={verificationCodeStyles.buttonTextSmall}>Resend Code</Text>
             </Pressable>
