@@ -1,0 +1,55 @@
+.recipe-container {
+  max-width: 800px;
+  margin: 20px auto;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-header {
+  background-color: white;
+  background-size: cover;
+  background-position: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.recipe-info,
+.venue-image,
+.seat-info {
+  padding: 20px;
+  /* background-color: #f0f0f0; */
+  margin: 2%;
+  vertical-align: top;
+}
+
+.recipe-info h3,
+.venue-image h3,
+.seat-info h3 {
+  margin-top: 0;
+  cursor: pointer;
+}
+
+.seat-info ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.seat-info li {
+  background-color: #e7e7e7;
+  margin-bottom: 5px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.inline-div {
+  display: inline-block; /* Makes the divs appear in line */
+  width: 45%; /* Sets the width less than 50% to fit side by side */
+}
+
+.add-to-favorites {
+  text-align: center;
+}
+
+.add-to-favorites button {
+  width: 50%;
+}

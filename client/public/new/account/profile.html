@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>
+    What Should I Eat - My Profile
+  </title>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/login-modal.css" />
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+  <!-- Custom Scripts -->
+  <script src="/static/js/login.js"></script>
+  <script src="/static/js/account/profile.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="container-fluid px-0">
+      <!-- START: Nav Bar Div -->
+      <div class="row navbar-row px-3">
+        <nav class="navbar navbar-expand-md navbar-light">
+          <a class="navbar-brand" href="/">
+            <img src="/static/img/recipe-logo.svg" style="max-height: 100px" />
+            <h1>What Should I Eat?</h1>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+              class="navbar-toggler-icon"></span></button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about.html">About Us</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/recipes/recipes.html">Find Recipes</a>
+              </li>
+            </ul>
+
+            <div class="mr-2 d-flex flex-column flex-md-row">
+              <!-- User is Logged in View -->
+              <div class="dropdown">
+                <button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink">
+                  <h6 class="dropdown-header">Welcome back!</h6>
+                  <h6 class="dropdown-header">John Doe</h6>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/account/my_dietary.html">My Dietary</a>
+                  <a class="dropdown-item" href="/account/my_recipes.html">My Recipes</a>
+                  <a class="dropdown-item" href="/account/profile.html">My Settings</a>
+                  <a class="dropdown-item" href="/">Sign Out</a>
+                </div>
+              </div>
+
+
+              <!-- User is Not Logged in View
+              <div class="px-1 px-md-0 d-flex flex-column flex-md-row">
+                <button id="showSignInModalContentBtn" type="button"
+                  class="mb-2 mb-md-0 mr-md-2 btn btn-link account-link" data-toggle="modal">Sign in</button>
+                <button id="showSignUpModalContentBtn" type="button" class="btn btn-link account-link"
+                  data-toggle="modal">Sign up</button>
+              </div>
+            -->
+            </div>
+          </div>
+        </nav>
+      </div>
+      <!-- END: Nav Bar Div -->
+
+      <!-- START: Flash Alerts to User -->
+      <div class="row">
+        <div id="ajaxAlertSuccess"
+          class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show" role="alert"
+          style="display: none;">
+          <span id="ajaxSuccessMessage"></span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        <div id="ajaxAlertError"
+          class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
+          style="display: none;">
+          <span id="ajaxErrorMessage"></span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+      </div>
+      <!-- END: Flash Alerts to User -->
+    </div>
+  </header>
+
+  <!-- START: Sign Up / Sign Modal -->
+  <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <!-- START: Sign In Modal -->
+      <div id="signInModalContent" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Sign In</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+
+        <div class="modal-body">
+          <form id="signInForm" action="/login">
+            <div class="form-group">
+              <label for="signInUsernameInput">Username</label>
+              <input id="signInUsernameInput" type="username" class="form-control" name="username" />
+            </div>
+            <div class="form-group mb-1">
+              <label for="signInPasswordInput">Password</label>
+              <input id="signInPasswordInput" type="password" class="form-control" name="password" />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="signInForm" class="mb-3 btn btn-primary btn-block">Sign In</button>
+            <button id="signUpSwitch" type="button" class="mb-3 btn btn-link btn-block">Don't have an account? Sign
+              up</button>
+            <a href="/reset_account.html">
+              <button id="forgotUsernamePassword" type="button" class="mb-3 btn btn-link btn-block">Forgot username or
+                password? Click here</button>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- END: Sign In Modal -->
+
+      <!-- START: Sign Up Modal -->
+      <div id="signUpModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Sign Up</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+
+        <div class="modal-body">
+          <form id="signUpForm" action="/create_account">
+            <div class="form-group">
+              <label for="signUpFirstNameInput">First Name</label>
+              <input id="signUpFirstNameInput" class="form-control" name="firstName" />
+            </div>
+            <div class="form-group">
+              <label for="signUpLastNameInput">Last Name</label>
+              <input id="signUpLastNameInput" class="form-control" name="lastName" />
+            </div>
+            <div class="form-group">
+              <label for="signUpUsernameInput">Username</label>
+              <input id="signUpUsernameInput" type="username" class="form-control" name="username" />
+            </div>
+            <div class="form-group">
+              <label for="signUpPasswordInput">Password</label>
+              <input id="signUpPasswordInput" type="password" class="form-control" name="password" />
+            </div>
+            <div class="form-group">
+              <label for="signUpRetypedPasswordInput">Re-type Password</label>
+              <input id="signUpRetypedPasswordInput" type="password" class="form-control" name="retypedPassword" />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="signUpForm" class="mb-3 btn btn-primary btn-block">Sign Up</button>
+            <button id="signInSwitch" type="button" class="mb-3 btn btn-link btn-block">Already have an account? Sign
+              in</button>
+            <a href="/reset_account.html">
+              <button id="forgotUsernamePassword" type="button" class="mb-3 btn btn-link btn-block">Forgot username or
+                password? Click here</button>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- END: Sign Up Modal -->
+    </div>
+  </div>
+  <!-- END: Sign Up / Sign Modal -->
+
+  <!-- START: Edit Profile -->
+  <!-- <div class="container-fluid px-0">
+    <div class="mb-3 container-fluid navbar-decoration px-0 d-flex align-items-center justify-content-center">
+      <h1 class="display-3">My Settings</h1>
+    </div>
+  </div> -->
+
+  <div class="container mt-5">
+    <div class="mb-5">
+      <!-- TODO: Set the server route -->
+      <form id="updateMyInfoForm" action="" method="POST">
+        <h2>Personal Information</h2>
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" class="form-control" id="username" name="username" value="johndoe1" required disabled />
+        </div>
+        <div class="mb-3">
+          <label for="first_name" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="first_name" name="first_name" value="John"
+            data-initial-value="{{ user.first_name }}" required />
+        </div>
+        <div class="mb-3">
+          <label for="last_name" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="last_name" name="last_name" value="Doe"
+            data-initial-value="{{ user.last_name }}" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Update Details</button>
+      </form>
+    </div>
+
+    <hr />
+
+    <div class="mb-5">
+      <!-- TODO: Set the server route -->
+      <form id="updateEmailAddressForm" action="" method="POST">
+        <h2>Email Address</h2>
+        <div class="mb-3">
+          <label for="email_address" class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="email_address" name="email_address" value="johndoe1@gmail.com"
+            data-initial-value="{{ user.email_address|default('', true) }}" placeholder="Enter email" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Update Email</button>
+      </form>
+    </div>
+
+    <hr />
+
+    <div class="mb-5">
+      <!-- TODO: Set the server route -->
+      <form id="updatePasswordForm" action="" method="POST">
+        <h2>Update Password</h2>
+        <div class="mb-3">
+          <label for="password" class="form-label">New Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password"
+            required />
+        </div>
+        <button type="submit" class="btn btn-primary">Update Password</button>
+      </form>
+    </div>
+  </div>
+  <!-- END: Edit Profile -->
+
+  <!-- START: Footer -->
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+      <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+        <svg class="bi" width="30" height="24">
+          <use xlink:href="#bootstrap"></use>
+        </svg>
+      </a>
+      <span class="mb-3 mb-md-0 text-body-secondary">© 2024 What Should I Eat?, Inc</span>
+    </div>
+  </footer>
+  <!-- END: Footer -->
+</body>
+
+</html>
