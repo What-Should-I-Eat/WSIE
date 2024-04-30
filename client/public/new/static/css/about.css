@@ -1,0 +1,62 @@
+.details-content {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.details-content p {
+  margin-bottom: 5px;
+}
+
+.recipe-row img {
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.table-imgs {
+  max-height: 100px;
+}
+
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+th {
+  cursor: pointer;
+}
+
+th img {
+  max-height: 20px;
+  float: center;
+  vertical-align: middle;
+  content: url("/static/img/sort.png");
+}
+
+tbody tr {
+  cursor: pointer;
+}
+
+.carousel-item img {
+  max-height: 1000px;
+  max-width: 1000px;
+  /* width: 400px; 
+  height: 800px; */
+  margin: auto;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  filter: invert(100%);
+}
+
+.background-container form-container {
+  position: relative;
+  background-image: url("/static/img/log/log-5.png");
+  background-size: cover;
+}
+
+.carousel-indicators li {
+  background-color: lightsteelblue; /* Change background color */
+}
