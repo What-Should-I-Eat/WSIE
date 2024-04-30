@@ -1,7 +1,8 @@
 import { Alert } from "react-native";
 import { onResendCode } from "./verificationCodeCalls";
 import { hostForAppCalls } from "./hostCallConst";
-
+import emailjs from '@emailjs/react-native';
+import { send, EmailJSResponseStatus } from '@emailjs/react-native';
 const onLogin = (textUsername, textPassword, navigation) => {
 
     if(areInputsFilledIn(textUsername, textPassword)){

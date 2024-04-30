@@ -1,8 +1,8 @@
 import { Alert } from "react-native";
 import { getVerificationCode, sendEmail } from "./verificationCodeCalls";
 import { hostForAppCalls } from "./hostCallConst";
-import emailjs from '@emailjs/browser';
-import { EmailJSResponseStatus } from "@emailjs/browser";
+import emailjs from '@emailjs/react-native';
+import { send, EmailJSResponseStatus } from '@emailjs/react-native';
 
 var username;
 

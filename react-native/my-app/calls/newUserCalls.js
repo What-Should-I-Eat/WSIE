@@ -2,7 +2,8 @@ import { Alert } from "react-native";
 import { getVerificationCode } from "./verificationCodeCalls";
 import { hostForAppCalls } from "./hostCallConst";
 import { sendEmail } from "./verificationCodeCalls";
-import emailjs from "@emailjs/browser";
+import emailjs from '@emailjs/react-native';
+import { send, EmailJSResponseStatus } from '@emailjs/react-native';
 
 const onNewUserCalls = async (textUsername, textRealName, textEmail, textPasswordOne, textPasswordTwo, navigation) => {
 

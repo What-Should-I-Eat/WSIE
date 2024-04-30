@@ -1,7 +1,8 @@
 import { Alert } from "react-native";
 import { hostForAppCalls } from "./hostCallConst";
-import emailjs from '@emailjs/browser';
-import { EmailJSResponseStatus } from "@emailjs/browser";
+import emailjs from '@emailjs/react-native';
+import { send, EmailJSResponseStatus } from '@emailjs/react-native';
+
 const onVerifyUser = (textUsername, textVerificationCode, navigation) => {
 
     if(areInputsFilledIn(textUsername, textVerificationCode)){
@@ -54,8 +55,8 @@ const onResendCode = async (textUsername) => {
         const email = await getUserEmail(textUsername); 
         const newlyGeneratedVerificationCode = await getVerificationCode();
         console.log(newlyGeneratedVerificationCode);
-        sendEmail(textUsername, email, newlyGeneratedVerificationCode, emailjs);
-        console.log('here');
+
+        sendEmailForNewCode(textUsername, email, newlyGeneratedVerificationCode, emailjs);
         fetch(`${hostForAppCalls}/api/v1/users/resendVerificationCode`, {
             method: 'PUT',
             headers: {
@@ -141,33 +142,34 @@ async function getUserEmail(username){
     return email;
 }
 
-// function sendEmail(fullName, email, verificationCode, emailjs){
-//     console.log("Attempting to send verification code");
+function sendEmailForNewCode(fullName, email, verificationCode, emailjs){
+    console.log("Attempting to send verification code");
 
-//     console.log("verification code: ", verificationCode);
-//     const params = {
-//         userEmail: email,
-//         userFullName: fullName,
-//         verificationCode: verificationCode,
-//     }
+    console.log("verification code: ", verificationCode);
+    const params = {
+        userEmail: email,
+        userFullName: fullName,
+        verificationCode: verificationCode,
+    }
 
-//     //need to get this out of the client
-//     const serviceID = "service_ms0318i";
-//     const templateID = "template_7av6tqc";
-//     const publicKey = "8nKeoQjoIWF1wyUpG";
+    //need to get this out of the client
+    const serviceID = "service_ms0318i";
+    const templateID = "template_7av6tqc";
+    const publicKey = "8nKeoQjoIWF1wyUpG";
 
-//     emailjs.send(serviceID, templateID, params, publicKey)
-//         .then(function(response) {
-//             console.log('SUCCESS: email sent', response.status, response.text);
-//             return true;
-//         }, function(error) {
-//             console.log('FAILED: email could not be sent', error);
-//         });
+    emailjs.send(serviceID, templateID, params, {publicKey: '8nKeoQjoIWF1wyUpG'})
+        .then(function(response) {
+            console.log('SUCCESS: email sent', response.status, response.text);
+            return true;
+        }, function(error) {
+            console.log('FAILED: email could not be sent', error, error.status);
+        });
 
-//     return false;
-//   }
+    return false;
+  }
 function sendEmail(fullName, email, verificationCode, emailjs, template, username){
-    // var templateID;
+
+    // these are the alternate parameters if we run out of emails we can send
     // if(template === "newuser"){
     //   templateID = "template_lfefu0m";
     // }
@@ -175,34 +177,12 @@ function sendEmail(fullName, email, verificationCode, emailjs, template, usernam
     //   templateID = "template_zekzics";
     // }
 
-    // console.log("Attempting to send verification code with template ", template);
-
-    // console.log("verification code: ", verificationCode);
-    // const params = {
-    //   userEmail: email,
-    //   username: username,
-    //   userFullName: fullName,
-    //   verificationCode: verificationCode,
-    // }
-
-    // console.log("email params: ", params);
-    // console.log("Type of fullName: ", typeof fullName);
-    // console.log("Type of verificationCode: ", typeof verificationCode);
-    // console.log("Type of userEmail: ", typeof email);
-    // console.log("Type of username: ", typeof username);
-
     // const serviceID = "service_6ivuvhw";
-    // const publicKey = "YaAzvO7B3lldSIpqe";
+    // const publicKey = "YaAzvO7B3lldSIpqe"; // 1
+    // const publicKey = "8nKeoQjoIWF1wyUpG"; // 2
 
-    // emailjs.send(serviceID, templateID, params, publicKey)
-    //     .then(function(response) {
-    //       console.log('SUCCESS: email sent', response.status, response.text);
-    //       return true;
-    //     }, function(error) {
-    //       console.log('FAILED: email could not be sent', error);
-    //     });
+    // emailjs.send(serviceID, templateID, params, {publicKey: 'YaAzvO7B3lldSIpqe'})
 
-    // return false;
     var templateID;
         if(template === "newuser"){
           templateID = "template_7av6tqc";
@@ -230,7 +210,7 @@ function sendEmail(fullName, email, verificationCode, emailjs, template, usernam
         const serviceID = "service_6ivuvhw";
         const publicKey = "YaAzvO7B3lldSIpqe";
   
-        emailjs.send(serviceID, templateID, params, publicKey)
+        emailjs.send(serviceID, templateID, params, {publicKey: 'YaAzvO7B3lldSIpqe'})
             .then(function(response) {
               console.log('SUCCESS: email sent', response.status, response.text);
               return true;
