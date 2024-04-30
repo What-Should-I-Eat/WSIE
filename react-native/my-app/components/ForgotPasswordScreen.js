@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { onEnteredCodeForForgotPassword, onEnteredEmailForForgotPassword, onEnteredNewPasswords } from '../calls/forgotPasswordCalls';
 
 export default function ForgotPasswordScreen({ navigation }) {
 
@@ -12,11 +14,16 @@ export default function ForgotPasswordScreen({ navigation }) {
     const [isCodeEntryVisible, setIsCodeEntryVisible] = useState(false);
     const [isPasswordEntryVisible, setIsPasswordEntryVisible] = useState(false);
 
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const togglePasswordVisibility = () => {
+      setPasswordVisible(!passwordVisible);
+    };
+
     return (
         <ScrollView>
         <View style={forgotPasswordStyles.container}>
 
-          {isEmailEntryVisible && <View>
+          {isEmailEntryVisible && <View style={forgotPasswordStyles.container}>
             <Text style={forgotPasswordStyles.instructions}>
                 Please follow the directions below to reset your password.
               </Text>
@@ -39,7 +46,7 @@ export default function ForgotPasswordScreen({ navigation }) {
             </View>  
           }
 
-          {isCodeEntryVisible && <View>
+          {isCodeEntryVisible && <View style={forgotPasswordStyles.container}>
               <Text style={forgotPasswordStyles.inputLabel}>
                 Enter Verification Code:
               </Text>
@@ -59,29 +66,47 @@ export default function ForgotPasswordScreen({ navigation }) {
             </View>
           }
 
-          {isPasswordEntryVisible && <View>
+          {isPasswordEntryVisible && <View style={forgotPasswordStyles.container}>
               <Text style={forgotPasswordStyles.inputLabel}>
                 Enter New Password:
               </Text>
-              <TextInput
-                  style={forgotPasswordStyles.inputBox}
-                  placeholder="pASswORd35"
-                  placeholderTextColor={"#8c8c8c"}
-                  placeholderFon
-                  onChangeText={value => setPasswordOneText(value)}
-                  defaultValue={textPasswordOne}
+              <View style={forgotPasswordStyles.passwordOneBox}>
+                <TextInput
+                    style={forgotPasswordStyles.inputBox}
+                    placeholder="pASswORd35"
+                    placeholderTextColor={"#8c8c8c"}
+                    secureTextEntry={!passwordVisible}
+                    onChangeText={value => setPasswordOneText(value)}
+                    defaultValue={textPasswordOne}
+                />
+                <MaterialCommunityIcons 
+                name={passwordVisible ? 'eye-off' : 'eye'} 
+                size={24} 
+                color="#aaa"
+                style={forgotPasswordStyles.icon} 
+                onPress={togglePasswordVisibility} 
               />
+            </View>
               <Text style={forgotPasswordStyles.inputLabel}>
                 Confirm Password:
               </Text>
-              <TextInput
-                  style={forgotPasswordStyles.inputBox}
-                  placeholder="pASswORd35"
-                  placeholderTextColor={"#8c8c8c"}
-                  placeholderFon
-                  onChangeText={value => setPasswordTwoText(value)}
-                  defaultValue={textPasswordTwo}
+              <View style={forgotPasswordStyles.passwordTwoBox}>
+                <TextInput
+                    style={forgotPasswordStyles.inputBox}
+                    placeholder="pASswORd35"
+                    placeholderTextColor={"#8c8c8c"}
+                    placeholderFon
+                    onChangeText={value => setPasswordTwoText(value)}
+                    defaultValue={textPasswordTwo}
+                />
+                <MaterialCommunityIcons 
+                name={passwordVisible ? 'eye-off' : 'eye'} 
+                size={24} 
+                color="#aaa"
+                style={forgotPasswordStyles.icon} 
+                onPress={togglePasswordVisibility} 
               />
+            </View>
               <Pressable style={forgotPasswordStyles.submitButton} 
                   onPress={() => onEnteredNewPasswords(textPasswordOne, textPasswordTwo, navigation)}
               >
@@ -152,6 +177,21 @@ export default function ForgotPasswordScreen({ navigation }) {
         width: 350,
         marginTop: 30,
         textAlign: 'center'
-    }
+    },
+    passwordOneBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: -10,
+    },
+    passwordTwoBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft: -10,
+    },
+    icon: {
+      marginLeft: -40,
+    },
   }
 );

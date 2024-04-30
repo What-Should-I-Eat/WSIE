@@ -20,9 +20,9 @@ export default function NewUserScreen({ navigation }) {
     return (
         <ScrollView>
         <View style={newUserStyles.container}>
-            <Text style={newUserStyles.title}>
+            {/* <Text style={newUserStyles.title}>
                 Welcome to {'\n'}What Should I Eat?
-            </Text>
+            </Text> */}
             <Text style={newUserStyles.instructions}>
                Please sign up below
             </Text>
@@ -118,8 +118,8 @@ export default function NewUserScreen({ navigation }) {
         borderRadius: 4,
         elevation: 3,
         width: 300,
-        height: 100,
-        margin: 30,     
+        height: 70,
+        margin: 20,     
         backgroundColor: '#0000ff' 
     },
     buttonText:{
@@ -141,7 +141,7 @@ export default function NewUserScreen({ navigation }) {
       borderColor: '#404040',
       backgroundColor: '#f9f9f9',
       width: 300,
-      height: 70,
+      height: 60,
       fontSize: 30,
       borderRadius: 5,
     },

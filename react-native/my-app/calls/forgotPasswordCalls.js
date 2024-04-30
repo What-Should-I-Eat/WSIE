@@ -1,6 +1,8 @@
 import { Alert } from "react-native";
-import { getVerificationCode } from "./verificationCodeCalls";
+import { getVerificationCode, sendEmail } from "./verificationCodeCalls";
 import { hostForAppCalls } from "./hostCallConst";
+import emailjs from '@emailjs/browser';
+import { EmailJSResponseStatus } from "@emailjs/browser";
 
 var username;
 
@@ -11,7 +13,7 @@ const onEnteredEmailForForgotPassword = async (textEmail, setIsEmailEntryVisible
         Alert.alert(inputError, "Email cannot be left empty.");
         return false;
     } else {
-        const forgotCredentialsData = await getUserCredentials(userEmail);
+        const forgotCredentialsData = await getUserCredentials(textEmail);
         console.log("Here's our data", forgotCredentialsData);
 
         if(forgotCredentialsData.error){
@@ -21,7 +23,7 @@ const onEnteredEmailForForgotPassword = async (textEmail, setIsEmailEntryVisible
         username = forgotCredentialsData.username;
         const verificationCode = await getVerificationCode();
         
-        loginHandler2.sendEmail(forgotCredentialsData.fullName, forgotCredentialsData.email, verificationCode, emailjs, "forgotpassword", username);
+        sendEmail(forgotCredentialsData.fullName, forgotCredentialsData.email, verificationCode, emailjs, "forgotpassword", username);
 
         //////////////////////////////////////////////////////////////////////
         const verificationCodeIsUpdated = await putVerificationCodeInDB(forgotCredentialsData.username, verificationCode);

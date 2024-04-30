@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.3.3",
     "@react-navigation/native-stack": "^6.9.26",
     "expo": "~50.0.14",
     "expo-status-bar": "~1.11.1",

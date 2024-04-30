@@ -1,6 +1,7 @@
 import { Alert } from "react-native";
 import { hostForAppCalls } from "./hostCallConst";
-
+import emailjs from '@emailjs/browser';
+import { EmailJSResponseStatus } from "@emailjs/browser";
 const onVerifyUser = (textUsername, textVerificationCode, navigation) => {
 
     if(areInputsFilledIn(textUsername, textVerificationCode)){
@@ -52,8 +53,9 @@ const onResendCode = async (textUsername) => {
 
         const email = await getUserEmail(textUsername); 
         const newlyGeneratedVerificationCode = await getVerificationCode();
+        console.log(newlyGeneratedVerificationCode);
         sendEmail(textUsername, email, newlyGeneratedVerificationCode, emailjs);
-
+        console.log('here');
         fetch(`${hostForAppCalls}/api/v1/users/resendVerificationCode`, {
             method: 'PUT',
             headers: {
@@ -139,30 +141,104 @@ async function getUserEmail(username){
     return email;
 }
 
-function sendEmail(fullName, email, verificationCode, emailjs){
-    console.log("Attempting to send verification code");
+// function sendEmail(fullName, email, verificationCode, emailjs){
+//     console.log("Attempting to send verification code");
 
-    console.log("verification code: ", verificationCode);
-    const params = {
-        userEmail: email,
-        userFullName: fullName,
-        verificationCode: verificationCode,
-    }
+//     console.log("verification code: ", verificationCode);
+//     const params = {
+//         userEmail: email,
+//         userFullName: fullName,
+//         verificationCode: verificationCode,
+//     }
 
-    //need to get this out of the client
-    const serviceID = "service_ms0318i";
-    const templateID = "template_7av6tqc";
-    const publicKey = "8nKeoQjoIWF1wyUpG";
+//     //need to get this out of the client
+//     const serviceID = "service_ms0318i";
+//     const templateID = "template_7av6tqc";
+//     const publicKey = "8nKeoQjoIWF1wyUpG";
 
-    emailjs.send(serviceID, templateID, params, publicKey)
-        .then(function(response) {
-            console.log('SUCCESS: email sent', response.status, response.text);
-            return true;
-        }, function(error) {
-            console.log('FAILED: email could not be sent', error);
-        });
+//     emailjs.send(serviceID, templateID, params, publicKey)
+//         .then(function(response) {
+//             console.log('SUCCESS: email sent', response.status, response.text);
+//             return true;
+//         }, function(error) {
+//             console.log('FAILED: email could not be sent', error);
+//         });
 
-    return false;
+//     return false;
+//   }
+function sendEmail(fullName, email, verificationCode, emailjs, template, username){
+    // var templateID;
+    // if(template === "newuser"){
+    //   templateID = "template_lfefu0m";
+    // }
+    // else if(template === "forgotpassword"){
+    //   templateID = "template_zekzics";
+    // }
+
+    // console.log("Attempting to send verification code with template ", template);
+
+    // console.log("verification code: ", verificationCode);
+    // const params = {
+    //   userEmail: email,
+    //   username: username,
+    //   userFullName: fullName,
+    //   verificationCode: verificationCode,
+    // }
+
+    // console.log("email params: ", params);
+    // console.log("Type of fullName: ", typeof fullName);
+    // console.log("Type of verificationCode: ", typeof verificationCode);
+    // console.log("Type of userEmail: ", typeof email);
+    // console.log("Type of username: ", typeof username);
+
+    // const serviceID = "service_6ivuvhw";
+    // const publicKey = "YaAzvO7B3lldSIpqe";
+
+    // emailjs.send(serviceID, templateID, params, publicKey)
+    //     .then(function(response) {
+    //       console.log('SUCCESS: email sent', response.status, response.text);
+    //       return true;
+    //     }, function(error) {
+    //       console.log('FAILED: email could not be sent', error);
+    //     });
+
+    // return false;
+    var templateID;
+        if(template === "newuser"){
+          templateID = "template_7av6tqc";
+        }
+        else if(template === "forgotpassword"){
+          templateID = "template_zekzics";
+        }
+
+        console.log("Attempting to send verification code with template ", template);
+  
+        console.log("verification code: ", verificationCode);
+        const params = {
+          userEmail: email,
+          username: username,
+          userFullName: fullName,
+          verificationCode: verificationCode,
+        }
+  
+        console.log("email params: ", params);
+        console.log("Type of fullName: ", typeof fullName);
+        console.log("Type of verificationCode: ", typeof verificationCode);
+        console.log("Type of userEmail: ", typeof email);
+        console.log("Type of username: ", typeof username);
+
+        const serviceID = "service_6ivuvhw";
+        const publicKey = "YaAzvO7B3lldSIpqe";
+  
+        emailjs.send(serviceID, templateID, params, publicKey)
+            .then(function(response) {
+              console.log('SUCCESS: email sent', response.status, response.text);
+              return true;
+            }, function(error) {
+              console.log('FAILED: email could not be sent', error);
+            });
+  
+        return false;
   }
 
-export{ onVerifyUser, onResendCode, getVerificationCode };
+export{ onVerifyUser, onResendCode, getVerificationCode, sendEmail };
