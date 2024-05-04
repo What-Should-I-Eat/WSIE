@@ -88,7 +88,7 @@ endpoints.get('/users/:id', function _callee2(req, res) {
           }));
 
         case 8:
-          res.json(user.userName, user.password);
+          res.json(user.username, user.password);
 
         case 9:
           _context2.next = 15;
@@ -120,7 +120,7 @@ endpoints.post("/users/register", function _callee3(req, res) {
           user = new User({
             id: req.body.id,
             fullName: req.body.fullName,
-            userName: req.body.userName,
+            username: req.body.username,
             password: req.body.password,
             email: req.body.email,
             diet: req.body.diet,

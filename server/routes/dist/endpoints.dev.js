@@ -60,7 +60,7 @@ endpoints.post("/users/register", function _callee(req, res) {
           user = new User({
             id: req.body.id,
             fullName: req.body.fullName,
-            userName: req.body.userName,
+            username: req.body.username,
             password: hashedPassword,
             email: req.body.email,
             diet: req.body.diet,
@@ -108,7 +108,7 @@ endpoints.post('/users/find-username', function _callee2(req, res) {
           _context2.prev = 0;
           _context2.next = 3;
           return regeneratorRuntime.awrap(User.findOne({
-            userName: req.body.userName
+            username: req.body.username
           }));
 
         case 3:
@@ -140,7 +140,7 @@ endpoints.post('/users/find-username', function _callee2(req, res) {
           console.log("Password is correct!");
           req.session.isLoggedIn = true;
           req.session.userId = user._id;
-          req.session.username = user.userName; // Set the cookie
+          req.session.username = user.username; // Set the cookie
 
           res.cookie('sessionId', req.session.id, {
             httpOnly: true,
@@ -220,7 +220,7 @@ endpoints.get('/users/findUserData', function _callee3(req, res) {
           username = req.query.username;
           _context3.next = 4;
           return regeneratorRuntime.awrap(User.findOne({
-            userName: username
+            username: username
           }));
 
         case 4:
@@ -310,7 +310,7 @@ endpoints.get('/users/findUserId', function _callee5(req, res) {
 
           _context5.next = 4;
           return regeneratorRuntime.awrap(User.findOne({
-            userName: username
+            username: username
           }));
 
         case 4:
@@ -358,7 +358,7 @@ endpoints.get('/users/finduser/:username', function _callee6(req, res) {
 
           _context6.next = 4;
           return regeneratorRuntime.awrap(User.findOne({
-            userName: username
+            username: username
           }));
 
         case 4:
@@ -448,7 +448,7 @@ endpoints.put('/users/diet', function _callee8(req, res) {
           console.log("Username = ", username);
           _context8.next = 5;
           return regeneratorRuntime.awrap(User.findOne({
-            userName: username
+            username: username
           }));
 
         case 5:
@@ -500,7 +500,7 @@ endpoints.put('/users/health', function _callee9(req, res) {
           username = req.body.username;
           _context9.next = 4;
           return regeneratorRuntime.awrap(User.findOne({
-            userName: username
+            username: username
           }));
 
         case 4:

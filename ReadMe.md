@@ -116,7 +116,7 @@ The following endpoints provide functionality related to users of the applicatio
 
 - `_id` (String): Randomly generated identifier for a user.
 - `fullName` (String): User's full name.
-- `userName` (String): User's chosen username.
+- `username` (String): User's chosen username.
 - `password` (String): User's chosen password that is stored as a hashed password via bcrypt framework.
 - `email` (String): User's email address.
 - `verified` (Boolean): User's account has been verified or not.

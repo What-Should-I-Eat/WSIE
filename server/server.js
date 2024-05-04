@@ -9,7 +9,7 @@ mongoose.connect(DB_URI, {
   useUnifiedTopology: true
 });
 
-app.listen(3000, '0.0.0.0', () => {
-  console.log("Server running on port 3000");
+app.listen(3001, '0.0.0.0', () => {
+  console.log("Server running on port 3001");
   console.log("_____________________________");
 });

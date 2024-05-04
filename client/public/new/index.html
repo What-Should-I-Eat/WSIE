@@ -114,14 +114,14 @@
         </div>
 
         <div class="modal-body">
-          <form id="signInForm" action="/login">
+          <form id="signInForm">
             <div class="form-group">
               <label for="signInUsernameInput">Username</label>
-              <input id="signInUsernameInput" type="username" class="form-control" name="username" />
+              <input id="signInUsernameInput" type="username" class="form-control" name="username" required />
             </div>
             <div class="form-group mb-1">
               <label for="signInPasswordInput">Password</label>
-              <input id="signInPasswordInput" type="password" class="form-control" name="password" />
+              <input id="signInPasswordInput" type="password" class="form-control" name="password" required />
             </div>
           </form>
         </div>
@@ -149,26 +149,27 @@
         </div>
 
         <div class="modal-body">
-          <form id="signUpForm" action="/create_account">
+          <form id="signUpForm">
             <div class="form-group">
               <label for="signUpFirstNameInput">First Name</label>
-              <input id="signUpFirstNameInput" class="form-control" name="firstName" />
+              <input id="signUpFirstNameInput" class="form-control" name="firstName" required />
             </div>
             <div class="form-group">
               <label for="signUpLastNameInput">Last Name</label>
-              <input id="signUpLastNameInput" class="form-control" name="lastName" />
+              <input id="signUpLastNameInput" class="form-control" name="lastName" required />
             </div>
             <div class="form-group">
               <label for="signUpUsernameInput">Username</label>
-              <input id="signUpUsernameInput" type="username" class="form-control" name="username" />
+              <input id="signUpUsernameInput" type="username" class="form-control" name="username" required />
             </div>
             <div class="form-group">
               <label for="signUpPasswordInput">Password</label>
-              <input id="signUpPasswordInput" type="password" class="form-control" name="password" />
+              <input id="signUpPasswordInput" type="password" class="form-control" name="password" required />
             </div>
             <div class="form-group">
               <label for="signUpRetypedPasswordInput">Re-type Password</label>
-              <input id="signUpRetypedPasswordInput" type="password" class="form-control" name="retypedPassword" />
+              <input id="signUpRetypedPasswordInput" type="password" class="form-control" name="retypedPassword"
+                required />
             </div>
           </form>
         </div>

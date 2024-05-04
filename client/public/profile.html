@@ -16,14 +16,14 @@
     <header>
         <h1 id="profile-header">What Should I Eat?</h1>
         <nav class="nav-header">
-          <ul>
-            <li><a href="test.html" id="test">Search</a></li>
-            <li><a href="favorites.html" id="favorites">Favorites</a></li>
-            <li><a href="profile.html" id="profile">Profile</a></li>
-            <li><a href="index.html" id="search">Logout</a></li>
-          </ul>
+            <ul>
+                <li><a href="test.html" id="test">Search</a></li>
+                <li><a href="favorites.html" id="favorites">Favorites</a></li>
+                <li><a href="profile.html" id="profile">Profile</a></li>
+                <li><a href="index.html" id="search">Logout</a></li>
+            </ul>
         </nav>
-      </header>
+    </header>
 
     <div>
         <h2 id="user-identification"></h2>
@@ -39,7 +39,7 @@
                     <button class="lowcarb-button">Low Carb</button>
                     <button class="lowfat-button">Low Fat</button>
                     <button class="lowsodium-button">Low Sodium</button>
-                    
+
                 </td>
             </tr>
             <tr>
@@ -82,34 +82,34 @@
             <tr>
                 <th>Food Allergies</th>
             </tr>
-                <tr>
-                    <td>
-                        <button class="gluten-button">Gluten</button>
-                        <button class="dairy-button">Dairy</button>
-                        <button class="eggs-button">Eggs</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button class="soy-button">Soy</button>
-                        <button class="wheat-button">Wheat</button>
-                        <button class="fish-button">Fish</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button class="shellfish-button">Shellfish</button>
-                        <button class="treenuts-button">Tree Nuts</button>
-                        <button class="peanuts-button">Peanuts</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button class="sesame-button">Sesame</button>
-                        <button class="lowsugar-button">Low Sugar</button>
-                        <button class="alcoholfree-button">Alcohol Free</button>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <button class="gluten-button">Gluten</button>
+                    <button class="dairy-button">Dairy</button>
+                    <button class="eggs-button">Eggs</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="soy-button">Soy</button>
+                    <button class="wheat-button">Wheat</button>
+                    <button class="fish-button">Fish</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="shellfish-button">Shellfish</button>
+                    <button class="treenuts-button">Tree Nuts</button>
+                    <button class="peanuts-button">Peanuts</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="sesame-button">Sesame</button>
+                    <button class="lowsugar-button">Low Sugar</button>
+                    <button class="alcoholfree-button">Alcohol Free</button>
+                </td>
+            </tr>
         </table>
     </div>
     <br><br><br>
@@ -121,7 +121,7 @@
     <script>
         function getUserNameFromCookie() {
             const value = `; ${document.cookie}`;
-            const parts = value.split(`; userName=`);
+            const parts = value.split(`; username=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
 
@@ -132,7 +132,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             restrictionsHandler.handleRestrictions();
-            
+
             document.getElementById('search').href = "index.html";
             document.getElementById('test').href = `test.html`;
             document.getElementById('favorites').href = `favorites.html`;
