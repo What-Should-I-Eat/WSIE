@@ -166,3 +166,9 @@ The browser-accessible hosted version of the application is hosted on a Google C
 The following diagram shows the software architecture of the application.
 
 ![Alt text](<WSIE Architecture-2.jpg>)
+
+## Additional Software
+
+- [Install NPM](https://nodejs.org/en/download)
+- [Install Mongo](https://www.mongodb.com/docs/manual/administration/install-community/)
+- [Install Docker](https://docs.docker.com/engine/install/)

@@ -6,7 +6,10 @@
   "scripts": {
     "install-all": "./install-all.sh",
     "start": "docker-compose down && docker-compose build && docker-compose up",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "server": "cd server; npm start",
+    "client": "cd client; npm start",
+    "dev": "concurrently 'npm run server' 'npm run client'"
   },
   "author": "",
   "license": "ISC",
@@ -30,7 +33,8 @@
     "playwright": "^1.42.1",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5",
-    "xmlbuilder": "^15.1.1"
+    "xmlbuilder": "^15.1.1",
+    "concurrently": "8.2.2"
   },
   "devDependencies": {
     "jest": "^29.7.0",
