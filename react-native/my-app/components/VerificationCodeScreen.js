@@ -20,6 +20,7 @@ export default function VerificationCodeScreen({ navigation }) {
                   style={verificationCodeStyles.loginBox}
                   placeholder="mydiet45"
                   placeholderTextColor={"#8c8c8c"}
+                  autoCapitalize="none"
                   onChangeText={value => setUsernameText(value)}
                   defaultValue={textUsername}
             />
@@ -30,6 +31,7 @@ export default function VerificationCodeScreen({ navigation }) {
                 style={verificationCodeStyles.loginBox}
                 placeholder="123456"
                 placeholderTextColor={"#8c8c8c"}
+                autoCapitalize="none"
                 onChangeText={value => setVerificationCodeText(value)}
                 defaultValue={textVerificationCode}
             />

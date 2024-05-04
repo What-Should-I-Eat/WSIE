@@ -34,7 +34,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                   style={forgotPasswordStyles.inputBox}
                   placeholder="hello@gmail.com"
                   placeholderTextColor={"#8c8c8c"}
-                  placeholderFon
+                  autoCapitalize="none"
                   onChangeText={value => setEmailText(value)}
                   defaultValue={textEmail}
               />
@@ -54,7 +54,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                   style={forgotPasswordStyles.inputBox}
                   placeholder="123456"
                   placeholderTextColor={"#8c8c8c"}
-                  placeholderFon
+                  autoCapitalize="none"
                   onChangeText={value => setVerificationCodeText(value)}
                   defaultValue={textVerificationCode}
               />
@@ -75,6 +75,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                     style={forgotPasswordStyles.inputBox}
                     placeholder="pASswORd35"
                     placeholderTextColor={"#8c8c8c"}
+                    autoCapitalize="none"
                     secureTextEntry={!passwordVisible}
                     onChangeText={value => setPasswordOneText(value)}
                     defaultValue={textPasswordOne}
@@ -95,7 +96,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                     style={forgotPasswordStyles.inputBox}
                     placeholder="pASswORd35"
                     placeholderTextColor={"#8c8c8c"}
-                    placeholderFon
+                    autoCapitalize="none"
                     onChangeText={value => setPasswordTwoText(value)}
                     defaultValue={textPasswordTwo}
                 />

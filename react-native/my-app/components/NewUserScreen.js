@@ -33,6 +33,7 @@ export default function NewUserScreen({ navigation }) {
                 style={newUserStyles.loginBox}
                 placeholder="Username"
                 placeholderTextColor={"#8c8c8c"}
+                autoCapitalize="none"
                 onChangeText={value => setUsernameText(value)}
                 defaultValue={textUsername}
             />
@@ -53,6 +54,7 @@ export default function NewUserScreen({ navigation }) {
                 style={newUserStyles.loginBox}
                 placeholder="hello@gmail.com"
                 placeholderTextColor={"#8c8c8c"}
+                autoCapitalize="none"
                 onChangeText={value => setEmailText(value)}
                 defaultValue={textEmail}
             />
@@ -64,6 +66,7 @@ export default function NewUserScreen({ navigation }) {
                   style={newUserStyles.loginBox}
                   placeholder="Password1"
                   placeholderTextColor={"#8c8c8c"}
+                  autoCapitalize="none"
                   secureTextEntry={!passwordVisible}
                   onChangeText={value => setPasswordOneText(value)}
                   defaultValue={textPasswordOne}
@@ -84,6 +87,7 @@ export default function NewUserScreen({ navigation }) {
                   style={newUserStyles.loginBox}
                   placeholder="Password1"
                   placeholderTextColor={"#8c8c8c"}
+                  autoCapitalize="none"
                   secureTextEntry={!passwordVisible}
                   onChangeText={value => setPasswordTwoText(value)}
                   defaultValue={textPasswordTwo}

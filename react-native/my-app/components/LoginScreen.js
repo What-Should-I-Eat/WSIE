@@ -32,6 +32,7 @@ export default function LoginScreen({ navigation }) {
                 style={loginStyles.loginBox}
                 placeholder="Username"
                 placeholderTextColor={"#8c8c8c"}
+                autoCapitalize="none"
                 onChangeText={value => setUsernameText(value)}
                 defaultValue={textUsername}
             />
@@ -43,6 +44,7 @@ export default function LoginScreen({ navigation }) {
                   style={loginStyles.loginBox}
                   placeholder="Password1"
                   placeholderTextColor={"#8c8c8c"}
+                  autoCapitalize="none"
                   secureTextEntry={!passwordVisible}
                   onChangeText={value => setPasswordText(value)}
                   defaultValue={textPassword}
