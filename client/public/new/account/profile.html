@@ -51,31 +51,8 @@
               </li>
             </ul>
 
-            <div class="mr-2 d-flex flex-column flex-md-row">
-              <!-- User is Logged in View -->
-              <div class="dropdown">
-                <button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton"
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink">
-                  <h6 class="dropdown-header">Welcome back!</h6>
-                  <h6 class="dropdown-header">John Doe</h6>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="/account/my_dietary.html">My Dietary</a>
-                  <a class="dropdown-item" href="/account/my_recipes.html">My Recipes</a>
-                  <a class="dropdown-item" href="/account/profile.html">My Settings</a>
-                  <a class="dropdown-item" href="/">Sign Out</a>
-                </div>
-              </div>
-
-
-              <!-- User is Not Logged in View
-              <div class="px-1 px-md-0 d-flex flex-column flex-md-row">
-                <button id="showSignInModalContentBtn" type="button"
-                  class="mb-2 mb-md-0 mr-md-2 btn btn-link account-link" data-toggle="modal">Sign in</button>
-                <button id="showSignUpModalContentBtn" type="button" class="btn btn-link account-link"
-                  data-toggle="modal">Sign up</button>
-              </div>
-            -->
+            <div id="navBarMyAccountSignInSignUp" class="mr-2 d-flex flex-column flex-md-row">
+              <!-- Dynamically populate via login.js -->
             </div>
           </div>
         </nav>
@@ -116,14 +93,14 @@
         </div>
 
         <div class="modal-body">
-          <form id="signInForm" action="/login">
+          <form id="signInForm">
             <div class="form-group">
               <label for="signInUsernameInput">Username</label>
-              <input id="signInUsernameInput" type="username" class="form-control" name="username" />
+              <input id="signInUsernameInput" type="username" class="form-control" name="username" required />
             </div>
             <div class="form-group mb-1">
               <label for="signInPasswordInput">Password</label>
-              <input id="signInPasswordInput" type="password" class="form-control" name="password" />
+              <input id="signInPasswordInput" type="password" class="form-control" name="password" required />
             </div>
           </form>
         </div>
@@ -151,26 +128,31 @@
         </div>
 
         <div class="modal-body">
-          <form id="signUpForm" action="/create_account">
+          <form id="signUpForm">
             <div class="form-group">
               <label for="signUpFirstNameInput">First Name</label>
-              <input id="signUpFirstNameInput" class="form-control" name="firstName" />
+              <input id="signUpFirstNameInput" class="form-control" name="firstName" required />
             </div>
             <div class="form-group">
               <label for="signUpLastNameInput">Last Name</label>
-              <input id="signUpLastNameInput" class="form-control" name="lastName" />
+              <input id="signUpLastNameInput" class="form-control" name="lastName" required />
+            </div>
+            <div class="form-group">
+              <label for="signUpEmailInput">Email</label>
+              <input id="signUpEmailInput" type="email" class="form-control" name="email" required />
             </div>
             <div class="form-group">
               <label for="signUpUsernameInput">Username</label>
-              <input id="signUpUsernameInput" type="username" class="form-control" name="username" />
+              <input id="signUpUsernameInput" type="username" class="form-control" name="username" required />
             </div>
             <div class="form-group">
               <label for="signUpPasswordInput">Password</label>
-              <input id="signUpPasswordInput" type="password" class="form-control" name="password" />
+              <input id="signUpPasswordInput" type="password" class="form-control" name="password" required />
             </div>
             <div class="form-group">
               <label for="signUpRetypedPasswordInput">Re-type Password</label>
-              <input id="signUpRetypedPasswordInput" type="password" class="form-control" name="retypedPassword" />
+              <input id="signUpRetypedPasswordInput" type="password" class="form-control" name="retypedPassword"
+                required />
             </div>
           </form>
         </div>

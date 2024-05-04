@@ -1,51 +1,93 @@
 // Redirects
-const BASE_HOME_REDIRECT = "account/my_dietary.html";
+const BASE_HOME_REDIRECT = "/";
 const VERIFY_ACCOUNT_REDIRECT = "verify_account.html";
-
-// API Actions
+// Fetch Constants
 const POST_ACTION = "POST";
-const GET_ACTION = "GET";
 const DEFAULT_DATA_TYPE = "application/json";
-
-// User Messages
-const SUCCESSFUL_LOGIN = "You were successfully logged in!"
-const ACCOUNT_CREATION = "Account successfully created!";
-
-// Server Port in NGINX
-// const host = 'http://localhost:8080';
-// Server Port Locally
+// Server URL - Locally
 const host = 'http://localhost:3001';
+// Server URL - NGINX
+// const host = 'http://localhost:8080';
+// Authentication API Endpoints
 const REGISTER_URL = `${host}/api/v1/users/register`;
 const LOGIN_URL = `${host}/api/v1/users/find-username`;
 const PROFILE_URL = `${host}/api/v1/users/profile`;
+// Sign-In / Sign-Up Messages
+const SUCCESSFUL_LOGIN = "You were successfully logged in!";
+const ACCOUNT_CREATION = "Account successfully created!";
+
+function renderNavbar() {
+  const navBar = $('#navBarMyAccountSignInSignUp');
+  navBar.empty();
+
+  const currentUser = getUser();
+
+  if (currentUser) {
+    const myAccountDropdown = $('<div id="myAccountDropdown" class="dropdown"></div>');
+    const dropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>');
+    const dropdownMenu = $('<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink"></div>');
+
+    dropdownMenu.append('<h6 class="dropdown-header">Welcome back!</h6>');
+    dropdownMenu.append(`<h6 class="dropdown-header">${currentUser.fullName}</h6>`);
+    dropdownMenu.append('<div class="dropdown-divider"></div>');
+    dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary.html">My Dietary</a>');
+    dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes.html">My Recipes</a>');
+    dropdownMenu.append('<a class="dropdown-item" href="/account/profile.html">My Settings</a>');
+    dropdownMenu.append('<a class="dropdown-item" href="/signout">Sign Out</a>');
+
+    myAccountDropdown.append(dropdownToggle);
+    myAccountDropdown.append(dropdownMenu);
+    navBar.append(myAccountDropdown);
+  } else {
+    const signInButton = $('<button id="showSignInModalContentBtn" type="button" class="mb-2 mb-md-0 mr-md-2 btn btn-link account-link" data-toggle="modal">Sign in</button>');
+    const signUpButton = $('<button id="showSignUpModalContentBtn" type="button" class="btn btn-link account-link" data-toggle="modal">Sign up</button>');
+    navBar.append(signInButton, signUpButton);
+  }
+}
+
+function setUser(user) {
+  if (user) {
+    sessionStorage.setItem('user', JSON.stringify(user));
+  } else {
+    sessionStorage.removeItem('user');
+  }
+}
+
+function getUser() {
+  const userString = sessionStorage.getItem('user');
+  return userString ? JSON.parse(userString) : null;
+}
+
+function clearErrorMessage() {
+  $(".alert-danger").remove();
+}
+
+function convertToJson(formArray) {
+  return formArray.reduce((acc, { name, value }) => {
+    acc[name] = value;
+    return acc;
+  }, {});
+}
 
 $(document).ready(function () {
-  function clearErrorMessage() {
-    $(".alert-danger").remove();
-  }
+  renderNavbar();
 
-  // Sign-Up Business Logic
+  // Handles sign-up business logic;
   $("#signUpForm").on("submit", function (event) {
     event.preventDefault();
 
-    console.log("In Sign-Up Logic");
-
-    // Set variable here so we can update with error messages
-    var form = $(this);
-    var formArray = form.serializeArray();
-
+    const form = $(this);
+    const formArray = form.serializeArray();
     const firstName = formArray[0].value;
     const lastName = formArray[1].value;
 
-    formArray.push({ name: "fullName", value: firstName + " " + lastName })
+    formArray.push({ name: "fullName", value: `${firstName} ${lastName}` });
     formArray.push({ name: "diet", value: [] });
     formArray.push({ name: "health", value: [] });
     formArray.push({ name: "favorites", value: [] });
     formArray.push({ name: "verificationCode", value: "test" });
 
-    // Convert to JSON
-    var formJson = convertToJson(formArray);
-
+    const formJson = convertToJson(formArray);
     clearErrorMessage();
 
     fetch(REGISTER_URL, {
@@ -57,38 +99,27 @@ $(document).ready(function () {
     }).then(response => {
       if (response.ok) {
         return response.json().then(data => {
-          console.log("Successfully created user:", data.fullName);
-          // TODO: Temporary
+          setUser(data);
           form.prepend('<div class="alert alert-success">' + ACCOUNT_CREATION + "</div>");
-          // window.location.href = VERIFY_ACCOUNT_REDIRECT;
-          // $('#ajaxSuccessMessage').text(response.success);
-          // $('#ajaxAlertSuccess').show();
+          window.location.href = BASE_HOME_REDIRECT;
         });
       } else {
         return response.json().then(error => {
-          console.error("Error Occurred:", JSON.stringify(error));
           form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
         });
       }
     }).catch(error => {
-      console.error("Error Occurred:", error);
       form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
     });
   });
 
-  // Sign-In Business Logic
+  // Handles sign-in business logic
   $("#signInForm").on("submit", function (event) {
     event.preventDefault();
 
-    console.log("In Sign-In Logic");
-
-    // Set variable here so we can update with error messages
-    var form = $(this);
-    var formArray = form.serializeArray();
-
-    // Convert to JSON
-    var formJson = convertToJson(formArray);
-
+    const form = $(this);
+    const formArray = form.serializeArray();
+    const formJson = convertToJson(formArray);
     clearErrorMessage();
 
     fetch(LOGIN_URL, {
@@ -100,32 +131,24 @@ $(document).ready(function () {
     }).then(response => {
       if (response.ok) {
         return response.json().then(data => {
-          console.log("Successfully logged in user:", data.fullName);
-
+          setUser(data);
           if (data.verified) {
-            console.log("User is verified - redirect to home page");
-            // TODO: Temporary
-            form.prepend('<div class="alert alert-success">' + SUCCESSFUL_LOGIN + "</div>");
+            window.location.href = BASE_HOME_REDIRECT;
           } else {
-            console.log("User is not verified - redirect to verification page");
             // window.location.href = VERIFY_ACCOUNT_REDIRECT;
-            // $('#ajaxSuccessMessage').text(response.success);
-            // $('#ajaxAlertSuccess').show();
           }
         });
       } else {
         return response.json().then(error => {
-          console.error("Error Occurred:", JSON.stringify(error));
           form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
         });
       }
     }).catch(error => {
-      console.error("Error Occurred:", error);
       form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
     });
   });
 
-  // Handles Sign-In Modal Switch
+  // Handles showing sign-in modal
   $("#showSignInModalContentBtn, #signInSwitch").click(function () {
     $("#signUpModalContent").hide();
     $("#signUpForm")[0].reset();
@@ -134,7 +157,7 @@ $(document).ready(function () {
     $("#authModal").modal("show");
   });
 
-  // Handles Sign-Up Modal Switch
+  // Handles showing sign-up modal
   $("#showSignUpModalContentBtn, #signUpSwitch").click(function () {
     $("#signInModalContent").hide();
     $("#signInForm")[0].reset();
@@ -142,13 +165,11 @@ $(document).ready(function () {
     $("#signUpModalContent").show();
     $("#authModal").modal("show");
   });
-});
 
-function convertToJson(formArray) {
-  var formJson = {};
-  $.each(formArray, function (_, obj) {
-    formJson[obj.name] = obj.value;
+  // Handles user signout
+  $("a[href='/signout']").on("click", function (event) {
+    event.preventDefault();
+    setUser(undefined);
+    window.location.href = BASE_HOME_REDIRECT;
   });
-
-  return formJson;
-}
+});
