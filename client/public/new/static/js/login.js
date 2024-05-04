@@ -1,9 +1,15 @@
-const BASE_HOME_REDIRECT = "account/my_dietary.html"
+// Redirects
+const BASE_HOME_REDIRECT = "account/my_dietary.html";
+const VERIFY_ACCOUNT_REDIRECT = "verify_account.html";
+
+// API Actions
 const POST_ACTION = "POST";
 const GET_ACTION = "GET";
 const DEFAULT_DATA_TYPE = "application/json";
 
+// User Messages
 const SUCCESSFUL_LOGIN = "You were successfully logged in!"
+const ACCOUNT_CREATION = "Account successfully created!";
 
 // Server Port in NGINX
 // const host = 'http://localhost:8080';
@@ -24,6 +30,7 @@ $(document).ready(function () {
 
     console.log("In Sign-Up Logic");
 
+    // Set variable here so we can update with error messages
     var form = $(this);
     var formArray = form.serializeArray();
 
@@ -36,33 +43,26 @@ $(document).ready(function () {
     formArray.push({ name: "favorites", value: [] });
     formArray.push({ name: "verificationCode", value: "test" });
 
-    // Convert formData to object
-    var formObject = {};
-    $.each(formArray, function (index, obj) {
-      formObject[obj.name] = obj.value;
-    });
-
-    console.log("Sending Sign-Up Form to Server:", JSON.stringify(formObject, null, 2));
+    // Convert to JSON
+    var formJson = convertToJson(formArray);
 
     clearErrorMessage();
 
     fetch(REGISTER_URL, {
       method: POST_ACTION,
-      body: JSON.stringify(formObject),
+      body: JSON.stringify(formJson),
       headers: {
         'Content-Type': DEFAULT_DATA_TYPE
       }
     }).then(response => {
       if (response.ok) {
         return response.json().then(data => {
-          console.log("Successfully created user:", JSON.stringify(data, null, 2));
-          // Close Modal
-          $('#authModal').modal('hide');
-          // Redirect
-          window.location.href = BASE_HOME_REDIRECT;
-          // Flash message
-          $('#ajaxSuccessMessage').text(response.success);
-          $('#ajaxAlertSuccess').show();
+          console.log("Successfully created user:", data.fullName);
+          // TODO: Temporary
+          form.prepend('<div class="alert alert-success">' + ACCOUNT_CREATION + "</div>");
+          // window.location.href = VERIFY_ACCOUNT_REDIRECT;
+          // $('#ajaxSuccessMessage').text(response.success);
+          // $('#ajaxAlertSuccess').show();
         });
       } else {
         return response.json().then(error => {
@@ -82,33 +82,46 @@ $(document).ready(function () {
 
     console.log("In Sign-In Logic");
 
+    // Set variable here so we can update with error messages
     var form = $(this);
-    console.log("Sending Sign-In Form to Server:", JSON.stringify(form.serialize(), null, 2));
+    var formArray = form.serializeArray();
+
+    // Convert to JSON
+    var formJson = convertToJson(formArray);
 
     clearErrorMessage();
 
-    $.ajax({
-      type: POST_ACTION,
-      url: LOGIN_URL,
-      data: form.serialize(),
-      dataType: DEFAULT_DATA_TYPE,
-      success: function (response) {
-        console.log("In sign in success:", JSON.stringify(response));
-        if (response.success) {
-          window.location.href = BASE_HOME_REDIRECT;
-        } else {
-          form.prepend(
-            '<div class="alert alert-danger">' + response.error + "</div>"
-          );
-        }
-      },
-      error: function (xhr) {
-        console.error("Error Occurred:", xhr.responseText);
-        var response = JSON.parse(xhr.responseText);
-        form.prepend(
-          '<div class="alert alert-danger">' + response.error + "</div>"
-        );
-      },
+    fetch(LOGIN_URL, {
+      method: POST_ACTION,
+      body: JSON.stringify(formJson),
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    }).then(response => {
+      if (response.ok) {
+        return response.json().then(data => {
+          console.log("Successfully logged in user:", data.fullName);
+
+          if (data.verified) {
+            console.log("User is verified - redirect to home page");
+            // TODO: Temporary
+            form.prepend('<div class="alert alert-success">' + SUCCESSFUL_LOGIN + "</div>");
+          } else {
+            console.log("User is not verified - redirect to verification page");
+            // window.location.href = VERIFY_ACCOUNT_REDIRECT;
+            // $('#ajaxSuccessMessage').text(response.success);
+            // $('#ajaxAlertSuccess').show();
+          }
+        });
+      } else {
+        return response.json().then(error => {
+          console.error("Error Occurred:", JSON.stringify(error));
+          form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
+        });
+      }
+    }).catch(error => {
+      console.error("Error Occurred:", error);
+      form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
     });
   });
 
@@ -130,3 +143,12 @@ $(document).ready(function () {
     $("#authModal").modal("show");
   });
 });
+
+function convertToJson(formArray) {
+  var formJson = {};
+  $.each(formArray, function (_, obj) {
+    formJson[obj.name] = obj.value;
+  });
+
+  return formJson;
+}
