@@ -1,23 +1,3 @@
-// import { StatusBar } from 'expo-status-bar';
-// import { StyleSheet, Text, View } from 'react-native';
-
-// export default function App() {
-//   return (
-//     <View style={styles.container}>
-//       <Text>Open up App.js to start working on your app!</Text>
-//       <StatusBar style="auto" />
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -29,6 +9,8 @@ import VerificationCodeScreen from './components/VerificationCodeScreen';
 import Home from './components/Home';
 import RecipeSearchScreen from './components/RecipeSearchScreen';
 import DietaryRestrictionsScreen from './components/DietaryRestrictionsScreen';
+import DietsScreen from './components/DietsScreen';
+import AllergiesScreen from './components/AllergiesScreen';
 import FavoritesScreen from './components/FavoritesScreen';
 
 const Stack = createNativeStackNavigator();
@@ -113,6 +95,30 @@ export default function App() {
            <Stack.Screen 
             name="DietaryRestrictionsScreen" 
             component={DietaryRestrictionsScreen} 
+            options={
+              {
+                title: appTitle,
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                }
+              }}
+          />
+           <Stack.Screen 
+            name="DietsScreen" 
+            component={DietsScreen} 
+            options={
+              {
+                title: appTitle,
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                }
+              }}
+          />
+           <Stack.Screen 
+            name="AllergiesScreen" 
+            component={AllergiesScreen} 
             options={
               {
                 title: appTitle,

@@ -7,23 +7,20 @@ export default function DietaryRestrictionsScreen({ navigation }) {
         <ScrollView>
         <View style={DietaryRestrictionsStyles.container}>
             <Text style={DietaryRestrictionsStyles.instructions}>
-               Update dietary restrictions below:
+               Choose dietary restrictions to update below:
             </Text>
-            <Pressable style={DietaryRestrictionsStyles.updateButton} 
-                // onPress={() => onLogin(textUsername, setUsernameText)}
+            <Pressable style={DietaryRestrictionsStyles.pathButton} 
+              onPress={() => navigation.navigate("DietsScreen")}
             >
-              <Text style={DietaryRestrictionsStyles.buttonText}>Vegan</Text>
+              <Text style={DietaryRestrictionsStyles.buttonText}>Diet Types</Text>
             </Pressable>
-            <Pressable style={DietaryRestrictionsStyles.updateButton} 
-                // onPress={() => onLogin(textUsername, setUsernameText)}
+            
+            <Pressable style={DietaryRestrictionsStyles.pathButton} 
+              onPress={() => navigation.navigate("Allergies")}
             >
-              <Text style={DietaryRestrictionsStyles.buttonText}>Low Fat</Text>
+              <Text style={DietaryRestrictionsStyles.buttonText}>Food Allergies</Text>
             </Pressable>
-            <Pressable style={DietaryRestrictionsStyles.updateButton} 
-                // onPress={() => onLogin(textUsername, setUsernameText)}
-            >
-              <Text style={DietaryRestrictionsStyles.buttonText}>Gluton Free</Text>
-            </Pressable>
+
       </View>
       </ScrollView>
     );
@@ -35,7 +32,7 @@ export default function DietaryRestrictionsScreen({ navigation }) {
       alignItems: 'center',
       justifyContent: 'top',
     },
-    updateButton: {
+    pathButton: {
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 4,
