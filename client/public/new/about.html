@@ -100,7 +100,12 @@
             </div>
             <div class="form-group mb-1">
               <label for="signInPasswordInput">Password</label>
-              <input id="signInPasswordInput" type="password" class="form-control" name="password" required />
+              <div class="input-group" id="signinPasswordToggle">
+                <input id="signInPasswordInput" type="password" class="form-control" name="password" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
             </div>
           </form>
         </div>
@@ -147,12 +152,21 @@
             </div>
             <div class="form-group">
               <label for="signUpPasswordInput">Password</label>
-              <input id="signUpPasswordInput" type="password" class="form-control" name="password" required />
+              <div class="input-group" id="signupPasswordOneToggle">
+                <input id="signUpPasswordInput" type="password" class="form-control" name="password" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label for="signUpRetypedPasswordInput">Re-type Password</label>
-              <input id="signUpRetypedPasswordInput" type="password" class="form-control" name="retypedPassword"
-                required />
+              <div class="input-group" id="signupPasswordTwoToggle">
+                <input id="signUpRetypedPasswordInput" type="password" class="form-control" name="password" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
             </div>
           </form>
         </div>

@@ -1,17 +1,21 @@
 // Redirects
 const BASE_HOME_REDIRECT = "/";
 const VERIFY_ACCOUNT_REDIRECT = "verify_account.html";
+
 // Fetch Constants
 const POST_ACTION = "POST";
 const DEFAULT_DATA_TYPE = "application/json";
+
 // Server URL - Locally
 const host = 'http://localhost:3001';
 // Server URL - NGINX
 // const host = 'http://localhost:8080';
+
 // Authentication API Endpoints
 const REGISTER_URL = `${host}/api/v1/users/register`;
 const LOGIN_URL = `${host}/api/v1/users/find-username`;
 const PROFILE_URL = `${host}/api/v1/users/profile`;
+
 // Sign-In / Sign-Up Messages
 const SUCCESSFUL_LOGIN = "You were successfully logged in!";
 const ACCOUNT_CREATION = "Account successfully created!";
@@ -45,6 +49,10 @@ function renderNavbar() {
   }
 }
 
+/**
+ * TODO: This method should be re-factored to only store KEY information from the user. Right now this is storing all the credentials which is a security concern
+ * @param {*} user 
+ */
 function setUser(user) {
   if (user) {
     sessionStorage.setItem('user', JSON.stringify(user));
@@ -171,5 +179,20 @@ $(document).ready(function () {
     event.preventDefault();
     setUser(undefined);
     window.location.href = BASE_HOME_REDIRECT;
+  });
+
+  // Toggle Password Show/Hide
+  $(".toggle-password").on('click', function (event) {
+    event.preventDefault();
+    var $inputField = $(this).closest('.input-group').find('input');
+    var $icon = $(this).find('i');
+
+    if ($inputField.attr("type") === "text") {
+      $inputField.attr('type', 'password');
+      $icon.addClass("fa-eye-slash").removeClass("fa-eye");
+    } else if ($inputField.attr("type") === "password") {
+      $inputField.attr('type', 'text');
+      $icon.removeClass("fa-eye-slash").addClass("fa-eye");
+    }
   });
 });
