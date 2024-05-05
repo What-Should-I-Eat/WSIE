@@ -11,6 +11,8 @@ const HOST = 'http://localhost:3001';
 // const HOST = 'http://localhost:8080';
 // Server URL - VM Deployment
 // const HOST = "";
+// Server URL = Local IP (Testing Mobile)
+// const HOST = "";
 const API_VERSION = "api/v1"
 
 // Fetch Constants
