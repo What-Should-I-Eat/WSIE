@@ -33,6 +33,20 @@ var validationHandler = (() => {
     }
   }
 
+  function validateResetInput(username, password, confirmedPassword) {
+    if (!checkIfUserNameHasValidChars(username)) {
+      return INVALID_USERNAME_CHARACTERS_CODE;
+    } else if (!checkIfUserNameIsCorrectLength(username)) {
+      return INVALID_USERNAME_LENGTH_CODE;
+    } else if (!checkIfPasswordIsValid(password)) {
+      return INVALID_PASSWORD_CODE;
+    } else if (!checkIfPasswordsMatch(password, confirmedPassword)) {
+      return INVALID_PASSWORD_MATCH_CODE;
+    } else {
+      return SUCCESS_CODE;
+    }
+  }
+
   function checkIfEmailAddressIsValid(email) {
     return /\S+@\S+\.\S+/.test(email);
   }
@@ -82,7 +96,9 @@ var validationHandler = (() => {
 
   return {
     validateSignupInput,
+    validateResetInput,
     getValidationText: code => validationMessages[code],
-    getVerificationCode
+    getVerificationCode,
+    checkIfEmailAddressIsValid
   }
 })();

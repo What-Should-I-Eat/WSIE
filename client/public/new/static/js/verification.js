@@ -10,6 +10,7 @@ const ERROR_CODE_EXPIRED = "Code has expired after 10 minutes. Please click rese
 
 // Failure Messages
 const FAILED_TO_VERIFY_USER = "Failed to verify user";
+const FAILED_TO_VERIFY_USER_MISSING_INFO = `${FAILED_TO_VERIFY_USER}. Missing user information`;
 const FAILED_TO_VERIFY_USER_MISSING_USERNAME = `${FAILED_TO_VERIFY_USER}. Missing username`;
 const FAILED_TO_VERIFY_USER_INVALID_VERIFICATION_CODE = `${FAILED_TO_VERIFY_USER}. Verification code must be 6 numbers. Please try again`;
 const FAILED_TO_RESEND_CODE = "Failed to resend code";
@@ -19,29 +20,6 @@ const FAILED_TO_RESEND_CODE_MISSING_NAME = `${FAILED_TO_RESEND_CODE}. Missing na
 
 function isVerificationCodeValid(verificationCode) {
   return verificationCode.length == 6;
-}
-
-async function getUser(username) {
-  const urlWithQueryParams = `${GET_USER_DATA}=${username}`
-  console.log("Querying Server for:", urlWithQueryParams);
-
-  const user = await fetch(urlWithQueryParams, {
-    methods: POST_ACTION,
-    headers: {
-      'Content-Type': DEFAULT_DATA_TYPE
-    }
-  }).then(async response => {
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error);
-    }
-
-    return response.json();
-  }).catch(error => {
-    console.error(error.error);
-  });
-
-  return user;
 }
 
 $(document).ready(function () {
@@ -106,7 +84,7 @@ $(document).ready(function () {
       return;
     }
 
-    const user = await getUser(username);
+    const user = await utils.getUserFromUsername(username);
 
     const email = user.email;
     if (!email) {

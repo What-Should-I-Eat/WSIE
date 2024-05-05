@@ -159,23 +159,79 @@ $(document).ready(function () {
 
   // Handles showing sign-in modal
   $("#showSignInModalContentBtn, #signInSwitch, #signInSwitchVerification").click(function () {
+    // Hide / Reset Sign-Up Modal
     $("#signUpModalContent").hide();
     $("#signUpForm")[0].reset();
+    // Hide / Reset Verify Account Modal
     $("#verifyAccountModalContent").hide();
     $("#verifyAccountForm")[0].reset();
+    // Hide / Reset Forgot Username / Password Modal
+    $("#forgotUsernamePasswordModalContent").hide();
+    $("#forgotUsernamePasswordForm")[0].reset();
+    // Hide / Reset Forgot / Password Verify Account Modal
+    $("#forgotUsernamePasswordVerifyAccountModalContent").hide();
+    $("#forgotUsernamePasswordVerifyAccountForm")[0].reset();
+    // Hide / Reset Reset Account Modal
+    $("#resetAccountModalContent").hide();
+    $("#resetAccountForm")[0].reset();
+
+    // Clear modal messages
     utils.clearMessageFromAuthModal(authClassesToRemove);
+
+    // Show Correct Modal
     $("#signInModalContent").show();
     $("#authModal").modal("show");
   });
 
   // Handles showing sign-up modal
   $("#showSignUpModalContentBtn, #signUpSwitch").click(function () {
+    // Hide / Reset Sign-In Modal
     $("#signInModalContent").hide();
     $("#signInForm")[0].reset();
+    // Hide / Reset Verify Account Modal
     $("#verifyAccountModalContent").hide();
     $("#verifyAccountForm")[0].reset();
+    // Hide / Reset Forgot Username / Password Modal
+    $("#forgotUsernamePasswordModalContent").hide();
+    $("#forgotUsernamePasswordForm")[0].reset();
+    // Hide / Reset Forgot / Password Verify Account Modal
+    $("#forgotUsernamePasswordVerifyAccountModalContent").hide();
+    $("#forgotUsernamePasswordVerifyAccountForm")[0].reset();
+    // Hide / Reset Reset Account Modal
+    $("#resetAccountModalContent").hide();
+    $("#resetAccountForm")[0].reset();
+
+    // Clear modal messages
     utils.clearMessageFromAuthModal(authClassesToRemove);
+
+    // Show Correct Modal
     $("#signUpModalContent").show();
+    $("#authModal").modal("show");
+  });
+
+  // Handles showing forgot username / password modal
+  $("#signInForgotUsernamePasswordBtn, #signUpForgotUsernamePasswordBtn").click(function () {
+    // Hide / Reset Sign-In Modal
+    $("#signInModalContent").hide();
+    $("#signInForm")[0].reset();
+    // Hide / Reset Sign-Up Modal
+    $("#signUpModalContent").hide();
+    $("#signUpForm")[0].reset();
+    // Hide / Reset Verify Account Modal
+    $("#verifyAccountModalContent").hide();
+    $("#verifyAccountForm")[0].reset();
+    // Hide / Reset Forgot / Password Verify Account Modal
+    $("#forgotUsernamePasswordVerifyAccountModalContent").hide();
+    $("#forgotUsernamePasswordVerifyAccountForm")[0].reset();
+    // Hide / Reset Reset Account Modal
+    $("#resetAccountModalContent").hide();
+    $("#resetAccountForm")[0].reset();
+
+    // Clear modal messages
+    utils.clearMessageFromAuthModal(authClassesToRemove);
+
+    // Show Correct Modal
+    $("#forgotUsernamePasswordModalContent").show();
     $("#authModal").modal("show");
   });
 

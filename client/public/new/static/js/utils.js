@@ -54,10 +54,68 @@ var utils = (() => {
     }, {});
   }
 
+  /**
+   * Method that handles requesting user data based on the username
+   * @param {} username The username to query
+   * @returns The user data or error
+   */
+  async function getUserFromUsername(username) {
+    const urlWithQueryParams = `${GET_USER_DATA}=${username}`
+    console.log("Querying Server for:", urlWithQueryParams);
+
+    const user = await fetch(urlWithQueryParams, {
+      methods: POST_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    }).then(async response => {
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error);
+      }
+
+      return response.json();
+    }).catch(error => {
+      console.error(error.error);
+    });
+
+    return user;
+  }
+
+  /**
+   * Method that handles requesting user data based on the email
+   * @param {} email The email to query
+   * @returns The user data or error
+   */
+  async function getUserFromEmail(email) {
+    const urlWithQueryParams = `${REQUEST_USER_INFO_FOR_RESET}=${email}`
+    console.log("Querying Server for:", urlWithQueryParams);
+
+    const user = await fetch(urlWithQueryParams, {
+      methods: GET_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    }).then(async response => {
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error);
+      }
+
+      return response.json();
+    }).catch(error => {
+      console.error(error.error);
+    });
+
+    return user;
+  }
+
   return {
     setStorage,
     getFromStorage,
     clearMessageFromAuthModal,
-    convertToJson
+    convertToJson,
+    getUserFromUsername,
+    getUserFromEmail
   }
 })();

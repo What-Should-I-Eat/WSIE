@@ -29,6 +29,7 @@
   <script type="text/javascript" src="/static/js/validation.js"></script>
   <script type="text/javascript" src="/static/js/email-wrapper.js"></script>
   <script src="/static/js/verification.js"></script>
+  <script src="/static/js/forgot-password.js"></script>
   <script src="/static/js/login.js"></script>
 </head>
 
@@ -123,10 +124,8 @@
             <button type="submit" form="signInForm" class="mb-3 btn btn-primary btn-block">Sign In</button>
             <button id="signUpSwitch" type="button" class="mb-3 btn btn-link btn-block">Don't have an account? Sign
               up</button>
-            <a href="/reset_account.html">
-              <button id="forgotUsernamePassword" type="button" class="mb-3 btn btn-link btn-block">Forgot username or
-                password? Click here</button>
-            </a>
+            <button id="signInForgotUsernamePasswordBtn" type="button" class="mb-3 btn btn-link btn-block">Forgot
+              username or password? Click here</button>
           </div>
         </div>
       </div>
@@ -184,10 +183,8 @@
             <button type="submit" form="signUpForm" class="mb-3 btn btn-primary btn-block">Sign Up</button>
             <button id="signInSwitch" type="button" class="mb-3 btn btn-link btn-block">Already have an account? Sign
               in</button>
-            <a href="/reset_account.html">
-              <button id="forgotUsernamePassword" type="button" class="mb-3 btn btn-link btn-block">Forgot username or
-                password? Click here</button>
-            </a>
+            <button id="signUpForgotUsernamePasswordBtn" type="button" class="mb-3 btn btn-link btn-block">Forgot
+              username or password? Click here</button>
           </div>
         </div>
       </div>
@@ -223,6 +220,113 @@
         </div>
       </div>
       <!-- END: Verify Account Modal -->
+
+      <!-- START: Forgot Username/Password Modal -->
+      <div id="forgotUsernamePasswordModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title">Forgot Username or Password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form id="forgotUsernamePasswordForm">
+            <div class="form-group">
+              <label for="forgotUsernamePasswordEmailInput" class="form-label">Enter your email</label>
+              <input type="email" class="form-control" id="forgotUsernamePasswordEmailInput"
+                name="forgotUsernamePasswordEmailInput" required />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="forgotUsernamePasswordForm" class="mb-3 btn btn-primary btn-block">Send
+              Code</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Forgot Username/Password Modal -->
+
+      <!-- START: Forgot Username/Password Verify Account Modal -->
+      <div id="forgotUsernamePasswordVerifyAccountModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title">Verify Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form id="forgotUsernamePasswordVerifyAccountForm">
+            <div class="form-group">
+              <label for="forgotUsernamePasswordVerificationCodeInput" class="form-label">Enter Your Verification
+                Code</label>
+              <input type="number" class="form-control" id="forgotUsernamePasswordVerificationCodeInput"
+                name="forgotUsernamePasswordVerificationCodeInput" required />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="forgotUsernamePasswordVerifyAccountForm"
+              class="mb-3 btn btn-primary btn-block">Verify</button>
+            <button id="forgotUsernamePasswordResendVerificationCodeBtn" type="button"
+              class="mb-3 btn btn-link btn-block">Click here to
+              re-send code</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Forgot Username/Password Verify Account Modal -->
+
+      <!-- START: Reset Account Modal -->
+      <div id="resetAccountModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Reset Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+
+        <div class="modal-body">
+          <form id="resetAccountForm">
+            <div class="form-group">
+              <label for="resetAccountUsernameInput">Username</label>
+              <input id="resetAccountUsernameInput" type="username" class="form-control"
+                name="resetAccountUsernameInput" required readonly />
+            </div>
+            <div class="form-group">
+              <label for="resetAccountPasswordInput">Password</label>
+              <div class="input-group" id="signupPasswordOneToggle">
+                <input id="resetAccountPasswordInput" type="password" class="form-control"
+                  name="resetAccountPasswordInput" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="resetAccountRetypedPasswordInput">Re-type Password</label>
+              <div class="input-group" id="signupPasswordTwoToggle">
+                <input id="resetAccountRetypedPasswordInput" type="password" class="form-control"
+                  name="resetAccountRetypedPasswordInput" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="resetAccountForm" class="mb-3 btn btn-primary btn-block">Reset</button>
+            <button id="signInSwitch" type="button" class="mb-3 btn btn-link btn-block">Back to Sign in</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Reset Account Modal -->
     </div>
   </div>
   <!-- END: Sign Up / Sign Modal -->
