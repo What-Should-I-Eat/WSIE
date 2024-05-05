@@ -20,6 +20,11 @@ const PROFILE_URL = `${host}/api/v1/users/profile`;
 const SUCCESSFUL_LOGIN = "You were successfully logged in!";
 const ACCOUNT_CREATION = "Account successfully created!";
 
+/**
+ * Method used to render the navigation bar based on whether the user is logged in or not. 
+ * This is similar implementation to how django handles the 'session' of the user from
+ * the backend. Here we are dynamically building the navigation bar based on user session
+ */
 function renderNavbar() {
   const navBar = $('#navBarMyAccountSignInSignUp');
   navBar.empty();
@@ -50,8 +55,12 @@ function renderNavbar() {
 }
 
 /**
+ * Method that will store the current user information in the session variable. This is
+ * primarily used for building the navigation bar but also used to query the backend
+ * based on the username
+ * 
  * TODO: This method should be re-factored to only store KEY information from the user. Right now this is storing all the credentials which is a security concern
- * @param {*} user 
+ * @param {*} user The user JSON structure to store in session storage
  */
 function setUser(user) {
   if (user) {
@@ -61,15 +70,27 @@ function setUser(user) {
   }
 }
 
+/**
+ * Method that will return the current user JSON from the session storage
+ * @returns The user or null
+ */
 function getUser() {
   const userString = sessionStorage.getItem('user');
   return userString ? JSON.parse(userString) : null;
 }
 
+/**
+ * Helper method to remove the alerts from the login modal
+ */
 function clearErrorMessage() {
   $(".alert-danger").remove();
 }
 
+/**
+ * Helper method that will convert a forms array to JSON
+ * @param {} formArray The array to convert
+ * @returns The converted array to JSON
+ */
 function convertToJson(formArray) {
   return formArray.reduce((acc, { name, value }) => {
     acc[name] = value;
@@ -80,14 +101,28 @@ function convertToJson(formArray) {
 $(document).ready(function () {
   renderNavbar();
 
-  // Handles sign-up business logic;
+  // Handles sign-up form submission logic
   $("#signUpForm").on("submit", function (event) {
     event.preventDefault();
+    clearErrorMessage();
 
     const form = $(this);
     const formArray = form.serializeArray();
+
     const firstName = formArray[0].value;
     const lastName = formArray[1].value;
+    const email = formArray[2].value;
+    const username = formArray[3].value;
+    const password = formArray[4].value;
+    const retypedPassword = formArray[5].value;
+
+    const validationCode = validationHandler.validateSignupInput(email, username, password, retypedPassword);
+
+    if (validationCode !== 0) {
+      const errorMessage = validationHandler.getValidationText(validationCode);
+      form.prepend('<div class="alert alert-danger">' + errorMessage + "</div>");
+      return;
+    }
 
     formArray.push({ name: "fullName", value: `${firstName} ${lastName}` });
     formArray.push({ name: "diet", value: [] });
@@ -96,7 +131,6 @@ $(document).ready(function () {
     formArray.push({ name: "verificationCode", value: "test" });
 
     const formJson = convertToJson(formArray);
-    clearErrorMessage();
 
     fetch(REGISTER_URL, {
       method: POST_ACTION,
@@ -121,14 +155,14 @@ $(document).ready(function () {
     });
   });
 
-  // Handles sign-in business logic
+  // Handles sign-in form submission logic
   $("#signInForm").on("submit", function (event) {
     event.preventDefault();
+    clearErrorMessage();
 
     const form = $(this);
     const formArray = form.serializeArray();
     const formJson = convertToJson(formArray);
-    clearErrorMessage();
 
     fetch(LOGIN_URL, {
       method: POST_ACTION,
