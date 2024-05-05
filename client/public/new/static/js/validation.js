@@ -62,7 +62,7 @@ var validationHandler = (() => {
 
   async function getVerificationCode() {
     try {
-      const response = await fetch(VERIFICATION_URL, {
+      const response = await fetch(GET_VERIFICATION_CODE_URL, {
         methods: GET_ACTION,
         headers: {
           'Content-Type': DEFAULT_DATA_TYPE

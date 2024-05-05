@@ -1,10 +1,9 @@
-// Redirects
-const BASE_HOME_REDIRECT = "/";
-const VERIFY_ACCOUNT_REDIRECT = "verify_account.html";
-
 // Sign-In / Sign-Up Messages
 const SUCCESSFUL_LOGIN = "You were successfully logged in!";
 const ACCOUNT_CREATION = "Account successfully created!";
+
+// Server Error Messages
+const ACCOUNT_NOT_VERIFIED = "User account is not verified";
 
 /**
  * Method used to render the navigation bar based on whether the user is logged in or not. 
@@ -15,7 +14,7 @@ function renderNavbar() {
   const navBar = $('#navBarMyAccountSignInSignUp');
   navBar.empty();
 
-  const currentUser = getUser();
+  const currentUser = utils.getFromStorage("user");
 
   if (currentUser) {
     const myAccountDropdown = $('<div id="myAccountDropdown" class="dropdown"></div>');
@@ -40,68 +39,19 @@ function renderNavbar() {
   }
 }
 
-/**
- * Method that will store the current user information in the session variable. This is
- * primarily used for building the navigation bar but also used to query the backend
- * based on the username
- * 
- * TODO: This method should be re-factored to only store KEY information from the user. Right now this is storing all the credentials which is a security concern
- * @param {*} user The user JSON structure to store in session storage
- */
-function setUser(user) {
-  if (user) {
-    sessionStorage.setItem('user', JSON.stringify(user));
-  } else {
-    sessionStorage.removeItem('user');
-  }
-}
-
-/**
- * Method that will return the current user JSON from the session storage
- * @returns The user or null
- */
-function getUser() {
-  const userString = sessionStorage.getItem('user');
-  return userString ? JSON.parse(userString) : null;
-}
-
-/**
- * Helper method to remove the alerts from the login modal
- */
-function clearErrorMessage() {
-  $(".alert-danger").remove();
-}
-
-/**
- * Helper method that will convert a forms array to JSON
- * @param {} formArray The array to convert
- * @returns The converted array to JSON
- */
-function convertToJson(formArray) {
-  return formArray.reduce((acc, { name, value }) => {
-    acc[name] = value;
-    return acc;
-  }, {});
-}
-
 $(document).ready(function () {
   renderNavbar();
 
   // Handles sign-up form submission logic
   $("#signUpForm").on("submit", async function (event) {
     event.preventDefault();
-    clearErrorMessage();
+    utils.clearMessageFromAuthModal(authClassesToRemove);
 
     const form = $(this);
     const formArray = form.serializeArray();
 
-    const firstName = formArray[0].value;
-    const lastName = formArray[1].value;
+    const [firstName, lastName, email, username, password, retypedPassword] = formArray.map(({ value }) => value);
     const fullName = `${firstName} ${lastName}`;
-    const email = formArray[2].value;
-    const username = formArray[3].value;
-    const password = formArray[4].value;
-    const retypedPassword = formArray[5].value;
 
     const validationCode = validationHandler.validateSignupInput(email, username, password, retypedPassword);
 
@@ -131,19 +81,31 @@ $(document).ready(function () {
       headers: {
         'Content-Type': DEFAULT_DATA_TYPE
       }
-    }).then(response => {
+    }).then(async response => {
       if (response.ok) {
-        return response.json().then(data => {
-          setUser(data);
-          form.prepend('<div class="alert alert-success">' + ACCOUNT_CREATION + "</div>");
-          // window.location.href = BASE_HOME_REDIRECT;
-        });
+        console.log(ACCOUNT_CREATION)
+
+        const data = await response.json();
+        // Store the username and email so we can access for verification
+        utils.setStorage("username", data.username);
+        // Store the verification so we can bypass email
+        utils.setStorage("verificationCode", verificationCode);
+
+        // Hide Sign-Up Modal and Show the Verify Account Modal with Message to User
+        $("#signUpModalContent").hide();
+        $("#signUpForm")[0].reset();
+        utils.clearMessageFromAuthModal(authClassesToRemove);
+        $("#verifyAccountModalContent").show();
+        $("#authModal").modal("show");
+        $('#verifyAccountForm').prepend('<div class="alert alert-warning">' + VERIFY_ACCOUNT + "</div>");
       } else {
-        return response.json().then(error => {
-          form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
-        });
+        const data = await response.json();
+        const error = data.error;
+        console.error(error);
+        form.prepend('<div class="alert alert-danger">' + error + "</div>");
       }
     }).catch(error => {
+      console.error(error);
       form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
     });
   });
@@ -151,11 +113,11 @@ $(document).ready(function () {
   // Handles sign-in form submission logic
   $("#signInForm").on("submit", function (event) {
     event.preventDefault();
-    clearErrorMessage();
+    utils.clearMessageFromAuthModal(authClassesToRemove);
 
     const form = $(this);
     const formArray = form.serializeArray();
-    const formJson = convertToJson(formArray);
+    const formJson = utils.convertToJson(formArray);
 
     fetch(LOGIN_URL, {
       method: POST_ACTION,
@@ -163,31 +125,45 @@ $(document).ready(function () {
       headers: {
         'Content-Type': DEFAULT_DATA_TYPE
       }
-    }).then(response => {
+    }).then(async response => {
       if (response.ok) {
-        return response.json().then(data => {
-          setUser(data);
-          if (data.verified) {
-            window.location.href = BASE_HOME_REDIRECT;
-          } else {
-            // window.location.href = VERIFY_ACCOUNT_REDIRECT;
-          }
-        });
+        console.log(SUCCESSFUL_LOGIN)
+
+        const data = await response.json();
+        // Only set the user if they're verified
+        utils.setStorage("user", data);
+        // Store the username and email so we can access for verification
+        utils.setStorage("username", data.username);
+        window.location.href = BASE_HOME_REDIRECT;
       } else {
-        return response.json().then(error => {
-          form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
-        });
+        const data = await response.json();
+        const error = data.error;
+        console.error(error);
+
+        if (error === ACCOUNT_NOT_VERIFIED) {
+          $("#signInModalContent").hide();
+          $("#signInForm")[0].reset();
+          utils.clearMessageFromAuthModal(authClassesToRemove);
+          $("#verifyAccountModalContent").show();
+          $("#authModal").modal("show");
+          $('#verifyAccountForm').prepend('<div class="alert alert-warning">' + VERIFY_ACCOUNT + "</div>");
+        } else {
+          form.prepend('<div class="alert alert-danger">' + error + "</div>");
+        }
       }
     }).catch(error => {
+      console.error(error);
       form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
     });
   });
 
   // Handles showing sign-in modal
-  $("#showSignInModalContentBtn, #signInSwitch").click(function () {
+  $("#showSignInModalContentBtn, #signInSwitch, #signInSwitchVerification").click(function () {
     $("#signUpModalContent").hide();
     $("#signUpForm")[0].reset();
-    clearErrorMessage();
+    $("#verifyAccountModalContent").hide();
+    $("#verifyAccountForm")[0].reset();
+    utils.clearMessageFromAuthModal(authClassesToRemove);
     $("#signInModalContent").show();
     $("#authModal").modal("show");
   });
@@ -196,7 +172,9 @@ $(document).ready(function () {
   $("#showSignUpModalContentBtn, #signUpSwitch").click(function () {
     $("#signInModalContent").hide();
     $("#signInForm")[0].reset();
-    clearErrorMessage();
+    $("#verifyAccountModalContent").hide();
+    $("#verifyAccountForm")[0].reset();
+    utils.clearMessageFromAuthModal(authClassesToRemove);
     $("#signUpModalContent").show();
     $("#authModal").modal("show");
   });
@@ -204,7 +182,9 @@ $(document).ready(function () {
   // Handles user signout
   $("a[href='/signout']").on("click", function (event) {
     event.preventDefault();
-    setUser(undefined);
+    utils.setStorage("user", undefined);
+    utils.setStorage("username", undefined);
+    utils.setStorage("verificationCode", undefined);
     window.location.href = BASE_HOME_REDIRECT;
   });
 

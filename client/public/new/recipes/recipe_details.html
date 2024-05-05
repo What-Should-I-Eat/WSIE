@@ -25,8 +25,10 @@
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <!-- Custom Scripts -->
   <script type="text/javascript" src="/static/js/constants.js"></script>
+  <script type="text/javascript" src="/static/js/utils.js"></script>
   <script type="text/javascript" src="/static/js/validation.js"></script>
   <script type="text/javascript" src="/static/js/email-wrapper.js"></script>
+  <script src="/static/js/verification.js"></script>
   <script src="/static/js/login.js"></script>
   <script src="/static/js/recipes/recipe_details.js"></script>
 
@@ -199,6 +201,37 @@
         </div>
       </div>
       <!-- END: Sign Up Modal -->
+
+      <!-- START: Verify Account Modal -->
+      <div id="verifyAccountModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title">Verify Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form id="verifyAccountForm">
+            <div class="form-group">
+              <label for="verificationCodeInput" class="form-label">Enter Your Verification Code</label>
+              <input type="number" class="form-control" id="verificationCodeInput" name="verificationCodeInput"
+                required />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="verifyAccountForm" class="mb-3 btn btn-primary btn-block">Verify</button>
+            <button id="signInSwitchVerification" type="button" class="mb-3 btn btn-link btn-block">Already verified?
+              Sign in</button>
+            <button id="resendVerificationCodeBtn" type="button" class="mb-3 btn btn-link btn-block">Click here to
+              re-send code</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Verify Account Modal -->
     </div>
   </div>
   <!-- END: Sign Up / Sign Modal -->

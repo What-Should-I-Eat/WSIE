@@ -1,12 +1,17 @@
 // Emailjs Credentials
 const SERVICE_ID = "service_6ivuvhw";
 const PUBLIC_KEY = "YaAzvO7B3lldSIpqe";
+// Additional - unsure if needed originated from verificationCode.js
+// const SERVICE_ID = "service_ms0318i";
+// const PUBLIC_KEY = "8nKeoQjoIWF1wyUpG";
 
 // Template / Template ID
 const NEW_USER = "newUser"
 const NEW_USER_TEMPLATE_ID = "template_lfefu0m";
 const FORGOT_PASSWORD = "forgotPassword";
 const FORGOT_PASSWORD_TEMPLATE_ID = "template_zekzics";
+const RESEND = "resend";
+const RESEND_TEMPLATE_ID = "template_7av6tqc";
 
 // Message
 const SENDING_FROM_TEMPLATE_MESSAGE = "Sending verification code from template:";
@@ -30,7 +35,7 @@ var emailWrapper = (() => {
   function sendEmail(fullName, email, verificationCode, emailjs, template, username) {
     var templateID;
 
-    if (template === NEW_USER) {
+    if (template === NEW_USER || template == RESEND) {
       templateID = NEW_USER_TEMPLATE_ID;
     } else if (template === FORGOT_PASSWORD) {
       templateID = FORGOT_PASSWORD_TEMPLATE_ID;
@@ -45,12 +50,6 @@ var emailWrapper = (() => {
       userFullName: fullName,
       verificationCode: verificationCode,
     }
-
-    console.log("Email Wrapper Parameters:", params);
-    console.log("Type of fullName:", typeof fullName);
-    console.log("Type of verificationCode:", typeof verificationCode);
-    console.log("Type of userEmail: ", typeof email);
-    console.log("Type of username: ", typeof username);
 
     emailjs.send(SERVICE_ID, templateID, params, PUBLIC_KEY)
       .then(function (response) {
