@@ -35,11 +35,16 @@ const RESEND_VERIFICATION_URL = `${HOST}/${API_VERSION}/users/resendVerification
 
 // User API Endpoints
 const GET_USER_EMAIL = `${HOST}/${API_VERSION}/users/getUserEmail`;
-const GET_USER_DATA = `${HOST}/${API_VERSION}/users/findUserData?username`;
-const REQUEST_USER_INFO_FOR_RESET = `${HOST}/${API_VERSION}/users/requestInfoForPasswordReset?email`;
+const GET_USER_DATA_URL = `${HOST}/${API_VERSION}/users/findUserData?username`;
+const REQUEST_USER_INFO_FOR_RESET_URL = `${HOST}/${API_VERSION}/users/requestInfoForPasswordReset?email`;
 
 // Authentication Modals
 const authClassesToRemove = ['alert-danger', 'alert-success', 'alert-warning'];
+
+// Sign-In / Sign-Up Messages
+const SUCCESSFUL_LOGIN = "You were successfully logged in!";
+const ACCOUNT_CREATION = "Account successfully created!";
+const ACCOUNT_NOT_VERIFIED = "User account is not verified";
 
 // Verification Messages
 const SUCCESSFULLY_RESET_ACCOUNT = "Successfully reset account - please sign-in!";
@@ -47,3 +52,20 @@ const CHECK_EMAIL_FOR_VERIFICATION_CODE = "Please check your email and enter the
 const VERIFY_ACCOUNT = `Account is not yet verified. ${CHECK_EMAIL_FOR_VERIFICATION_CODE}`;
 const RESENT_VERIFICATION_CODE = `Verification code has been resent. ${CHECK_EMAIL_FOR_VERIFICATION_CODE}`
 const RESET_ACCOUNT = `Account reset in progress. ${CHECK_EMAIL_FOR_VERIFICATION_CODE}`
+
+// Success / Error / Log Messages
+const SENDING_VERIFICATION_FOR_LOG = "Sending Verification Request for:";
+const VERIFIED_SUCCESSFULLY = "Successfully verified account - please sign in!";
+const ERROR_UNABLE_TO_GET_USER = "Failed trying to get current user";
+const ERROR_CODE_EXPIRED = "Code has expired after 10 minutes. Please click resend code for a new code."
+
+// Failure Messages
+const FAILED_TO_VERIFY_USER = "Failed to verify user";
+const FAILED_TO_VERIFY_USER_MISSING_INFO = `${FAILED_TO_VERIFY_USER}. Missing user information`;
+const FAILED_TO_VERIFY_USER_MISSING_USERNAME = `${FAILED_TO_VERIFY_USER}. Missing username`;
+const FAILED_TO_VERIFY_USER_MISSING_NAME = `${FAILED_TO_VERIFY_USER}. Missing name`;
+const FAILED_TO_VERIFY_USER_INVALID_VERIFICATION_CODE = `${FAILED_TO_VERIFY_USER}. Verification code must be 6 numbers. Please try again`;
+const FAILED_TO_RESEND_CODE = "Failed to resend code";
+const FAILED_TO_RESEND_CODE_MISSING_USERNAME = `${FAILED_TO_RESEND_CODE}. Missing username`;
+const FAILED_TO_RESEND_CODE_MISSING_EMAIL = `${FAILED_TO_RESEND_CODE}. Missing email`;
+const FAILED_TO_RESEND_CODE_MISSING_NAME = `${FAILED_TO_RESEND_CODE}. Missing name`;

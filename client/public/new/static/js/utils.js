@@ -1,11 +1,9 @@
-var utils = (() => {
+const utils = (() => {
   /**
-   * Method that will store the current user information in the session variable. This is
-   * primarily used for building the navigation bar but also used to query the backend
-   * based on the username
+   * Stores data in session storage.
    * 
-   * TODO: This method should be re-factored to only store KEY information from the user. Right now this is storing all the credentials which is a security concern
-   * @param {*} user The user JSON structure to store in session storage
+   * @param {string} key The key to store the data under
+   * @param {*} value The value to store
    */
   function setStorage(key, value) {
     if (key) {
@@ -16,12 +14,14 @@ var utils = (() => {
   }
 
   /**
-   * Method that will return the current user JSON from the session storage
-   * @returns The user or null
+   * Retrieves data from session storage.
+   * 
+   * @param {string} key The key to retrieve the data for
+   * @returns {*} The retrieved data or null if not found
    */
   function getFromStorage(key) {
     const value = sessionStorage.getItem(key);
-    if (value === null || value === undefined || value === "undefined") {
+    if (!value || value === "undefined") {
       return null;
     }
     try {
@@ -33,19 +33,21 @@ var utils = (() => {
   }
 
   /**
- * Helper method to remove the alerts from the login modal
- */
+   * Removes alerts from the login modal.
+   * 
+   * @param {string[]} classesToRemove Array of class names to remove
+   */
   function clearMessageFromAuthModal(classesToRemove) {
     classesToRemove.forEach(className => {
       $(`.${className}`).remove();
     });
   }
 
-
   /**
-   * Helper method that will convert a forms array to JSON
-   * @param {} formArray The array to convert
-   * @returns The converted array to JSON
+   * Converts a form array to JSON.
+   * 
+   * @param {Object[]} formArray The form array to convert
+   * @returns {Object} The converted JSON object
    */
   function convertToJson(formArray) {
     return formArray.reduce((acc, { name, value }) => {
@@ -55,59 +57,91 @@ var utils = (() => {
   }
 
   /**
-   * Method that handles requesting user data based on the username
-   * @param {} username The username to query
-   * @returns The user data or error
+   * Renders the navigation bar based on user login status.
    */
-  async function getUserFromUsername(username) {
-    const urlWithQueryParams = `${GET_USER_DATA}=${username}`
-    console.log("Querying Server for:", urlWithQueryParams);
+  function renderNavbar() {
+    const navBar = $('#navBarMyAccountSignInSignUp');
+    navBar.empty();
 
-    const user = await fetch(urlWithQueryParams, {
-      methods: POST_ACTION,
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      }
-    }).then(async response => {
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error);
-      }
+    const currentUser = getFromStorage("user");
 
-      return response.json();
-    }).catch(error => {
-      console.error(error.error);
-    });
+    if (currentUser) {
+      const myAccountDropdown = $('<div id="myAccountDropdown" class="dropdown"></div>');
+      const dropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>');
+      const dropdownMenu = $('<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink"></div>');
 
-    return user;
+      dropdownMenu.append('<h6 class="dropdown-header">Welcome back!</h6>');
+      dropdownMenu.append(`<h6 class="dropdown-header">${currentUser.fullName}</h6>`);
+      dropdownMenu.append('<div class="dropdown-divider"></div>');
+      dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary.html">My Dietary</a>');
+      dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes.html">My Recipes</a>');
+      dropdownMenu.append('<a class="dropdown-item" href="/account/profile.html">My Settings</a>');
+      dropdownMenu.append('<a class="dropdown-item" href="/signout">Sign Out</a>');
+
+      myAccountDropdown.append(dropdownToggle);
+      myAccountDropdown.append(dropdownMenu);
+      navBar.append(myAccountDropdown);
+    } else {
+      const signInButton = $('<button id="showSignInModalContentBtn" type="button" class="mb-2 mb-md-0 mr-md-2 btn btn-link account-link" data-toggle="modal">Sign in</button>');
+      const signUpButton = $('<button id="showSignUpModalContentBtn" type="button" class="btn btn-link account-link" data-toggle="modal">Sign up</button>');
+      navBar.append(signInButton, signUpButton);
+    }
   }
 
   /**
-   * Method that handles requesting user data based on the email
-   * @param {} email The email to query
-   * @returns The user data or error
+   * Fetches user data based on the username.
+   * 
+   * @param {string} username The username to query
+   * @returns {Object} The user data or error
    */
-  async function getUserFromEmail(email) {
-    const urlWithQueryParams = `${REQUEST_USER_INFO_FOR_RESET}=${email}`
+  async function getUserFromUsername(username) {
+    const urlWithQueryParams = `${GET_USER_DATA_URL}=${username}`;
     console.log("Querying Server for:", urlWithQueryParams);
 
-    const user = await fetch(urlWithQueryParams, {
-      methods: GET_ACTION,
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      }
-    }).then(async response => {
+    try {
+      const response = await fetch(urlWithQueryParams, {
+        method: GET_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error);
       }
-
       return response.json();
-    }).catch(error => {
+    } catch (error) {
       console.error(error.error);
-    });
+      return null;
+    }
+  }
 
-    return user;
+  /**
+   * Fetches user data based on the email.
+   * 
+   * @param {string} email The email to query
+   * @returns {Object} The user data or error
+   */
+  async function getUserFromEmail(email) {
+    const urlWithQueryParams = `${REQUEST_USER_INFO_FOR_RESET_URL}=${email}`;
+    console.log("Querying Server for:", urlWithQueryParams);
+
+    try {
+      const response = await fetch(urlWithQueryParams, {
+        method: GET_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error);
+      }
+      return response.json();
+    } catch (error) {
+      console.error(error.error);
+      return null;
+    }
   }
 
   return {
@@ -115,7 +149,8 @@ var utils = (() => {
     getFromStorage,
     clearMessageFromAuthModal,
     convertToJson,
+    renderNavbar,
     getUserFromUsername,
     getUserFromEmail
-  }
+  };
 })();

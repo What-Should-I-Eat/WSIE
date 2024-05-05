@@ -15,25 +15,37 @@ $(document).ready(function () {
     const [email] = formArray.map(({ value }) => value);
 
     if (!validationHandler.checkIfEmailAddressIsValid(email)) {
-      const errorMessage = validationHandler.getValidationText(INVALID_EMAIL_CODE);
+      const errorMessage = validationHandler.getValidationText(ValidationCodes.INVALID_EMAIL);
       form.prepend('<div class="alert alert-danger">' + errorMessage + "</div>");
       return;
     }
 
-    currentUserEmail = email;
-
     const user = await utils.getUserFromEmail(email);
-
     if (!user) {
       form.prepend('<div class="alert alert-danger">' + FAILED_TO_VERIFY_USER_MISSING_INFO + "</div>");
       return;
     }
 
+    // Set email globally
+    currentUserEmail = email;
+
     const username = user.username;
+    if (!username) {
+      form.prepend('<div class="alert alert-danger">' + FAILED_TO_VERIFY_USER_MISSING_USERNAME + "</div>");
+      return;
+    }
+
+    // Set username globally
     currentUsername = username;
 
+    const fullName = user.fullName;
+    if (!fullName) {
+      form.prepend('<div class="alert alert-danger">' + FAILED_TO_VERIFY_USER_MISSING_NAME + "</div>");
+      return;
+    }
+
     const verificationCode = await validationHandler.getVerificationCode();
-    emailWrapper.sendEmail(user.fullName, email, verificationCode, emailjs, "forgotPassword", username);
+    emailWrapper.sendEmail(user.fullName, email, verificationCode, emailjs, "forgotPassword", currentUsername);
 
     const request = {
       username: username,
@@ -70,13 +82,16 @@ $(document).ready(function () {
     event.preventDefault();
     utils.clearMessageFromAuthModal(authClassesToRemove);
 
-    const username = utils.getFromStorage("username");
-    if (!username) {
+    if (!currentUsername) {
       $('#verifyAccountForm').prepend('<div class="alert alert-danger">' + FAILED_TO_RESEND_CODE_MISSING_USERNAME + "</div>");
       return;
     }
 
-    const user = await utils.getUserFromUsername(username);
+    const user = await utils.getUserFromUsername(currentUsername);
+    if (!user) {
+      form.prepend('<div class="alert alert-danger">' + FAILED_TO_VERIFY_USER_MISSING_INFO + "</div>");
+      return;
+    }
 
     const email = user.email;
     if (!email) {
@@ -91,10 +106,10 @@ $(document).ready(function () {
     }
 
     const verificationCode = await validationHandler.getVerificationCode();
-    emailWrapper.sendEmail(fullName, email, verificationCode, emailjs, "resend", username);
+    emailWrapper.sendEmail(fullName, email, verificationCode, emailjs, "resend", currentUsername);
 
     const request = {
-      username: username,
+      username: currentUsername,
       verificationCode: verificationCode
     }
 
@@ -127,13 +142,13 @@ $(document).ready(function () {
     const formArray = form.serializeArray();
 
     const [verificationCode] = formArray.map(({ value }) => value);
-    if (!isVerificationCodeValid(verificationCode)) {
+    if (!validationHandler.isVerificationCodeValid(verificationCode)) {
       form.prepend('<div class="alert alert-danger">' + FAILED_TO_VERIFY_USER_INVALID_VERIFICATION_CODE + "</div>");
       return;
     }
 
     if (!currentUserEmail) {
-      const errorMessage = validationHandler.getValidationText(INVALID_EMAIL_CODE);
+      const errorMessage = validationHandler.getValidationText(ValidationCodes.INVALID_EMAIL);
       form.prepend('<div class="alert alert-danger">' + errorMessage + "</div>");
       return;
     }
@@ -186,10 +201,6 @@ $(document).ready(function () {
     console.log(formArray);
 
     const [username, password, retypedPassword] = formArray.map(({ value }) => value);
-    console.log(username);
-    console.log(password);
-    console.log(retypedPassword);
-
     const validationCode = validationHandler.validateResetInput(username, password, retypedPassword);
 
     if (validationCode !== 0) {

@@ -1,49 +1,51 @@
 // Validation Codes
-const SUCCESS_CODE = 0;
-const INVALID_EMAIL_CODE = 1;
-const INVALID_USERNAME_CHARACTERS_CODE = 2;
-const INVALID_USERNAME_LENGTH_CODE = 3;
-const INVALID_PASSWORD_CODE = 4;
-const INVALID_PASSWORD_MATCH_CODE = 5;
+const ValidationCodes = {
+  SUCCESS: 0,
+  INVALID_EMAIL: 1,
+  INVALID_USERNAME_CHARACTERS: 2,
+  INVALID_USERNAME_LENGTH: 3,
+  INVALID_PASSWORD: 4,
+  PASSWORD_MISMATCH: 5,
+};
 
 // Validation Messages Map
 const validationMessages = {
-  [SUCCESS_CODE]: "Success",
-  [INVALID_EMAIL_CODE]: "Please enter a valid email address",
-  [INVALID_USERNAME_CHARACTERS_CODE]: "Username must not contain special characters",
-  [INVALID_USERNAME_LENGTH_CODE]: "Please ensure that username is between 4 and 15 characters",
-  [INVALID_PASSWORD_CODE]: "Please ensure that password is between 8-15 characters, contains at least one capital and lowercase letter, and contains a number",
-  [INVALID_PASSWORD_MATCH_CODE]: "Please ensure that passwords match."
+  [ValidationCodes.SUCCESS]: "Success",
+  [ValidationCodes.INVALID_EMAIL]: "Please enter a valid email address",
+  [ValidationCodes.INVALID_USERNAME_CHARACTERS]: "Username must not contain special characters",
+  [ValidationCodes.INVALID_USERNAME_LENGTH]: "Please ensure that username is between 4 and 15 characters",
+  [ValidationCodes.INVALID_PASSWORD]: "Please ensure that password is between 8-15 characters, contains at least one capital and lowercase letter, and contains a number",
+  [ValidationCodes.PASSWORD_MISMATCH]: "Please ensure that passwords match.",
 };
 
-var validationHandler = (() => {
+const validationHandler = (() => {
   function validateSignupInput(email, username, password, confirmedPassword) {
     if (!checkIfEmailAddressIsValid(email)) {
-      return INVALID_EMAIL_CODE;
+      return ValidationCodes.INVALID_EMAIL;
     } else if (!checkIfUserNameHasValidChars(username)) {
-      return INVALID_USERNAME_CHARACTERS_CODE;
+      return ValidationCodes.INVALID_USERNAME_CHARACTERS;
     } else if (!checkIfUserNameIsCorrectLength(username)) {
-      return INVALID_USERNAME_LENGTH_CODE;
+      return ValidationCodes.INVALID_USERNAME_LENGTH;
     } else if (!checkIfPasswordIsValid(password)) {
-      return INVALID_PASSWORD_CODE;
+      return ValidationCodes.INVALID_PASSWORD;
     } else if (!checkIfPasswordsMatch(password, confirmedPassword)) {
-      return INVALID_PASSWORD_MATCH_CODE;
+      return ValidationCodes.PASSWORD_MISMATCH;
     } else {
-      return SUCCESS_CODE;
+      return ValidationCodes.SUCCESS;
     }
   }
 
   function validateResetInput(username, password, confirmedPassword) {
     if (!checkIfUserNameHasValidChars(username)) {
-      return INVALID_USERNAME_CHARACTERS_CODE;
+      return ValidationCodes.INVALID_USERNAME_CHARACTERS;
     } else if (!checkIfUserNameIsCorrectLength(username)) {
-      return INVALID_USERNAME_LENGTH_CODE;
+      return ValidationCodes.INVALID_USERNAME_LENGTH;
     } else if (!checkIfPasswordIsValid(password)) {
-      return INVALID_PASSWORD_CODE;
+      return ValidationCodes.INVALID_PASSWORD;
     } else if (!checkIfPasswordsMatch(password, confirmedPassword)) {
-      return INVALID_PASSWORD_MATCH_CODE;
+      return ValidationCodes.PASSWORD_MISMATCH;
     } else {
-      return SUCCESS_CODE;
+      return ValidationCodes.SUCCESS;
     }
   }
 
@@ -74,6 +76,10 @@ var validationHandler = (() => {
     return password === confirmedPassword;
   }
 
+  function isVerificationCodeValid(verificationCode) {
+    return verificationCode.length == 6;
+  }
+
   async function getVerificationCode() {
     try {
       const response = await fetch(GET_VERIFICATION_CODE_URL, {
@@ -99,6 +105,7 @@ var validationHandler = (() => {
     validateResetInput,
     getValidationText: code => validationMessages[code],
     getVerificationCode,
-    checkIfEmailAddressIsValid
-  }
+    checkIfEmailAddressIsValid,
+    isVerificationCodeValid
+  };
 })();
