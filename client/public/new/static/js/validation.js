@@ -1,3 +1,4 @@
+// Validation Codes
 const SUCCESS_CODE = 0;
 const INVALID_EMAIL_CODE = 1;
 const INVALID_USERNAME_CHARACTERS_CODE = 2;
@@ -5,6 +6,7 @@ const INVALID_USERNAME_LENGTH_CODE = 3;
 const INVALID_PASSWORD_CODE = 4;
 const INVALID_PASSWORD_MATCH_CODE = 5;
 
+// Validation Messages Map
 const validationMessages = {
   [SUCCESS_CODE]: "Success",
   [INVALID_EMAIL_CODE]: "Please enter a valid email address",
@@ -58,8 +60,29 @@ var validationHandler = (() => {
     return password === confirmedPassword;
   }
 
+  async function getVerificationCode() {
+    try {
+      const response = await fetch(VERIFICATION_URL, {
+        methods: GET_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("Error fetching verification code:", error.error);
+      throw error;
+    }
+  }
+
   return {
     validateSignupInput,
-    getValidationText: code => validationMessages[code]
+    getValidationText: code => validationMessages[code],
+    getVerificationCode
   }
 })();

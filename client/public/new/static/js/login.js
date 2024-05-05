@@ -2,20 +2,6 @@
 const BASE_HOME_REDIRECT = "/";
 const VERIFY_ACCOUNT_REDIRECT = "verify_account.html";
 
-// Fetch Constants
-const POST_ACTION = "POST";
-const DEFAULT_DATA_TYPE = "application/json";
-
-// Server URL - Locally
-const host = 'http://localhost:3001';
-// Server URL - NGINX
-// const host = 'http://localhost:8080';
-
-// Authentication API Endpoints
-const REGISTER_URL = `${host}/api/v1/users/register`;
-const LOGIN_URL = `${host}/api/v1/users/find-username`;
-const PROFILE_URL = `${host}/api/v1/users/profile`;
-
 // Sign-In / Sign-Up Messages
 const SUCCESSFUL_LOGIN = "You were successfully logged in!";
 const ACCOUNT_CREATION = "Account successfully created!";
@@ -102,7 +88,7 @@ $(document).ready(function () {
   renderNavbar();
 
   // Handles sign-up form submission logic
-  $("#signUpForm").on("submit", function (event) {
+  $("#signUpForm").on("submit", async function (event) {
     event.preventDefault();
     clearErrorMessage();
 
@@ -111,6 +97,7 @@ $(document).ready(function () {
 
     const firstName = formArray[0].value;
     const lastName = formArray[1].value;
+    const fullName = `${firstName} ${lastName}`;
     const email = formArray[2].value;
     const username = formArray[3].value;
     const password = formArray[4].value;
@@ -124,17 +111,23 @@ $(document).ready(function () {
       return;
     }
 
-    formArray.push({ name: "fullName", value: `${firstName} ${lastName}` });
-    formArray.push({ name: "diet", value: [] });
-    formArray.push({ name: "health", value: [] });
-    formArray.push({ name: "favorites", value: [] });
-    formArray.push({ name: "verificationCode", value: "test" });
+    const verificationCode = await validationHandler.getVerificationCode();
+    emailWrapper.sendEmail(fullName, email, verificationCode, emailjs, "newUser", username);
 
-    const formJson = convertToJson(formArray);
+    const user = {
+      fullName: fullName,
+      username: username,
+      password: password,
+      email: email,
+      verificationCode, verificationCode,
+      diet: [],
+      health: [],
+      favorites: []
+    }
 
     fetch(REGISTER_URL, {
       method: POST_ACTION,
-      body: JSON.stringify(formJson),
+      body: JSON.stringify(user),
       headers: {
         'Content-Type': DEFAULT_DATA_TYPE
       }
@@ -143,7 +136,7 @@ $(document).ready(function () {
         return response.json().then(data => {
           setUser(data);
           form.prepend('<div class="alert alert-success">' + ACCOUNT_CREATION + "</div>");
-          window.location.href = BASE_HOME_REDIRECT;
+          // window.location.href = BASE_HOME_REDIRECT;
         });
       } else {
         return response.json().then(error => {
