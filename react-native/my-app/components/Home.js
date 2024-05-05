@@ -1,15 +1,17 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { loggedInUser } from "../calls/loginCalls";
 
 export default function Home({ navigation }) {
   return (
     <View style={styles.containerHome}>
+      <Text style={styles.userInfo}>Welcome,{"\n"}{loggedInUser}!</Text>
       <Pressable
         title="Go to Dietary Restrictions"
         onPress={() => navigation.navigate("DietaryRestrictionsScreen")}
         style={[styles.goToButton, styles.goToDietaryRestrictions]}
       >
-        <Text style={styles.buttonText}>Dietary Restrictions</Text>
+        <Text style={styles.buttonTextRestrictions}>Update Dietary Restrictions</Text>
       </Pressable>
       <Pressable
         title="Go to Recipe Search"
@@ -39,7 +41,17 @@ const styles = StyleSheet.create({
   containerHome: {
       flex: 1, 
       alignItems: "center", 
-      justifyContent: "center"
+      justifyContent: "center",
+      backgroundColor: '#ffd5ad',
+    },
+    userInfo: {
+      fontSize: 40,
+      marginTop: -30,
+      marginBottom: 30,
+      fontWeight: '600',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center'
     },
     goToButton: {
         alignItems: 'center',
@@ -47,8 +59,8 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         elevation: 3,
         width: 300,
-        height: 100,
-        margin: 30,        
+        height: 120,
+        margin: 20,        
     },
     buttonText:{
         fontSize: 40,
@@ -61,12 +73,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#3cdfff',
     },
     goToFavorites: {
-        backgroundColor: '#d37aff',
-    },
-    goToLogin: {
         backgroundColor: '#00ff15',
     },
-    goToDietaryRestrictions: {
+    goToLogin: {
         backgroundColor: '#ff7700',
-    }
+    },
+    goToDietaryRestrictions: {
+      width: 300,
+      height: 120,
+      backgroundColor: '#d37aff',
+    },
+    buttonTextRestrictions:{
+      fontSize: 37,
+      fontWeight: '600',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center'
+  },
 });

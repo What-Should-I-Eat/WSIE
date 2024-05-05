@@ -28,6 +28,7 @@
         "passport": "^0.7.0",
         "passport-local": "^1.0.0",
         "playwright": "^1.42.1",
+        "react-native-vector-icons": "^10.1.0",
         "vue": "^3.3.11",
         "vue-router": "^4.2.5",
         "xmlbuilder": "^15.1.1"
