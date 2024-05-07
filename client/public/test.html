@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Test</title>
   <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="/stylesheets/styles.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
 
   <header>
@@ -29,24 +31,24 @@
       <br>
       <button id="recipe-search-button" type="submit">Search</button>
 
-    <div class="recipe-list" id="recipe-list"> 
-    <br><br><br>
-    <ul id="recipeList"></ul>
-    <br><br><br>
-    </div>
+      <div class="recipe-list" id="recipe-list">
+        <br><br><br>
+        <ul id="recipeList"></ul>
+        <br><br><br>
+      </div>
 
-    <div class="no-recipe-found" id="no-recipe-found" hidden>
-      <p>No recipe found for the search key entered. Please try again.</p>
-    </div>
+      <div class="no-recipe-found" id="no-recipe-found" hidden>
+        <p>No recipe found for the search key entered. Please try again.</p>
+      </div>
 
-    </form>  
+    </form>
   </div>
 
   <div id="selected-recipe-details">
     <br>
     <div id="recipe-image"></div>
     <h2 id="recipe-name"></h2>
-    <div id="heart-container" class ="tooltip">
+    <div id="heart-container" class="tooltip">
     </div>
     <div class="ingredient-details">
       <h4 id="ingredients"></h4>
@@ -54,7 +56,7 @@
     </div>
     <div class="recipe-details">
       <h4 id="directions"></h4>
-    <ul id="directions-list"></ul>
+      <ul id="directions-list"></ul>
     </div>
   </div>
 
@@ -68,18 +70,19 @@
   <script>
     function getUserNameFromCookie() {
       const value = `; ${document.cookie}`;
-      const parts = value.split(`; userName=`);
+      const parts = value.split(`; username=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
     }
 
     const username = getUserNameFromCookie();
 
     document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('search').href = "index.html";
-        document.getElementById('test').href = `test.html`;
-        document.getElementById('favorites').href = `favorites.html`;
-        document.getElementById('profile').href = `profile.html`;
+      document.getElementById('search').href = "index.html";
+      document.getElementById('test').href = `test.html`;
+      document.getElementById('favorites').href = `favorites.html`;
+      document.getElementById('profile').href = `profile.html`;
     });
-</script>
+  </script>
 </body>
+
 </html>

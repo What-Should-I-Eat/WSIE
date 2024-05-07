@@ -1,34 +1,28 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const app = express();
 const session = require('express-session');
 const bodyParser = require("body-parser");
 const cors = require('cors');
-const endpoints = require('./routes/endpoints');
-//app.use('/', indexRouter);
-//app.use('/', passport);
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use(session({
   secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
   resave: false,
   saveUninitialized: false,
-    cookie: {
-        secure: false
-    }
+  cookie: {
+    secure: false
+  }
 }));
 
-// MongoDB connection (ingredients and restrictions)
-mongoose.connect('mongodb://db:27017/WSIE', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+const endpointsRouter = require('./routes/endpoints');
+
+// Default Endpoint
+app.get("/", (_, res) => {
+  res.json({ msg: "What Should I Eat? REST API Home Page" });
 });
 
-//test
-app.get("/", (req, res) => {
-  res.json({ msg: "data goes here" });
-});
-
-app.use('/api/v1', endpoints);
+// Server API Endpoints
+app.use('/api/v1', endpointsRouter);
 
 module.exports = app;

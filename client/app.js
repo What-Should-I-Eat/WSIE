@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
+var usersRouter = require("./routes/users");
+var recipesRouter = require("./routes/recipe")
 
 var app = express();
 
@@ -21,17 +23,8 @@ app.use(express.static(path.join(__dirname, "public")));
 // app.use(express.static(path.join(__dirname, "public/new")));
 
 app.use('/', indexRouter);
-
-app.get('/login', function (req, res) {
-  res.render('login', { title: 'Login Page' });
-});
-
-// Route to serve login.html
-app.get("/login-html", function (req, res) {
-  // TODO: Uncomment 'public/new' for new client
-  res.sendFile(path.join(__dirname, "public", "login.html"));
-  // res.sendFile(path.join(__dirname, "public/new", "index.html"));
-});
+app.use("/users", usersRouter);
+app.use("/recipes", recipesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

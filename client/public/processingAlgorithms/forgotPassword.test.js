@@ -21,7 +21,7 @@ afterEach(() => {
 
 describe('put new password in database', () => {
     it('put new password in database - successful', async () => {
-        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -37,19 +37,19 @@ describe('put new password in database', () => {
         expect(response).toBe(true);
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/changePassword', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userName: username,
-            password: newPassword,            
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: newPassword,
             }),
         });
     });
 
     it('put new password in database - unsuccesful', async () => {
-        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -65,13 +65,13 @@ describe('put new password in database', () => {
         expect(response).toBe(false);
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/changePassword', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userName: username,
-            password: newPassword,            
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: newPassword,
             }),
         });
     });
@@ -79,7 +79,7 @@ describe('put new password in database', () => {
 
 describe('put verification code in database', () => {
     it('put verification code in database - successful', async () => {
-        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -95,19 +95,19 @@ describe('put verification code in database', () => {
         expect(response).toBe(true);
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/resendVerificationCode', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userName: username,
-            verificationCode: verificationCode,            
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                verificationCode: verificationCode,
             }),
         });
     });
 
     it('put verification code in database - unsuccessful', async () => {
-        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -123,13 +123,13 @@ describe('put verification code in database', () => {
         expect(response).toBe(false);
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/resendVerificationCode', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userName: username,
-            verificationCode: verificationCode,            
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                verificationCode: verificationCode,
             }),
         });
     });
@@ -137,7 +137,7 @@ describe('put verification code in database', () => {
 
 describe('validate code', () => {
     it('validate code - successful', async () => {
-        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -153,19 +153,19 @@ describe('validate code', () => {
         expect(response).toBe(true);
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/verify', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userName: username,
-            verificationCode: verificationCode,            
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                verificationCode: verificationCode,
             }),
         });
     });
 
     it('put verification code in database - unsuccessful', async () => {
-        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+        const updatedDataResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -181,13 +181,13 @@ describe('validate code', () => {
         expect(response).toBe(false);
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/verify', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userName: username,
-            verificationCode: verificationCode,            
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                verificationCode: verificationCode,
             }),
         });
     });
@@ -197,7 +197,7 @@ describe('enter new password', () => {
     it('password do not match - unsuccessful', async () => {
         const event = {
             preventDefault: jest.fn()
-          };
+        };
 
         document.body.innerHTML = `
             <input id="username-input" />
@@ -205,12 +205,12 @@ describe('enter new password', () => {
             <input id="password-input1" />
             <input id="password-input2" />
         `;
-      
+
         const username = document.getElementById('username-input');
         const feedbackMessage = document.getElementById('feedback-message');
         const password1 = document.getElementById('password-input1');
         const password2 = document.getElementById('password-input2');
-      
+
         username.value = 'userTest';
         password1.value = 'Password123';
         password2.value = 'Password123';
@@ -226,7 +226,7 @@ describe('enter new password', () => {
     it('password is not valid - unsuccessful', async () => {
         const event = {
             preventDefault: jest.fn()
-          };
+        };
 
         document.body.innerHTML = `
             <input id="username-input" />
@@ -234,12 +234,12 @@ describe('enter new password', () => {
             <input id="password-input1" />
             <input id="password-input2" />
         `;
-      
+
         const username = document.getElementById('username-input');
         const feedbackMessage = document.getElementById('feedback-message');
         const password1 = document.getElementById('password-input1');
         const password2 = document.getElementById('password-input2');
-      
+
         username.value = 'userTest';
         password1.value = 'Password123';
         password2.value = 'Password123';
@@ -256,7 +256,7 @@ describe('enter new password', () => {
     it('enter new password - successful', async () => {
         const event = {
             preventDefault: jest.fn()
-          };
+        };
 
         document.body.innerHTML = `
             <input id="username-input" />
@@ -269,7 +269,7 @@ describe('enter new password', () => {
         const feedbackMessage = document.getElementById('feedback-message');
         const password1 = document.getElementById('password-input1');
         const password2 = document.getElementById('password-input2');
-        var passwordRequirement = document.getElementById('password-requirement');      
+        var passwordRequirement = document.getElementById('password-requirement');
         username.value = 'userTest';
         password1.value = 'Password123';
         password2.value = 'Password123';
@@ -278,16 +278,16 @@ describe('enter new password', () => {
         global.loginHandler2.checkIfPasswordsMatch = jest.fn().mockReturnValueOnce(true);
         global.loginHandler2.checkIfPasswordIsValid = jest.fn().mockReturnValueOnce(true);
 
-        loginHandler.putNewPasswordInDB = jest.fn().mockImplementationOnce(() => 
-        Promise.resolve({ 
-            return: true,
-        }));
+        loginHandler.putNewPasswordInDB = jest.fn().mockImplementationOnce(() =>
+            Promise.resolve({
+                return: true,
+            }));
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-            status: 200,
-            json: () => Promise.resolve(),
-        })
+            Promise.resolve({
+                status: 200,
+                json: () => Promise.resolve(),
+            })
         )
         const response = await loginHandler.enterNewPassword(event);
 
@@ -298,7 +298,7 @@ describe('enter new password', () => {
     it('password not updated - unsuccessful', async () => {
         const event = {
             preventDefault: jest.fn()
-          };
+        };
 
         document.body.innerHTML = `
             <input id="username-input" />
@@ -311,7 +311,7 @@ describe('enter new password', () => {
         const feedbackMessage = document.getElementById('feedback-message');
         const password1 = document.getElementById('password-input1');
         const password2 = document.getElementById('password-input2');
-        var passwordRequirement = document.getElementById('password-requirement');      
+        var passwordRequirement = document.getElementById('password-requirement');
         username.value = 'userTest';
         password1.value = 'Password123';
         password2.value = 'Password123';
@@ -320,10 +320,10 @@ describe('enter new password', () => {
         global.loginHandler2.checkIfPasswordsMatch = jest.fn().mockReturnValueOnce(true);
         global.loginHandler2.checkIfPasswordIsValid = jest.fn().mockReturnValueOnce(true);
 
-        loginHandler.putNewPasswordInDB = jest.fn().mockImplementationOnce(() => 
-        Promise.resolve({ 
-            return: false,
-        }));
+        loginHandler.putNewPasswordInDB = jest.fn().mockImplementationOnce(() =>
+            Promise.resolve({
+                return: false,
+            }));
 
         const response = await loginHandler.enterNewPassword(event);
 
@@ -340,7 +340,7 @@ describe('input form showers', () => {
         `;
         const enterEmailDiv = document.getElementById('reset-enter-email');
         const verificationCodeDiv = document.getElementById('password-reset-code');
-        
+
         enterEmailDiv.style.display = 'block';
         verificationCodeDiv.style.display = 'none';
 
@@ -357,7 +357,7 @@ describe('input form showers', () => {
         `;
         const verificationCodeDiv = document.getElementById('password-reset-code');
         const newPasswordDiv = document.getElementById('reset-password');
-        
+
         newPasswordDiv.style.display = 'none';
         verificationCodeDiv.style.display = 'block';
 
@@ -375,7 +375,7 @@ describe('get user credentials', () => {
             username: 'test user',
             fullName: 'test full name',
             email: 'test@test.com',
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -390,10 +390,10 @@ describe('get user credentials', () => {
         expect(response).toBe(JSON.stringify(forgotUserInfo));
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/requestInfoForPasswordReset?email=test@test.com', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
         });
     });
 
@@ -402,7 +402,7 @@ describe('get user credentials', () => {
             username: 'test user',
             fullName: 'test full name',
             email: 'test@test.com',
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -417,10 +417,10 @@ describe('get user credentials', () => {
         expect(response).toBeNull();
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/requestInfoForPasswordReset?email=test@test.com', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
         });
     });
 
@@ -448,10 +448,10 @@ describe('forgot password', () => {
         global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
         global.loginHandler2.getVerificationCode = jest.fn(() => "33333");
         global.verificationCode = "33333";
 
@@ -469,7 +469,7 @@ describe('forgot password', () => {
         expect(feedbackMessage.innerHTML).toBe("This email is not in our database. Please try again.");
     });
 
-     it('forgot password verification code error - unsuccessful', async () => {
+    it('forgot password verification code error - unsuccessful', async () => {
         const event = {
             preventDefault: jest.fn()
         };
@@ -494,10 +494,10 @@ describe('forgot password', () => {
         global.loginHandler2.getVerificationCode = require('./helperMethods');
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
         global.loginHandler2.getVerificationCode = jest.fn(() => "33333");
         global.verificationCode = "33333";
 
@@ -530,7 +530,7 @@ describe('enter new verification code', () => {
           <h2 id="valid-vc" />
           <input id="verificationCodeInput" />
         `;
-        let verificationCodeVerificationMessage = document.getElementById('valid-vc');        
+        let verificationCodeVerificationMessage = document.getElementById('valid-vc');
         let enteredVerificationCode = document.getElementById('verificationCodeInput');
 
         global.fetch = jest.fn().mockImplementationOnce(() =>

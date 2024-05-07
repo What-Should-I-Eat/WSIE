@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-const {getUserId, getUserData, getUserNameFromCookie, getUserObject} = require('./currentUser');
+const { getUserId, getUserData, getUserNameFromCookie, getUserObject } = require('./currentUser');
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -27,7 +27,7 @@ describe('getUserId() endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/findUserId?username=testUser', {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         });
     });
@@ -44,7 +44,7 @@ describe('getUserId() endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/findUserId?username=testUser', {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         });
     });
@@ -63,7 +63,7 @@ describe('getUserData() endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/findUserData?username=testUser', {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         });
     });
@@ -80,7 +80,7 @@ describe('getUserData() endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/findUserData?username=testUser', {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         });
     });
@@ -100,7 +100,7 @@ describe('getUserObject() endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/findUser/testUser', {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         });
     });
@@ -117,14 +117,14 @@ describe('getUserObject() endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/findUser/testUser', {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         });
     });
 });
 describe('getUserNameFromCookie() function', () => {
     it('mocked user name from cookie - successful', () => {
-        global.document.cookie = "userName=test";
+        global.document.cookie = "username=test";
         const result = getUserNameFromCookie();
         expect(result).toBe('test');
     });

@@ -43,7 +43,7 @@ async function getUserData(username) {
 
 function getUserNameFromCookie() {
   const value = `; ${document.cookie}`;
-  const parts = value.split(`; userName=`);
+  const parts = value.split(`; username=`);
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
 

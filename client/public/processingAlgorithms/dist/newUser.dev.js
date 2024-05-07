@@ -18,7 +18,7 @@ var loginHandler = function () {
 
     var newUserData = {
       fullName: fullName,
-      userName: username,
+      username: username,
       password: password,
       email: email,
       diet: [],

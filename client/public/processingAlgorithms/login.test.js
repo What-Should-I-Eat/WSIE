@@ -28,7 +28,7 @@ describe('getProfilePageForUser() endpoint', () => {
             method: 'GET',
             credentials: 'include',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         });
     });
@@ -45,14 +45,14 @@ describe('getProfilePageForUser() endpoint', () => {
         const response = loginHandler.getProfilePageForThisUser(userBeingPassed);
         console.log("response on test end");
         console.log(response);
-        
+
         expect(response).toBeUndefined();
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/profile', {
             method: 'GET',
             credentials: 'include',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         });
     });
@@ -79,7 +79,7 @@ describe('userLogin() endpoint', () => {
             method: 'GET',
             credentials: 'include',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
         });
     });
@@ -87,7 +87,7 @@ describe('userLogin() endpoint', () => {
     it('mocked user login - unsuccesful account not verified', async () => {
         const event = {
             preventDefault: jest.fn()
-          };
+        };
 
         document.body.innerHTML = `
             <input id="username-input" />
@@ -102,7 +102,7 @@ describe('userLogin() endpoint', () => {
 
         usernameInput.value = "userTest";
         passwordInput.value = "passwordTest";
-        
+
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
                 status: 450,
@@ -117,12 +117,12 @@ describe('userLogin() endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/find-username', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userName: usernameInput.value,
+                username: usernameInput.value,
                 password: passwordInput.value
-        })
+            })
         });
     });
 
@@ -132,7 +132,7 @@ describe('userLogin() endpoint', () => {
     it('mocked user login - unsuccesful password reset needed', () => {
         const event = {
             preventDefault: jest.fn()
-          };
+        };
 
         document.body.innerHTML = `
             <input id="username-input" />
@@ -147,7 +147,7 @@ describe('userLogin() endpoint', () => {
 
         usernameInput.value = "userTest";
         passwordInput.value = "passwordTest";
-        
+
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
                 status: 453,
@@ -155,23 +155,23 @@ describe('userLogin() endpoint', () => {
             })
         )
         const response = loginHandler.userLogin(event);
-        
+
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/find-username', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userName: usernameInput.value,
+                username: usernameInput.value,
                 password: passwordInput.value
-        })
+            })
         });
     });
     it('mocked user login - unsuccesful password lockout', () => {
         const event = {
             preventDefault: jest.fn()
-          };
+        };
 
         document.body.innerHTML = `
             <input id="username-input" />
@@ -186,7 +186,7 @@ describe('userLogin() endpoint', () => {
 
         usernameInput.value = "userTest";
         passwordInput.value = "passwordTest";
-        
+
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
                 status: 452,
@@ -194,23 +194,23 @@ describe('userLogin() endpoint', () => {
             })
         )
         const response = loginHandler.userLogin(event);
-        
+
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/find-username', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userName: usernameInput.value,
+                username: usernameInput.value,
                 password: passwordInput.value
-        })
+            })
         });
     });
     it('mocked user login - unsuccesful generic failure', () => {
         const event = {
             preventDefault: jest.fn()
-          };
+        };
 
         document.body.innerHTML = `
             <input id="username-input" />
@@ -225,7 +225,7 @@ describe('userLogin() endpoint', () => {
 
         usernameInput.value = "userTest";
         passwordInput.value = "passwordTest";
-        
+
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
                 status: 404,
@@ -233,17 +233,17 @@ describe('userLogin() endpoint', () => {
             })
         )
         const response = loginHandler.userLogin(event);
-        
+
         expect(fetch).toHaveBeenCalledTimes(1);
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/find-username', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userName: usernameInput.value,
+                username: usernameInput.value,
                 password: passwordInput.value
-        })
+            })
         });
     });
 })
