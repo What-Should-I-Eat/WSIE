@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import { Pressable, Text, View, StyleSheet, ScrollView } from 'react-native';
-import MultiSelectListDiet from './DietaryRestrictionsList';
+import { MultiSelectListDiet, selectedItems } from './DietaryRestrictionsList';
+import { sendDietData } from '../calls/dietHealthCalls';
+
 export default function DietsScreen({ navigation }) {
 
-  const diets = ['Low Carb', 'Low Fat', 'Low Sodium', 'Balanced', 'High Fiber', 'High Protein', 'Vegan', 'Vegetarian', 'Paleo', 'Keto', 'Kosher', 'Halal', 'Pescatarian', 'Red Meat Free', 'Low Fodmap'];
+  const diets = ['Low Carb', 'Low Fat', 'Low Sodium', 'Balanced', 'High Fiber', 'High Protein', 'Vegan', 'Vegetarian', 'Paleo', 'Keto', 'Kosher', 'Halal', 'Pescatarian', 'Red Meat Free', 'Low FODMAP'];
 
     return (
         <View style={DietsStyles.container}>
@@ -13,7 +15,9 @@ export default function DietsScreen({ navigation }) {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <MultiSelectListDiet data={diets} />
             </View>
-            <Pressable style={DietsStyles.updateButton}>
+            <Pressable style={DietsStyles.updateButton}
+              onPress={() => sendDietData(selectedItems)}
+            >
               <Text style={DietsStyles.buttonText}>Update Diets</Text>
             </Pressable>
       </View>

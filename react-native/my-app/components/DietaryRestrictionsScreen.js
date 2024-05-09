@@ -63,7 +63,7 @@ export default function DietaryRestrictionsScreen({ navigation }) {
         textAlign: 'center'
     },
     instructions: {
-        fontSize: 30,
+        fontSize: 32,
         fontWeight: '600',
         width: 350,
         marginTop: 50,

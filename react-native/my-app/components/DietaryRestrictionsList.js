@@ -33,4 +33,5 @@ const MultiSelectListDiet = ({ data }) => {
   );
 };
 
-export default MultiSelectListDiet;
+// export default MultiSelectListDiet;
+export { MultiSelectListDiet, selectedItems }

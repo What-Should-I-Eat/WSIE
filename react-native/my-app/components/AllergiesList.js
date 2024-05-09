@@ -34,4 +34,5 @@ const MultiSelectListAllergy = ({ data }) => {
   );
 };
 
-export default MultiSelectListAllergy;
+// export default MultiSelectListAllergy;
+export { MultiSelectListAllergy, selectedItems }
