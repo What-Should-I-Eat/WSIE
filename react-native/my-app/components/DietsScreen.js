@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Pressable, Text, View, StyleSheet, ScrollView } from 'react-native';
-import { MultiSelectListDiet, selectedItems } from './DietaryRestrictionsList';
+import { MultiSelectListDiet, selectedDietArray } from './DietaryRestrictionsList';
 import { sendDietData } from '../calls/dietHealthCalls';
 
 export default function DietsScreen({ navigation }) {
@@ -16,7 +16,7 @@ export default function DietsScreen({ navigation }) {
               <MultiSelectListDiet data={diets} />
             </View>
             <Pressable style={DietsStyles.updateButton}
-              onPress={() => sendDietData(selectedItems)}
+              onPress={() => sendDietData(selectedDietArray)}
             >
               <Text style={DietsStyles.buttonText}>Update Diets</Text>
             </Pressable>

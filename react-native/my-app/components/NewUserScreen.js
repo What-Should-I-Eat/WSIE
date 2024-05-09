@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
+import { Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 import { onNewUserCalls } from '../calls/newUserCalls';
@@ -18,11 +18,9 @@ export default function NewUserScreen({ navigation }) {
     };
 
     return (
+      <SafeAreaView style={newUserStyles.container}>
         <ScrollView>
         <View style={newUserStyles.container}>
-            {/* <Text style={newUserStyles.title}>
-                Welcome to {'\n'}What Should I Eat?
-            </Text> */}
             <Text style={newUserStyles.instructions}>
                Please sign up below
             </Text>
@@ -30,7 +28,7 @@ export default function NewUserScreen({ navigation }) {
               Desired Username:
             </Text>
             <TextInput
-                style={newUserStyles.loginBox}
+                style={newUserStyles.inputBox}
                 placeholder="Username"
                 placeholderTextColor={"#8c8c8c"}
                 autoCapitalize="none"
@@ -41,7 +39,7 @@ export default function NewUserScreen({ navigation }) {
               Real Name:
             </Text>
             <TextInput
-                style={newUserStyles.loginBox}
+                style={newUserStyles.inputBox}
                 placeholder="John Smith"
                 placeholderTextColor={"#8c8c8c"}
                 onChangeText={value => setRealNameText(value)}
@@ -51,7 +49,7 @@ export default function NewUserScreen({ navigation }) {
               Email Address:
             </Text>
             <TextInput
-                style={newUserStyles.loginBox}
+                style={newUserStyles.inputBox}
                 placeholder="hello@gmail.com"
                 placeholderTextColor={"#8c8c8c"}
                 autoCapitalize="none"
@@ -63,7 +61,7 @@ export default function NewUserScreen({ navigation }) {
             </Text>
             <View style={newUserStyles.passwordOneBox}>
               <TextInput
-                  style={newUserStyles.loginBox}
+                  style={newUserStyles.inputBox}
                   placeholder="Password1"
                   placeholderTextColor={"#8c8c8c"}
                   autoCapitalize="none"
@@ -84,7 +82,7 @@ export default function NewUserScreen({ navigation }) {
             </Text>
             <View style={newUserStyles.passwordTwoBox}>
               <TextInput
-                  style={newUserStyles.loginBox}
+                  style={newUserStyles.inputBox}
                   placeholder="Password1"
                   placeholderTextColor={"#8c8c8c"}
                   autoCapitalize="none"
@@ -107,12 +105,13 @@ export default function NewUserScreen({ navigation }) {
             </Pressable>
       </View>
       </ScrollView>
+      </SafeAreaView>
     );
   }
   const newUserStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#e6faff',
+      backgroundColor: '#ffd5ad',
       alignItems: 'center',
       justifyContent: 'top',
     },
@@ -136,7 +135,7 @@ export default function NewUserScreen({ navigation }) {
         fontWeight: '500',
         color: '#ffffff'
     },
-    loginBox: {
+    inputBox: {
       padding: 18,
       margin: 10,
       position: 'relative',
@@ -145,7 +144,7 @@ export default function NewUserScreen({ navigation }) {
       borderColor: '#404040',
       backgroundColor: '#f9f9f9',
       width: 300,
-      height: 60,
+      height: 65,
       fontSize: 30,
       borderRadius: 5,
     },
@@ -158,7 +157,7 @@ export default function NewUserScreen({ navigation }) {
         fontSize: 30,
         fontWeight: '600',
         width: 350,
-        marginTop: 30,
+        marginTop: 20,
         marginBottom: 20,
         textAlign: 'center'
     },
@@ -166,7 +165,7 @@ export default function NewUserScreen({ navigation }) {
         fontSize: 30,
         fontWeight: '600',
         width: 350,
-        marginTop: 15,
+        marginTop: 10,
         textAlign: 'center'
     },
     passwordOneBox: {

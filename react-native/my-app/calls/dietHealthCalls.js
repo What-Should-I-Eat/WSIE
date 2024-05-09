@@ -2,10 +2,12 @@ import { loggedInUser } from "./loginCalls";
 import { hostForAppCalls } from "./hostCallConst";
 
 const sendDietData = async (dietArrayFromClient) => {
+    console.log("this is call function: " + dietArrayFromClient);
     const dietData = {
         username: loggedInUser,
         diet: convertParameterScreenNameToEdamamName(dietArrayFromClient)
     };
+    console.log(dietData);
 
     try {
         await fetch(`${hostForAppCalls}/api/v1/users/diet`, {
@@ -25,6 +27,7 @@ const sendHealthData = async (healthArrayFromClient) => {
         username: loggedInUser,
         health: convertParameterScreenNameToEdamamName(healthArrayFromClient)
     };
+    console.log(healthData);
 
     try {
         await fetch(`${hostForAppCalls}/api/v1/users/health`, {
@@ -44,6 +47,7 @@ function convertParameterScreenNameToEdamamName(inputtedArrayFromClient) {
     for(let i = 0; i < inputtedArrayFromClient.length; i++){
         adjustedArray.push(mapRealRestrictionNameToEdamam(inputtedArrayFromClient[i]));
     }
+    return adjustedArray;
 }
 
 function mapRealRestrictionNameToEdamam(inputtedDiet){

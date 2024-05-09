@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 
+let selectedAllergyArray = [];
+
 const MultiSelectListAllergy = ({ data }) => {
   const [selectedItems, setSelectedItems] = useState([]);
 
   const toggleItem = (item) => {
     if (selectedItems.includes(item)) {
       setSelectedItems(selectedItems.filter((selectedItem) => selectedItem !== item));
+      selectedAllergyArray = selectedItems;
     } else {
       setSelectedItems([...selectedItems, item]);
     }
@@ -20,6 +23,7 @@ const MultiSelectListAllergy = ({ data }) => {
       </View>
     </TouchableOpacity>
   );
+  selectedAllergyArray = selectedItems;
 
   return (
     <View>
@@ -29,10 +33,8 @@ const MultiSelectListAllergy = ({ data }) => {
         keyExtractor={(item) => item}
         extraData={selectedItems}
       />
-      {/* <Text>Selected Items: {selectedItems.join(', ')}</Text> */}
     </View>
   );
 };
 
-// export default MultiSelectListAllergy;
-export { MultiSelectListAllergy, selectedItems }
+export { MultiSelectListAllergy, selectedAllergyArray }

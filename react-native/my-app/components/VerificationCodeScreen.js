@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
+import { Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { onResendCode, onVerifyUser } from '../calls/verificationCodeCalls';
 
 export default function VerificationCodeScreen({ navigation }) {
@@ -8,6 +8,7 @@ export default function VerificationCodeScreen({ navigation }) {
     const [textVerificationCode, setVerificationCodeText] = useState('');
 
     return (
+      <SafeAreaView  style={verificationCodeStyles.container}>
       <ScrollView>
         <View style={verificationCodeStyles.container}>
             <Text style={verificationCodeStyles.instructions}>
@@ -47,13 +48,13 @@ export default function VerificationCodeScreen({ navigation }) {
             </Pressable>
         </View>
       </ScrollView>
-
+      </SafeAreaView>
     );
   }
   const verificationCodeStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#e6faff',
+      backgroundColor: '#ffd5ad',
       alignItems: 'center',
       justifyContent: 'top',
     },

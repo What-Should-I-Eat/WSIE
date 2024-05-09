@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { onEnteredCodeForForgotPassword, onEnteredEmailForForgotPassword, onEnteredNewPasswords } from '../calls/forgotPasswordCalls';
 
@@ -20,6 +20,9 @@ export default function ForgotPasswordScreen({ navigation }) {
     };
 
     return (
+      <SafeAreaView style={forgotPasswordStyles.container}>
+
+
         <ScrollView>
         <View style={forgotPasswordStyles.container}>
 
@@ -117,12 +120,13 @@ export default function ForgotPasswordScreen({ navigation }) {
           }
       </View>
       </ScrollView>
+      </SafeAreaView>
     );
   }
   const forgotPasswordStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#e6faff',
+      backgroundColor: '#ffd5ad',
       alignItems: 'center',
       justifyContent: 'top',
     },

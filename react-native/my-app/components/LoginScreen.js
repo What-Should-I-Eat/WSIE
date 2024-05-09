@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 import { onLogin } from '../calls/loginCalls';
@@ -20,6 +20,7 @@ export default function LoginScreen({ navigation }) {
     };
 
     return (
+      <SafeAreaView style={loginStyles.container}>
       <ScrollView>
         <View style={loginStyles.container}>
             <Text style={loginStyles.instructions}>
@@ -74,13 +75,13 @@ export default function LoginScreen({ navigation }) {
             </Pressable>
       </View>
       </ScrollView>
-
+      </SafeAreaView>
     );
   }
   const loginStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#e6faff',
+      backgroundColor: '#ffd5ad',
       alignItems: 'center',
       justifyContent: 'top',
     },
@@ -157,8 +158,8 @@ export default function LoginScreen({ navigation }) {
         fontSize: 35,
         fontWeight: '600',
         width: 350,
-        marginTop: 40,
-        marginBottom: 20,
+        marginTop: 30,
+        marginBottom: 10,
         textAlign: 'center'
     }
   }

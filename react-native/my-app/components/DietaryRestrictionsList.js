@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 
+let selectedDietArray = [];
+
 const MultiSelectListDiet = ({ data }) => {
   const [selectedItems, setSelectedItems] = useState([]);
 
@@ -20,6 +22,7 @@ const MultiSelectListDiet = ({ data }) => {
       </View>
     </TouchableOpacity>
   );
+  selectedDietArray = selectedItems;
 
   return (
     <View>
@@ -33,5 +36,4 @@ const MultiSelectListDiet = ({ data }) => {
   );
 };
 
-// export default MultiSelectListDiet;
-export { MultiSelectListDiet, selectedItems }
+export { MultiSelectListDiet, selectedDietArray }

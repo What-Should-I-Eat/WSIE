@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Pressable, Text, View, StyleSheet, ScrollView } from 'react-native';
-import { MultiSelectListAllergy, selectedItems } from './AllergiesList'
+import { MultiSelectListAllergy, selectedAllergyArray } from './AllergiesList';
 import { sendHealthData } from '../calls/dietHealthCalls';
 
 export default function AllergiesScreen({ navigation }) {
@@ -14,7 +14,7 @@ export default function AllergiesScreen({ navigation }) {
           <MultiSelectListAllergy data={allergies} />
         </View>
         <Pressable style={AllergiesStyles.updateButton}
-          onPress={() => sendHealthData(selectedItems)}
+          onPress={() => sendHealthData(selectedAllergyArray)}
         >
           <Text style={AllergiesStyles.buttonText}>Update Allergies</Text>
         </Pressable>
