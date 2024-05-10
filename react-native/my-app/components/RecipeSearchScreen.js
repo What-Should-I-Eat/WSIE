@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
 import { Image, Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { searchForRecipes } from '../calls/recipeSearchCalls';
 
 export default function RecipeSearchScreen({ navigation }) {
 
     const [textInput, setInputText] = useState('');
     const [showStuff, setShowStuff] = useState(false);
+    const [searchResults, setSearchResults] = useState([]);
 
     return (
         <SafeAreaView style={RecipeSearchStyles.container}>
@@ -24,7 +26,7 @@ export default function RecipeSearchScreen({ navigation }) {
                   defaultValue={textInput}
               />
               <Pressable style={RecipeSearchStyles.searchButton} 
-                  onPress={() => setShowStuff(true)}
+                  onPress={() => searchForRecipes(textInput, setShowStuff, navigation, setSearchResults)}
               ><Text><Icon name="search" size={40} color="black" /></Text>
               </Pressable>
             </View>
