@@ -5,7 +5,7 @@ import React from "react";
 
 const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
 
-const searchForRecipes = (inputtedSearch, setShowStuff, navigation, setSearchResults) => {
+const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSearchResults, setNoResults) => {
 
     if (inputtedSearch.trim() === '') {
         Alert.alert("Empty Input", "Please enter a search paramter.");
@@ -41,41 +41,74 @@ const searchForRecipes = (inputtedSearch, setShowStuff, navigation, setSearchRes
                 }
               }).then(resp => resp.json())
                 .then(results => {
-                  if (results.count == 0) {
-                    //// do no search results
-                    <Text>
-                        Sorry, based on your dietary restrictions we weren't able to find any results with that search parameter.
-                    </Text>                  
+                  if (results.hits == undefined) {                            
+                    setNoResults(true);
                   } else {
-
+                    setNoResults(false);
                     let arrayOfResults = [];
+                    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
 
-                    results.hits.forEach(data => {
+                    results.hits.forEach(async data => {
                       const source = data.recipe.source;
                       const sourceURL = data.recipe.url;
                       const viableSource = sourceIsViable(source, sourceURL);
                       if(viableSource)
                       {
-                        console.log(source, " - ", data.recipe.label);
-
                         let imageURL;
-                        if (data.recipe.images) {
-                          imageURL = data.recipe.images.url;
+
+                        // console.log(data.recipe);
+                        // console.log(data.recipe.image.url);
+                        // console.log(data.recipe);
+                        // let lowerCaseSource = source.toLowerCase().trim();
+                        // const recipeSiteEndpoint = `${hostForAppCalls}/api/v1/scrape-recipe/?recipeLink=${sourceURL}&source=${lowerCaseSource}`;
+                        // console.log("recipe endpoint: ", recipeSiteEndpoint);
+                        
+                        // const resp = await fetch(recipeSiteEndpoint, {
+                        //     method: 'GET',
+                        //     headers: {
+                        //         'Accept': 'application/json',
+                        //         'Content-Type': 'application/json'
+                        //     }
+                        // });
+                        
+                        // if (!resp.ok) {
+                        //     throw new Error('Failed to fetch recipe directions');
+                        // }
+                        
+                        // const results = await resp.json();
+                        // let ingredientsArray = [];
+                        // for(var i = 0; i < results.length; i++){
+                        //   ingredientsArray.push(results[i]);
+                        // }
+                        // console.log(ingredientsArray);
+
+                        if (data.recipe.images && data.recipe.images.LARGE && data.recipe.images.LARGE.url) {
+                          imageURL = data.recipe.images.LARGE.url;
                         } else {
                             // add default image if not found
                             imageURL = '../assets/emptyPlate.jpeg';
                         }
+                        let caloriesAsWholeNumber = Math.round(data.recipe.calories);
 
                         var individualRecipe = {
                             name: data.recipe.label,
-                            image: require(imageURL)
+                            image: imageURL,
+                            uri: data.recipe.uri,
+                            calories: caloriesAsWholeNumber,
+                            // ingredients: ingredientsArray
+                        }
+                        // console.log('individual recipe\n' + individualRecipe.name + ', ' + individualRecipe.image + ', ' + individualRecipe.calories + '\n-----------\n');
+
+                        // ensures no two recipes are added twice
+                        if(!(arrayOfResults.some(thisRecipe => thisRecipe.name === data.recipe.name))){
+                          arrayOfResults.push(individualRecipe);
                         }
 
-                        arrayOfResults.push(individualRecipe);
                         // link.onclick = () => showRecipe(data, data.recipe.source);
                       }
                     });
                     setSearchResults(arrayOfResults);
+                    console.log('#################################');
                   }
               });
           } catch (e) {
@@ -113,7 +146,7 @@ function sourceIsViable(source, sourceURL){
       //this is to see if bbc good food link actually works
 function sourceURLIsViable(sourceURL){
     const penultimateChar = sourceURL.charAt(sourceURL.length - 2);
-    console.log("penultimate char: ", penultimateChar);
+    // console.log("penultimate char: ", penultimateChar);
     if (penultimateChar >= '0' && penultimateChar <= '9') {
         return false;
     }
