@@ -23,6 +23,8 @@ const DEFAULT_DATA_TYPE = "application/json";
 
 // Redirects
 const BASE_HOME_REDIRECT = "/";
+const RECIPES_DIRECT = `/recipes/recipes.html`;
+const RECIPE_DETAILS_REDIRECT = "recipes/recipes_details.html";
 
 // Authentication API Endpoints
 const REGISTER_URL = `${HOST}/${API_VERSION}/users/register`;
@@ -44,6 +46,9 @@ const REQUEST_USER_INFO_FOR_RESET_URL = `${HOST}/${API_VERSION}/users/requestInf
 // User Dietary API Endpoints
 const UPDATE_USER_DIET_URL = `${HOST}/${API_VERSION}/users/diet`;
 const UPDATE_USER_HEALTH_URL = `${HOST}/${API_VERSION}/users/health`;
+
+// Edamam API Endpoints
+const EDAMAM_API_URL = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
 
 // Authentication Modals
 const authClassesToRemove = ['alert-danger', 'alert-success', 'alert-warning'];
@@ -85,3 +90,8 @@ const FAILED_TO_UPDATE_USER_HEALTH = "Error occurred trying to update user healt
 const NO_CHANGED_DETECTED = "No user dietary changes detected";
 const SUCCESSFULLY_GOT_PROFILE = "Successfully got profile using cookies";
 const FAILED_TO_GET_USER_PROFILE = "Error occurred getting profile using cookies";
+
+// Search
+const FAILED_TO_QUERY_EDAMAM = "Error occurred connecting to Edamam API";
+const NO_IMAGE_AVAILABLE = "/static/img/no_image_available.svg";
+const NO_RECIPES_FOUND = "0 recipes found.";

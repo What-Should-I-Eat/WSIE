@@ -8,7 +8,16 @@ const utils = (() => {
   function setStorage(key, value) {
     if (key) {
       sessionStorage.setItem(key, JSON.stringify(value));
-    } else {
+    }
+  }
+
+  /**
+   * Removes data from session storage
+   * 
+   * @param {string} key 
+   */
+  function removeFromStorage(key) {
+    if (key) {
       sessionStorage.removeItem(key);
     }
   }
@@ -24,6 +33,7 @@ const utils = (() => {
     if (!value || value === "undefined") {
       return null;
     }
+
     try {
       return JSON.parse(value);
     } catch (error) {
@@ -105,10 +115,13 @@ const utils = (() => {
           'Content-Type': DEFAULT_DATA_TYPE
         }
       });
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error);
       }
+
+      console.debug(`Got user from username: ${username}`);
       return response.json();
     } catch (error) {
       console.error(error.error);
@@ -133,10 +146,13 @@ const utils = (() => {
           'Content-Type': DEFAULT_DATA_TYPE
         }
       });
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error);
       }
+
+      console.debug(`Got user from email: ${email}`);
       return response.json();
     } catch (error) {
       console.error(error.error);
@@ -248,6 +264,7 @@ const utils = (() => {
 
   return {
     setStorage,
+    removeFromStorage,
     getFromStorage,
     clearMessageFromAuthModal,
     convertToJson,

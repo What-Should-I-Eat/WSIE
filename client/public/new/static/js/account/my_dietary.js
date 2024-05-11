@@ -27,7 +27,8 @@ function MyDietaryView() {
       initialDietRestrictions = [...dietRestrictions];
       initialHealthRestrictions = [...healthRestrictions];
     }).catch(error => {
-      console.error("Error occurred getting user information:", error);
+      console.error(ERROR_UNABLE_TO_GET_USER, error);
+      utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
     });
   };
 
@@ -37,7 +38,7 @@ function MyDietaryView() {
       const button = $(this);
       const restriction = getEdamamRestrictionMapping(button.text());
 
-      if (user.diet.includes(restriction)) {
+      if (user.diet.includes(restriction) || user.health.includes(restriction)) {
         button.addClass('selected');
         if (!restrictionsList.includes(restriction)) {
           restrictionsList.push(restriction);
