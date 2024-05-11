@@ -144,6 +144,108 @@ const utils = (() => {
     }
   }
 
+  /**
+   * Function that serves as a work around to verify post-login cookies are set correctly
+   * 
+   * @param {string} username 
+   */
+  async function cookieWorkaround(username) {
+    console.log("Querying Server for:", username);
+
+    fetch(PROFILE_URL, {
+      method: GET_ACTION,
+      credentials: 'include',
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE,
+      },
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error(FAILED_TO_GET_USER_PROFILE);
+      }
+
+      console.log(SUCCESSFULLY_GOT_PROFILE)
+      return response.json();
+    }).then(data => {
+      console.log('Profile Data:', data);
+    }).catch(error => {
+      console.error(error);
+    });
+  }
+
+  /**
+   * Function that gets the username from the cookie
+   * 
+   * @returns The username
+   */
+  function getUserNameFromCookie() {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; username=`);
+    if (parts.length === 2) {
+      return parts.pop().split(';').shift();
+    }
+  }
+
+  /**
+   * Function that checks if two arrays are equal
+   * 
+   * @param {array} a 
+   * @param {array} b 
+   * @returns true if equal, false otherwise
+   */
+  function arraysEqual(a, b) {
+    if (a.length !== b.length) {
+      return false;
+    }
+
+    const uniqueValues = new Set([...a, ...b]);
+    for (let value of uniqueValues) {
+      const aCount = a.filter(item => item === value).length;
+      const bCount = b.filter(item => item === value).length;
+      if (aCount !== bCount) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Function that shows an ajax alert dynamically
+   * 
+   * @param {string} type The div to find
+   * @param {string} message The message to display
+   */
+  function showAjaxAlert(type, message) {
+    const alertDivMap = {
+      "Error": "#ajaxAlertError",
+      "Success": "#ajaxAlertSuccess",
+      "Warning": "#ajaxAlertWarning"
+    };
+
+    const alertMessageMap = {
+      "Error": "#ajaxErrorMessage",
+      "Success": "#ajaxSuccessMessage",
+      "Warning": "#ajaxWarningMessage"
+    }
+
+    const alertDiv = $(alertDivMap[type]);
+    if (!alertDiv) {
+      console.error("Alert type does not have a corresponding div.");
+      return;
+    }
+
+    var alertMessage = $(alertMessageMap[type]);
+    if (!alertMessage) {
+      console.error("Alert type does not have a corresponding span.");
+      return;
+    }
+
+    alertDiv.removeClass('hide').removeAttr('style').addClass('show');
+    alertMessage.text(message);
+    alertDiv.show();
+    alertDiv.alert();
+  }
+
   return {
     setStorage,
     getFromStorage,
@@ -151,6 +253,10 @@ const utils = (() => {
     convertToJson,
     renderNavbar,
     getUserFromUsername,
-    getUserFromEmail
+    getUserFromEmail,
+    cookieWorkaround,
+    getUserNameFromCookie,
+    arraysEqual,
+    showAjaxAlert
   };
 })();

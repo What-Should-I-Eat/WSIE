@@ -6,9 +6,9 @@
  */
 
 // Server URL - Locally
-const HOST = 'http://localhost:3001';
+// const HOST = 'http://localhost:3001';
 // Server URL - NGINX
-// const HOST = 'http://localhost:8080';
+const HOST = 'http://localhost:8080';
 // Server URL - VM Deployment
 // const HOST = "";
 // Server URL = Local IP (Testing Mobile)
@@ -38,7 +38,12 @@ const RESEND_VERIFICATION_URL = `${HOST}/${API_VERSION}/users/resendVerification
 // User API Endpoints
 const GET_USER_EMAIL = `${HOST}/${API_VERSION}/users/getUserEmail`;
 const GET_USER_DATA_URL = `${HOST}/${API_VERSION}/users/findUserData?username`;
+const GET_USER_ID = `${HOST}/${API_VERSION}/users/findUserId?username`
 const REQUEST_USER_INFO_FOR_RESET_URL = `${HOST}/${API_VERSION}/users/requestInfoForPasswordReset?email`;
+
+// User Dietary API Endpoints
+const UPDATE_USER_DIET_URL = `${HOST}/${API_VERSION}/users/diet`;
+const UPDATE_USER_HEALTH_URL = `${HOST}/${API_VERSION}/users/health`;
 
 // Authentication Modals
 const authClassesToRemove = ['alert-danger', 'alert-success', 'alert-warning'];
@@ -71,3 +76,12 @@ const FAILED_TO_RESEND_CODE = "Failed to resend code";
 const FAILED_TO_RESEND_CODE_MISSING_USERNAME = `${FAILED_TO_RESEND_CODE}. Missing username`;
 const FAILED_TO_RESEND_CODE_MISSING_EMAIL = `${FAILED_TO_RESEND_CODE}. Missing email`;
 const FAILED_TO_RESEND_CODE_MISSING_NAME = `${FAILED_TO_RESEND_CODE}. Missing name`;
+
+// Dietary Updates
+const SUCCESSFULLY_UPDATED_USER_DIETARY = "Successfully updated user diet";
+const SUCCESSFULLY_UPDATED_USER_HEALTH = "Successfully updated user food allergies";
+const FAILED_TO_UPDATED_USER_DIETARY = "Error occurred trying to update user diet";
+const FAILED_TO_UPDATE_USER_HEALTH = "Error occurred trying to update user health";
+const NO_CHANGED_DETECTED = "No user dietary changes detected";
+const SUCCESSFULLY_GOT_PROFILE = "Successfully got profile using cookies";
+const FAILED_TO_GET_USER_PROFILE = "Error occurred getting profile using cookies";
