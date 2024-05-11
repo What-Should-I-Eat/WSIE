@@ -1,41 +1,40 @@
 import React, {useState} from 'react';
 import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView, FlatList } from 'react-native';
-import { isRecipeAlreadyFavorited } from '../calls/favoriteCalls';
 
-export default function IndividualRecipeScreen({ route, navigation }) {
+export default function IndividualFavoritesScreen({ route, navigation }) {
 
-    const [isFavorited, setIsFavorited] = useState(isRecipeAlreadyFavorited(route.params));
+    const [isFavorited, setIsFavorited] = useState(true);
 
     const { individualItem } = route.params;
 
     return (
-        <SafeAreaView style={IndividualRecipeStyles.container}>
+        <SafeAreaView style={IndividualFavoritesStyles.container}>
         <ScrollView>
-            <View style={IndividualRecipeStyles.singleRecipeDiv}>
-            <Text style={IndividualRecipeStyles.foodTitle}>
+            <View style={IndividualFavoritesStyles.singleRecipeDiv}>
+            <Text style={IndividualFavoritesStyles.foodTitle}>
                 {individualItem.name}
             </Text>
             <Image 
                 source={ { uri: individualItem.image}} 
-                style={IndividualRecipeStyles.images} 
+                style={IndividualFavoritesStyles.images} 
             />
-            {!isFavorited && <Pressable style={IndividualRecipeStyles.favoritesButton}>
-                <Text style={IndividualRecipeStyles.buttonText}>
+            {!isFavorited && <Pressable style={IndividualFavoritesStyles.favoritesButton}>
+                <Text style={IndividualFavoritesStyles.buttonText}>
                     Add to favorites
                 </Text>
             </Pressable>}
             {isFavorited && <View>
-            <Text style={IndividualRecipeStyles.currentlyFavorited}>
+            <Text style={IndividualFavoritesStyles.currentlyFavorited}>
               --- Favorited ---
               </Text>
-              <Pressable style={IndividualRecipeStyles.favoritesButton}>
-                <Text style={IndividualRecipeStyles.buttonText}>
+              <Pressable style={IndividualFavoritesStyles.favoritesButton}>
+                <Text style={IndividualFavoritesStyles.buttonText}>
                     Remove favorite
                 </Text>
             </Pressable>
             </View>}
             
-            <Text style={IndividualRecipeStyles.calories}>
+            <Text style={IndividualFavoritesStyles.calories}>
                 Calories: {individualItem.calories}
             </Text>
             </View>   
@@ -43,7 +42,7 @@ export default function IndividualRecipeScreen({ route, navigation }) {
       </SafeAreaView>
     );
   }
-  const IndividualRecipeStyles = StyleSheet.create({
+  const IndividualFavoritesStyles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#ffd5ad',

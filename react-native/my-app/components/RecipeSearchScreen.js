@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Image, Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView, FlatList, TouchableWithoutFeedback } from 'react-native';
+import { Image, Pressable, Text, TextInput, View, StyleSheet, SafeAreaView, FlatList, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { searchForRecipes } from '../calls/recipeSearchCalls';
 
@@ -12,7 +12,6 @@ export default function RecipeSearchScreen({ navigation }) {
 
     return (
         <SafeAreaView style={RecipeSearchStyles.container}>
-        {/* <ScrollView> */}
         <View style={RecipeSearchStyles.container}>
             <Text style={RecipeSearchStyles.instructions}>
                Search for your favorite recipe below:
@@ -42,9 +41,6 @@ export default function RecipeSearchScreen({ navigation }) {
               </Text>  
               </View>}
 
-
-
-
             <FlatList
               data={searchResults}
               keyExtractor={(item) => item.name} // Use a unique key for each item
@@ -70,86 +66,8 @@ export default function RecipeSearchScreen({ navigation }) {
                 </TouchableWithoutFeedback>
               )}
             />
-              {/* <View style={RecipeSearchStyles.singleRecipeDiv}>
-                <Image 
-                style={RecipeSearchStyles.images}
-                source={require('../assets/zucchini-pasta-10.jpeg')}/>
-                <View style={RecipeSearchStyles.textResults}>
-                  <Text style={RecipeSearchStyles.foodTitle}>
-                    Zucchini Pasta
-                  </Text>
-                  <Text style={RecipeSearchStyles.foodDescription}>
-                    Zucchini pasta is a vegan spin on traditional Italian cuisine...
-                  </Text>
-                </View>
-              </View>
-              <View style={RecipeSearchStyles.divider}/>
-
-              <View style={RecipeSearchStyles.singleRecipeDiv}>
-                <Image 
-                style={RecipeSearchStyles.images}
-                source={require('../assets/instant-pot-mango-chicken.webp')}/>
-                <View style={RecipeSearchStyles.textResults}>
-                  <Text style={RecipeSearchStyles.foodTitle}>
-                    Mango Chicken Curry
-                  </Text>
-                  <Text style={RecipeSearchStyles.foodDescription}>
-                    Mango chicken curry is a popular dish among many areas of southern Asia...
-                  </Text>
-                  </View>
-              </View>
-              <View style={RecipeSearchStyles.divider}/>
-
-              <View style={RecipeSearchStyles.singleRecipeDiv}>
-                <Image 
-                style={RecipeSearchStyles.images}
-                source={require('../assets/strawberry-cake.webp')}/>
-                <View style={RecipeSearchStyles.textResults}>
-                  <Text style={RecipeSearchStyles.foodTitle}>
-                    Strawberry Cake
-                  </Text>
-                  <Text style={RecipeSearchStyles.foodDescription}>
-                    Strawberry cake is a fantastic dessert option for any festivity...
-                  </Text>
-                </View>
-              </View>
-              <View style={RecipeSearchStyles.divider}/>
-
-              <View style={RecipeSearchStyles.singleRecipeDiv}>
-                <Image 
-                style={RecipeSearchStyles.images}
-                source={require('../assets/fruit-salad.webp')}/>
-                <View style={RecipeSearchStyles.textResults}>
-                  <Text style={RecipeSearchStyles.foodTitle}>
-                    Fruit Salad
-                  </Text>
-                  <Text style={RecipeSearchStyles.foodDescription}>
-                    Fruit salad is a great choice for summertime BBQs...
-                  </Text>
-                </View>
-              </View>
-              <View style={RecipeSearchStyles.divider}/>
-              <View style={RecipeSearchStyles.singleRecipeDiv}>
-                <Image 
-                style={RecipeSearchStyles.images}
-                source={require('../assets/Glazed-Pork-Chops.jpeg')}/>
-                <View style={RecipeSearchStyles.textResults}>
-                  <Text style={RecipeSearchStyles.foodTitle}>
-                    Glazed Pork Chops
-                  </Text>
-                  <Text style={RecipeSearchStyles.foodDescription}>
-                    These sweet and spicy pork chops offer a mixture of flavors...
-                  </Text>
-                </View>
-              </View>
-              <View style={RecipeSearchStyles.divider}/> */}
-              
-              
-              
-            </View>}
-
+          </View>}
       </View>
-      {/* </ScrollView> */}
       </SafeAreaView>
     );
   }
