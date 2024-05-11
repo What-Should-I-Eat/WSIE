@@ -33,11 +33,12 @@
   <script src="/static/js/login.js"></script>
   <script src="/static/js/account/my_dietary.js"></script>
 
-  <!-- TODO: Temporary -->
+  <!-- As an inline script -->
   <script>
-    function toggleSelection(element) {
-      element.classList.toggle('selected');
-    }
+    $(document).ready(function () {
+      const dietaryView = new MyDietaryView();
+      dietaryView.load();
+    });
   </script>
 </head>
 
@@ -89,6 +90,13 @@
           class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxErrorMessage"></span>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        <div id="ajaxAlertWarning"
+          class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show" role="alert"
+          style="display: none;">
+          <span id="ajaxWarningMessage"></span>
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
@@ -348,38 +356,39 @@
 
   <div class="container mt-5">
     <div class="mb-5">
-      <!-- TODO: Set the server route -->
-      <form id="updateDietaryRestrictionsForm" action="" method="POST">
+      <form id="updateDietaryRestrictionsForm">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h2 id="dietaryRestrictionsHeader">Dietary Restrictions</h2>
           <div class="d-flex flex-column align-items-end">
-            <a href="#" id="updateDietaryRestrictionsButton" class="btn btn-primary">Update Restrictions</a>
+            <button type="submit" form="updateDietaryRestrictionsForm" class="mb-3 btn btn-primary btn-block">Update
+              Restrictions</button>
+            <!-- <a href="#" id="updateDietaryRestrictionsButton" class="btn btn-primary">Update Restrictions</a> -->
           </div>
         </div>
 
         <hr />
 
-        <div id="dietaryRestrictionsContainer" class="dietary-container">
+        <div id="dietaryRestrictionsContainer" class="dietary-restrictions-container">
           <!-- First Row -->
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Low Carb</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Low Fat</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Low Sodium</button>
+          <button type="button" class="btn toggle-btn">Low Carb</button>
+          <button type="button" class="btn toggle-btn">Low Fat</button>
+          <button type="button" class="btn toggle-btn">Low Sodium</button>
           <!-- Second Row -->
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Balanced</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">High Fiber</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">High Protein</button>
+          <button type="button" class="btn toggle-btn">Balanced</button>
+          <button type="button" class="btn toggle-btn">High Fiber</button>
+          <button type="button" class="btn toggle-btn">High Protein</button>
           <!-- Third Row -->
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Vegan</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Vegetarian</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Paleo</button>
+          <button type="button" class="btn toggle-btn">Vegan</button>
+          <button type="button" class="btn toggle-btn">Vegetarian</button>
+          <button type="button" class="btn toggle-btn">Paleo</button>
           <!-- Fourth Row -->
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Keto</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Kosher</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Pork Free</button>
+          <button type="button" class="btn toggle-btn">Keto</button>
+          <button type="button" class="btn toggle-btn">Kosher</button>
+          <button type="button" class="btn toggle-btn">Pork Free</button>
           <!-- Fifth Row -->
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Pescetarian</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Red Meat Free</button>
-          <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Low FODMAP</button>
+          <button type="button" class="btn toggle-btn">Pescatarian</button>
+          <button type="button" class="btn toggle-btn">Red Meat Free</button>
+          <button type="button" class="btn toggle-btn">Low FODMAP</button>
         </div>
       </form>
     </div>
@@ -390,34 +399,35 @@
     <!-- START: Food Allergies -->
     <div class="container mt-5">
       <div class="mb-5">
-        <!-- TODO: Set the server route -->
-        <form id="updateFoodAllergiesForm" action="" method="POST">
+        <form id="updateFoodAllergiesForm">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 id="foodAllergiesHeader">Food Allergies</h2>
             <div class="d-flex flex-column align-items-end">
-              <a href="#" id="updateAllergiesButton" class="btn btn-primary">Update Allergies</a>
+              <button type="submit" form="updateFoodAllergiesForm" class="mb-3 btn btn-primary btn-block">Update
+                Allergies</button>
+              <!-- <a href="#" id="updateAllergiesButton" class="btn btn-primary">Update Allergies</a> -->
             </div>
           </div>
 
           <hr />
 
-          <div id="foodAllergiesContainer" class="dietary-container">
+          <div id="foodAllergiesContainer" class="food-allergies-container">
             <!-- First Row -->
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Gluten</button>
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Dairy</button>
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Eggs</button>
+            <button type="button" class="btn toggle-btn">Gluten</button>
+            <button type="button" class="btn toggle-btn">Dairy</button>
+            <button type="button" class="btn toggle-btn">Eggs</button>
             <!-- Second Row -->
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Soy</button>
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Wheat</button>
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Fish</button>
+            <button type="button" class="btn toggle-btn">Soy</button>
+            <button type="button" class="btn toggle-btn">Wheat</button>
+            <button type="button" class="btn toggle-btn">Fish</button>
             <!-- Third Row -->
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Shellfish</button>
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Tree Nuts</button>
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Peanuts</button>
+            <button type="button" class="btn toggle-btn">Shellfish</button>
+            <button type="button" class="btn toggle-btn">Tree Nuts</button>
+            <button type="button" class="btn toggle-btn">Peanuts</button>
             <!-- Fourth Row -->
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Sesame</button>
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Low Sugar</button>
-            <button type="button" class="btn toggle-btn" onclick="toggleSelection(this)">Alcohol Free</button>
+            <button type="button" class="btn toggle-btn">Sesame</button>
+            <button type="button" class="btn toggle-btn">Low Sugar</button>
+            <button type="button" class="btn toggle-btn">Alcohol Free</button>
           </div>
         </form>
       </div>

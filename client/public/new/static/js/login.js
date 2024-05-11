@@ -85,6 +85,7 @@ $(document).ready(function () {
           const data = await response.json();
           utils.setStorage("user", data);
           utils.setStorage("username", data.username);
+          utils.cookieWorkaround(data.username);
           window.location.href = BASE_HOME_REDIRECT;
         } else {
           const data = await response.json();
