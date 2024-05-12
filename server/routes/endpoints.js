@@ -107,6 +107,22 @@ endpoints.post("/users/getUserEmail", async (req, res) => {
   }
 });
 
+endpoints.post("/users/getUserFavorites", async (req, res) => { 
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    console.log(user.favorites);
+    res.json(user.favorites);
+  } catch (error) {
+    console.error('Error finding user: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 
 //____________________________________________MIDDLEWARE____________________________________________________________

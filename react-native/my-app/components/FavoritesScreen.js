@@ -1,12 +1,47 @@
 import React, {useState} from 'react';
-import { Image, Pressable, Text, View, StyleSheet, ScrollView } from 'react-native';
+import { Image, Pressable, Text, View, StyleSheet, ScrollView, FlatList, TouchableWithoutFeedback } from 'react-native';
+import { getUserFavoritesFromSever } from '../calls/favoriteCalls';
 
 export default function FavoritesScreen({ navigation }) {
 
+  // const [favoritesResults, setFavoritesResults] = useState(getUserFavoritesFromSever());
+  const [favoritesResults, setFavoritesResults] = useState([]);
+
+
     return (
-      <ScrollView>
+      // <ScrollView>
+
         <View style={FavoritesStyles.container}>
-          <Text style={FavoritesStyles.instructions}>
+      <Pressable style={FavoritesStyles.favoritesButton} onPress={() => getUserFavoritesFromSever(setFavoritesResults)}>
+        <Text style={FavoritesStyles.buttonText}>See Favorites</Text>
+      </Pressable>
+        <FlatList
+              data={favoritesResults}
+              keyExtractor={(item) => item.recipeName} // Use a unique key for each item
+              renderItem={({ item }) => (
+                <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualFavoritesScreen", {
+                  individualRecipe: item
+                })}>
+                <View style={FavoritesStyles.singleRecipeDiv}>
+                  
+                  <View style={FavoritesStyles.textResults}>
+
+                    <Text style={FavoritesStyles.foodTitle}>
+                      {item.recipeName}
+                    </Text>
+                    <Image 
+                      style={FavoritesStyles.images} 
+                      source={ { uri: item.recipeImage }} 
+                     />
+                    {/* <Text style={FavoritesStyles.calories}>
+                      Cal: {item.calories}
+                    </Text> */}
+                  </View>
+                </View>
+                </TouchableWithoutFeedback>
+              )}
+            />
+          {/* <Text style={FavoritesStyles.instructions}>
             Favorited Recipes
           </Text>
 
@@ -73,11 +108,11 @@ export default function FavoritesScreen({ navigation }) {
               These sweet and spicy pork chops offer a mixture of flavors...
             </Text>
           </View>
-          <View style={FavoritesStyles.divider}/>
+          <View style={FavoritesStyles.divider}/> */}
 
 
         </View>
-      </ScrollView>
+      // </ScrollView>
     );
   }
   const FavoritesStyles = StyleSheet.create({
@@ -121,6 +156,33 @@ export default function FavoritesScreen({ navigation }) {
       justifyContent: 'center',
       textAlign: 'center'
     },
+    favoritesButton: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 4,
+      elevation: 3,
+      width: 250,
+      height: 75,
+      margin: 10,
+      marginTop: 20,   
+      backgroundColor: '#3cb04c' 
+  },
+  unfavoritesButton: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 4,
+      elevation: 3,
+      width: 250,
+      height: 75,
+      margin: 10,
+      marginTop: 20,   
+      backgroundColor: 'red' 
+  },
+  buttonText:{
+      fontSize: 30,
+      fontWeight: '600',
+      color: '#ffffff'
+  },
     divider: {
       borderBottomColor: 'black',
       borderBottomWidth: StyleSheet.hairlineWidth,

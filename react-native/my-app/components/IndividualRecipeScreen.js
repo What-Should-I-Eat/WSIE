@@ -1,25 +1,27 @@
 import React, {useState} from 'react';
 import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView, FlatList } from 'react-native';
 import { isRecipeAlreadyFavorited } from '../calls/favoriteCalls';
+import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
 
 export default function IndividualRecipeScreen({ route, navigation }) {
 
-    const [isFavorited, setIsFavorited] = useState(isRecipeAlreadyFavorited(route.params));
+    // const [isFavorited, setIsFavorited] = useState(isRecipeAlreadyFavorited(route.params));
+    const [isFavorited, setIsFavorited] = useState(false);
 
-    const { individualItem } = route.params;
+    const { individualRecipe } = route.params;
 
     return (
         <SafeAreaView style={IndividualRecipeStyles.container}>
         <ScrollView>
             <View style={IndividualRecipeStyles.singleRecipeDiv}>
             <Text style={IndividualRecipeStyles.foodTitle}>
-                {individualItem.name}
+                {individualRecipe.name}
             </Text>
             <Image 
-                source={ { uri: individualItem.image}} 
+                source={ { uri: individualRecipe.image}} 
                 style={IndividualRecipeStyles.images} 
             />
-            {!isFavorited && <Pressable style={IndividualRecipeStyles.favoritesButton}>
+            {!isFavorited && <Pressable style={IndividualRecipeStyles.favoritesButton} onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, true)}>
                 <Text style={IndividualRecipeStyles.buttonText}>
                     Add to favorites
                 </Text>
@@ -28,7 +30,7 @@ export default function IndividualRecipeScreen({ route, navigation }) {
             <Text style={IndividualRecipeStyles.currentlyFavorited}>
               --- Favorited ---
               </Text>
-              <Pressable style={IndividualRecipeStyles.favoritesButton}>
+              <Pressable style={IndividualRecipeStyles.unfavoritesButton} onPress={() => removeRecipeFromFavorites(individualRecipe, setIsFavorited, true)}>
                 <Text style={IndividualRecipeStyles.buttonText}>
                     Remove favorite
                 </Text>
@@ -36,7 +38,7 @@ export default function IndividualRecipeScreen({ route, navigation }) {
             </View>}
             
             <Text style={IndividualRecipeStyles.calories}>
-                Calories: {individualItem.calories}
+                Calories: {individualRecipe.calories}
             </Text>
             </View>   
       </ScrollView>
@@ -62,6 +64,17 @@ export default function IndividualRecipeScreen({ route, navigation }) {
         marginTop: 20,   
         backgroundColor: '#3cb04c' 
     },
+    unfavoritesButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 4,
+        elevation: 3,
+        width: 250,
+        height: 75,
+        margin: 10,
+        marginTop: 20,   
+        backgroundColor: 'red' 
+    },
     buttonText:{
         fontSize: 30,
         fontWeight: '600',
@@ -83,9 +96,11 @@ export default function IndividualRecipeScreen({ route, navigation }) {
     currentlyFavorited: {
       alignContent: "center",
       alignItems: "center",
-      color: '3cb04c',
-      fontSize: 25,
-      fontWeight: 300
+      textAlign: "center",
+      color: '#3cb04c',
+      fontSize: 35,
+      fontWeight: 600,
+      marginTop: 10
     },
     foodTitle: {
       fontSize: 40,

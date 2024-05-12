@@ -1,41 +1,43 @@
 import React, {useState} from 'react';
 import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView, FlatList } from 'react-native';
+import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
+
 
 export default function IndividualFavoritesScreen({ route, navigation }) {
 
     const [isFavorited, setIsFavorited] = useState(true);
 
-    const { individualItem } = route.params;
+    const { individualRecipe } = route.params;
 
     return (
         <SafeAreaView style={IndividualFavoritesStyles.container}>
         <ScrollView>
             <View style={IndividualFavoritesStyles.singleRecipeDiv}>
             <Text style={IndividualFavoritesStyles.foodTitle}>
-                {individualItem.name}
+                {individualRecipe.recipeName}
             </Text>
             <Image 
-                source={ { uri: individualItem.image}} 
+                source={ { uri: individualRecipe.recipeImage}} 
                 style={IndividualFavoritesStyles.images} 
             />
-            {!isFavorited && <Pressable style={IndividualFavoritesStyles.favoritesButton}>
+            {!isFavorited && <Pressable style={IndividualFavoritesStyles.favoritesButton}  onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, false)}>
                 <Text style={IndividualFavoritesStyles.buttonText}>
                     Add to favorites
                 </Text>
             </Pressable>}
             {isFavorited && <View>
-            <Text style={IndividualFavoritesStyles.currentlyFavorited}>
-              --- Favorited ---
-              </Text>
-              <Pressable style={IndividualFavoritesStyles.favoritesButton}>
+              <Pressable  style={IndividualFavoritesStyles.unfavoritesButton} onPress={() => removeRecipeFromFavorites(individualRecipe, setIsFavorited, false)}>
                 <Text style={IndividualFavoritesStyles.buttonText}>
                     Remove favorite
                 </Text>
             </Pressable>
             </View>}
-            
-            <Text style={IndividualFavoritesStyles.calories}>
-                Calories: {individualItem.calories}
+            <View style={IndividualFavoritesStyles.divider}/>
+            <Text style={IndividualFavoritesStyles.ingredients}>
+              Ingredients: 
+            </Text>
+            <Text style={IndividualFavoritesStyles.directions}>
+              Directions: 
             </Text>
             </View>   
       </ScrollView>
@@ -61,6 +63,17 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
         marginTop: 20,   
         backgroundColor: '#3cb04c' 
     },
+    unfavoritesButton: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 4,
+      elevation: 3,
+      width: 250,
+      height: 75,
+      margin: 10,
+      marginTop: 20,   
+      backgroundColor: 'red' 
+  },
     buttonText:{
         fontSize: 30,
         fontWeight: '600',
@@ -82,9 +95,11 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
     currentlyFavorited: {
       alignContent: "center",
       alignItems: "center",
-      color: '3cb04c',
-      fontSize: 25,
-      fontWeight: 300
+      textAlign: "center",
+      color: '#3cb04c',
+      fontSize: 35,
+      fontWeight: 600,
+      marginTop: 10
     },
     foodTitle: {
       fontSize: 40,
@@ -116,12 +131,21 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
       alignContent: "center",
       alignItems: "center",
     },
-    textResults: {
+    directions: {
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: 'center',
-      width: 200,
-      marginLeft: 15
+      width: 400,
+      marginVertical: 10,
+      fontSize: 30,
+    },
+    ingredients: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
+      width: 400,
+      marginVertical: 10,
+      fontSize: 30,
     }
   }
 );

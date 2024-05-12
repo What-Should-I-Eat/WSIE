@@ -9,7 +9,7 @@ export default function RecipeSearchScreen({ navigation }) {
     const [showStuff, setShowStuff] = useState(false);
     const [noResults, setNoResults] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
-
+ 
     return (
         <SafeAreaView style={RecipeSearchStyles.container}>
         <View style={RecipeSearchStyles.container}>
@@ -46,7 +46,7 @@ export default function RecipeSearchScreen({ navigation }) {
               keyExtractor={(item) => item.name} // Use a unique key for each item
               renderItem={({ item }) => (
                 <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualRecipeScreen", {
-                  individualItem: item
+                  individualRecipe: item
                 })}>
                 <View style={RecipeSearchStyles.singleRecipeDiv}>
                   <Image 
@@ -56,7 +56,7 @@ export default function RecipeSearchScreen({ navigation }) {
                   <View style={RecipeSearchStyles.textResults}>
 
                     <Text style={RecipeSearchStyles.foodTitle}>
-                      {item.name}
+                      {item.name}  
                     </Text>
                     <Text style={RecipeSearchStyles.calories}>
                       Cal: {item.calories}

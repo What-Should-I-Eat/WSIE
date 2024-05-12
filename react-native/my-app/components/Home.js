@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { loggedInUser } from "../calls/loginCalls";
+import { getUserFavoritesFromSever } from "../calls/favoriteCalls";
 
 export default function Home({ navigation }) {
   return (
@@ -22,7 +23,8 @@ export default function Home({ navigation }) {
       </Pressable>
       <Pressable
         title="Go to Favorites"
-        onPress={() => navigation.navigate("FavoritesScreen")}
+        // onPress={() => {navigation.navigate("FavoritesScreen"); getUserFavoritesFromSever();}}
+        onPress={() => {navigation.navigate("FavoritesScreen");}}
         style={[styles.goToButton, styles.goToFavorites]}
       >
         <Text style={styles.buttonText}>View Favorites</Text>
