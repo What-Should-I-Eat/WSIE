@@ -1,37 +1,50 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Image, Pressable, Text, View, StyleSheet, ScrollView, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { getUserFavoritesFromSever } from '../calls/favoriteCalls';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function FavoritesScreen({ navigation }) {
 
-  // const [favoritesResults, setFavoritesResults] = useState(getUserFavoritesFromSever());
   const [favoritesResults, setFavoritesResults] = useState([]);
+  const [noCurrentFavorites, setNoCurrentFavorites] = useState(false);
+  console.log('newnewnew initially?');
 
+  useEffect(() => { 
+    async function getFavoritesForLoad() {
+      try{
+        const userFavorites = await getUserFavoritesFromSever();
+        setFavoritesResults(userFavorites);
+        if(userFavorites.length == 0){
+          setNoCurrentFavorites(true);
+        }
+      } catch (error){
+        console.error('Error fetching favs: ', error);
+      }
+    }
+    getFavoritesForLoad();
+  }, [getUserFavoritesFromSever]);
 
     return (
-      // <ScrollView>
-
         <View style={FavoritesStyles.container}>
-      <Pressable style={FavoritesStyles.favoritesButton} onPress={() => getUserFavoritesFromSever(setFavoritesResults)}>
-        <Text style={FavoritesStyles.buttonText}>See Favorites</Text>
-      </Pressable>
+
+        {noCurrentFavorites && <Text style={FavoritesStyles.instructions}>
+          Sorry, you have no favorites to show right now.{'\n\n'}Try searching for some new recipes to add!</Text>}
+
         <FlatList
               data={favoritesResults}
-              keyExtractor={(item) => item.recipeName} // Use a unique key for each item
+              keyExtractor={(item) => item.name} // Use a unique key for each item
               renderItem={({ item }) => (
                 <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualFavoritesScreen", {
                   individualRecipe: item
                 })}>
                 <View style={FavoritesStyles.singleRecipeDiv}>
-                  
                   <View style={FavoritesStyles.textResults}>
-
                     <Text style={FavoritesStyles.foodTitle}>
-                      {item.recipeName}
+                      {item.name}
                     </Text>
                     <Image 
                       style={FavoritesStyles.images} 
-                      source={ { uri: item.recipeImage }} 
+                      source={ { uri: item.image }} 
                      />
                     {/* <Text style={FavoritesStyles.calories}>
                       Cal: {item.calories}
@@ -40,79 +53,9 @@ export default function FavoritesScreen({ navigation }) {
                 </View>
                 </TouchableWithoutFeedback>
               )}
+              extraData={favoritesResults}
             />
-          {/* <Text style={FavoritesStyles.instructions}>
-            Favorited Recipes
-          </Text>
-
-          <View style={FavoritesStyles.singleRecipeDiv}>
-            <Text style={FavoritesStyles.foodTitle}>
-              Zucchini Pasta
-            </Text>
-            <Image 
-            style={FavoritesStyles.images}
-            source={require('../assets/zucchini-pasta-10.jpeg')}/>
-            <Text style={FavoritesStyles.foodDescription}>
-              Zucchini pasta is a vegan spin on traditional Italian cuisine...
-            </Text>
-          </View>
-          <View style={FavoritesStyles.divider}/>
-
-          <View style={FavoritesStyles.singleRecipeDiv}>
-            <Text style={FavoritesStyles.foodTitle}>
-              Mango Chicken Curry
-            </Text>
-            <Image 
-            style={FavoritesStyles.images}
-            source={require('../assets/instant-pot-mango-chicken.webp')}/>
-            <Text style={FavoritesStyles.foodDescription}>
-              Mango chicken curry is a popular dish among many areas of southern Asia...
-            </Text>
-          </View>
-          <View style={FavoritesStyles.divider}/>
-
-          <View style={FavoritesStyles.singleRecipeDiv}>
-            <Text style={FavoritesStyles.foodTitle}>
-              Strawberry Cake
-            </Text>
-            <Image 
-            style={FavoritesStyles.images}
-            source={require('../assets/strawberry-cake.webp')}/>
-            <Text style={FavoritesStyles.foodDescription}>
-              Strawberry cake is a fantastic dessert option for any festivity...
-            </Text>
-          </View>
-          <View style={FavoritesStyles.divider}/>
-
-          <View style={FavoritesStyles.singleRecipeDiv}>
-            <Text style={FavoritesStyles.foodTitle}>
-              Fruit Salad
-            </Text>
-            <Image 
-            style={FavoritesStyles.images}
-            source={require('../assets/fruit-salad.webp')}/>
-            <Text style={FavoritesStyles.foodDescription}>
-              Fruit salad is a great choice for summertime BBQs...
-            </Text>
-          </View>
-          <View style={FavoritesStyles.divider}/>
-
-          <View style={FavoritesStyles.singleRecipeDiv}>
-            <Text style={FavoritesStyles.foodTitle}>
-              Glazed Pork Chops
-            </Text>
-            <Image 
-            style={FavoritesStyles.images}
-            source={require('../assets/Glazed-Pork-Chops.jpeg')}/>
-            <Text style={FavoritesStyles.foodDescription}>
-              These sweet and spicy pork chops offer a mixture of flavors...
-            </Text>
-          </View>
-          <View style={FavoritesStyles.divider}/> */}
-
-
         </View>
-      // </ScrollView>
     );
   }
   const FavoritesStyles = StyleSheet.create({
@@ -126,8 +69,8 @@ export default function FavoritesScreen({ navigation }) {
         fontSize: 35,
         fontWeight: '600',
         width: 350,
-        color: 'green',
-        marginTop: 20,
+        color: 'red',
+        marginTop: 50,
         marginBottom: 20,
         textAlign: 'center'
     },
@@ -154,7 +97,8 @@ export default function FavoritesScreen({ navigation }) {
     singleRecipeDiv: {
       alignItems: 'center',
       justifyContent: 'center',
-      textAlign: 'center'
+      textAlign: 'center',
+      marginTop: 20,
     },
     favoritesButton: {
       alignItems: 'center',

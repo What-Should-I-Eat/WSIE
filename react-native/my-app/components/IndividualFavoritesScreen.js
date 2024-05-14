@@ -14,19 +14,19 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
         <ScrollView>
             <View style={IndividualFavoritesStyles.singleRecipeDiv}>
             <Text style={IndividualFavoritesStyles.foodTitle}>
-                {individualRecipe.recipeName}
+                {individualRecipe.name}
             </Text>
             <Image 
-                source={ { uri: individualRecipe.recipeImage}} 
+                source={ { uri: individualRecipe.image}} 
                 style={IndividualFavoritesStyles.images} 
             />
-            {!isFavorited && <Pressable style={IndividualFavoritesStyles.favoritesButton}  onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, false)}>
+            {!isFavorited && <Pressable style={IndividualFavoritesStyles.favoritesButton}  onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, true)}>
                 <Text style={IndividualFavoritesStyles.buttonText}>
                     Add to favorites
                 </Text>
             </Pressable>}
             {isFavorited && <View>
-              <Pressable  style={IndividualFavoritesStyles.unfavoritesButton} onPress={() => removeRecipeFromFavorites(individualRecipe, setIsFavorited, false)}>
+              <Pressable  style={IndividualFavoritesStyles.unfavoritesButton} onPress={() => removeRecipeFromFavorites(individualRecipe, setIsFavorited, true)}>
                 <Text style={IndividualFavoritesStyles.buttonText}>
                     Remove favorite
                 </Text>

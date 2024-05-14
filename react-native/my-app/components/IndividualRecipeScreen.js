@@ -1,14 +1,26 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView, FlatList } from 'react-native';
 import { isRecipeAlreadyFavorited } from '../calls/favoriteCalls';
 import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
 
 export default function IndividualRecipeScreen({ route, navigation }) {
 
-    // const [isFavorited, setIsFavorited] = useState(isRecipeAlreadyFavorited(route.params));
+    const { individualRecipe } = route.params;
+
     const [isFavorited, setIsFavorited] = useState(false);
 
-    const { individualRecipe } = route.params;
+    useEffect(() => { 
+      async function getFavoriteStatusForLoad() {
+        try{
+          const isThisAlreadyFavorited = await isRecipeAlreadyFavorited(individualRecipe);
+          setIsFavorited(isThisAlreadyFavorited);
+        } catch (error){
+          console.error('Error fetching favs: ', error);
+        }
+      }
+      getFavoriteStatusForLoad();
+    }, []);
+
 
     return (
         <SafeAreaView style={IndividualRecipeStyles.container}>
