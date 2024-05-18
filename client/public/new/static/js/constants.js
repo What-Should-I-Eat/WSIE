@@ -6,9 +6,9 @@
  */
 
 // Server URL - Locally
-// const HOST = 'http://localhost:3001';
+const HOST = 'http://localhost:3001';
 // Server URL - NGINX
-const HOST = 'http://localhost:8080';
+// const HOST = 'http://localhost:8080';
 // Server URL - VM Deployment
 // const HOST = "";
 // Server URL = Local IP (Testing Mobile)
@@ -103,7 +103,7 @@ const SUCCESSFULLY_GOT_PROFILE = "Successfully got profile using cookies";
 const FAILED_TO_GET_USER_PROFILE = "Error occurred getting profile using cookies";
 
 // Search
-const FAILED_TO_QUERY_EDAMAM = "Error occurred connecting to Edamam API";
+const EDAMAM_QUERY_ERROR = "Error occurred getting recipes. Verify dietary restrictions don't contradict your search request";
 const NO_IMAGE_AVAILABLE = "/static/img/no_image_available.svg";
 const NO_RECIPES_FOUND = "0 recipes found.";
 

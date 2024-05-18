@@ -2,21 +2,60 @@ function RecipesView() {
   const container = $('.recipes-container');
   const addedRecipesSet = new Set();
 
-  this.load = () => {
-    const recipesData = utils.getFromStorage("recipes");
+  this.load = async (searchParam) => {
+    try {
+      const recipes = await this.getRecipes(searchParam);
 
-    if (recipesData) {
-      const recipes = JSON.parse(recipesData);
-      this.renderRecipes(recipes);
-    } else {
-      container.append(this.getNoRecipesFound());
-    }
-
-    const recipeQuery = utils.getFromStorage("recipesQuery");
-    if (recipeQuery) {
-      console.log(`Queried recipes with URL: ${recipeQuery}`);
+      if (recipes) {
+        this.renderRecipes(recipes);
+      } else {
+        container.append(this.getNoRecipesFound());
+      }
+    } catch (error) {
+      console.error(EDAMAM_QUERY_ERROR);
+      utils.showAjaxAlert("Error", EDAMAM_QUERY_ERROR);
     }
   };
+
+  this.getRecipes = async (searchParam) => {
+    let searchParamQuery = searchParam || "";
+    console.log(`Received search parameter: [${searchParamQuery}]`);
+    let apiUrl = EDAMAM_API_URL + searchParamQuery;
+
+    const username = utils.getUserNameFromCookie();
+
+    if (username) {
+      try {
+        const userData = await utils.getUserFromUsername(username);
+        console.log("Adding user diet and health restrictions to Edamam query");
+        const userDietString = getUserDietString(userData.diet);
+        const userHealthString = getUserHealthString(userData.health);
+        apiUrl += userDietString + userHealthString;
+      } catch (error) {
+        console.error(ERROR_UNABLE_TO_GET_USER, error);
+        utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
+        return;
+      }
+    }
+
+    console.log(`Querying Edamam using: ${apiUrl}`);
+
+    const response = await fetch(apiUrl, {
+      method: GET_ACTION,
+      headers: {
+        'Accept': DEFAULT_DATA_TYPE,
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
+
+    if (response.ok) {
+      const recipes = await response.json();
+      return recipes;
+    } else {
+      console.error(EDAMAM_QUERY_ERROR);
+      return undefined;
+    }
+  }
 
   this.renderRecipes = (recipes) => {
     container.empty();
@@ -73,4 +112,12 @@ function RecipesView() {
 
 function hasValidImage(recipe) {
   return recipe.images && recipe.images.LARGE && recipe.images.LARGE.url;
+}
+
+function getUserDietString(dietArray) {
+  return dietArray.length ? dietArray.map(dietItem => `&diet=${dietItem}`).join('') : "";
+}
+
+function getUserHealthString(healthArray) {
+  return healthArray.length ? healthArray.map(healthItem => `&health=${healthItem}`).join('') : "";
 }

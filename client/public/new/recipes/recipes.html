@@ -33,13 +33,15 @@
   <script src="/static/js/verification.js"></script>
   <script src="/static/js/forgot-password.js"></script>
   <script src="/static/js/login.js"></script>
-  <script src="/static/js/edamam-wrapper.js"></script>
   <script src="/static/js/recipes/recipes.js"></script>
 
   <script>
     $(document).ready(function () {
+      const params = new URLSearchParams(window.location.search);
+      const search = params.get('search_recipes');
+
       const recipes = new RecipesView();
-      recipes.load();
+      recipes.load(search);
     });
   </script>
 </head>
