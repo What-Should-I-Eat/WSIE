@@ -6,7 +6,9 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require("./routes/users");
-var recipesRouter = require("./routes/recipe")
+var recipesRouter = require("./routes/recipe");
+var accountRouter = require("./routes/account");
+var aboutRouter = require("./routes/about");
 
 var app = express();
 
@@ -18,13 +20,17 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-// TODO: Uncomment 'public/new' for new client
-// app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, "public/new")));
+
+// Change this to 'public/new' for new client
+const BASE_DIR_PATH = "public/new";
+console.log(`Client is being served from: [${BASE_DIR_PATH}]`);
+app.use(express.static(path.join(__dirname, BASE_DIR_PATH)));
 
 app.use('/', indexRouter);
 app.use("/users", usersRouter);
 app.use("/recipes", recipesRouter);
+app.use("/account", accountRouter);
+app.use("/about", aboutRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -26,8 +26,6 @@ function MyRecipesView() {
     }
   };
 
-  this.getUserData
-
   this.renderMyRecipes = (userData) => {
     container.empty();
 

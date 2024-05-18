@@ -33,13 +33,15 @@
   <script src="/static/js/verification.js"></script>
   <script src="/static/js/forgot-password.js"></script>
   <script src="/static/js/login.js"></script>
-  <script src="/static/js/edamam-wrapper.js"></script>
   <script src="/static/js/recipes/recipes.js"></script>
 
   <script>
     $(document).ready(function () {
+      const params = new URLSearchParams(window.location.search);
+      const search = params.get('search_recipes');
+
       const recipes = new RecipesView();
-      recipes.load();
+      recipes.load(search);
     });
   </script>
 </head>
@@ -64,10 +66,10 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/about.html">About Us</a>
+                <a class="nav-link" href="/about">About Us</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/recipes/recipes.html">Find Recipes</a>
+                <a class="nav-link" href="/recipes">Find Recipes</a>
               </li>
             </ul>
 
