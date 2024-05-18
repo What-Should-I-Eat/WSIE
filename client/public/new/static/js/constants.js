@@ -112,9 +112,10 @@ const ADD_TO_FAVORITES = "Add Recipe to Favorites";
 const REMOVE_FROM_FAVORITES = "Remove Recipe from Favorites";
 
 // Recipe Favorites
+const NO_SAVED_RECIPES = "No saved recipes!";
 const SUCCESSFULLY_FAVORITE_RECIPE = "Successfully added recipe";
 const SUCCESSFULLY_UNFAVORITE_RECIPE = "Successfully removed recipe";
 const UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN = "User must login or create account to favorite a recipe";
 const UNABLE_TO_FAVORITE_UNEXPECTED_ERROR = "Error occurred trying to favorite recipe";
 const UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR = "Error occurred trying to un-favorite recipe";
-const ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE = "Error occurred checking to see if recipe is favorited"
+const ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE = "Error occurred checking to see if recipe is a favorite"

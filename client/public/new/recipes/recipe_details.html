@@ -40,7 +40,7 @@
             const sourceUrl = decodeURIComponent(params.get('sourceUrl'));
             const uri = decodeURIComponent(params.get('uri'));
 
-            const recipeDetails = new RecipeDetails();
+            const recipeDetails = new RecipeDetailsView();
             recipeDetails.load(source, sourceUrl, uri);
         });
     </script>

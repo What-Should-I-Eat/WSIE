@@ -1,6 +1,22 @@
-function Recipes() {
+function RecipesView() {
   const container = $('.recipes-container');
   const addedRecipesSet = new Set();
+
+  this.load = () => {
+    const recipesData = utils.getFromStorage("recipes");
+
+    if (recipesData) {
+      const recipes = JSON.parse(recipesData);
+      this.renderRecipes(recipes);
+    } else {
+      container.append(this.getNoRecipesFound());
+    }
+
+    const recipeQuery = utils.getFromStorage("recipesQuery");
+    if (recipeQuery) {
+      console.log(`Queried recipes with URL: ${recipeQuery}`);
+    }
+  };
 
   this.renderRecipes = (recipes) => {
     container.empty();
@@ -18,7 +34,6 @@ function Recipes() {
       const source = recipe.source;
       const sourceUrl = recipe.url;
 
-      // if (isValidSource(source, sourceUrl)) {
       const recipeSource = encodeURIComponent(source);
       const recipeSourceUrl = encodeURIComponent(sourceUrl);
       const recipeName = recipe.label;
@@ -45,24 +60,7 @@ function Recipes() {
       } else {
         console.debug(`Skipping duplicate recipe: [${recipeName}] from source: [${source}], sourceUrl: [${sourceUrl}]`);
       }
-      // }
     });
-  };
-
-  this.load = () => {
-    const recipesData = utils.getFromStorage("recipes");
-
-    if (recipesData) {
-      const recipes = JSON.parse(recipesData);
-      this.renderRecipes(recipes);
-    } else {
-      container.append(this.getNoRecipesFound());
-    }
-
-    const recipeQuery = utils.getFromStorage("recipesQuery");
-    if (recipeQuery) {
-      console.log(`Queried recipes with URL: ${recipeQuery}`);
-    }
   };
 
   this.getNoRecipesFound = () => {
@@ -75,16 +73,4 @@ function Recipes() {
 
 function hasValidImage(recipe) {
   return recipe.images && recipe.images.LARGE && recipe.images.LARGE.url;
-}
-
-// NOTE: Need to use these functions because the server tries to scrape the site for the instructions
-function isValidSource(source, sourceURL) {
-  const viableSources = ['Martha Stewart', 'Food Network', 'Simply Recipes', 'Delish', 'EatingWell'];
-  return source === 'BBC Good Food' ? isValidUrl(sourceURL) : viableSources.includes(source);
-}
-
-function isValidUrl(sourceUrl) {
-  const penultimateChar = sourceUrl.charAt(sourceUrl.length - 2);
-  console.log("penultimate char: ", penultimateChar);
-  return !(penultimateChar >= '0' && penultimateChar <= '9');
 }

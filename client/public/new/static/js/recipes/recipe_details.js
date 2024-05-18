@@ -1,4 +1,4 @@
-function RecipeDetails() {
+function RecipeDetailsView() {
 
   this.load = async (source, sourceUrl, recipeUri) => {
     if (hasAllData(source, sourceUrl, recipeUri)) {
@@ -74,7 +74,7 @@ function RecipeDetails() {
     const recipe = recipeDetails.hits[0].recipe;
     const form = document.getElementById('recipeForm');
 
-    // Create or update hidden input for the recipe URI
+    // Hidden Recipe URI
     let hiddenUriInput = document.getElementById('recipe-uri');
     if (!hiddenUriInput) {
       hiddenUriInput = document.createElement('input');
@@ -82,8 +82,37 @@ function RecipeDetails() {
       hiddenUriInput.id = 'recipe-uri';
       form.appendChild(hiddenUriInput);
     }
-
     hiddenUriInput.value = recipe.uri;
+
+    // Hidden Recipe Calories
+    let hiddenRecipeCaloriesInput = document.getElementById('recipe-calories');
+    if (!hiddenRecipeCaloriesInput) {
+      hiddenRecipeCaloriesInput = document.createElement('input');
+      hiddenRecipeCaloriesInput.type = 'hidden';
+      hiddenRecipeCaloriesInput.id = 'recipe-calories';
+      form.appendChild(hiddenRecipeCaloriesInput);
+    }
+    hiddenRecipeCaloriesInput.value = recipe.calories;
+
+    // Hidden Recipe Source
+    let hiddenRecipeSourceInput = document.getElementById('recipe-source');
+    if (!hiddenRecipeSourceInput) {
+      hiddenRecipeSourceInput = document.createElement('input');
+      hiddenRecipeSourceInput.type = 'hidden';
+      hiddenRecipeSourceInput.id = 'recipe-source';
+      form.appendChild(hiddenRecipeSourceInput);
+    }
+    hiddenRecipeSourceInput.value = recipe.source;
+
+    // Hidden Recipe Source URL
+    let hiddenRecipeSourceUrlInput = document.getElementById('recipe-source-url');
+    if (!hiddenRecipeSourceUrlInput) {
+      hiddenRecipeSourceUrlInput = document.createElement('input');
+      hiddenRecipeSourceUrlInput.type = 'hidden';
+      hiddenRecipeSourceUrlInput.id = 'recipe-source-url';
+      form.appendChild(hiddenRecipeSourceUrlInput);
+    }
+    hiddenRecipeSourceUrlInput.value = recipe.url;
 
     // Check if the recipe is a favorite
     const username = utils.getUserNameFromCookie();
@@ -167,6 +196,9 @@ function RecipeDetails() {
     const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
     const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
     const recipeUri = document.getElementById('recipe-uri').value;
+    const recipeCalories = document.getElementById('recipe-calories').value;;
+    const recipeSource = document.getElementById('recipe-source').value;;
+    const recipeSourceUrl = document.getElementById('recipe-source-url').value;;
 
     const buttonText = form.find("#addToFavorites").text();
 
@@ -182,8 +214,11 @@ function RecipeDetails() {
         recipeName: recipeName,
         recipeIngredients: recipeIngredients.join(", "),
         recipeDirections: recipeDirections.join(". "),
+        recipeImage: recipeImage,
         recipeUri: recipeUri,
-        recipeImage: recipeImage
+        recipeCalories: recipeCalories,
+        recipeSource: recipeSource,
+        recipeSourceUrl: recipeSourceUrl
       };
       newButtonText = REMOVE_FROM_FAVORITES;
       successMessage = SUCCESSFULLY_FAVORITE_RECIPE;
@@ -199,7 +234,7 @@ function RecipeDetails() {
     }
 
     const url = `${USER_FAVORITE_RECIPE}/${userId}/favorites`;
-    console.log(`Sending [${urlAction}] request to: ${url} with body: ${JSON.stringify(request, null, 2)}`)
+    console.log(`Sending [${urlAction}] request to: ${url}`)
 
     fetch(url, {
       method: urlAction,

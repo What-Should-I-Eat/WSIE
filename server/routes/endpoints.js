@@ -233,14 +233,7 @@ endpoints.post("/users/register", async (req, res) => {
       incorrectPasswordAttemptTime: currentTimestamp,
       diet: req.body.diet,
       health: req.body.health,
-      favorites: [{
-        recipeId: req.body.recipeId,
-        recipeName: req.body.recipeName,
-        recipeIngredients: req.body.recipeIngredients,
-        recipeDirections: req.body.recipeDirections,
-        recipeImage: req.body.recipeImage,
-        recipeUri: req.body.recipeUri
-      }]
+      favorites: req.body.favorites
     });
 
     if (existingUsernameCheck) {

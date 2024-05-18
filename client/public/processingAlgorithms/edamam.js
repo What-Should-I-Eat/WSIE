@@ -269,6 +269,9 @@ var edamam = (() => {
       recipeDirections: Array.isArray(directions) ? directions.join(", ") : "", //Directions array to string
       recipeUri: json.recipe.uri,
       recipeImage: (typeof json.recipe.images.REGULAR.url === 'undefined') ? "" : json.recipe.images.REGULAR.url,
+      recipeCalories: json.recipe.calories,
+      recipeSource: json.recipe.source,
+      recipeSourceUrl: json.recipe.url
     };
     console.log("adding to favorites: ", newFavoritedRecipe.recipeName);
     try {
