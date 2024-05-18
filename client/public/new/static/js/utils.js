@@ -161,6 +161,37 @@ const utils = (() => {
   }
 
   /**
+   * Fetches user id based on the username.
+   * 
+   * @param {string} username The username to query
+   * @returns {Object} The user id or error
+   */
+  async function getUserIdFromUsername(username) {
+    const urlWithQueryParams = `${GET_USER_ID}=${username}`;
+    console.log("Querying Server for:", urlWithQueryParams);
+
+    try {
+      const response = await fetch(urlWithQueryParams, {
+        method: GET_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error);
+      }
+
+      console.debug(`Got userId from username: ${username}`);
+      return response.json();
+    } catch (error) {
+      console.error(error.error);
+      return null;
+    }
+  }
+
+  /**
    * Function that serves as a work around to verify post-login cookies are set correctly
    * 
    * @param {string} username 
@@ -271,6 +302,7 @@ const utils = (() => {
     renderNavbar,
     getUserFromUsername,
     getUserFromEmail,
+    getUserIdFromUsername,
     cookieWorkaround,
     getUserNameFromCookie,
     arraysEqual,

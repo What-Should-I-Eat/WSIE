@@ -19,8 +19,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // TODO: Uncomment 'public/new' for new client
-app.use(express.static(path.join(__dirname, "public")));
-// app.use(express.static(path.join(__dirname, "public/new")));
+// app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public/new")));
 
 app.use('/', indexRouter);
 app.use("/users", usersRouter);

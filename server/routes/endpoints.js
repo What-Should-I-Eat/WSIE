@@ -107,7 +107,95 @@ endpoints.post("/users/getUserEmail", async (req, res) => {
   }
 });
 
+//---------------------------------------------------------------------------------------------------------------------------------------
 
+//-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
+
+endpoints.get('/edamam', async (req, res) => {
+  const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
+});
+
+endpoints.get('/scrape-recipe', async (req, res) => {
+  const recipeLink = req.query.recipeLink;
+  const source = req.query.source;
+
+  const data = await determineSite(recipeLink, source);
+
+  console.log("SCRAPED DATA: " + data);
+  res.json(data);
+});
+
+//Support methods
+async function determineSite(link, source) {
+  console.log("Link in determineSite(): " + link);
+  console.log("Source in determineSite() |" + source + "|");
+
+  let data = [];
+  let scraper;
+  let findScraper;
+
+  try {
+    switch (source) {
+      case 'bbc good food': //need to test 3/11
+        scraper = '.js-piano-recipe-method .grouped-list__list li';
+        findScraper = 'p';
+        break;
+      case 'simply recipes': //working
+        scraper = '#mntl-sc-block_3-0';
+        findScraper = 'p.mntl-sc-block-html';
+        break;
+      case 'martha stewart': //working
+        scraper = 'div#recipe__steps-content_1-0 p';
+        findScraper = '';
+        break;
+      case 'food network': //working
+        scraper = '.o-Method__m-Body ol';
+        findScraper = 'li';
+        break;
+      case 'delish': //working but adding weird stuff
+        scraper = 'ul.directions li ol';
+        findScraper = 'li';
+        break;
+      case 'eatingwell': //working
+        scraper = 'div#recipe__steps-content_1-0 ol li';
+        findScraper = 'p';
+        break;
+    }
+
+    data = await getRecipeDirectionsFromSource(link, scraper, findScraper);
+    console.log("directions: " + data);
+    return data;
+  } catch (error) {
+    console.error("Error in determineSite:", error);
+    throw error;
+  }
+}
+
+async function getRecipeDirectionsFromSource(link, scraper, findScraper) {
+  console.log(`Made it to get data. Link = ${link}`);
+
+  try {
+    console.log("here")
+    const response = await axios.get(link);
+    console.log("get data response: ", JSON.stringify(response.data, null, 2));
+    const html = response.data;
+    const $ = cheerio.load(html);
+    const recipeDirections = [];
+    console.log("after cherrio,");
+
+    $(scraper).each((index, element) => {
+      const directionElement = findScraper ? $(element).find(findScraper) : $(element);
+      const directionText = directionElement.text().trim().split('\n\n');
+      recipeDirections.push(directionText);
+    });
+
+    console.log(`Recipe directions: ${recipeDirections}`);
+    return recipeDirections;
+  } catch (error) {
+    console.error(`Error in scraping recipe directions: ${error}`);
+    throw error;
+  }
+}
 
 //____________________________________________MIDDLEWARE____________________________________________________________
 //Everything after this point requires authentication_______________________________________________________________
@@ -522,96 +610,6 @@ endpoints.delete('/users/:id/favorites', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-//---------------------------------------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
-
-endpoints.get('/edamam', async (req, res) => {
-  const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
-});
-
-endpoints.get('/scrape-recipe', async (req, res) => {
-  const recipeLink = req.query.recipeLink;
-  const source = req.query.source;
-
-  const data = await determineSite(recipeLink, source);
-
-  console.log("SCRAPED DATA: " + data);
-  res.json(data);
-});
-
-//Support methods
-async function determineSite(link, source) {
-  console.log("Link in determineSite(): " + link);
-  console.log("Source in determineSite() |" + source + "|");
-
-  let data = [];
-  let scraper;
-  let findScraper;
-
-  try {
-    switch (source) {
-      case 'bbc good food': //need to test 3/11
-        scraper = '.js-piano-recipe-method .grouped-list__list li';
-        findScraper = 'p';
-        break;
-      case 'simply recipes': //working
-        scraper = '#mntl-sc-block_3-0';
-        findScraper = 'p.mntl-sc-block-html';
-        break;
-      case 'martha stewart': //working
-        scraper = 'div#recipe__steps-content_1-0 p';
-        findScraper = '';
-        break;
-      case 'food network': //working
-        scraper = '.o-Method__m-Body ol';
-        findScraper = 'li';
-        break;
-      case 'delish': //working but adding weird stuff
-        scraper = 'ul.directions li ol';
-        findScraper = 'li';
-        break;
-      case 'eatingwell': //working
-        scraper = 'div#recipe__steps-content_1-0 ol li';
-        findScraper = 'p';
-        break;
-    }
-
-    data = await getRecipeDirectionsFromSource(link, scraper, findScraper);
-    console.log("directions: " + data);
-    return data;
-  } catch (error) {
-    console.error("Error in determineSite:", error);
-    throw error;
-  }
-}
-
-async function getRecipeDirectionsFromSource(link, scraper, findScraper) {
-  console.log(`Made it to get data. Link = ${link}`);
-
-  try {
-    console.log("here")
-    const response = await axios.get(link);
-    console.log("get data response: ", response);
-    const html = response.data;
-    const $ = cheerio.load(html);
-    const recipeDirections = [];
-    console.log("after cherrio,");
-
-    $(scraper).each((index, element) => {
-      const directionElement = findScraper ? $(element).find(findScraper) : $(element);
-      const directionText = directionElement.text().trim().split('\n\n');
-      recipeDirections.push(directionText);
-    });
-
-    console.log(`Recipe directions: ${recipeDirections}`);
-    return recipeDirections;
-  } catch (error) {
-    console.error(`Error in scraping recipe directions: ${error}`);
-    throw error;
-  }
-}
 
 //Validates password from find-username endpoint
 async function validatePassword(user, inputtedPassword) {

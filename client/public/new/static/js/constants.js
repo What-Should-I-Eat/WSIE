@@ -19,6 +19,7 @@ const API_VERSION = "api/v1"
 const POST_ACTION = "POST";
 const GET_ACTION = "GET";
 const PUT_ACTION = "PUT";
+const DELETE_ACTION = "DELETE";
 const DEFAULT_DATA_TYPE = "application/json";
 
 // Redirects
@@ -47,11 +48,21 @@ const REQUEST_USER_INFO_FOR_RESET_URL = `${HOST}/${API_VERSION}/users/requestInf
 const UPDATE_USER_DIET_URL = `${HOST}/${API_VERSION}/users/diet`;
 const UPDATE_USER_HEALTH_URL = `${HOST}/${API_VERSION}/users/health`;
 
+// Recipe SCRAPE API Endpoint
+const RECIPE_SCRAPE_URL = `${HOST}/api/v1/scrape-recipe`;
+
+// User Favorites API Endpoints
+const USER_FAVORITE_RECIPE = `${HOST}/api/v1/users`;
+
 // Edamam API Endpoints
 const EDAMAM_API_URL = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
+const EDAMAM_RECIPE_URI_URL = "https://api.edamam.com/api/recipes/v2/by-uri?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&uri"
 
 // Authentication Modals
 const authClassesToRemove = ['alert-danger', 'alert-success', 'alert-warning'];
+
+// Default Alerts
+const INTERNAL_SERVER_ERROR_OCCURRED = "Internal server error occurred - check logs"
 
 // Sign-In / Sign-Up Messages
 const SUCCESSFUL_LOGIN = "You were successfully logged in!";
@@ -95,3 +106,15 @@ const FAILED_TO_GET_USER_PROFILE = "Error occurred getting profile using cookies
 const FAILED_TO_QUERY_EDAMAM = "Error occurred connecting to Edamam API";
 const NO_IMAGE_AVAILABLE = "/static/img/no_image_available.svg";
 const NO_RECIPES_FOUND = "0 recipes found.";
+
+// Recipe Details
+const ADD_TO_FAVORITES = "Add Recipe to Favorites";
+const REMOVE_FROM_FAVORITES = "Remove Recipe from Favorites";
+
+// Recipe Favorites
+const SUCCESSFULLY_FAVORITE_RECIPE = "Successfully added recipe";
+const SUCCESSFULLY_UNFAVORITE_RECIPE = "Successfully removed recipe";
+const UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN = "User must login or create account to favorite a recipe";
+const UNABLE_TO_FAVORITE_UNEXPECTED_ERROR = "Error occurred trying to favorite recipe";
+const UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR = "Error occurred trying to un-favorite recipe";
+const ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE = "Error occurred checking to see if recipe is favorited"

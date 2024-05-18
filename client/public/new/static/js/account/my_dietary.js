@@ -94,7 +94,8 @@ function MyDietaryView() {
       body: JSON.stringify(request)
     }).then(response => {
       if (!response.ok) {
-        throw new Error("Failed to update user data");
+        const errorMessage = isDietForm ? FAILED_TO_UPDATED_USER_DIETARY : FAILED_TO_UPDATE_USER_HEALTH;
+        throw new Error(errorMessage);
       }
 
       initialRestrictions.splice(0, initialRestrictions.length, ...currentRestrictions);
