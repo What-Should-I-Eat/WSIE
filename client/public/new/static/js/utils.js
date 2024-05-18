@@ -43,6 +43,13 @@ const utils = (() => {
   }
 
   /**
+   * Helper function to clear all data from the session's storage
+   */
+  function clearStorage() {
+    sessionStorage.clear();
+  }
+
+  /**
    * Removes alerts from the login modal.
    * 
    * @param {string[]} classesToRemove Array of class names to remove
@@ -83,9 +90,9 @@ const utils = (() => {
       dropdownMenu.append('<h6 class="dropdown-header">Welcome back!</h6>');
       dropdownMenu.append(`<h6 class="dropdown-header">${currentUser.fullName}</h6>`);
       dropdownMenu.append('<div class="dropdown-divider"></div>');
-      dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary.html">My Dietary</a>');
-      dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes.html">My Recipes</a>');
-      dropdownMenu.append('<a class="dropdown-item" href="/account/profile.html">My Settings</a>');
+      dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary">My Dietary</a>');
+      dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes">My Recipes</a>');
+      dropdownMenu.append('<a class="dropdown-item" href="/account/profile">My Settings</a>');
       dropdownMenu.append('<a class="dropdown-item" href="/signout">Sign Out</a>');
 
       myAccountDropdown.append(dropdownToggle);
@@ -293,10 +300,30 @@ const utils = (() => {
     alertDiv.alert();
   }
 
+  /**
+   * Clears all cookies from the browser
+   */
+  function clearCookies() {
+    document.cookie.split(";").forEach(function (c) {
+      document.cookie = c.trim().split("=")[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+    });
+  }
+
+  /**
+   * Helper function to clean up session storage and remove all cookies
+   */
+  function cleanupSignOut() {
+    console.debug("Clearing session storage");
+    clearStorage();
+    console.log("Clearing document cookies");
+    clearCookies();
+  }
+
   return {
     setStorage,
     removeFromStorage,
     getFromStorage,
+    clearStorage,
     clearMessageFromAuthModal,
     convertToJson,
     renderNavbar,
@@ -306,6 +333,8 @@ const utils = (() => {
     cookieWorkaround,
     getUserNameFromCookie,
     arraysEqual,
-    showAjaxAlert
+    showAjaxAlert,
+    clearCookies,
+    cleanupSignOut
   };
 })();

@@ -139,9 +139,7 @@ $(document).ready(function () {
   // Handles user signout
   $("a[href='/signout']").on("click", function (event) {
     event.preventDefault();
-    utils.setStorage("user", undefined);
-    utils.setStorage("username", undefined);
-    utils.setStorage("verificationCode", undefined);
+    utils.cleanupSignOut();
     window.location.href = BASE_HOME_REDIRECT;
   });
 

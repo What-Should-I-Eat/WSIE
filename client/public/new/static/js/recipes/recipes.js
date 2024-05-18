@@ -13,7 +13,8 @@ function RecipesView() {
       }
     } catch (error) {
       console.error(EDAMAM_QUERY_ERROR);
-      utils.showAjaxAlert("Error", EDAMAM_QUERY_ERROR);
+      // utils.showAjaxAlert("Error", EDAMAM_QUERY_ERROR);
+      container.append(this.getNoRecipesFound());
     }
   };
 
@@ -53,7 +54,7 @@ function RecipesView() {
       return recipes;
     } else {
       console.error(EDAMAM_QUERY_ERROR);
-      return undefined;
+      throw new Error(EDAMAM_QUERY_ERROR);
     }
   }
 
