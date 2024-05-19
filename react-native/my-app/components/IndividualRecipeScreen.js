@@ -2,12 +2,15 @@ import React, {useState, useEffect} from 'react';
 import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView, FlatList } from 'react-native';
 import { isRecipeAlreadyFavorited } from '../calls/favoriteCalls';
 import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
+import { getRecipeDirections } from '../calls/recipeSearchCalls';
+
 
 export default function IndividualRecipeScreen({ route, navigation }) {
 
     const { individualRecipe } = route.params;
 
     const [isFavorited, setIsFavorited] = useState(false);
+    const [directionsOfRecipe, setDirectionsOfRecipe] = useState('Loading...');
 
     useEffect(() => { 
       async function getFavoriteStatusForLoad() {
@@ -18,7 +21,16 @@ export default function IndividualRecipeScreen({ route, navigation }) {
           console.error('Error fetching favs: ', error);
         }
       }
+      async function getRecipeDirectionsOnLoad() {
+        try{
+          const recipeDirections = await getRecipeDirections(individualRecipe.source, individualRecipe.sourceURL);
+          setDirectionsOfRecipe(recipeDirections);
+        } catch (error){
+          console.error('Error fetching directions: ', error);
+        }
+      }
       getFavoriteStatusForLoad();
+      getRecipeDirectionsOnLoad();
     }, []);
 
 
@@ -33,7 +45,7 @@ export default function IndividualRecipeScreen({ route, navigation }) {
                 source={ { uri: individualRecipe.image}} 
                 style={IndividualRecipeStyles.images} 
             />
-            {!isFavorited && <Pressable style={IndividualRecipeStyles.favoritesButton} onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, true)}>
+            {!isFavorited && <Pressable style={IndividualRecipeStyles.favoritesButton} onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, directionsOfRecipe, true)}>
                 <Text style={IndividualRecipeStyles.buttonText}>
                     Add to favorites
                 </Text>
@@ -51,6 +63,18 @@ export default function IndividualRecipeScreen({ route, navigation }) {
             
             <Text style={IndividualRecipeStyles.calories}>
                 Calories: {individualRecipe.calories}
+            </Text>
+            <Text style={IndividualRecipeStyles.ingredientsHeader}>
+              Ingredients:
+            </Text>
+            <Text style={IndividualRecipeStyles.ingredients}>
+              {individualRecipe.ingredients}
+            </Text>
+            <Text style={IndividualRecipeStyles.directionsHeader}>
+              Directions:
+            </Text>
+            <Text style={IndividualRecipeStyles.directions}>
+              {directionsOfRecipe}
             </Text>
             </View>   
       </ScrollView>
@@ -126,6 +150,48 @@ export default function IndividualRecipeScreen({ route, navigation }) {
       fontWeight: '400',
       width: 220,
       marginTop: 5,
+      marginBottom: 5,
+      textAlign: 'center',
+      alignContent: "center",
+      alignItems: "center",
+    },
+    ingredientsHeader: {
+      fontSize: 28,
+      fontWeight: '400',
+      color: 'blue',
+      width: 220,
+      marginTop: 5,
+      marginBottom: 5,
+      textAlign: 'center',
+      alignContent: "center",
+      alignItems: "center",
+    },
+    ingredients: {
+      fontSize: 22,
+      fontWeight: '300',
+      color: 'blue',
+      width: 330,
+      marginBottom: 5,
+      textAlign: 'center',
+      alignContent: "center",
+      alignItems: "center",
+    },
+    directionsHeader: {
+      fontSize: 28,
+      fontWeight: '400',
+      color: 'red',
+      width: 220,
+      marginTop: 5,
+      marginBottom: 5,
+      textAlign: 'center',
+      alignContent: "center",
+      alignItems: "center",
+    },
+    directions: {
+      fontSize: 22,
+      fontWeight: '300',
+      color: 'red',
+      width: 370,
       marginBottom: 5,
       textAlign: 'center',
       alignContent: "center",

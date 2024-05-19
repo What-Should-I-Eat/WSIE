@@ -43,7 +43,7 @@ export default function RecipeSearchScreen({ navigation }) {
 
             <FlatList
               data={searchResults}
-              keyExtractor={(item) => item.name} // Use a unique key for each item
+              keyExtractor={(item) => item.uri} // Use a unique key for each item
               renderItem={({ item }) => (
                 <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualRecipeScreen", {
                   individualRecipe: item

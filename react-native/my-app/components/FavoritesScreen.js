@@ -46,9 +46,6 @@ export default function FavoritesScreen({ navigation }) {
                       style={FavoritesStyles.images} 
                       source={ { uri: item.image }} 
                      />
-                    {/* <Text style={FavoritesStyles.calories}>
-                      Cal: {item.calories}
-                    </Text> */}
                   </View>
                 </View>
                 </TouchableWithoutFeedback>

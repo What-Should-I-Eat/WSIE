@@ -20,7 +20,7 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
                 source={ { uri: individualRecipe.image}} 
                 style={IndividualFavoritesStyles.images} 
             />
-            {!isFavorited && <Pressable style={IndividualFavoritesStyles.favoritesButton}  onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, true)}>
+            {!isFavorited && <Pressable style={IndividualFavoritesStyles.favoritesButton}  onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, individualRecipe.directions, true)}>
                 <Text style={IndividualFavoritesStyles.buttonText}>
                     Add to favorites
                 </Text>
@@ -33,11 +33,17 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
             </Pressable>
             </View>}
             <View style={IndividualFavoritesStyles.divider}/>
-            <Text style={IndividualFavoritesStyles.ingredients}>
-              Ingredients: 
+            <Text style={IndividualFavoritesStyles.ingredientsHeader}>
+              Ingredients:
             </Text>
-            <Text style={IndividualFavoritesStyles.directions}>
-              Directions: 
+            <Text style={IndividualFavoritesStyles.ingredientsDiv}>
+              {individualRecipe.ingredients}
+            </Text>
+            <Text style={IndividualFavoritesStyles.directionsHeader}>
+              Directions:
+            </Text>
+            <Text style={IndividualFavoritesStyles.directionsDiv}>
+              {individualRecipe.directions}
             </Text>
             </View>   
       </ScrollView>
@@ -84,6 +90,48 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
       alignItems: "center",
       flexDirection: "row",
       marginVertical: 15
+    },
+    ingredientsHeader: {
+      fontSize: 28,
+      fontWeight: '400',
+      color: 'blue',
+      width: 220,
+      marginTop: 5,
+      marginBottom: 5,
+      textAlign: 'center',
+      alignContent: "center",
+      alignItems: "center",
+    },
+    ingredientsDiv: {
+      fontSize: 26,
+      fontWeight: '300',
+      color: 'blue',
+      width: 350,
+      marginBottom: 5,
+      textAlign: 'center',
+      alignContent: "center",
+      alignItems: "center",
+    },
+    directionsHeader: {
+      fontSize: 28,
+      fontWeight: '400',
+      color: 'red',
+      width: 220,
+      marginTop: 5,
+      marginBottom: 5,
+      textAlign: 'center',
+      alignContent: "center",
+      alignItems: "center",
+    },
+    directionsDiv: {
+      fontSize: 22,
+      fontWeight: '300',
+      color: 'red',
+      width: 370,
+      marginBottom: 5,
+      textAlign: 'center',
+      alignContent: "center",
+      alignItems: "center",
     },
     images: {
       width: 300,

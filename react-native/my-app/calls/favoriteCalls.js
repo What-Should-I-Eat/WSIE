@@ -2,7 +2,7 @@ import { hostForAppCalls } from "./hostCallConst";
 import { loggedInUser } from "./loginCalls";
 import { getUserData } from "./recipeSearchCalls";
 
-const addRecipeToFavorites = async (givenRecipe, setIsFavorited, isThisComingFromRecipeSearch) => {
+const addRecipeToFavorites = async (givenRecipe, setIsFavorited, directionsOfRecipe, isThisComingFromRecipeSearch) => {
 
     let newFavoritedRecipe = {};
     // accounts for differences in schema between two locations
@@ -10,8 +10,8 @@ const addRecipeToFavorites = async (givenRecipe, setIsFavorited, isThisComingFro
       newFavoritedRecipe = {
         // recipeId: givenRecipe.name,
         recipeName: givenRecipe.name,
-        recipeIngredients: 'ingredients lists',
-        recipeDirections: 'directions of recipe',
+        recipeIngredients: givenRecipe.ingredients,
+        recipeDirections: directionsOfRecipe,
         recipeImage: givenRecipe.image,
         recipeUri: givenRecipe.uri,
       };
@@ -19,8 +19,8 @@ const addRecipeToFavorites = async (givenRecipe, setIsFavorited, isThisComingFro
       newFavoritedRecipe = {
         // recipeId: givenRecipe.recipeName,
         recipeName: givenRecipe.recipeName,
-        recipeIngredients: 'ingredients lists',
-        recipeDirections: 'directions of recipe',
+        recipeIngredients: givenRecipe.recipeIngredients,
+        recipeDirections: directionsOfRecipe,
         recipeImage: givenRecipe.recipeImage,
         recipeUri: givenRecipe.recipeUri,
       };
@@ -145,8 +145,9 @@ async function getUserId(username){
         name: data.recipeName, 
         image: data.recipeImage,
         uri: data.recipeUri,
-        id: data._id
-        // ingredients: ingredientsArray
+        id: data._id,
+        ingredients: data.recipeIngredients,
+        directions: data.recipeDirections
       }));
 
       console.log('Favorites: ' + arrayOfResults);

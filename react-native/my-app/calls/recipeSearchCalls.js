@@ -55,6 +55,8 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                       if(viableSource)
                       {
                         let imageURL;
+                        // console.log(data);
+                        console.log(data.recipe.ingredientLines);
 
                         // console.log(data.recipe);
                         // console.log(data.recipe.image.url);
@@ -74,34 +76,42 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                         // if (!resp.ok) {
                         //     throw new Error('Failed to fetch recipe directions');
                         // }
-                        
-                        // const results = await resp.json();
-                        // let ingredientsArray = [];
-                        // for(var i = 0; i < results.length; i++){
-                        //   ingredientsArray.push(results[i]);
-                        // }
-                        // console.log(ingredientsArray);
 
                         if (data.recipe.images && data.recipe.images.LARGE && data.recipe.images.LARGE.url) {
                           imageURL = data.recipe.images.LARGE.url;
                         } else {
                             // add default image if not found
                             imageURL = '../assets/emptyPlate.jpeg';
+                            imageURL = 'https://www.pdclipart.org/albums/Household_Items/normal_dinner_plate_with_spoon_and_fork.png';
                         }
                         let caloriesAsWholeNumber = Math.round(data.recipe.calories);
+
+                        let ingredientsString = "";
+
+                        for(var i = 0; i < data.recipe.ingredientLines.length; i++){
+                          ingredientsString += data.recipe.ingredientLines[i];
+                          if(i < (data.recipe.ingredientLines.length - 1)){
+                            ingredientsString += ", ";
+                          }
+                        }
+                        console.log(ingredientsString);
 
                         var individualRecipe = {
                             name: data.recipe.label,
                             image: imageURL,
                             uri: data.recipe.uri,
                             calories: caloriesAsWholeNumber,
+                            ingredients: ingredientsString,
+                            source: source,
+                            sourceURL: sourceURL
                             // ingredients: ingredientsArray
                         }
                         // console.log('individual recipe\n' + individualRecipe.name + ', ' + individualRecipe.image + ', ' + individualRecipe.calories + '\n-----------\n');
 
                         // ensures no two recipes are added twice
-                        if(!(arrayOfResults.some(thisRecipe => thisRecipe.name === data.recipe.name))){
+                        if(!(arrayOfResults.some(thisRecipe => thisRecipe.uri === data.recipe.uri))){
                           arrayOfResults.push(individualRecipe);
+                          console.log("individual recipe: ",individualRecipe);
                         }
 
                         // link.onclick = () => showRecipe(data, data.recipe.source);
@@ -190,4 +200,34 @@ async function getUserData(username){
     }
 }
 
-export { searchForRecipes, getUserData };
+const getRecipeDirections = async (source, sourceURL) => {
+  let lowerCaseSource = source.toLowerCase().trim();
+  const recipeSiteEndpoint = `${hostForAppCalls}/api/v1/scrape-recipe/?recipeLink=${sourceURL}&source=${lowerCaseSource}`;
+  console.log("recipe endpoint: ", recipeSiteEndpoint);
+  
+  const resp = await fetch(recipeSiteEndpoint, {
+      method: 'GET',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      }
+  });
+  
+  if (!resp.ok) {
+      throw new Error('Failed to fetch recipe directions');
+  }
+  // console.log(resp);
+  const realDirections = await resp.json();
+  console.log(realDirections);
+  let directionString = "";
+  for(var i = 0; i < realDirections.length; i++){
+    directionString += realDirections[i];
+    if(i < (realDirections.length - 1)){
+      // directionString += "\n";
+    }
+  }
+  console.log(directionString);
+  return(directionString);
+}
+
+export { searchForRecipes, getUserData, getRecipeDirections };

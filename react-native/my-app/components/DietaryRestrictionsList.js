@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { getDietaryArray } from '../calls/dietHealthCalls';
 
 let selectedDietArray = [];
 
 const MultiSelectListDiet = ({ data }) => {
   const [selectedItems, setSelectedItems] = useState([]);
+
+  useEffect(() => {
+    async function getDietsOnLoad(){
+      try{
+        const serverDiets = await getDietaryArray();
+        setSelectedItems(serverDiets);
+      } catch (error){
+        console.error('Error loading diets: ', error);
+      }
+    }
+    getDietsOnLoad();
+  }, [getDietaryArray]);
 
   const toggleItem = (item) => {
     if (selectedItems.includes(item)) {
