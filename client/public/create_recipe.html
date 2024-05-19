@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Create Recipe</title>
+    <link href="styles.css" rel="stylesheet"> <!-- Make sure this path is correct -->
+</head>
+<body>
+<header>
+    <h1>Create Your Recipe</h1>
+</header>
+<main>
+    <form action="/create-recipe" enctype="multipart/form-data" id="recipeForm" method="POST">
+        <div class="form-group">
+            <label for="recipeName">Recipe Name:</label>
+            <input id="recipeName" name="name" required type="text">
+        </div>
+        <div class="form-group">
+            <label for="ingredients">Ingredients:</label>
+            <textarea id="ingredients" name="ingredients" required rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="steps">Preparation Steps:</label>
+            <textarea id="steps" name="steps" required rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="photo">Upload a Photo:</label>
+            <input accept="image/*" id="photo" name="photo" required type="file">
+        </div>
+        <button class="submit-btn" type="submit">Submit Recipe</button>
+    </form>
+</main>
+<footer>
+
+</footer>
+<script src="recipeForm.js"></script> <!-- Optional JavaScript file for handling form -->
+</body>
+</html>
