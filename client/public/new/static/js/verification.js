@@ -1,8 +1,11 @@
-// Logs to bypass email verification
-console.log("Verification Code:", utils.getFromStorage("verificationCode"));
-console.log("Username:", utils.getFromStorage("username"));
-
 $(document).ready(function () {
+  if (utils.getFromStorage("username")) {
+    console.log("Username from SessionStorage:", utils.getFromStorage("username"));
+  }
+
+  if (utils.getFromStorage("verificationCode")) {
+    console.log("Verification Code from SessionStorage:", utils.getFromStorage("verificationCode"));
+  }
 
   // Handles verification form submission logic
   $("#verifyAccountForm").on("submit", function (event) {

@@ -380,8 +380,6 @@ endpoints.post('/users/find-username', async (req, res) => {
   }
 });
 
-
-
 //Get user's profile if they're logged in
 endpoints.get('/users/profile', (req, res) => {
   const isLoggedIn = req.session.isLoggedIn;
@@ -603,6 +601,107 @@ endpoints.delete('/users/:id/favorites', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+/////////////////////////////////////////////////////////
+// START: Updating User Profile from 'My Profile' View //
+/////////////////////////////////////////////////////////
+endpoints.put("/users/profile/update_details", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.verified) {
+      return res.status(404).json({ error: "User not validated" });
+    }
+
+    const fullName = req.body.firstName + " " + req.body.lastName;
+
+    const fieldToUpdate = { $set: { "fullName": fullName } };
+    const options = { upsert: true, new: true };
+
+    const updatedFullName = await User.updateOne(user, fieldToUpdate, options);
+
+    if (updatedFullName) {
+      return res.status(200).json(updatedFullName);
+    } else {
+      return res.status(400).json({ error: "Error occurred trying to update user details" });
+    }
+  } catch (error) {
+    console.error("Error occurred trying to update user details", error);
+    res.status(500).json({ error: "Internal server error occurred trying to update user details" });
+  }
+});
+
+endpoints.put("/users/profile/update_email", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.verified) {
+      return res.status(404).json({ error: "User not validated" });
+    }
+
+    const email = req.body.email;
+
+    const fieldToUpdate = { $set: { "email": email } };
+    const options = { upsert: true, new: true };
+
+    const updatedEmail = await User.updateOne(user, fieldToUpdate, options);
+
+    if (updatedEmail) {
+      return res.status(200).json(updatedEmail);
+    } else {
+      return res.status(400).json({ error: "Error occurred trying to update user email" });
+    }
+  } catch (error) {
+    console.error("Error occurred trying to update user email", error);
+    res.status(500).json({ error: "Internal server error occurred trying to update user email" });
+  }
+});
+
+endpoints.put("/users/profile/update_password", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.verified) {
+      return res.status(404).json({ error: "User not validated" });
+    }
+
+    const arePasswordsEqual = await validatePassword(user, req.body.password);
+    if (arePasswordsEqual) {
+      return res.status(400).json({ error: "Passwords are identical - nothing to update" });
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+
+    const fieldToUpdate = { $set: { "password": hashedPassword, "incorrectPasswordAttempts": 0 } };
+    const options = { upsert: true, new: true };
+
+    const updatedPassword = await User.updateOne(user, fieldToUpdate, options);
+
+    if (updatedPassword) {
+      return res.status(200).json(updatedPassword);
+    } else {
+      return res.status(500).json({ error: "Error occurred trying to update user password" });
+    }
+  } catch (error) {
+    console.error("Error occurred trying to update user password", error);
+    res.status(500).json({ error: "Internal server error occurred trying to update user password" });
+  }
+});
+///////////////////////////////////////////////////////
+// END: Updating User Profile from 'My Profile' View //
+///////////////////////////////////////////////////////
 
 //Validates password from find-username endpoint
 async function validatePassword(user, inputtedPassword) {

@@ -106,6 +106,7 @@ const validationHandler = (() => {
     getValidationText: code => validationMessages[code],
     getVerificationCode,
     checkIfEmailAddressIsValid,
+    checkIfPasswordIsValid,
     isVerificationCodeValid
   };
 })();

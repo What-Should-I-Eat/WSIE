@@ -46,6 +46,7 @@ const utils = (() => {
    * Helper function to clear all data from the session's storage
    */
   function clearStorage() {
+    console.log("Clearing session storage");
     sessionStorage.clear();
   }
 
@@ -76,33 +77,43 @@ const utils = (() => {
   /**
    * Renders the navigation bar based on user login status.
    */
-  function renderNavbar() {
+  async function renderNavbar() {
     const navBar = $('#navBarMyAccountSignInSignUp');
     navBar.empty();
 
-    const currentUser = getFromStorage("user");
+    const username = getUserNameFromCookie();
 
-    if (currentUser) {
-      const myAccountDropdown = $('<div id="myAccountDropdown" class="dropdown"></div>');
-      const dropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>');
-      const dropdownMenu = $('<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink"></div>');
+    if (username) {
+      const user = await getUserFromUsername(username);
 
-      dropdownMenu.append('<h6 class="dropdown-header">Welcome back!</h6>');
-      dropdownMenu.append(`<h6 class="dropdown-header">${currentUser.fullName}</h6>`);
-      dropdownMenu.append('<div class="dropdown-divider"></div>');
-      dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary">My Dietary</a>');
-      dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes">My Recipes</a>');
-      dropdownMenu.append('<a class="dropdown-item" href="/account/profile">My Settings</a>');
-      dropdownMenu.append('<a class="dropdown-item" href="/signout">Sign Out</a>');
+      if (user) {
+        const myAccountDropdown = $('<div id="myAccountDropdown" class="dropdown"></div>');
+        const dropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>');
+        const dropdownMenu = $('<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink"></div>');
 
-      myAccountDropdown.append(dropdownToggle);
-      myAccountDropdown.append(dropdownMenu);
-      navBar.append(myAccountDropdown);
+        dropdownMenu.append('<h6 class="dropdown-header">Welcome back!</h6>');
+        dropdownMenu.append(`<h6 class="dropdown-header">${user.fullName}</h6>`);
+        dropdownMenu.append('<div class="dropdown-divider"></div>');
+        dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary">My Dietary</a>');
+        dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes">My Recipes</a>');
+        dropdownMenu.append('<a class="dropdown-item" href="/account/my_profile">My Profile</a>');
+        dropdownMenu.append('<a class="dropdown-item" href="/signout">Sign Out</a>');
+
+        myAccountDropdown.append(dropdownToggle);
+        myAccountDropdown.append(dropdownMenu);
+        navBar.append(myAccountDropdown);
+      } else {
+        setNotLoggedInNavBar(navBar);
+      }
     } else {
-      const signInButton = $('<button id="showSignInModalContentBtn" type="button" class="mb-2 mb-md-0 mr-md-2 btn btn-link account-link" data-toggle="modal">Sign in</button>');
-      const signUpButton = $('<button id="showSignUpModalContentBtn" type="button" class="btn btn-link account-link" data-toggle="modal">Sign up</button>');
-      navBar.append(signInButton, signUpButton);
+      setNotLoggedInNavBar(navBar);
     }
+  }
+
+  function setNotLoggedInNavBar(navBar) {
+    const signInButton = $('<button id="showSignInModalContentBtn" type="button" class="mb-2 mb-md-0 mr-md-2 btn btn-link account-link" data-toggle="modal">Sign in</button>');
+    const signUpButton = $('<button id="showSignUpModalContentBtn" type="button" class="btn btn-link account-link" data-toggle="modal">Sign up</button>');
+    navBar.append(signInButton, signUpButton);
   }
 
   /**
@@ -240,6 +251,21 @@ const utils = (() => {
   }
 
   /**
+   * Checks if two strings are equal in length and text
+   * 
+   * @param {string} str1 
+   * @param {string} str2 
+   * @returns true if they are equal, false if otherwise
+   */
+  function checkIfStringsAreEqual(str1, str2) {
+    if (str1.length !== str2.length) {
+      return false;
+    }
+
+    return str1.toLowerCase() === str2.toLowerCase();
+  }
+
+  /**
    * Function that checks if two arrays are equal
    * 
    * @param {array} a 
@@ -280,21 +306,32 @@ const utils = (() => {
       "Error": "#ajaxErrorMessage",
       "Success": "#ajaxSuccessMessage",
       "Warning": "#ajaxWarningMessage"
-    }
+    };
+
+    // Reset and hide all alerts, clear their messages
+    Object.keys(alertDivMap).forEach(key => {
+      const div = $(alertDivMap[key]);
+      div.hide().removeClass('show fade').addClass('hide');
+      div.find('.close').off('click').on('click', function () {
+        div.hide().removeClass('show fade in').addClass('hide');
+      });
+      $(alertMessageMap[key]).text('');
+    });
 
     const alertDiv = $(alertDivMap[type]);
-    if (!alertDiv) {
-      console.error("Alert type does not have a corresponding div.");
+    if (!alertDiv.length) {
+      console.error(`Alert [${type}] does not have a corresponding div.`);
       return;
     }
 
     var alertMessage = $(alertMessageMap[type]);
-    if (!alertMessage) {
-      console.error("Alert type does not have a corresponding span.");
+    if (!alertMessage.length) {
+      console.error(`Alert [${type}] does not have a corresponding span.`);
       return;
     }
 
-    alertDiv.removeClass('hide').removeAttr('style').addClass('show');
+    // Setup and show the specific alert
+    alertDiv.removeClass('hide').addClass('show fade');
     alertMessage.text(message);
     alertDiv.show();
     alertDiv.alert();
@@ -304,6 +341,7 @@ const utils = (() => {
    * Clears all cookies from the browser
    */
   function clearCookies() {
+    console.log("Clearing cookies");
     document.cookie.split(";").forEach(function (c) {
       document.cookie = c.trim().split("=")[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
     });
@@ -313,9 +351,7 @@ const utils = (() => {
    * Helper function to clean up session storage and remove all cookies
    */
   function cleanupSignOut() {
-    console.debug("Clearing session storage");
     clearStorage();
-    console.log("Clearing document cookies");
     clearCookies();
   }
 
@@ -332,6 +368,7 @@ const utils = (() => {
     getUserIdFromUsername,
     cookieWorkaround,
     getUserNameFromCookie,
+    checkIfStringsAreEqual,
     arraysEqual,
     showAjaxAlert,
     clearCookies,

@@ -21,8 +21,8 @@ function MyRecipesView() {
 
       this.renderMyRecipes(userData);
     } catch (error) {
-      console.error();
-      utils.showAjaxAlert("Error", "");
+      console.error(INTERNAL_SERVER_ERROR_OCCURRED);
+      utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
     }
   };
 
@@ -47,7 +47,6 @@ function MyRecipesView() {
         const recipeName = recipe.recipeName;
         const recipeCalories = Math.round(recipe.recipeCalories);
         const recipeUri = encodeURIComponent(recipe.recipeUri);
-
         const recipeImage = hasValidImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
 
         const recipeHtml = `
