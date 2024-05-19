@@ -12,9 +12,9 @@ const utils = (() => {
   }
 
   /**
-   * Removes data from session storage
+   * Removes data from session storage.
    * 
-   * @param {string} key 
+   * @param {string} key The key from which data should be removed
    */
   function removeFromStorage(key) {
     if (key) {
@@ -43,17 +43,16 @@ const utils = (() => {
   }
 
   /**
-   * Helper function to clear all data from the session's storage
+   * Clears all data from session storage.
    */
   function clearStorage() {
-    console.log("Clearing session storage");
     sessionStorage.clear();
   }
 
   /**
-   * Removes alerts from the login modal.
+   * Removes specific classes from elements in the authentication modal, typically used to clear alerts.
    * 
-   * @param {string[]} classesToRemove Array of class names to remove
+   * @param {string[]} classesToRemove Array of class names to be removed from elements
    */
   function clearMessageFromAuthModal(classesToRemove) {
     classesToRemove.forEach(className => {
@@ -62,10 +61,10 @@ const utils = (() => {
   }
 
   /**
-   * Converts a form array to JSON.
+   * Converts a form array to a JSON object.
    * 
-   * @param {Object[]} formArray The form array to convert
-   * @returns {Object} The converted JSON object
+   * @param {Object[]} formArray An array of objects typically generated from serializing a form
+   * @returns {Object} The JSON object created from the form array
    */
   function convertToJson(formArray) {
     return formArray.reduce((acc, { name, value }) => {
@@ -75,7 +74,8 @@ const utils = (() => {
   }
 
   /**
-   * Renders the navigation bar based on user login status.
+   * Renders the navigation bar dynamically based on user's login status.
+   * Uses session information to decide which options to display.
    */
   async function renderNavbar() {
     const navBar = $('#navBarMyAccountSignInSignUp');
@@ -85,7 +85,6 @@ const utils = (() => {
 
     if (username) {
       const user = await getUserFromUsername(username);
-
       if (user) {
         const myAccountDropdown = $('<div id="myAccountDropdown" class="dropdown"></div>');
         const dropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>');
@@ -110,6 +109,12 @@ const utils = (() => {
     }
   }
 
+  /**
+   * Sets up the navigation bar for users who are not logged in.
+   * Displays "Sign In" and "Sign Up" options.
+   * 
+   * @param {jQuery} navBar The jQuery element representing the navigation bar
+   */
   function setNotLoggedInNavBar(navBar) {
     const signInButton = $('<button id="showSignInModalContentBtn" type="button" class="mb-2 mb-md-0 mr-md-2 btn btn-link account-link" data-toggle="modal">Sign in</button>');
     const signUpButton = $('<button id="showSignUpModalContentBtn" type="button" class="btn btn-link account-link" data-toggle="modal">Sign up</button>');
@@ -120,12 +125,10 @@ const utils = (() => {
    * Fetches user data based on the username.
    * 
    * @param {string} username The username to query
-   * @returns {Object} The user data or error
+   * @returns {Promise<Object>} A promise that resolves to the user data or null in case of an error
    */
   async function getUserFromUsername(username) {
     const urlWithQueryParams = `${GET_USER_DATA_URL}=${username}`;
-    console.log("Querying Server for:", urlWithQueryParams);
-
     try {
       const response = await fetch(urlWithQueryParams, {
         method: GET_ACTION,
@@ -136,27 +139,24 @@ const utils = (() => {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error);
+        throw new Error(error.message);
       }
 
-      console.debug(`Got user from username: ${username}`);
       return response.json();
     } catch (error) {
-      console.error(error.error);
+      console.error("Failed to fetch user data:", error);
       return null;
     }
   }
 
   /**
-   * Fetches user data based on the email.
+   * Fetches user data based on the email address provided.
    * 
    * @param {string} email The email to query
-   * @returns {Object} The user data or error
+   * @returns {Promise<Object>} A promise that resolves to the user data or null in case of an error
    */
   async function getUserFromEmail(email) {
     const urlWithQueryParams = `${REQUEST_USER_INFO_FOR_RESET_URL}=${email}`;
-    console.log("Querying Server for:", urlWithQueryParams);
-
     try {
       const response = await fetch(urlWithQueryParams, {
         method: GET_ACTION,
@@ -167,27 +167,24 @@ const utils = (() => {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error);
+        throw new Error(error.message);
       }
 
-      console.debug(`Got user from email: ${email}`);
       return response.json();
     } catch (error) {
-      console.error(error.error);
+      console.error("Failed to fetch user data by email:", error);
       return null;
     }
   }
 
   /**
-   * Fetches user id based on the username.
+   * Fetches user ID based on the username provided.
    * 
    * @param {string} username The username to query
-   * @returns {Object} The user id or error
+   * @returns {Promise<Object>} A promise that resolves to the user ID or null in case of an error
    */
   async function getUserIdFromUsername(username) {
     const urlWithQueryParams = `${GET_USER_ID}=${username}`;
-    console.log("Querying Server for:", urlWithQueryParams);
-
     try {
       const response = await fetch(urlWithQueryParams, {
         method: GET_ACTION,
@@ -198,25 +195,22 @@ const utils = (() => {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error);
+        throw new Error(error.message);
       }
 
-      console.debug(`Got userId from username: ${username}`);
       return response.json();
     } catch (error) {
-      console.error(error.error);
+      console.error("Failed to fetch user ID:", error);
       return null;
     }
   }
 
   /**
-   * Function that serves as a work around to verify post-login cookies are set correctly
+   * Handles post-login cookie verification and debugging.
    * 
-   * @param {string} username 
+   * @param {string} username The username associated with the cookies to check
    */
   async function cookieWorkaround(username) {
-    console.log("Querying Server for:", username);
-
     fetch(PROFILE_URL, {
       method: GET_ACTION,
       credentials: 'include',
@@ -227,20 +221,18 @@ const utils = (() => {
       if (!response.ok) {
         throw new Error(FAILED_TO_GET_USER_PROFILE);
       }
-
-      console.log(SUCCESSFULLY_GOT_PROFILE)
       return response.json();
     }).then(data => {
       console.log('Profile Data:', data);
     }).catch(error => {
-      console.error(error);
+      console.error("Error verifying cookies:", error);
     });
   }
 
   /**
-   * Function that gets the username from the cookie
+   * Retrieves the username from the browser cookies.
    * 
-   * @returns The username
+   * @returns {string|null} The username if found, otherwise null
    */
   function getUserNameFromCookie() {
     const value = `; ${document.cookie}`;
@@ -248,34 +240,30 @@ const utils = (() => {
     if (parts.length === 2) {
       return parts.pop().split(';').shift();
     }
+
+    return null;
   }
 
   /**
-   * Checks if two strings are equal in length and text
+   * Checks if two strings are equal, ignoring case.
    * 
-   * @param {string} str1 
-   * @param {string} str2 
-   * @returns true if they are equal, false if otherwise
+   * @param {string} str1 The first string
+   * @param {string} str2 The second string
+   * @returns {boolean} True if the strings are equal, false otherwise
    */
   function checkIfStringsAreEqual(str1, str2) {
-    if (str1.length !== str2.length) {
-      return false;
-    }
-
-    return str1.toLowerCase() === str2.toLowerCase();
+    return str1.length === str2.length && str1.toLowerCase() === str2.toLowerCase();
   }
 
   /**
-   * Function that checks if two arrays are equal
+   * Determines if two arrays are equal in terms of elements and their frequencies.
    * 
-   * @param {array} a 
-   * @param {array} b 
-   * @returns true if equal, false otherwise
+   * @param {Array} a The first array
+   * @param {Array} b The second array
+   * @returns {boolean} True if the arrays are equal, false otherwise
    */
   function arraysEqual(a, b) {
-    if (a.length !== b.length) {
-      return false;
-    }
+    if (a.length !== b.length) return false;
 
     const uniqueValues = new Set([...a, ...b]);
     for (let value of uniqueValues) {
@@ -285,15 +273,14 @@ const utils = (() => {
         return false;
       }
     }
-
     return true;
   }
 
   /**
-   * Function that shows an ajax alert dynamically
+   * Shows an Ajax alert message dynamically on the page.
    * 
-   * @param {string} type The div to find
-   * @param {string} message The message to display
+   * @param {string} type The type of alert ('Error', 'Success', 'Warning')
+   * @param {string} message The message to display in the alert
    */
   function showAjaxAlert(type, message) {
     const alertDivMap = {
@@ -338,17 +325,16 @@ const utils = (() => {
   }
 
   /**
-   * Clears all cookies from the browser
+   * Clears all cookies from the browser.
    */
   function clearCookies() {
-    console.log("Clearing cookies");
-    document.cookie.split(";").forEach(function (c) {
+    document.cookie.split(";").forEach(c => {
       document.cookie = c.trim().split("=")[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
     });
   }
 
   /**
-   * Helper function to clean up session storage and remove all cookies
+   * Cleans up session storage and cookies, typically used during sign out.
    */
   function cleanupSignOut() {
     clearStorage();
