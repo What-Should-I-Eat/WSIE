@@ -78,8 +78,8 @@ function MyDietaryView() {
 
     console.log(`Updating ${username} ${isDietForm ? 'dietary restrictions' : 'food allergies'}`);
     if (utils.arraysEqual(currentRestrictions, initialRestrictions)) {
-      console.warn(NO_CHANGED_DETECTED);
-      utils.showAjaxAlert("Warning", NO_CHANGED_DETECTED);
+      console.warn(NO_USER_DIETARY_CHANGES_DETECTED);
+      utils.showAjaxAlert("Warning", NO_USER_DIETARY_CHANGES_DETECTED);
       return;
     }
 

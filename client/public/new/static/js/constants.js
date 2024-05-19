@@ -6,9 +6,9 @@
  */
 
 // Server URL - Locally
-const HOST = 'http://localhost:3001';
+// const HOST = 'http://localhost:3001';
 // Server URL - NGINX
-// const HOST = 'http://localhost:8080';
+const HOST = 'http://localhost:8080';
 // Server URL - VM Deployment
 // const HOST = "";
 // Server URL = Local IP (Testing Mobile)
@@ -49,10 +49,15 @@ const UPDATE_USER_DIET_URL = `${HOST}/${API_VERSION}/users/diet`;
 const UPDATE_USER_HEALTH_URL = `${HOST}/${API_VERSION}/users/health`;
 
 // Recipe SCRAPE API Endpoint
-const RECIPE_SCRAPE_URL = `${HOST}/api/v1/scrape-recipe`;
+const RECIPE_SCRAPE_URL = `${HOST}/${API_VERSION}/scrape-recipe`;
 
 // User Favorites API Endpoints
-const USER_FAVORITE_RECIPE = `${HOST}/api/v1/users`;
+const USER_FAVORITE_RECIPE = `${HOST}/${API_VERSION}/users`;
+
+// User Profile API Endpoints
+const USER_UPDATE_DETAILS = `${HOST}/${API_VERSION}/users/profile/update_details`;
+const USER_UPDATE_EMAIL = `${HOST}/${API_VERSION}/users/profile/update_email`;
+const USER_UPDATE_PASSWORD = `${HOST}/${API_VERSION}/users/profile/update_password`;
 
 // Edamam API Endpoints
 const EDAMAM_API_URL = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
@@ -98,7 +103,7 @@ const SUCCESSFULLY_UPDATED_USER_DIETARY = "Successfully updated user diet";
 const SUCCESSFULLY_UPDATED_USER_HEALTH = "Successfully updated user food allergies";
 const FAILED_TO_UPDATED_USER_DIETARY = "Error occurred trying to update user diet";
 const FAILED_TO_UPDATE_USER_HEALTH = "Error occurred trying to update user health";
-const NO_CHANGED_DETECTED = "No user dietary changes detected";
+const NO_USER_DIETARY_CHANGES_DETECTED = "No user dietary changes detected";
 const SUCCESSFULLY_GOT_PROFILE = "Successfully got profile using cookies";
 const FAILED_TO_GET_USER_PROFILE = "Error occurred getting profile using cookies";
 
@@ -119,3 +124,14 @@ const UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN = "User must login or create account
 const UNABLE_TO_FAVORITE_UNEXPECTED_ERROR = "Error occurred trying to favorite recipe";
 const UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR = "Error occurred trying to un-favorite recipe";
 const ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE = "Error occurred checking to see if recipe is a favorite"
+
+// User Profile Updates
+const SUCCESSFULLY_UPDATED_USER_DETAILS = "Successfully updated user info";
+const FAILED_TO_UPDATE_USER_DETAILS = "Failed to update user info";
+const NO_USER_INFO_CHANGES = "No user user info changes detected"
+const SUCCESSFULLY_UPDATED_USER_EMAIL = "Successfully updated user email address";
+const FAILED_TO_UPDATE_USER_EMAIL = "Failed to update user email address";
+const NO_USER_EMAIL_CHANGES = "No user email address changes detected";
+const SUCCESSFULLY_UPDATED_USER_PASSWORD = "Successfully updated user password";
+const FAILED_TO_UPDATE_USER_PASSWORD = "Failed to update user password";
+const NO_USER_PASSWORD_CHANGES = "No user password changes detected";

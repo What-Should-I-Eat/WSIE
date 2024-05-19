@@ -72,6 +72,7 @@ $(document).ready(function () {
     const form = $(this);
     const formArray = form.serializeArray();
     const formJson = utils.convertToJson(formArray);
+    const username = formJson.username;
 
     fetch(LOGIN_URL, {
       method: POST_ACTION,
@@ -83,7 +84,6 @@ $(document).ready(function () {
       .then(async response => {
         if (response.ok) {
           const data = await response.json();
-          utils.setStorage("user", data);
           utils.setStorage("username", data.username);
           utils.cookieWorkaround(data.username);
           window.location.href = BASE_HOME_REDIRECT;
@@ -92,6 +92,7 @@ $(document).ready(function () {
           const error = data.error;
           console.error(error);
           if (error === ACCOUNT_NOT_VERIFIED) {
+            utils.setStorage("username", username);
             $("#signInModalContent").hide();
             $("#signInForm")[0].reset();
             utils.clearMessageFromAuthModal(authClassesToRemove);
@@ -136,12 +137,6 @@ $(document).ready(function () {
     $("#authModal").modal("show");
   });
 
-  // Handles user signout
-  $("a[href='/signout']").on("click", function (event) {
-    event.preventDefault();
-    utils.cleanupSignOut();
-    window.location.href = BASE_HOME_REDIRECT;
-  });
 
   // Toggle Password Show/Hide
   $(".toggle-password").on('click', function (event) {
