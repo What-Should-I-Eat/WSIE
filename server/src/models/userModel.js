@@ -22,7 +22,10 @@ const UserSchema = new Schema({
         recipeIngredients: [String],
         recipeDirections: [String],
         recipeImage: String,
-        recipeUri: String
+        recipeUri: String,
+        recipeCalories: Number,
+        recipeSource: String,
+        recipeSourceUrl: String
     }],
 });
 

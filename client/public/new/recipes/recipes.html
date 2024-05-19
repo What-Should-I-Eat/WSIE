@@ -33,16 +33,17 @@
   <script src="/static/js/verification.js"></script>
   <script src="/static/js/forgot-password.js"></script>
   <script src="/static/js/login.js"></script>
-  <script src="/static/js/edamam-wrapper.js"></script>
   <script src="/static/js/recipes/recipes.js"></script>
 
   <script>
     $(document).ready(function () {
-      const recipes = new Recipes();
-      recipes.load();
+      const params = new URLSearchParams(window.location.search);
+      const search = params.get('search_recipes');
+
+      const recipes = new RecipesView();
+      recipes.load(search);
     });
   </script>
-
 </head>
 
 <body>
@@ -65,10 +66,10 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/about.html">About Us</a>
+                <a class="nav-link" href="/about">About Us</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/recipes/recipes.html">Find Recipes</a>
+                <a class="nav-link" href="/recipes">Find Recipes</a>
               </li>
             </ul>
 
@@ -86,21 +87,21 @@
           class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxSuccessMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertError"
           class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxErrorMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertWarning"
           class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxWarningMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
       </div>

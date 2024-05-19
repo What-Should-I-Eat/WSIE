@@ -1,81 +1,124 @@
-function Recipes() {
-    const container = $('.recipes-container');
-    const addedRecipesSet = new Set();
+function RecipesView() {
+  const container = $('.recipes-container');
+  const addedRecipesSet = new Set();
 
-    this.renderRecipes = (recipes) => {
-        container.empty();
+  this.load = async (searchParam) => {
+    try {
+      const recipes = await this.getRecipes(searchParam);
 
-        const recipeResults = recipes.hits;
+      if (recipes) {
+        this.renderRecipes(recipes);
+      } else {
+        container.append(this.getNoRecipesFound());
+      }
+    } catch (error) {
+      console.error(EDAMAM_QUERY_ERROR);
+      // utils.showAjaxAlert("Error", EDAMAM_QUERY_ERROR);
+      container.append(this.getNoRecipesFound());
+    }
+  };
 
-        if (!recipeResults || recipeResults.length === 0) {
-            container.append(this.getNoRecipesFound());
-            return;
-        }
+  this.getRecipes = async (searchParam) => {
+    let searchParamQuery = searchParam || "";
+    console.log(`Received search parameter: [${searchParamQuery}]`);
+    let apiUrl = EDAMAM_API_URL + searchParamQuery;
 
-        console.log(`About to iterate through: ${recipeResults.length} recipes`);
-        recipeResults.forEach(data => {
-            const source = data.recipe.source;
-            const sourceUrl = data.recipe.url;
-            const recipeName = data.recipe.label;
-            // Store with name, source, and source url
-            const identifier = `${recipeName}-${source}-${sourceUrl}`;
+    const username = utils.getUserNameFromCookie();
 
-            if (!addedRecipesSet.has(identifier)) {
-                addedRecipesSet.add(identifier);
-                const recipeImage = hasValidImage(data) ? data.recipe.images.LARGE.url : NO_IMAGE_AVAILABLE;
+    if (username) {
+      try {
+        const userData = await utils.getUserFromUsername(username);
+        console.log("Adding user diet and health restrictions to Edamam query");
+        const userDietString = getUserDietString(userData.diet);
+        const userHealthString = getUserHealthString(userData.health);
+        apiUrl += userDietString + userHealthString;
+      } catch (error) {
+        console.error(ERROR_UNABLE_TO_GET_USER, error);
+        utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
+        return;
+      }
+    }
 
-                const recipeHtml = `
-                        <div class="box">
-                            <a>
-                                <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
-                            </a>
-                            <h2>${recipeName}</h2>
-                            <p><a href="${sourceUrl}" target="_blank" title="Go to source">${source}</a></p>
-                        </div>`;
+    console.log(`Querying Edamam using: ${apiUrl}`);
 
-                console.debug(`Adding [${recipeName}] from source: [${source}], sourceUrl: [${sourceUrl}]`);
-                container.append(recipeHtml);
-            } else {
-                console.debug(`Skipping duplicate recipe: [${recipeName}] from source: [${source}], sourceUrl: [${sourceUrl}]`);
-            }
-        });
-    };
+    const response = await fetch(apiUrl, {
+      method: GET_ACTION,
+      headers: {
+        'Accept': DEFAULT_DATA_TYPE,
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
 
-    this.load = () => {
-        const recipesData = utils.getFromStorage("recipes");
+    if (response.ok) {
+      const recipes = await response.json();
+      return recipes;
+    } else {
+      console.error(EDAMAM_QUERY_ERROR);
+      throw new Error(EDAMAM_QUERY_ERROR);
+    }
+  }
 
-        if (recipesData) {
-            const recipes = JSON.parse(recipesData);
-            this.renderRecipes(recipes);
-        } else {
-            container.append(this.getNoRecipesFound());
-        }
+  this.renderRecipes = (recipes) => {
+    container.empty();
 
-        const recipeQuery = utils.getFromStorage("recipesQuery");
-        if (recipeQuery) {
-            console.log(`Queried recipes with URL: ${recipeQuery}`);
-        }
-    };
+    const recipeResults = recipes.hits;
 
-    this.getNoRecipesFound = () => {
-        return `
+    if (!recipeResults || recipeResults.length === 0) {
+      container.append(this.getNoRecipesFound());
+      return;
+    }
+
+    console.log(`About to iterate through: ${recipeResults.length} recipes`);
+    recipeResults.forEach(data => {
+      const recipe = data.recipe;
+      const source = recipe.source;
+      const sourceUrl = recipe.url;
+
+      const recipeSource = encodeURIComponent(source);
+      const recipeSourceUrl = encodeURIComponent(sourceUrl);
+      const recipeName = recipe.label;
+      const recipeCalories = Math.round(recipe.calories);
+      const recipeUri = encodeURIComponent(recipe.uri);
+      // Store with name, source, and source url
+      const identifier = `${recipeName}-${source}-${sourceUrl}`;
+
+      if (!addedRecipesSet.has(identifier)) {
+        addedRecipesSet.add(identifier);
+        const recipeImage = hasValidImage(recipe) ? recipe.images.LARGE.url : NO_IMAGE_AVAILABLE;
+
+        const recipeHtml = `
+            <div class="box">
+                <a onclick="window.location.href='/recipes/recipe_details?source=${recipeSource}&sourceUrl=${recipeSourceUrl}&uri=${recipeUri}'">
+                    <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
+                </a>
+                <h2>${recipeName}</h2>
+                <p>Calories: ${recipeCalories}</p>
+            </div>`;
+
+        console.debug(`Adding [${recipeName}] from source: [${source}], sourceUrl: [${sourceUrl}]`);
+        container.append(recipeHtml);
+      } else {
+        console.debug(`Skipping duplicate recipe: [${recipeName}] from source: [${source}], sourceUrl: [${sourceUrl}]`);
+      }
+    });
+  };
+
+  this.getNoRecipesFound = () => {
+    return `
         <div>
             <h2>${NO_RECIPES_FOUND}</h2>
         </div>`;
-    }
+  }
 }
 
-function hasValidImage(data) {
-    return data.recipe.images && data.recipe.images.LARGE && data.recipe.images.LARGE.url;
+function hasValidImage(recipe) {
+  return recipe.images && recipe.images.LARGE && recipe.images.LARGE.url;
 }
 
-function isValidSource(source, sourceURL) {
-    const viableSources = ['Martha Stewart', 'Food Network', 'Simply Recipes', 'Delish', 'EatingWell'];
-    return source === 'BBC Good Food' ? isValidUrl(sourceURL) : viableSources.includes(source);
+function getUserDietString(dietArray) {
+  return dietArray.length ? dietArray.map(dietItem => `&diet=${dietItem}`).join('') : "";
 }
 
-function isValidUrl(sourceUrl) {
-    const penultimateChar = sourceUrl.charAt(sourceUrl.length - 2);
-    console.log("penultimate char: ", penultimateChar);
-    return !(penultimateChar >= '0' && penultimateChar <= '9');
+function getUserHealthString(healthArray) {
+  return healthArray.length ? healthArray.map(healthItem => `&health=${healthItem}`).join('') : "";
 }
