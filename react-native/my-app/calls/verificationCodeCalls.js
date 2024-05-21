@@ -40,10 +40,6 @@ const onVerifyUser = (textUsername, textVerificationCode, navigation) => {
   } 
 }
 
-// const setUsernameFromFile = (inputtedUsername, setUsernameText) => {
-//     setUsernameText(inputtedUsername);
-// }
-
 const onResendCode = async (textUsername) => {
 
     const inputError = 'Input Error';

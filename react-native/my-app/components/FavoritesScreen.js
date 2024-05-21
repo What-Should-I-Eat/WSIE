@@ -1,13 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import { Image, Pressable, Text, View, StyleSheet, ScrollView, FlatList, TouchableWithoutFeedback } from 'react-native';
+import { Image, Text, View, StyleSheet, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { getUserFavoritesFromSever } from '../calls/favoriteCalls';
-import { useFocusEffect } from '@react-navigation/native';
 
 export default function FavoritesScreen({ navigation }) {
 
   const [favoritesResults, setFavoritesResults] = useState([]);
   const [noCurrentFavorites, setNoCurrentFavorites] = useState(false);
-  console.log('newnewnew initially?');
 
   useEffect(() => { 
     async function getFavoritesForLoad() {
@@ -32,7 +30,7 @@ export default function FavoritesScreen({ navigation }) {
 
         <FlatList
               data={favoritesResults}
-              keyExtractor={(item) => item.name} // Use a unique key for each item
+              keyExtractor={(item) => item.uri} // Use a unique key for each item
               renderItem={({ item }) => (
                 <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualFavoritesScreen", {
                   individualRecipe: item

@@ -1,7 +1,6 @@
-import { Alert, Text } from "react-native";
+import { Alert } from "react-native";
 import { hostForAppCalls } from "./hostCallConst";
 import { loggedInUser } from "./loginCalls";
-import React from "react";
 
 const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
 
@@ -46,7 +45,6 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                   } else {
                     setNoResults(false);
                     let arrayOfResults = [];
-                    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
 
                     results.hits.forEach(async data => {
                       const source = data.recipe.source;
@@ -55,39 +53,16 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                       if(viableSource)
                       {
                         let imageURL;
-                        // console.log(data);
-                        console.log(data.recipe.ingredientLines);
-
-                        // console.log(data.recipe);
-                        // console.log(data.recipe.image.url);
-                        // console.log(data.recipe);
-                        // let lowerCaseSource = source.toLowerCase().trim();
-                        // const recipeSiteEndpoint = `${hostForAppCalls}/api/v1/scrape-recipe/?recipeLink=${sourceURL}&source=${lowerCaseSource}`;
-                        // console.log("recipe endpoint: ", recipeSiteEndpoint);
-                        
-                        // const resp = await fetch(recipeSiteEndpoint, {
-                        //     method: 'GET',
-                        //     headers: {
-                        //         'Accept': 'application/json',
-                        //         'Content-Type': 'application/json'
-                        //     }
-                        // });
-                        
-                        // if (!resp.ok) {
-                        //     throw new Error('Failed to fetch recipe directions');
-                        // }
 
                         if (data.recipe.images && data.recipe.images.LARGE && data.recipe.images.LARGE.url) {
                           imageURL = data.recipe.images.LARGE.url;
                         } else {
                             // add default image if not found
-                            imageURL = '../assets/emptyPlate.jpeg';
                             imageURL = 'https://www.pdclipart.org/albums/Household_Items/normal_dinner_plate_with_spoon_and_fork.png';
                         }
                         let caloriesAsWholeNumber = Math.round(data.recipe.calories);
 
                         let ingredientsString = "";
-
                         for(var i = 0; i < data.recipe.ingredientLines.length; i++){
                           ingredientsString += data.recipe.ingredientLines[i];
                           if(i < (data.recipe.ingredientLines.length - 1)){
@@ -104,21 +79,16 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                             ingredients: ingredientsString,
                             source: source,
                             sourceURL: sourceURL
-                            // ingredients: ingredientsArray
                         }
-                        // console.log('individual recipe\n' + individualRecipe.name + ', ' + individualRecipe.image + ', ' + individualRecipe.calories + '\n-----------\n');
 
                         // ensures no two recipes are added twice
                         if(!(arrayOfResults.some(thisRecipe => thisRecipe.uri === data.recipe.uri))){
                           arrayOfResults.push(individualRecipe);
                           console.log("individual recipe: ",individualRecipe);
                         }
-
-                        // link.onclick = () => showRecipe(data, data.recipe.source);
                       }
                     });
                     setSearchResults(arrayOfResults);
-                    console.log('#################################');
                   }
               });
           } catch (e) {
@@ -130,7 +100,6 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
         });
     }
 }
-
 
 function sourceIsViable(source, sourceURL){
     switch(source) {
@@ -153,10 +122,9 @@ function sourceIsViable(source, sourceURL){
         return false;
     }
   }
-      //this is to see if bbc good food link actually works
+//this is to see if bbc good food link actually works
 function sourceURLIsViable(sourceURL){
     const penultimateChar = sourceURL.charAt(sourceURL.length - 2);
-    // console.log("penultimate char: ", penultimateChar);
     if (penultimateChar >= '0' && penultimateChar <= '9') {
         return false;
     }
@@ -216,15 +184,10 @@ const getRecipeDirections = async (source, sourceURL) => {
   if (!resp.ok) {
       throw new Error('Failed to fetch recipe directions');
   }
-  // console.log(resp);
-  const realDirections = await resp.json();
-  console.log(realDirections);
+
   let directionString = "";
   for(var i = 0; i < realDirections.length; i++){
     directionString += realDirections[i];
-    if(i < (realDirections.length - 1)){
-      // directionString += "\n";
-    }
   }
   console.log(directionString);
   return(directionString);

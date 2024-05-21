@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView, FlatList } from 'react-native';
+import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
 
 

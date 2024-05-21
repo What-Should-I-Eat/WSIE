@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView, FlatList } from 'react-native';
+import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { isRecipeAlreadyFavorited } from '../calls/favoriteCalls';
 import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
 import { getRecipeDirections } from '../calls/recipeSearchCalls';

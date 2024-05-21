@@ -8,9 +8,6 @@ var loggedInUser = 'default';
 
 const onLogin = (textUsername, textPassword, navigation) => {
 
-//   loggedInUser = textUsername;
-//   navigation.navigate("Home");
-
     if(areInputsFilledIn(textUsername, textPassword)){
         const userLoginRequest = {
             userName: textUsername,

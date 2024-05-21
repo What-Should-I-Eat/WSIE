@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Pressable, Text, View, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { Pressable, Text, View, StyleSheet } from 'react-native';
 import { MultiSelectListDiet, selectedDietArray } from './DietaryRestrictionsList';
 import { sendDietData } from '../calls/dietHealthCalls';
 
