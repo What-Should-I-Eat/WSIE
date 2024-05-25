@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Image, Text, View, StyleSheet, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { getUserFavoritesFromSever } from '../calls/favoriteCalls';
+import { appBackgroundColor } from "../calls/colorConstants";
 
 export default function FavoritesScreen({ navigation }) {
 
@@ -25,18 +26,18 @@ export default function FavoritesScreen({ navigation }) {
     return (
         <View style={FavoritesStyles.container}>
 
-        {noCurrentFavorites && <Text style={FavoritesStyles.instructions}>
+        {noCurrentFavorites && <Text style={FavoritesStyles.noRecipeFeedback}>
           Sorry, you have no favorites to show right now.{'\n\n'}Try searching for some new recipes to add!</Text>}
 
         <FlatList
               data={favoritesResults}
-              keyExtractor={(item) => item.uri} // Use a unique key for each item
+              keyExtractor={(item) => item.uri}
               renderItem={({ item }) => (
                 <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualFavoritesScreen", {
                   individualRecipe: item
                 })}>
-                <View style={FavoritesStyles.singleRecipeDiv}>
-                  <View style={FavoritesStyles.textResults}>
+                <View style={[FavoritesStyles.divider]}>
+                  <View style={[FavoritesStyles.textResults, FavoritesStyles.singleRecipeDiv]}>
                     <Text style={FavoritesStyles.foodTitle}>
                       {item.name}
                     </Text>
@@ -56,15 +57,14 @@ export default function FavoritesScreen({ navigation }) {
   const FavoritesStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
     },
-    instructions: {
+    noRecipeFeedback: {
         fontSize: 35,
         fontWeight: '600',
         width: 350,
-        color: 'red',
         marginTop: 50,
         marginBottom: 20,
         textAlign: 'center'
@@ -72,7 +72,11 @@ export default function FavoritesScreen({ navigation }) {
     images: {
       width: 300,
       height: 200,
-      resizeMode: 'contain'
+      resizeMode: 'contain',
+      marginTop: 10,
+      marginBottom: 15,
+      alignItems: 'center',
+      alignContent: 'center'
     },
     foodTitle: {
       fontSize: 30,
@@ -81,52 +85,18 @@ export default function FavoritesScreen({ navigation }) {
       marginBottom: 5,
       textAlign: 'center'
     },
-    foodDescription: {
-      fontSize: 20,
-      fontWeight: '200',
-      width: 300,
-      marginTop: 5,
-      marginBottom: 5,
-      textAlign: 'center'
-    },
     singleRecipeDiv: {
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: 'center',
-      marginTop: 20,
+      alignContent: 'center',
+      marginTop: 10,
+      flex: 1,
     },
-    favoritesButton: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 4,
-      elevation: 3,
-      width: 250,
-      height: 75,
-      margin: 10,
-      marginTop: 20,   
-      backgroundColor: '#3cb04c' 
-  },
-  unfavoritesButton: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 4,
-      elevation: 3,
-      width: 250,
-      height: 75,
-      margin: 10,
-      marginTop: 20,   
-      backgroundColor: 'red' 
-  },
-  buttonText:{
-      fontSize: 30,
-      fontWeight: '600',
-      color: '#ffffff'
-  },
     divider: {
       borderBottomColor: 'black',
       borderBottomWidth: StyleSheet.hairlineWidth,
       width: 350,
-      marginVertical: 10
     }
   }
 );

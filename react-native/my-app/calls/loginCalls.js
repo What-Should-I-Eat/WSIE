@@ -28,7 +28,7 @@ const onLogin = (textUsername, textPassword, navigation) => {
           } else if(response.status == 452){
             throw new Error('10 minute lockout');
           } else if (response.status !== 200) {
-            throw new Error(errorResponse.error || 'Error logging in');
+            throw new Error(response.error || 'Error logging in');
           } 
           return response.json();
         })
@@ -42,7 +42,7 @@ const onLogin = (textUsername, textPassword, navigation) => {
           const loginError = 'Login Error';
           console.error('Fetch error:', error);
           if(error == 'Error: User account is not verified'){
-            Alert.alert(loginError, "Account is not yet verified.\nPlease check your email and enter the 6 digit code below\nCode expires in 10 minutes");
+            Alert.alert(loginError, "Account is not yet verified.");
             onResendCode(textUsername);
             navigation.navigate("VerificationCodeScreen");
           } else if(error == 'Error: Must reset password'){

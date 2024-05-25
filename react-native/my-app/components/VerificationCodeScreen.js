@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { onResendCode, onVerifyUser } from '../calls/verificationCodeCalls';
+import { appBackgroundColor } from "../calls/colorConstants";
 
 export default function VerificationCodeScreen({ navigation }) {
 
@@ -8,7 +9,7 @@ export default function VerificationCodeScreen({ navigation }) {
     const [textVerificationCode, setVerificationCodeText] = useState('');
 
     return (
-      <SafeAreaView  style={verificationCodeStyles.container}>
+      <SafeAreaView style={verificationCodeStyles.container}>
       <ScrollView>
         <View style={verificationCodeStyles.container}>
             <Text style={verificationCodeStyles.instructions}>
@@ -18,7 +19,7 @@ export default function VerificationCodeScreen({ navigation }) {
               Account username:
             </Text>
             <TextInput
-                  style={verificationCodeStyles.loginBox}
+                  style={verificationCodeStyles.inputBox}
                   placeholder="mydiet45"
                   placeholderTextColor={"#8c8c8c"}
                   autoCapitalize="none"
@@ -29,7 +30,7 @@ export default function VerificationCodeScreen({ navigation }) {
               Verification code:
             </Text>
             <TextInput
-                style={verificationCodeStyles.loginBox}
+                style={verificationCodeStyles.inputBox}
                 placeholder="123456"
                 placeholderTextColor={"#8c8c8c"}
                 autoCapitalize="none"
@@ -39,12 +40,12 @@ export default function VerificationCodeScreen({ navigation }) {
             <Pressable style={verificationCodeStyles.submitCodeButton} 
                 onPress={() => onVerifyUser(textUsername, textVerificationCode, navigation)}
             >
-              <Text style={verificationCodeStyles.buttonTextSmall}>Verify Account</Text>
+              <Text style={verificationCodeStyles.buttonText}>Verify Account</Text>
             </Pressable>
             <Pressable style={verificationCodeStyles.resendCodeButton} 
               onPress={() => onResendCode(textUsername)}
             >
-              <Text style={verificationCodeStyles.buttonTextSmall}>Resend Code</Text>
+              <Text style={verificationCodeStyles.buttonText}>Resend Code</Text>
             </Pressable>
         </View>
       </ScrollView>
@@ -54,7 +55,7 @@ export default function VerificationCodeScreen({ navigation }) {
   const verificationCodeStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
     },
@@ -64,56 +65,38 @@ export default function VerificationCodeScreen({ navigation }) {
     submitCodeButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 4,
+        borderRadius: 12,
         elevation: 3,
+        borderWidth: 2,
         width: 300,
         height: 100,
         margin: 10,
-        marginTop: 20,   
-        backgroundColor: '#3cb04c' 
+        marginTop: 30,   
+        backgroundColor: '#2A9000' 
     },
     resendCodeButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 4,
+        borderRadius: 12,
         elevation: 3,
+        borderWidth: 2,
         width: 300,
         height: 100,
         margin: 10, 
         backgroundColor: '#ff0000' 
     },
-    passwordInputContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft: -10,
-    },
-    newUserButton: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 4,
-      elevation: 3,
-      width: 300,
-      height: 100,
-      margin: 10,     
-      backgroundColor: '#0000ff' 
-  },
     buttonText:{
-        fontSize: 40,
-        fontWeight: '600',
-        color: '#ffffff'
-    },
-    buttonTextSmall:{
-        fontSize: 34,
+        fontSize: 38,
         fontWeight: '500',
-        color: '#ffffff'
+        color: 'white'
     },
-    loginBox: {
+    inputBox: {
       padding: 18,
-      margin: 10,
+      marginTop: 5,
+      marginBottom: 15,
       position: 'relative',
       top: 0,
-      borderWidth: StyleSheet.hairlineWidth,
+      borderWidth: 1,
       borderColor: '#404040',
       backgroundColor: '#f9f9f9',
       width: 300,
@@ -124,7 +107,7 @@ export default function VerificationCodeScreen({ navigation }) {
     inputLabel: {
         fontSize: 30,
         fontWeight: '500',
-        margin: 10,
+        marginBottom: 5,
         marginTop: 20
     },
     instructions: {

@@ -3,7 +3,7 @@ import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } fr
 import { isRecipeAlreadyFavorited } from '../calls/favoriteCalls';
 import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
 import { getRecipeDirections } from '../calls/recipeSearchCalls';
-
+import { appBackgroundColor } from "../calls/colorConstants";
 
 export default function IndividualRecipeScreen({ route, navigation }) {
 
@@ -64,12 +64,14 @@ export default function IndividualRecipeScreen({ route, navigation }) {
             <Text style={IndividualRecipeStyles.calories}>
                 Calories: {individualRecipe.calories}
             </Text>
+            <View style={IndividualRecipeStyles.divider}/>
             <Text style={IndividualRecipeStyles.ingredientsHeader}>
               Ingredients:
             </Text>
             <Text style={IndividualRecipeStyles.ingredients}>
               {individualRecipe.ingredients}
             </Text>
+            <View style={IndividualRecipeStyles.divider}/>
             <Text style={IndividualRecipeStyles.directionsHeader}>
               Directions:
             </Text>
@@ -84,7 +86,7 @@ export default function IndividualRecipeScreen({ route, navigation }) {
   const IndividualRecipeStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
       height: 'max'
@@ -95,9 +97,8 @@ export default function IndividualRecipeScreen({ route, navigation }) {
         borderRadius: 4,
         elevation: 3,
         width: 250,
-        height: 75,
-        margin: 10,
-        marginTop: 20,   
+        height: 65,
+        marginVertical: 10, 
         backgroundColor: '#3cb04c' 
     },
     unfavoritesButton: {
@@ -106,9 +107,8 @@ export default function IndividualRecipeScreen({ route, navigation }) {
         borderRadius: 4,
         elevation: 3,
         width: 250,
-        height: 75,
-        margin: 10,
-        marginTop: 20,   
+        height: 65,
+        marginVertical: 10, 
         backgroundColor: 'red' 
     },
     buttonText:{
@@ -136,13 +136,13 @@ export default function IndividualRecipeScreen({ route, navigation }) {
       color: '#3cb04c',
       fontSize: 35,
       fontWeight: 600,
-      marginTop: 10
+      marginTop: 3
     },
     foodTitle: {
       fontSize: 40,
       fontWeight: '600',
       marginTop: 20,
-      marginBottom: 20,
+      marginBottom: 5,
       textAlign: 'center'
     },
     calories: {
@@ -158,7 +158,6 @@ export default function IndividualRecipeScreen({ route, navigation }) {
     ingredientsHeader: {
       fontSize: 28,
       fontWeight: '400',
-      color: 'blue',
       width: 220,
       marginTop: 5,
       marginBottom: 5,
@@ -169,7 +168,6 @@ export default function IndividualRecipeScreen({ route, navigation }) {
     ingredients: {
       fontSize: 22,
       fontWeight: '300',
-      color: 'blue',
       width: 330,
       marginBottom: 5,
       textAlign: 'center',
@@ -179,7 +177,6 @@ export default function IndividualRecipeScreen({ route, navigation }) {
     directionsHeader: {
       fontSize: 28,
       fontWeight: '400',
-      color: 'red',
       width: 220,
       marginTop: 5,
       marginBottom: 5,
@@ -190,7 +187,6 @@ export default function IndividualRecipeScreen({ route, navigation }) {
     directions: {
       fontSize: 22,
       fontWeight: '300',
-      color: 'red',
       width: 370,
       marginBottom: 5,
       textAlign: 'center',

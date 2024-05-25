@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
-
+import { appBackgroundColor } from "../calls/colorConstants";
 
 export default function IndividualFavoritesScreen({ route, navigation }) {
 
@@ -39,6 +39,7 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
             <Text style={IndividualFavoritesStyles.ingredientsDiv}>
               {individualRecipe.ingredients}
             </Text>
+            <View style={IndividualFavoritesStyles.divider}/>
             <Text style={IndividualFavoritesStyles.directionsHeader}>
               Directions:
             </Text>
@@ -53,7 +54,7 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
   const IndividualFavoritesStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
       height: 'max'
@@ -64,7 +65,7 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
         borderRadius: 4,
         elevation: 3,
         width: 250,
-        height: 75,
+        height: 65,
         margin: 10,
         marginTop: 20,   
         backgroundColor: '#3cb04c' 
@@ -75,7 +76,7 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
       borderRadius: 4,
       elevation: 3,
       width: 250,
-      height: 75,
+      height: 65,
       margin: 10,
       marginTop: 20,   
       backgroundColor: 'red' 
@@ -94,7 +95,6 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
     ingredientsHeader: {
       fontSize: 28,
       fontWeight: '400',
-      color: 'blue',
       width: 220,
       marginTop: 5,
       marginBottom: 5,
@@ -105,7 +105,6 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
     ingredientsDiv: {
       fontSize: 26,
       fontWeight: '300',
-      color: 'blue',
       width: 350,
       marginBottom: 5,
       textAlign: 'center',
@@ -115,7 +114,6 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
     directionsHeader: {
       fontSize: 28,
       fontWeight: '400',
-      color: 'red',
       width: 220,
       marginTop: 5,
       marginBottom: 5,
@@ -126,7 +124,6 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
     directionsDiv: {
       fontSize: 22,
       fontWeight: '300',
-      color: 'red',
       width: 370,
       marginBottom: 5,
       textAlign: 'center',

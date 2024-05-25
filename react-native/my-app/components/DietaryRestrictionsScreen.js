@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { appBackgroundColor, lightSilverText } from "../calls/colorConstants";
 
 export default function DietaryRestrictionsScreen({ navigation }) {
 
@@ -10,16 +11,24 @@ export default function DietaryRestrictionsScreen({ navigation }) {
             <Text style={DietaryRestrictionsStyles.instructions}>
                Choose the dietary restriction category to update below:
             </Text>
-            <Pressable style={DietaryRestrictionsStyles.pathButtonDiets} 
+            <Pressable style={({ pressed }) =>[
+                {
+                  backgroundColor: pressed ? 'white' : lightSilverText,
+                },
+              DietaryRestrictionsStyles.pathButton]} 
               onPress={() => navigation.navigate("DietsScreen")}
             >
-              <Text style={DietaryRestrictionsStyles.buttonText}>Diet Types</Text>
+              <Text style={[DietaryRestrictionsStyles.buttonText, DietaryRestrictionsStyles.dietsText]}>Diet Types</Text>
             </Pressable>
             
-            <Pressable style={DietaryRestrictionsStyles.pathButtonAllergies} 
+            <Pressable style={({ pressed }) =>[
+                {
+                  backgroundColor: pressed ? 'white' : lightSilverText,
+                },
+                DietaryRestrictionsStyles.pathButton]} 
               onPress={() => navigation.navigate("AllergiesScreen")}
             >
-              <Text style={DietaryRestrictionsStyles.buttonText}>Food Allergies</Text>
+              <Text style={[DietaryRestrictionsStyles.buttonText, DietaryRestrictionsStyles.allergiesText]}>Food Allergies</Text>
             </Pressable>
 
       </View>
@@ -30,29 +39,19 @@ export default function DietaryRestrictionsScreen({ navigation }) {
   const DietaryRestrictionsStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
     },
-    pathButtonDiets: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 4,
-        elevation: 3,
-        width: 300,
-        height: 150,
-        margin: 30,     
-        backgroundColor: 'green' 
-    },
-    pathButtonAllergies: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 4,
-        elevation: 3,
-        width: 300,
-        height: 150,
-        margin: 30,     
-        backgroundColor: 'red' 
+    pathButton:{
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 12,
+      elevation: 3,
+      width: 300,
+      height: 150,
+      margin: 30,     
+      borderWidth: 4,
     },
     buttonText:{
         fontSize: 50,
@@ -61,6 +60,12 @@ export default function DietaryRestrictionsScreen({ navigation }) {
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center'
+    },
+    dietsText:{
+      color: 'green',
+    },
+    allergiesText:{
+      color: 'red'
     },
     instructions: {
         fontSize: 32,

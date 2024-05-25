@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { Pressable, Text, View, StyleSheet, ScrollView } from 'react-native';
 import { MultiSelectListAllergy, selectedAllergyArray } from './AllergiesList';
 import { sendHealthData } from '../calls/dietHealthCalls';
+import { appBackgroundColor } from "../calls/colorConstants";
 
 export default function AllergiesScreen({ navigation }) {
   
@@ -24,7 +25,7 @@ export default function AllergiesScreen({ navigation }) {
   const AllergiesStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
     },

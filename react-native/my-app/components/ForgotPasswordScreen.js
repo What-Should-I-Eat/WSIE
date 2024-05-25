@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { onEnteredCodeForForgotPassword, onEnteredEmailForForgotPassword, onEnteredNewPasswords } from '../calls/forgotPasswordCalls';
+import { appBackgroundColor, mainIndigoButtonBackground } from "../calls/colorConstants";
 
 export default function ForgotPasswordScreen({ navigation }) {
 
@@ -21,8 +22,6 @@ export default function ForgotPasswordScreen({ navigation }) {
 
     return (
       <SafeAreaView style={forgotPasswordStyles.container}>
-
-
         <ScrollView>
         <View style={forgotPasswordStyles.container}>
 
@@ -126,36 +125,33 @@ export default function ForgotPasswordScreen({ navigation }) {
   const forgotPasswordStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
     },
     submitButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 4,
+        borderRadius: 12,
+        borderWidth: 2,
         elevation: 3,
         width: 300,
         height: 100,
         margin: 30,     
-        backgroundColor: '#0000ff' 
+        backgroundColor: mainIndigoButtonBackground, 
     },
     buttonText:{
         fontSize: 40,
         fontWeight: '600',
         color: '#ffffff'
     },
-    buttonTextSmall:{
-        fontSize: 30,
-        fontWeight: '500',
-        color: '#ffffff'
-    },
     inputBox: {
       padding: 18,
-      margin: 10,
+      marginBottom: 10,
+      marginTop: 5,
       position: 'relative',
       top: 0,
-      borderWidth: StyleSheet.hairlineWidth,
+      borderWidth: 1,
       borderColor: '#404040',
       backgroundColor: '#f9f9f9',
       width: 300,
@@ -166,21 +162,15 @@ export default function ForgotPasswordScreen({ navigation }) {
     inputLabel: {
         fontSize: 30,
         fontWeight: '500',
-        margin: 10,
+        marginBottom: 5,
         marginTop: 30
     },
     instructions: {
         fontSize: 30,
         fontWeight: '600',
         width: 350,
-        marginTop: 30,
-        textAlign: 'center'
-    },
-    title: {
-        fontSize: 30,
-        fontWeight: '600',
-        width: 350,
-        marginTop: 30,
+        marginTop: 20,
+        marginBottom: 15,
         textAlign: 'center'
     },
     passwordOneBox: {

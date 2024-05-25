@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { Image, Pressable, Text, TextInput, View, StyleSheet, SafeAreaView, FlatList, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { searchForRecipes } from '../calls/recipeSearchCalls';
+import { appBackgroundColor } from "../calls/colorConstants";
 
 export default function RecipeSearchScreen({ navigation }) {
 
@@ -11,7 +12,7 @@ export default function RecipeSearchScreen({ navigation }) {
     const [searchResults, setSearchResults] = useState([]);
  
     return (
-        <SafeAreaView style={RecipeSearchStyles.container}>
+      <SafeAreaView style={RecipeSearchStyles.container}>
         <View style={RecipeSearchStyles.container}>
             <Text style={RecipeSearchStyles.instructions}>
                Search for your favorite recipe below:
@@ -31,50 +32,47 @@ export default function RecipeSearchScreen({ navigation }) {
               </Pressable>
             </View>
 
-
             {showStuff && <View style={RecipeSearchStyles.resultsArea}>
-
-            {noResults && <View style={RecipeSearchStyles.noResultsFound}>
-
-              <Text style={RecipeSearchStyles.noResultsFound}>
-                Sorry, based on your dietary restrictions we weren't able to find any results with that search parameter.
-              </Text>  
+              {noResults && <View style={RecipeSearchStyles.noResultsFound}>
+                <Text style={RecipeSearchStyles.noResultsFound}>
+                  Sorry, based on your dietary restrictions we weren't able to find any results with that search parameter.
+                </Text>  
               </View>}
 
-            <FlatList
-              data={searchResults}
-              keyExtractor={(item) => item.uri} // Use a unique key for each item
-              renderItem={({ item }) => (
-                <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualRecipeScreen", {
-                  individualRecipe: item
-                })}>
-                <View style={RecipeSearchStyles.singleRecipeDiv}>
-                  <Image 
-                    source={ { uri: item.image}} 
-                    style={RecipeSearchStyles.images} 
-                  />
-                  <View style={RecipeSearchStyles.textResults}>
+              <FlatList
+                data={searchResults}
+                keyExtractor={(item) => item.uri}
+                renderItem={({ item }) => (
+                  <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualRecipeScreen", {
+                    individualRecipe: item
+                  })}>
+                  <View style={[RecipeSearchStyles.singleRecipeDiv, RecipeSearchStyles.divider]}>
+                    <Image 
+                      source={ { uri: item.image}} 
+                      style={RecipeSearchStyles.images} 
+                    />
+                    <View style={RecipeSearchStyles.textResults}>
 
-                    <Text style={RecipeSearchStyles.foodTitle}>
-                      {item.name}  
-                    </Text>
-                    <Text style={RecipeSearchStyles.calories}>
-                      Cal: {item.calories}
-                    </Text>
+                      <Text style={RecipeSearchStyles.foodTitle}>
+                        {item.name}  
+                      </Text>
+                      <Text style={RecipeSearchStyles.calories}>
+                        Cal: {item.calories}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-                </TouchableWithoutFeedback>
-              )}
-            />
-          </View>}
-      </View>
+                  </TouchableWithoutFeedback>
+                )}
+              />
+            </View>}
+        </View>
       </SafeAreaView>
     );
   }
   const RecipeSearchStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
       height: 'max'
@@ -135,13 +133,13 @@ export default function RecipeSearchScreen({ navigation }) {
       marginHorizontal: 15
     },
     resultsArea: {
-
     },
     images: {
       width: 130,
       height: 130,
       resizeMode: 'contain',
-      marginRight: 5
+      marginRight: 5,
+      marginBottom: 10
     },
     foodTitle: {
       fontSize: 27,
@@ -168,7 +166,7 @@ export default function RecipeSearchScreen({ navigation }) {
       borderBottomColor: 'black',
       borderBottomWidth: StyleSheet.hairlineWidth,
       width: 350,
-      marginVertical: 10,
+      marginVertical: 5,
       alignContent: "center",
       alignItems: "center",
     },

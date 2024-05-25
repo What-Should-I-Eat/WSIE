@@ -1,5 +1,5 @@
 import { Alert } from "react-native";
-import { getVerificationCode, sendEmail } from "./verificationCodeCalls";
+import { getVerificationCode, sendEmailForNewCode } from "./verificationCodeCalls";
 import { hostForAppCalls } from "./hostCallConst";
 import emailjs from '@emailjs/react-native';
 import { send, EmailJSResponseStatus } from '@emailjs/react-native';
@@ -22,10 +22,8 @@ const onEnteredEmailForForgotPassword = async (textEmail, setIsEmailEntryVisible
         }
         username = forgotCredentialsData.username;
         const verificationCode = await getVerificationCode();
-        
-        sendEmail(forgotCredentialsData.fullName, forgotCredentialsData.email, verificationCode, emailjs, "forgotpassword", username);
+        sendEmailForNewCode(forgotCredentialsData.fullName, forgotCredentialsData.email, verificationCode, emailjs);
 
-        //////////////////////////////////////////////////////////////////////
         const verificationCodeIsUpdated = await putVerificationCodeInDB(forgotCredentialsData.username, verificationCode);
 
         if(!verificationCodeIsUpdated){

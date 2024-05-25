@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { appBackgroundColor, mainIndigoButtonBackground, lightSilverText } from "../calls/colorConstants";
 
 import { onNewUserCalls } from '../calls/newUserCalls';
 
@@ -111,7 +112,7 @@ export default function NewUserScreen({ navigation }) {
   const newUserStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
     },
@@ -123,24 +124,20 @@ export default function NewUserScreen({ navigation }) {
         width: 300,
         height: 70,
         margin: 20,     
-        backgroundColor: '#0000ff' 
+        backgroundColor: mainIndigoButtonBackground 
     },
     buttonText:{
         fontSize: 40,
         fontWeight: '600',
-        color: '#ffffff'
-    },
-    buttonTextSmall:{
-        fontSize: 30,
-        fontWeight: '500',
-        color: '#ffffff'
+        color: lightSilverText
     },
     inputBox: {
       padding: 18,
-      margin: 10,
+      marginTop: 5,
+      marginBottom: 15,
       position: 'relative',
       top: 0,
-      borderWidth: StyleSheet.hairlineWidth,
+      borderWidth: 1,
       borderColor: '#404040',
       backgroundColor: '#f9f9f9',
       width: 300,
@@ -151,21 +148,15 @@ export default function NewUserScreen({ navigation }) {
     inputLabel: {
         fontSize: 30,
         fontWeight: '500',
-        margin: 1,
+        marginTop: 2,
+        marginBottom: 1,
     },
     instructions: {
         fontSize: 30,
         fontWeight: '600',
         width: 350,
-        marginTop: 20,
+        marginTop: 15,
         marginBottom: 20,
-        textAlign: 'center'
-    },
-    title: {
-        fontSize: 30,
-        fontWeight: '600',
-        width: 350,
-        marginTop: 10,
         textAlign: 'center'
     },
     passwordOneBox: {

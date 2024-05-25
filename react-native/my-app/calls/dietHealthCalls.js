@@ -1,6 +1,7 @@
 import { loggedInUser } from "./loginCalls";
 import { hostForAppCalls } from "./hostCallConst";
 import { getUserData } from "./recipeSearchCalls";
+import { Alert } from "react-native";
 
 const sendDietData = async (dietArrayFromClient) => {
     console.log("this is call function: " + dietArrayFromClient);
@@ -18,6 +19,7 @@ const sendDietData = async (dietArrayFromClient) => {
             },
             body: JSON.stringify(dietData),
         });
+        Alert.alert('Success', "Diet info has been updated on your profile");
     } catch (error) {
         console.error('Error sending diet data:', error);
     }
@@ -38,6 +40,7 @@ const sendHealthData = async (healthArrayFromClient) => {
             },
             body: JSON.stringify(healthData),
         });
+        Alert.alert('Success', "Health info has been updated on your profile");
     } catch (error) {
         console.error('Error sending health data:', error);
     }

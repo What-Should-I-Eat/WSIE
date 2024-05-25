@@ -53,9 +53,12 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                       if(viableSource)
                       {
                         let imageURL;
-
                         if (data.recipe.images && data.recipe.images.LARGE && data.recipe.images.LARGE.url) {
                           imageURL = data.recipe.images.LARGE.url;
+                        } else if (data.recipe.images && data.recipe.images.REGULAR && data.recipe.images.REGULAR.url) {
+                          imageURL = data.recipe.images.REGULAR.url;
+                        } else if (data.recipe.images && data.recipe.images.SMALL && data.recipe.images.SMALL.url) {
+                          imageURL = data.recipe.images.SMALL.url;
                         } else {
                             // add default image if not found
                             imageURL = 'https://www.pdclipart.org/albums/Household_Items/normal_dinner_plate_with_spoon_and_fork.png';
@@ -184,6 +187,7 @@ const getRecipeDirections = async (source, sourceURL) => {
   if (!resp.ok) {
       throw new Error('Failed to fetch recipe directions');
   }
+  const realDirections = await resp.json();
 
   let directionString = "";
   for(var i = 0; i < realDirections.length; i++){

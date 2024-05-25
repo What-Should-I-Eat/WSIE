@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, Text, View, StyleSheet } from 'react-native';
 import { MultiSelectListDiet, selectedDietArray } from './DietaryRestrictionsList';
 import { sendDietData } from '../calls/dietHealthCalls';
+import { appBackgroundColor } from "../calls/colorConstants";
 
 export default function DietsScreen({ navigation }) {
 
@@ -26,7 +27,7 @@ export default function DietsScreen({ navigation }) {
   const DietsStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ffd5ad',
+      backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
     },
@@ -50,7 +51,7 @@ export default function DietsScreen({ navigation }) {
         fontSize: 30,
         fontWeight: '600',
         width: 350,
-        marginTop: 20,
+        marginTop: 15,
         marginBottom: 5,
         textAlign: 'center'
     },

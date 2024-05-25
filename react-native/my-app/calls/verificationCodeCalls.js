@@ -217,4 +217,4 @@ function sendEmail(fullName, email, verificationCode, emailjs, template, usernam
         return false;
   }
 
-export{ onVerifyUser, onResendCode, getVerificationCode, sendEmail };
+export{ onVerifyUser, onResendCode, getVerificationCode, sendEmail, sendEmailForNewCode };
