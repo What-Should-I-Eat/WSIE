@@ -1,7 +1,7 @@
 const app = require("./app");
 const { DB_URI } = require("./src/config");
 const mongoose = require("mongoose");
-const serverPort = 3001;
+const serverPort = 3000;
 
 console.log("Connecting to Mongo at URI:", DB_URI);
 

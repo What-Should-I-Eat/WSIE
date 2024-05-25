@@ -67,6 +67,24 @@ const validationHandler = (() => {
   }
 
   /**
+   * Validates all password fields when updating a user profile
+   * 
+   * @param {string} originalPassword Original password
+   * @param {string} newPassword  New Password
+   * @param {string} retypedPassword  Confirmation of the new password
+   * @returns {number} Validation code representing the result of the validation
+   */
+  function validateUpdatePassword(originalPassword, newPassword, retypedPassword) {
+    if (!checkIfPasswordIsValid(originalPassword) || !checkIfPasswordIsValid(newPassword) || !checkIfPasswordIsValid(retypedPassword)) {
+      return ValidationCodes.INVALID_PASSWORD;
+    } else if (!checkIfPasswordsMatch(newPassword, retypedPassword)) {
+      return ValidationCodes.PASSWORD_MISMATCH;
+    } else {
+      return ValidationCodes.SUCCESS;
+    }
+  }
+
+  /**
    * Validates the format of an email address.
    * 
    * @param {string} email Email address to validate
@@ -170,6 +188,7 @@ const validationHandler = (() => {
     validateResetInput,
     getValidationText: code => validationMessages[code],
     getVerificationCode,
+    validateUpdatePassword,
     checkIfEmailAddressIsValid,
     checkIfPasswordIsValid,
     isVerificationCodeValid

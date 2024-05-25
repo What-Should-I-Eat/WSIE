@@ -678,12 +678,24 @@ endpoints.put("/users/profile/update_password", async (req, res) => {
       return res.status(404).json({ error: "User not validated" });
     }
 
-    const arePasswordsEqual = await validatePassword(user, req.body.password);
+    const originalPassword = req.body.originalPassword;
+    const newPassword = req.body.newPassword;
+
+    // If existing and entered existing do not match, return invalid
+    let arePasswordsEqual = await validatePassword(user, originalPassword);
+    if (!arePasswordsEqual) {
+      console.log("Existing and user provided password DO NOT MATCH");
+      return res.status(400).json({ error: "Original password entered does not match existing. Failed to update user password" });
+    }
+
+    // If existing and new password match, return invalid
+    arePasswordsEqual = await validatePassword(user, newPassword);
     if (arePasswordsEqual) {
+      console.log("Existing and new user provided password MATCH");
       return res.status(400).json({ error: "Passwords are identical - nothing to update" });
     }
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
 
     const fieldToUpdate = { $set: { "password": hashedPassword, "incorrectPasswordAttempts": 0 } };
     const options = { upsert: true, new: true };
