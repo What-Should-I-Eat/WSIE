@@ -10,14 +10,13 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: stretch;
-  /* background-color: #f0f0f0; */
   padding: 0px;
   margin: 0 auto;
 }
 
 .box {
-  flex: 0 1 325px;
-  margin-bottom: 50px;
+  flex: 0 1 calc(25% - 40px); /* 25% for four items across, accounting for margins */
+  margin: 20px 20px 50px 20px;
   border: 2px solid #ccc;
   border-radius: 15px;
   padding: 10px;
@@ -37,4 +36,23 @@
 .box h2,
 .box p {
   width: 100%;
+}
+
+/* Responsive Adjustments for Tablets and Mobiles */
+@media (max-width: 992px) {
+  .box {
+    flex: 0 1 calc(50% - 40px); /* Two columns when the viewport is under 992px */
+  }
+}
+
+@media (max-width: 768px) {
+  .box {
+    flex: 0 1 calc(50% - 40px); /* Still two columns on smaller tablets */
+  }
+}
+
+@media (max-width: 576px) {
+  .box {
+    flex: 0 1 calc(100% - 40px); /* One column layout for mobile devices */
+  }
 }

@@ -2,6 +2,20 @@ $(document).ready(function () {
   // Render navbar
   utils.renderNavbar();
 
+  // Handles showing logged in message
+  const loginMessage = utils.getFromStorage("loginMessage");
+  if (loginMessage) {
+    utils.showAjaxAlert("Success", loginMessage);
+    utils.removeFromStorage("loginMessage");
+  }
+
+  // Handles showing sign out message
+  const signOutMessage = utils.getFromStorage("signOutMessage");
+  if (signOutMessage) {
+    utils.showAjaxAlert("Success", signOutMessage);
+    utils.removeFromStorage('signOutMessage');
+  }
+
   // Handles sign-up form submission logic
   $("#signUpForm").on("submit", async function (event) {
     event.preventDefault();
@@ -86,7 +100,14 @@ $(document).ready(function () {
           const data = await response.json();
           utils.setStorage("username", data.username);
           utils.cookieWorkaround(data.username);
-          window.location.href = BASE_HOME_REDIRECT;
+          // Update the storage for the banner
+          utils.setStorage("loginMessage", SUCCESSFUL_LOGIN);
+          // Hide the modal
+          $("#signInModalContent").hide();
+          $("#signInForm")[0].reset();
+          $("#authModal").modal("show");
+          // Refresh the page
+          window.location.reload();
         } else {
           const data = await response.json();
           const error = data.error;

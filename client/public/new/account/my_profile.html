@@ -393,18 +393,41 @@
       <form id="updatePasswordForm">
         <h2>Update Password</h2>
         <div class="mb-3">
-          <label for="password" class="form-label">New Password</label>
-          <div class="input-group" id="profilePasswordInputToggle">
-            <input id="profilePasswordInput" type="password" class="form-control" name="password"
-              placeholder="Enter new password" required />
+          <label for="password" class="form-label">Existing Password</label>
+          <div class="input-group" id="profileOriginalPasswordInputToggle">
+            <input id="profileOriginalPasswordInput" type="password" class="form-control" name="profileOriginalPassword"
+              placeholder="" required />
             <div class="input-group-addon">
               <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary">Update Password</button>
-      </form>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">New Password</label>
+          <div class="input-group" id="profileNewPasswordInputToggle">
+            <input id="profileNewPasswordInputToggle" type="password" class="form-control" name="profileNewPassword"
+              placeholder="" required />
+            <div class="input-group-addon">
+              <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Re-Type New Password</label>
+          <div class="input-group" id="profileNewPasswordRetypedInputToggle">
+            <input id="profileNewPasswordRetypedInput" type="password" class="form-control"
+              name="profileNewPasswordRetyped" placeholder="" required />
+            <div class="input-group-addon">
+              <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
     </div>
+    <button type="submit" class="btn btn-primary">Update Password</button>
+    </form>
+  </div>
   </div>
   <!-- END: Edit Profile -->
 

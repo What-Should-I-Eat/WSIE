@@ -4,7 +4,9 @@ const session = require('express-session');
 const bodyParser = require("body-parser");
 const cors = require('cors');
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 app.use(cors());
 app.use(session({
   secret: "myveryfirstemailwasblueblankeyiscute@yahoo.com",
@@ -24,5 +26,11 @@ app.get("/", (_, res) => {
 
 // Server API Endpoints
 app.use('/api/v1', endpointsRouter);
+
+// Catch-all error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Internal Server Error!");
+});
 
 module.exports = app;

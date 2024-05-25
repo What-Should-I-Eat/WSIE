@@ -13,32 +13,15 @@
   text-align: center;
 }
 
-.recipe-info,
-.venue-image,
-.seat-info {
+.recipe-info {
   padding: 20px;
   /* background-color: #f0f0f0; */
   margin: 2%;
   vertical-align: top;
 }
 
-.recipe-info h3,
-.venue-image h3,
-.seat-info h3 {
+.recipe-info h3 {
   margin-top: 0;
-  cursor: pointer;
-}
-
-.seat-info ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.seat-info li {
-  background-color: #e7e7e7;
-  margin-bottom: 5px;
-  padding: 10px;
-  border-radius: 5px;
 }
 
 .inline-div {

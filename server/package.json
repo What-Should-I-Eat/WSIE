@@ -24,6 +24,8 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "playwright": "^1.42.1",
-    "pug": "^2.0.4"
+    "pug": "^2.0.4",
+    "multer": "^1.4.3",
+    "file-type": "^16.5.3"
   }
 }
