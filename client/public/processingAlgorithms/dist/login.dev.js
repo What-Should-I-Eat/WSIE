@@ -8,7 +8,7 @@ var loginHandler = function () {
     var passwordInput = document.getElementById('password-input').value;
     var loginValidation = document.getElementById('login-validation');
     var userLoginRequest = {
-      userName: usernameInput,
+      username: usernameInput,
       password: passwordInput
     };
     fetch("http://".concat(host, "/api/v1/users/find-username"), {
@@ -51,8 +51,8 @@ var loginHandler = function () {
       });
     }).then(function (data) {
       console.log("DATA = ", data);
-      console.log(data.userName);
-      getProfilePageForThisUser(data.userName);
+      console.log(data.username);
+      getProfilePageForThisUser(data.username);
     })["catch"](function (error) {
       console.error('Fetch error:', error);
       loginValidation.textContent = 'Fetch error: ' + error.message;

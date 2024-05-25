@@ -52,21 +52,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -81,7 +81,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -123,21 +123,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -153,7 +153,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).not.toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -195,21 +195,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -225,7 +225,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -267,21 +267,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -297,7 +297,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -339,21 +339,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -368,7 +368,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -410,21 +410,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -440,7 +440,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -482,21 +482,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -512,7 +512,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -554,21 +554,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -584,7 +584,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -626,21 +626,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -656,7 +656,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -698,21 +698,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -728,7 +728,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });
@@ -770,21 +770,21 @@ describe('newUser() front end endpoint', () => {
         global.verificationCode = "33333";
         global.loginHandler2.sendEmail = jest.fn();
         global.emailjs = jest.fn();
-        global.emailjs.send = jest.fn().mockImplementation(() => 
-        Promise.resolve({ 
-            response: {status: 200, text: 'OK'}
-        }));
+        global.emailjs.send = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                response: { status: 200, text: 'OK' }
+            }));
 
         const newUserData = {
             fullName: fullName.value,
-            userName: username.value,
+            username: username.value,
             password: password.value,
             email: email.value,
             verificationCode: verificationCode,
             diet: [],
             health: [],
             favorites: []
-          };
+        };
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
             Promise.resolve({
@@ -800,7 +800,7 @@ describe('newUser() front end endpoint', () => {
         expect(fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/users/register', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(newUserData),
         });

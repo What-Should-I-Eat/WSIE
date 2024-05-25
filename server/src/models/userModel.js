@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
     id: Number,
     fullName: String,
-    userName: String,
+    username: String,
     password: String,
     email: String,
     verified: Boolean,
@@ -22,11 +22,14 @@ const UserSchema = new Schema({
         recipeIngredients: [String],
         recipeDirections: [String],
         recipeImage: String,
-        recipeUri: String
+        recipeUri: String,
+        recipeCalories: Number,
+        recipeSource: String,
+        recipeSourceUrl: String
     }],
 });
-  
-UserSchema.methods.validPassword = function(password) {
+
+UserSchema.methods.validPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 };
 

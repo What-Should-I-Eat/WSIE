@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>
+    What Should I Eat - My Dietary
+  </title>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/login-modal.css" />
+  <link rel="stylesheet" href="/static/css/dietary.css" />
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+  <!-- Email Script -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <!-- Custom Scripts -->
+  <script type="text/javascript" src="/static/js/constants.js"></script>
+  <script type="text/javascript" src="/static/js/utils.js"></script>
+  <script type="text/javascript" src="/static/js/validation.js"></script>
+  <script type="text/javascript" src="/static/js/email-wrapper.js"></script>
+  <script src="/static/js/verification.js"></script>
+  <script src="/static/js/forgot-password.js"></script>
+  <script src="/static/js/login.js"></script>
+  <script src="/static/js/account/my_dietary.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      const dietaryView = new MyDietaryView();
+      dietaryView.load();
+    });
+  </script>
+</head>
+
+<body>
+  <header>
+    <div class="container-fluid px-0">
+      <!-- START: Nav Bar Div -->
+      <div class="row navbar-row px-3">
+        <nav class="navbar navbar-expand-md navbar-light">
+          <a class="navbar-brand" href="/">
+            <img src="/static/img/recipe-logo.svg" style="max-height: 100px" />
+            <h1>What Should I Eat?</h1>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+              class="navbar-toggler-icon"></span></button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about">About Us</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/recipes">Find Recipes</a>
+              </li>
+            </ul>
+
+            <div id="navBarMyAccountSignInSignUp" class="mr-2 d-flex flex-column flex-md-row">
+              <!-- Dynamically populate via login.js -->
+            </div>
+          </div>
+        </nav>
+      </div>
+      <!-- END: Nav Bar Div -->
+
+      <!-- START: Flash Alerts to User -->
+      <div class="row">
+        <div id="ajaxAlertSuccess"
+          class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show" role="alert"
+          style="display: none;">
+          <span id="ajaxSuccessMessage"></span>
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        <div id="ajaxAlertError"
+          class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
+          style="display: none;">
+          <span id="ajaxErrorMessage"></span>
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+        <div id="ajaxAlertWarning"
+          class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show" role="alert"
+          style="display: none;">
+          <span id="ajaxWarningMessage"></span>
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+      </div>
+      <!-- END: Flash Alerts to User -->
+    </div>
+  </header>
+
+  <!-- START: Sign Up / Sign Modal -->
+  <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <!-- START: Sign In Modal -->
+      <div id="signInModalContent" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Sign In</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+
+        <div class="modal-body">
+          <form id="signInForm">
+            <div class="form-group">
+              <label for="signInUsernameInput">Username</label>
+              <input id="signInUsernameInput" type="username" class="form-control" name="username" required />
+            </div>
+            <div class="form-group mb-1">
+              <label for="signInPasswordInput">Password</label>
+              <div class="input-group" id="signinPasswordToggle">
+                <input id="signInPasswordInput" type="password" class="form-control" name="password" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="signInForm" class="mb-3 btn btn-primary btn-block">Sign In</button>
+            <button id="signUpSwitch" type="button" class="mb-3 btn btn-link btn-block">Don't have an account? Sign
+              up</button>
+            <button id="signInForgotUsernamePasswordBtn" type="button" class="mb-3 btn btn-link btn-block">Forgot
+              username or password? Click here</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Sign In Modal -->
+
+      <!-- START: Sign Up Modal -->
+      <div id="signUpModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Sign Up</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+
+        <div class="modal-body">
+          <form id="signUpForm">
+            <div class="form-group">
+              <label for="signUpFirstNameInput">First Name</label>
+              <input id="signUpFirstNameInput" class="form-control" name="firstName" required />
+            </div>
+            <div class="form-group">
+              <label for="signUpLastNameInput">Last Name</label>
+              <input id="signUpLastNameInput" class="form-control" name="lastName" required />
+            </div>
+            <div class="form-group">
+              <label for="signUpEmailInput">Email</label>
+              <input id="signUpEmailInput" type="email" class="form-control" name="email" required />
+            </div>
+            <div class="form-group">
+              <label for="signUpUsernameInput">Username</label>
+              <input id="signUpUsernameInput" type="username" class="form-control" name="username" required />
+            </div>
+            <div class="form-group">
+              <label for="signUpPasswordInput">Password</label>
+              <div class="input-group" id="signupPasswordOneToggle">
+                <input id="signUpPasswordInput" type="password" class="form-control" name="password" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="signUpRetypedPasswordInput">Re-type Password</label>
+              <div class="input-group" id="signupPasswordTwoToggle">
+                <input id="signUpRetypedPasswordInput" type="password" class="form-control" name="password" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="signUpForm" class="mb-3 btn btn-primary btn-block">Sign Up</button>
+            <button id="signInSwitch" type="button" class="mb-3 btn btn-link btn-block">Already have an account? Sign
+              in</button>
+            <button id="signUpForgotUsernamePasswordBtn" type="button" class="mb-3 btn btn-link btn-block">Forgot
+              username or password? Click here</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Sign Up Modal -->
+
+      <!-- START: Verify Account Modal -->
+      <div id="verifyAccountModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title">Verify Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form id="verifyAccountForm">
+            <div class="form-group">
+              <label for="verificationCodeInput" class="form-label">Enter Your Verification Code</label>
+              <input type="number" class="form-control" id="verificationCodeInput" name="verificationCodeInput"
+                required />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="verifyAccountForm" class="mb-3 btn btn-primary btn-block">Verify</button>
+            <button id="signInSwitchVerification" type="button" class="mb-3 btn btn-link btn-block">Already verified?
+              Sign in</button>
+            <button id="resendVerificationCodeBtn" type="button" class="mb-3 btn btn-link btn-block">Click here to
+              re-send code</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Verify Account Modal -->
+
+      <!-- START: Forgot Username/Password Modal -->
+      <div id="forgotUsernamePasswordModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title">Forgot Username or Password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form id="forgotUsernamePasswordForm">
+            <div class="form-group">
+              <label for="forgotUsernamePasswordEmailInput" class="form-label">Enter your email</label>
+              <input type="email" class="form-control" id="forgotUsernamePasswordEmailInput"
+                name="forgotUsernamePasswordEmailInput" required />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="forgotUsernamePasswordForm" class="mb-3 btn btn-primary btn-block">Send
+              Code</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Forgot Username/Password Modal -->
+
+      <!-- START: Forgot Username/Password Verify Account Modal -->
+      <div id="forgotUsernamePasswordVerifyAccountModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title">Verify Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form id="forgotUsernamePasswordVerifyAccountForm">
+            <div class="form-group">
+              <label for="forgotUsernamePasswordVerificationCodeInput" class="form-label">Enter Your Verification
+                Code</label>
+              <input type="number" class="form-control" id="forgotUsernamePasswordVerificationCodeInput"
+                name="forgotUsernamePasswordVerificationCodeInput" required />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="forgotUsernamePasswordVerifyAccountForm"
+              class="mb-3 btn btn-primary btn-block">Verify</button>
+            <button id="forgotUsernamePasswordResendVerificationCodeBtn" type="button"
+              class="mb-3 btn btn-link btn-block">Click here to
+              re-send code</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Forgot Username/Password Verify Account Modal -->
+
+      <!-- START: Reset Account Modal -->
+      <div id="resetAccountModalContent" class="modal-content" style="display: none;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Reset Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+        </div>
+
+        <div class="modal-body">
+          <form id="resetAccountForm">
+            <div class="form-group">
+              <label for="resetAccountUsernameInput">Username</label>
+              <input id="resetAccountUsernameInput" type="username" class="form-control"
+                name="resetAccountUsernameInput" required readonly />
+            </div>
+            <div class="form-group">
+              <label for="resetAccountPasswordInput">Password</label>
+              <div class="input-group" id="signupPasswordOneToggle">
+                <input id="resetAccountPasswordInput" type="password" class="form-control"
+                  name="resetAccountPasswordInput" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="resetAccountRetypedPasswordInput">Re-type Password</label>
+              <div class="input-group" id="signupPasswordTwoToggle">
+                <input id="resetAccountRetypedPasswordInput" type="password" class="form-control"
+                  name="resetAccountRetypedPasswordInput" required />
+                <div class="input-group-addon">
+                  <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <div class="w-100 d-flex flex-column">
+            <button type="submit" form="resetAccountForm" class="mb-3 btn btn-primary btn-block">Reset</button>
+            <button id="signInSwitch" type="button" class="mb-3 btn btn-link btn-block">Back to Sign in</button>
+          </div>
+        </div>
+      </div>
+      <!-- END: Reset Account Modal -->
+    </div>
+  </div>
+  <!-- END: Sign Up / Sign Modal -->
+
+  <!-- START: My Dietary -->
+  <!-- <div class="container-fluid px-0">
+    <div class="mb-3 container-fluid navbar-decoration px-0 d-flex align-items-center justify-content-center">
+      <h1 class="display-3">My Dietary</h1>
+    </div>
+  </div> -->
+
+  <div class="container mt-5">
+    <div class="mb-5">
+      <form id="updateDietaryRestrictionsForm">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 id="dietaryRestrictionsHeader">Dietary Restrictions</h2>
+          <div class="d-flex flex-column align-items-end">
+            <button type="submit" form="updateDietaryRestrictionsForm" class="mb-3 btn btn-primary btn-block">Update
+              Restrictions</button>
+          </div>
+        </div>
+
+        <hr />
+
+        <div id="dietaryRestrictionsContainer" class="dietary-restrictions-container">
+          <!-- First Row -->
+          <button type="button" class="btn toggle-btn">Low Carb</button>
+          <button type="button" class="btn toggle-btn">Low Fat</button>
+          <button type="button" class="btn toggle-btn">Low Sodium</button>
+          <!-- Second Row -->
+          <button type="button" class="btn toggle-btn">Balanced</button>
+          <button type="button" class="btn toggle-btn">High Fiber</button>
+          <button type="button" class="btn toggle-btn">High Protein</button>
+          <!-- Third Row -->
+          <button type="button" class="btn toggle-btn">Vegan</button>
+          <button type="button" class="btn toggle-btn">Vegetarian</button>
+          <button type="button" class="btn toggle-btn">Paleo</button>
+          <!-- Fourth Row -->
+          <button type="button" class="btn toggle-btn">Keto</button>
+          <button type="button" class="btn toggle-btn">Kosher</button>
+          <button type="button" class="btn toggle-btn">Pork Free</button>
+          <!-- Fifth Row -->
+          <button type="button" class="btn toggle-btn">Pescatarian</button>
+          <button type="button" class="btn toggle-btn">Red Meat Free</button>
+          <button type="button" class="btn toggle-btn">Low FODMAP</button>
+        </div>
+      </form>
+    </div>
+    <!-- END: Dietary Restrictions -->
+
+    <hr />
+
+    <!-- START: Food Allergies -->
+    <div class="container mt-5">
+      <div class="mb-5">
+        <form id="updateFoodAllergiesForm">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 id="foodAllergiesHeader">Food Allergies</h2>
+            <div class="d-flex flex-column align-items-end">
+              <button type="submit" form="updateFoodAllergiesForm" class="mb-3 btn btn-primary btn-block">Update
+                Allergies</button>
+              <!-- <a href="#" id="updateAllergiesButton" class="btn btn-primary">Update Allergies</a> -->
+            </div>
+          </div>
+
+          <hr />
+
+          <div id="foodAllergiesContainer" class="food-allergies-container">
+            <!-- First Row -->
+            <button type="button" class="btn toggle-btn">Gluten</button>
+            <button type="button" class="btn toggle-btn">Dairy</button>
+            <button type="button" class="btn toggle-btn">Eggs</button>
+            <!-- Second Row -->
+            <button type="button" class="btn toggle-btn">Soy</button>
+            <button type="button" class="btn toggle-btn">Wheat</button>
+            <button type="button" class="btn toggle-btn">Fish</button>
+            <!-- Third Row -->
+            <button type="button" class="btn toggle-btn">Shellfish</button>
+            <button type="button" class="btn toggle-btn">Tree Nuts</button>
+            <button type="button" class="btn toggle-btn">Peanuts</button>
+            <!-- Fourth Row -->
+            <button type="button" class="btn toggle-btn">Sesame</button>
+            <button type="button" class="btn toggle-btn">Low Sugar</button>
+            <button type="button" class="btn toggle-btn">Alcohol Free</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END: Food Allergies -->
+
+    <!-- START: Footer -->
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+      <div class="col-md-4 d-flex align-items-center">
+        <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+          <svg class="bi" width="30" height="24">
+            <use xlink:href="#bootstrap"></use>
+          </svg>
+        </a>
+        <span class="mb-3 mb-md-0 text-body-secondary">© 2024 What Should I Eat?, Inc</span>
+      </div>
+    </footer>
+    <!-- END: Footer -->
+</body>
+
+</html>

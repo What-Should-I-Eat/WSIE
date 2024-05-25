@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   function getUserNameFromCookie() {
     const value = `; ${document.cookie}`;
-    const parts = value.split(`; userName=`);
+    const parts = value.split(`; username=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
   }
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       user.favorites.forEach(recipe => {
         console.log(recipe);
-         
+
         // conditional gets rid of undefined
         if (recipe.recipeIngredients && recipe.recipeIngredients.length > 0) {
           const favoriteElement = document.createElement('div');
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           directionsElement.innerHTML = `<strong>Directions:</strong> ${recipe.recipeDirections}`;
           directionsElement.style.display = 'none';
 
-          
+
           favoriteElement.addEventListener('click', (event) => {
 
             event.preventDefault();

@@ -1,14 +1,14 @@
-# version: '3'
+version: "3"
 services:
   client:
-    build: './client'
+    build: "./client"
     ports:
       - "3000:3000"
   server:
-    build: './server'
+    build: "./server"
     ports:
       - "3001:3000"
-    depends_on: 
+    depends_on:
       - db
     environment:
       - MONGO_DB_URI=mongodb://db/WSIE
@@ -16,18 +16,19 @@ services:
     image: mongo
     ports:
       - "27017:27017"
-    volumes: 
+    volumes:
       - mongodb_data:/data/db
   nginx:
     image: nginx:latest
     ports:
       - "8080:8080"
     volumes:
+      # TODO: Uncomment 'public/new' for new client
       - ./client/public:/srv/www/static
+      # - ./client/public/new:/srv/www/static
       - ./default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - client
       - server
-
 volumes:
   mongodb_data:

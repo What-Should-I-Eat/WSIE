@@ -12,7 +12,7 @@ beforeEach(() => {
     global.getUserData = jest.fn().mockReturnValue(() => Promise.resolve({
         "_id": "65b5009e3ff7a8a24a418ed4",
         "fullName": "Emmeline",
-        "userName": "Emmeline",
+        "username": "Emmeline",
         "password": "$2a$10$MCoGfTfPk0wdxGHa3xHjSeood9hvfMN5Zy.SC4OFTlQEaglWHNU2C",
         "email": "emmeline.pearson@gmail.com",
         "diet": [],
@@ -40,7 +40,7 @@ beforeEach(() => {
                 "recipeUri": "http://www.edamam.com/ontologies/edamam.owl#recipe_6e53ccee356ea429bd1fec75f370cb66",
                 "_id": "65b5168003b33c73d195f8ff"
             },
-        
+
         ],
         "__v": 251,
         "incorrectPasswordAttempts": 0,
@@ -235,7 +235,7 @@ describe('Test if source is viable', () => {
     test('check that no input is not viable', () => {
         expect(edamam.sourceIsViable('')).toBe(false);
     });
-    
+
 });
 
 
@@ -281,7 +281,7 @@ describe('Get setupRecipe', () => {
         </div>
       </div>
         `;
-        
+
         expect(edamam.setupRecipe(json)).not.toBeNull();
     });
 });
@@ -290,8 +290,8 @@ describe('Test DeleteInFavorites', () => {
     test('DeleteinFavorites with default json', () => {
         const results = "";
         global.fetch = jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(JSON.stringify({type: 'basic', url: 'http://localhost:8080/api/v1/users/65b5009e3ff7a8a24a418ed4/favorites', redirected: false, status: 200, ok: true})),
-         )
+            Promise.resolve(JSON.stringify({ type: 'basic', url: 'http://localhost:8080/api/v1/users/65b5009e3ff7a8a24a418ed4/favorites', redirected: false, status: 200, ok: true })),
+        )
         const response = edamam.deleteInFavorites(json, ingredients, results);
         expect(response).toEqual(Promise.resolve({}));
         expect(fetch).toHaveBeenCalledTimes(0);
@@ -338,8 +338,8 @@ describe('Test SearchRecipe', () => {
             preventDefault: jest.fn()
         };
         global.fetch = jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(JSON.stringify({type: 'basic', url: 'http://localhost:8080/api/v1/users/65b5009e3ff7a8a24a418ed4/favorites', redirected: false, status: 200, ok: true})),
-    )
+            Promise.resolve(JSON.stringify({ type: 'basic', url: 'http://localhost:8080/api/v1/users/65b5009e3ff7a8a24a418ed4/favorites', redirected: false, status: 200, ok: true })),
+        )
         expect(edamam.searchRecipe(event)).not.toBeNull();
     });
 });
@@ -411,7 +411,7 @@ describe('Test ShowRecipe', () => {
 });
 
 describe('Test PutToFavorites', () => {
-  
+
     test('Put into favorites with default json', () => {
         const User = "test";
         const results = "";
@@ -419,8 +419,8 @@ describe('Test PutToFavorites', () => {
         join.mockImplementationOnce("recipie, things, here")
 
         global.fetch = jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(JSON.stringify({type: 'basic', url: 'http://localhost:8080/api/v1/users/65b5009e3ff7a8a24a418ed4/favorites', redirected: false, status: 200, ok: true})),
-    )
+            Promise.resolve(JSON.stringify({ type: 'basic', url: 'http://localhost:8080/api/v1/users/65b5009e3ff7a8a24a418ed4/favorites', redirected: false, status: 200, ok: true })),
+        )
         const response = edamam.putToFavorites(json, ingredients, results);
         expect(response).toEqual(Promise.resolve({}));
         expect(fetch).toHaveBeenCalledTimes(0);
@@ -430,16 +430,16 @@ describe('Test PutToFavorites', () => {
 
 
 describe('Test IsFavorited', () => {
-    const favoritesResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null};
+    const favoritesResponse = { acknowledge: true, matchedCount: 1, modifiedCount: 1, upsertedCount: 0, upsertedId: null };
 
     test('Test is favorited with default json', () => {
         global.currentUser.getUserNameFromCookie = jest.fn().mockReturnValue('test');
         global.fetch = jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-            status: 200,
-            json: () => Promise.resolve(JSON.stringify(favoritesResponse)),
-        })
-         )
+            Promise.resolve({
+                status: 200,
+                json: () => Promise.resolve(JSON.stringify(favoritesResponse)),
+            })
+        )
         const response = edamam.isFavorited(json);
         // expect(response).toBe(true);
         // expect(fetch).toHaveBeenCalledTimes(0);
@@ -448,7 +448,7 @@ describe('Test IsFavorited', () => {
 
 describe('getUserNameFromCookie() function', () => {
     it('mocked user name from cookie - successful', () => {
-        global.document.cookie = "userName=test";
+        global.document.cookie = "username=test";
         const result = edamam.getUserNameFromCookie();
         expect(result).toBe('test');
     });

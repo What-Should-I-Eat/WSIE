@@ -1,0 +1,164 @@
+:root {
+  --primary-color: #5386e4;
+  --secondary-color: #4c4b63;
+}
+
+html {
+  background-color: #ececec;
+}
+
+body {
+  font-family: "Avenir";
+  font-size: 1rem;
+  background: #ffffff;
+}
+
+header {
+  background: #fff;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navbar-brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-brand h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar-expand-md .navbar-nav .nav-link {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  color: #222;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: var(--secondary-color);
+  border: none;
+  outline: 0;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-color);
+}
+
+.hero-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 80vh;
+}
+
+.hero-info {
+  width: 50%;
+}
+
+.hero-img {
+  width: 50%;
+}
+
+.jumbotron-fluid {
+  background-color: transparent;
+}
+
+@media only screen and (max-width: 600px) {
+  .hero-section {
+    flex-direction: column;
+  }
+
+  .hero-info {
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-img {
+    width: 100%;
+  }
+}
+
+.page-link,
+.page-link:hover {
+  color: #204c19;
+}
+
+.card img {
+  height: 200px;
+  width: auto;
+}
+
+.find-recipe-search-bar {
+  display: block;
+  width: auto;
+}
+
+.find-recipe-button {
+  width: 120px;
+}
+
+.box-shadow-custom {
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+.box-shadow-custom:hover {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.account-link,
+.nav-link {
+  color: #222;
+  font-weight: 500;
+}
+
+.account-link {
+  width: fit-content;
+}
+
+.navbar-decoration,
+.cover-img {
+  background-image: url("../img/FoodBackground.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.navbar-decoration {
+  height: 20vh;
+  width: 100%;
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+.recipe-search-input {
+  border-radius: 32px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.recipe-search-btn {
+  border-radius: 32px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

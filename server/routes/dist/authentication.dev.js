@@ -22,7 +22,7 @@ router.post('/register', function _callee(req, res) {
           user = new User({
             id: req.body.id,
             fullName: req.body.fullName,
-            userName: req.body.userName,
+            username: req.body.username,
             password: req.body.password,
             email: req.body.email,
             diet: req.body.diet,

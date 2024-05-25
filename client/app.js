@@ -5,6 +5,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
+var usersRouter = require("./routes/users");
+var recipesRouter = require("./routes/recipe");
+var accountRouter = require("./routes/account");
+var aboutRouter = require("./routes/about");
 
 var app = express();
 
@@ -16,26 +20,25 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Change this to 'public/new' for new client
+const BASE_DIR_PATH = "public";
+console.log(`Client is being served from: [${BASE_DIR_PATH}]`);
+app.use(express.static(path.join(__dirname, BASE_DIR_PATH)));
 
 app.use('/', indexRouter);
-
-app.get('/login', function(req, res) {
-  res.render('login', { title: 'Login Page' });
-});
-
-// Route to serve login.html
-app.get('/login-html', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
+app.use("/users", usersRouter);
+app.use("/recipes", recipesRouter);
+app.use("/account", accountRouter);
+app.use("/about", aboutRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
