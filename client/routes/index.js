@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var path = require('path');
-const BASE_DIR_PATH = "public/new";
 
 router.get('/signout', function (req, res) {
   if (req.headers.cookie) {
@@ -11,7 +9,7 @@ router.get('/signout', function (req, res) {
     });
   }
 
-  res.sendFile(path.join(__dirname, `../${BASE_DIR_PATH}/index.html`));
+  res.json({ success: true });
 });
 
 module.exports = router;

@@ -19,6 +19,9 @@ const PUT_ACTION = "PUT";
 const DELETE_ACTION = "DELETE";
 const DEFAULT_DATA_TYPE = "application/json";
 
+// Client Server Routes
+const SIGNOUT_ROUTE = "/signout";
+
 // Redirects
 const BASE_HOME_REDIRECT = "/";
 const RECIPES_DIRECT = `/recipes/recipes.html`;
@@ -68,6 +71,7 @@ const INTERNAL_SERVER_ERROR_OCCURRED = "Internal server error occurred - check l
 
 // Sign-In / Sign-Up Messages
 const SUCCESSFUL_LOGIN = "You were successfully logged in!";
+const SUCCESSFUL_SIGNOUT = "You were successfully signed out";
 const ACCOUNT_CREATION = "Account successfully created!";
 const ACCOUNT_NOT_VERIFIED = "User account is not verified";
 

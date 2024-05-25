@@ -2,6 +2,13 @@ $(document).ready(function () {
   // Render navbar
   utils.renderNavbar();
 
+  // Handles showing sign out message
+  const signOutMessage = utils.getFromStorage("signOutMessage");
+  if (signOutMessage) {
+    utils.showAjaxAlert("Success", signOutMessage);
+    utils.removeFromStorage('signOutMessage');
+  }
+
   // Handles sign-up form submission logic
   $("#signUpForm").on("submit", async function (event) {
     event.preventDefault();
