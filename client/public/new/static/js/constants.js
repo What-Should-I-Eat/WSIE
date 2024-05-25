@@ -60,8 +60,10 @@ const USER_UPDATE_EMAIL = `${HOST}/${API_VERSION}/users/profile/update_email`;
 const USER_UPDATE_PASSWORD = `${HOST}/${API_VERSION}/users/profile/update_password`;
 
 // Edamam API Endpoints
-const EDAMAM_API_URL = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
-const EDAMAM_RECIPE_URI_URL = "https://api.edamam.com/api/recipes/v2/by-uri?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&uri";
+const EDAMAM_BASE_API_URL = "https://api.edamam.com/api/recipes/v2"
+const EDAMAM_API_URL = `${EDAMAM_BASE_API_URL}?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=`;
+const EDAMAM_API_EMPTY_SEARCH_URL = `${EDAMAM_BASE_API_URL}?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&`;
+const EDAMAM_RECIPE_URI_URL = `${EDAMAM_BASE_API_URL}/by-uri?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&uri`;
 
 // Authentication Modals
 const authClassesToRemove = ['alert-danger', 'alert-success', 'alert-warning'];
@@ -78,9 +80,9 @@ const ACCOUNT_NOT_VERIFIED = "User account is not verified";
 // Verification Messages
 const SUCCESSFULLY_RESET_ACCOUNT = "Successfully reset account - please sign-in!";
 const CHECK_EMAIL_FOR_VERIFICATION_CODE = "Please check your email and enter the 6 digit code below. Code expires in 10 minutes";
-const VERIFY_ACCOUNT = `Account is not yet verified. ${CHECK_EMAIL_FOR_VERIFICATION_CODE}`;
-const RESENT_VERIFICATION_CODE = `Verification code has been resent. ${CHECK_EMAIL_FOR_VERIFICATION_CODE}`;
-const RESET_ACCOUNT = `Account reset in progress. ${CHECK_EMAIL_FOR_VERIFICATION_CODE}`;
+const VERIFY_ACCOUNT = `Account is not yet verified.${CHECK_EMAIL_FOR_VERIFICATION_CODE}`;
+const RESENT_VERIFICATION_CODE = `Verification code has been resent.${CHECK_EMAIL_FOR_VERIFICATION_CODE} `;
+const RESET_ACCOUNT = `Account reset in progress.${CHECK_EMAIL_FOR_VERIFICATION_CODE} `;
 const ERROR_OCCURRED_GETTING_VERIFICATION = "Error occurred fetching verification code";
 
 // Success / Error / Log Messages
@@ -94,7 +96,7 @@ const FAILED_TO_VERIFY_USER = "Failed to verify user";
 const FAILED_TO_VERIFY_USER_MISSING_INFO = `${FAILED_TO_VERIFY_USER}. Missing user information`;
 const FAILED_TO_VERIFY_USER_MISSING_USERNAME = `${FAILED_TO_VERIFY_USER}. Missing username`;
 const FAILED_TO_VERIFY_USER_MISSING_NAME = `${FAILED_TO_VERIFY_USER}. Missing name`;
-const FAILED_TO_VERIFY_USER_INVALID_VERIFICATION_CODE = `${FAILED_TO_VERIFY_USER}. Verification code must be 6 numbers. Please try again`;
+const FAILED_TO_VERIFY_USER_INVALID_VERIFICATION_CODE = `${FAILED_TO_VERIFY_USER}. Verification code must be 6 numbers.Please try again`;
 const FAILED_TO_RESEND_CODE = "Failed to resend code";
 const FAILED_TO_RESEND_CODE_MISSING_USERNAME = `${FAILED_TO_RESEND_CODE}. Missing username`;
 const FAILED_TO_RESEND_CODE_MISSING_EMAIL = `${FAILED_TO_RESEND_CODE}. Missing email`;

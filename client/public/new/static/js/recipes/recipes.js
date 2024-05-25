@@ -20,8 +20,16 @@ function RecipesView() {
 
   this.getRecipes = async (searchParam) => {
     let searchParamQuery = searchParam || "";
-    console.log(`Received search parameter: [${searchParamQuery}]`);
-    let apiUrl = EDAMAM_API_URL + searchParamQuery;
+
+    let apiUrl = "";
+    if (searchParamQuery) {
+      console.log(`Received search parameter: [${searchParamQuery}]`);
+      apiUrl = EDAMAM_API_URL + searchParamQuery;
+    } else {
+      const mealType = getCurrentTimeMealType();
+      console.log(`Received empty search parameter. Querying for: ${mealType}`);
+      apiUrl = EDAMAM_API_EMPTY_SEARCH_URL + mealType;
+    }
 
     const username = utils.getUserNameFromCookie();
 
@@ -121,4 +129,18 @@ function getUserDietString(dietArray) {
 
 function getUserHealthString(healthArray) {
   return healthArray.length ? healthArray.map(healthItem => `&health=${healthItem}`).join('') : "";
+}
+
+function getCurrentTimeMealType() {
+  const hours = new Date().getHours();
+
+  if (hours < 5 || hours > 21) {
+    return "mealType=Snack";
+  } else if (hours <= 10) {
+    return "mealType=Breakfast";
+  } else if (hours <= 15) {
+    return "mealType=Lunch";
+  } else {
+    return "mealType=Dinner";
+  }
 }
