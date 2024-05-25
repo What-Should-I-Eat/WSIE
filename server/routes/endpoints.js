@@ -119,13 +119,16 @@ endpoints.get('/scrape-recipe', async (req, res) => {
   const recipeLink = req.query.recipeLink;
   const source = req.query.source;
 
-  const data = await determineSite(recipeLink, source);
-
-  console.log("SCRAPED DATA: " + data);
-  res.json(data);
+  try {
+    const data = await determineSite(recipeLink, source);
+    console.log("SCRAPED DATA: " + data);
+    res.json(data);
+  } catch (error) {
+    console.error('Error during scraping:', error);
+    res.status(500).json({ error: 'Failed to scrape data, please check the provided URL and source.' });
+  }
 });
 
-//Support methods
 async function determineSite(link, source) {
   console.log("Link in determineSite(): " + link);
   console.log("Source in determineSite() |" + source + "|");
@@ -135,31 +138,33 @@ async function determineSite(link, source) {
   let findScraper;
 
   try {
-    switch (source) {
-      case 'bbc good food': //need to test 3/11
+    switch (source.toLowerCase()) { // Use toLowerCase() to handle case variations
+      case 'bbc good food':
         scraper = '.js-piano-recipe-method .grouped-list__list li';
         findScraper = 'p';
         break;
-      case 'simply recipes': //working
+      case 'simply recipes':
         scraper = '#mntl-sc-block_3-0';
         findScraper = 'p.mntl-sc-block-html';
         break;
-      case 'martha stewart': //working
+      case 'martha stewart':
         scraper = 'div#recipe__steps-content_1-0 p';
         findScraper = '';
         break;
-      case 'food network': //working
+      case 'food network':
         scraper = '.o-Method__m-Body ol';
         findScraper = 'li';
         break;
-      case 'delish': //working but adding weird stuff
+      case 'delish':
         scraper = 'ul.directions li ol';
         findScraper = 'li';
         break;
-      case 'eatingwell': //working
+      case 'eatingwell':
         scraper = 'div#recipe__steps-content_1-0 ol li';
         findScraper = 'p';
         break;
+      default:
+        throw new Error("Unsupported source provided.");
     }
 
     data = await getRecipeDirectionsFromSource(link, scraper, findScraper);
@@ -173,15 +178,11 @@ async function determineSite(link, source) {
 
 async function getRecipeDirectionsFromSource(link, scraper, findScraper) {
   console.log(`Made it to get data. Link = ${link}`);
-
   try {
-    console.log("here")
     const response = await axios.get(link);
-    console.log("get data response: ", JSON.stringify(response.data, null, 2));
     const html = response.data;
     const $ = cheerio.load(html);
     const recipeDirections = [];
-    console.log("after cherrio,");
 
     $(scraper).each((index, element) => {
       const directionElement = findScraper ? $(element).find(findScraper) : $(element);
