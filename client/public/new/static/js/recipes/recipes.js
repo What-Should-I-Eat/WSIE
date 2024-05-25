@@ -1,10 +1,11 @@
 function RecipesView() {
   const container = $('.recipes-container');
+  const paginationContainer = $('.pagination-container');
   const addedRecipesSet = new Set();
 
-  this.load = async (searchParam) => {
+  this.load = async (searchParam, apiUrl = null) => {
     try {
-      const recipes = await this.getRecipes(searchParam);
+      const recipes = await this.getRecipes(searchParam, apiUrl);
 
       if (recipes) {
         this.renderRecipes(recipes);
@@ -18,32 +19,25 @@ function RecipesView() {
     }
   };
 
-  this.getRecipes = async (searchParam) => {
-    let searchParamQuery = searchParam || "";
+  this.getRecipes = async (searchParam, apiUrl) => {
+    if (!apiUrl) {
+      let searchParamQuery = searchParam || "";
+      apiUrl = searchParamQuery ? EDAMAM_API_URL + searchParamQuery : EDAMAM_API_EMPTY_SEARCH_URL + getCurrentTimeMealType();
 
-    let apiUrl = "";
-    if (searchParamQuery) {
-      console.log(`Received search parameter: [${searchParamQuery}]`);
-      apiUrl = EDAMAM_API_URL + searchParamQuery;
-    } else {
-      const mealType = getCurrentTimeMealType();
-      console.log(`Received empty search parameter. Querying for: ${mealType}`);
-      apiUrl = EDAMAM_API_EMPTY_SEARCH_URL + mealType;
-    }
+      const username = utils.getUserNameFromCookie();
 
-    const username = utils.getUserNameFromCookie();
-
-    if (username) {
-      try {
-        const userData = await utils.getUserFromUsername(username);
-        console.log("Adding user diet and health restrictions to Edamam query");
-        const userDietString = getUserDietString(userData.diet);
-        const userHealthString = getUserHealthString(userData.health);
-        apiUrl += userDietString + userHealthString;
-      } catch (error) {
-        console.error(ERROR_UNABLE_TO_GET_USER, error);
-        utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
-        return;
+      if (username) {
+        try {
+          const userData = await utils.getUserFromUsername(username);
+          console.log("Adding user diet and health restrictions to Edamam query");
+          const userDietString = getUserDietString(userData.diet);
+          const userHealthString = getUserHealthString(userData.health);
+          apiUrl += userDietString + userHealthString;
+        } catch (error) {
+          console.error(ERROR_UNABLE_TO_GET_USER, error);
+          utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
+          return;
+        }
       }
     }
 
@@ -109,6 +103,13 @@ function RecipesView() {
         console.debug(`Skipping duplicate recipe: [${recipeName}] from source: [${source}], sourceUrl: [${sourceUrl}]`);
       }
     });
+
+    // Handling pagination
+    if (recipes._links && recipes._links.next) {
+      const nextPageLink = recipes._links.next.href;
+      const paginationButton = `<button onclick="recipesView.load(null, '${nextPageLink}')">Next Page</button>`;
+      paginationContainer.append(paginationButton);
+    }
   };
 
   this.getNoRecipesFound = () => {
