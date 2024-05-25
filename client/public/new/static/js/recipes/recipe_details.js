@@ -218,7 +218,8 @@ function RecipeDetailsView() {
         recipeUri: recipeUri,
         recipeCalories: recipeCalories,
         recipeSource: recipeSource,
-        recipeSourceUrl: recipeSourceUrl
+        recipeSourceUrl: recipeSourceUrl,
+        userCreated: false
       };
       newButtonText = REMOVE_FROM_FAVORITES;
       successMessage = SUCCESSFULLY_FAVORITE_RECIPE;

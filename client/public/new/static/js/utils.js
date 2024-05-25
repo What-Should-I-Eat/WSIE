@@ -96,7 +96,11 @@ const utils = (() => {
         dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary">My Dietary</a>');
         dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes">My Recipes</a>');
         dropdownMenu.append('<a class="dropdown-item" href="/account/my_profile">My Profile</a>');
-        dropdownMenu.append('<a class="dropdown-item" href="/signout">Sign Out</a>');
+        const signOutLink = $('<a class="dropdown-item" href="#">Sign Out</a>').on('click', function (e) {
+          e.preventDefault();
+          signOutUser();
+        });
+        dropdownMenu.append(signOutLink);
 
         myAccountDropdown.append(dropdownToggle);
         myAccountDropdown.append(dropdownMenu);
@@ -107,6 +111,27 @@ const utils = (() => {
     } else {
       setNotLoggedInNavBar(navBar);
     }
+  }
+
+  /**
+   * Initiates the user sign-out process by sending a request to the sign-out route.
+   * Upon successful sign-out, stores a success message in the session storage
+   * and redirects the user to the base home page.
+   * If there is an error during the sign-out process, logs the error to the console.
+   */
+  function signOutUser() {
+    fetch(SIGNOUT_ROUTE)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          setStorage("signOutMessage", SUCCESSFUL_SIGNOUT);
+          window.location.href = BASE_HOME_REDIRECT;
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
+      });
   }
 
   /**

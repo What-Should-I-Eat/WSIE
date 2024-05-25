@@ -11,6 +11,13 @@ const json = require("body-parser/lib/types/json");
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const { chromium } = require('playwright');
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 50 * 1024 * 1024 }
+});
+const fileType = require('file-type');
 
 //Endpoint Setup
 endpoints.use(bodyParser.json()); //express app uses the body parser
@@ -107,8 +114,9 @@ endpoints.post("/users/getUserEmail", async (req, res) => {
   }
 });
 
+//---------------------------------------------------------------------------------------------------------------------------------------
 
-endpoints.post("/users/getUserFavorites", async (req, res) => { 
+endpoints.post("/users/getUserFavorites", async (req, res) => {
   try {
     const user = await User.findOne({ userName: req.body.userName });
 
@@ -135,13 +143,16 @@ endpoints.get('/scrape-recipe', async (req, res) => {
   const recipeLink = req.query.recipeLink;
   const source = req.query.source;
 
-  const data = await determineSite(recipeLink, source);
-
-  console.log("SCRAPED DATA: " + data);
-  res.json(data);
+  try {
+    const data = await determineSite(recipeLink, source);
+    console.log("SCRAPED DATA: " + data);
+    res.json(data);
+  } catch (error) {
+    console.error('Error during scraping:', error);
+    res.status(500).json({ error: 'Failed to scrape data, please check the provided URL and source.' });
+  }
 });
 
-//Support methods
 async function determineSite(link, source) {
   console.log("Link in determineSite(): " + link);
   console.log("Source in determineSite() |" + source + "|");
@@ -151,31 +162,33 @@ async function determineSite(link, source) {
   let findScraper;
 
   try {
-    switch (source) {
-      case 'bbc good food': //need to test 3/11
+    switch (source.toLowerCase()) { // Use toLowerCase() to handle case variations
+      case 'bbc good food':
         scraper = '.js-piano-recipe-method .grouped-list__list li';
         findScraper = 'p';
         break;
-      case 'simply recipes': //working
+      case 'simply recipes':
         scraper = '#mntl-sc-block_3-0';
         findScraper = 'p.mntl-sc-block-html';
         break;
-      case 'martha stewart': //working
+      case 'martha stewart':
         scraper = 'div#recipe__steps-content_1-0 p';
         findScraper = '';
         break;
-      case 'food network': //working
+      case 'food network':
         scraper = '.o-Method__m-Body ol';
         findScraper = 'li';
         break;
-      case 'delish': //working but adding weird stuff
+      case 'delish':
         scraper = 'ul.directions li ol';
         findScraper = 'li';
         break;
-      case 'eatingwell': //working
+      case 'eatingwell':
         scraper = 'div#recipe__steps-content_1-0 ol li';
         findScraper = 'p';
         break;
+      default:
+        throw new Error("Unsupported source provided.");
     }
 
     data = await getRecipeDirectionsFromSource(link, scraper, findScraper);
@@ -189,15 +202,11 @@ async function determineSite(link, source) {
 
 async function getRecipeDirectionsFromSource(link, scraper, findScraper) {
   console.log(`Made it to get data. Link = ${link}`);
-
   try {
-    console.log("here")
     const response = await axios.get(link);
-    console.log("get data response: ", JSON.stringify(response.data, null, 2));
     const html = response.data;
     const $ = cheerio.load(html);
     const recipeDirections = [];
-    console.log("after cherrio,");
 
     $(scraper).each((index, element) => {
       const directionElement = findScraper ? $(element).find(findScraper) : $(element);
@@ -618,6 +627,50 @@ endpoints.delete('/users/:id/favorites', async (req, res) => {
   }
 });
 
+endpoints.post('/users/:id/create_recipes', upload.single('userRecipeImage'), async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await mongoose.model('User').findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const recipeToAdd = req.body.recipeName;
+    const index = user.favorites.findIndex(x => x.recipeName === recipeToAdd);
+    if (index !== -1) {
+      console.error(`[${recipeToAdd}] is already added.. skipping`);
+      return res.status(409).json({ error: "Recipe already created" });
+    }
+
+    let newRecipe = {
+      ...req.body
+    };
+
+    let imageType = null;
+    let imageData = null;
+    if (req.file && req.file.buffer) {
+      const type = await fileType.fromBuffer(req.file.buffer);
+      imageType = type ? type.mime : 'application/octet-stream';
+
+      imageData = Buffer.from(req.file.buffer);
+      newRecipe = {
+        ...req.body,
+        userRecipeImage: {
+          recipeImageData: imageData,
+          recipeImageType: imageType
+        }
+      };
+    }
+
+    user.favorites.push(newRecipe);
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 /////////////////////////////////////////////////////////
 // START: Updating User Profile from 'My Profile' View //
 /////////////////////////////////////////////////////////
@@ -693,12 +746,24 @@ endpoints.put("/users/profile/update_password", async (req, res) => {
       return res.status(404).json({ error: "User not validated" });
     }
 
-    const arePasswordsEqual = await validatePassword(user, req.body.password);
+    const originalPassword = req.body.originalPassword;
+    const newPassword = req.body.newPassword;
+
+    // If existing and entered existing do not match, return invalid
+    let arePasswordsEqual = await validatePassword(user, originalPassword);
+    if (!arePasswordsEqual) {
+      console.log("Existing and user provided password DO NOT MATCH");
+      return res.status(400).json({ error: "Original password entered does not match existing. Failed to update user password" });
+    }
+
+    // If existing and new password match, return invalid
+    arePasswordsEqual = await validatePassword(user, newPassword);
     if (arePasswordsEqual) {
+      console.log("Existing and new user provided password MATCH");
       return res.status(400).json({ error: "Passwords are identical - nothing to update" });
     }
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
 
     const fieldToUpdate = { $set: { "password": hashedPassword, "incorrectPasswordAttempts": 0 } };
     const options = { upsert: true, new: true };

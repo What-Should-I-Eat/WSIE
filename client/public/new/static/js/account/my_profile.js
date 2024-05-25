@@ -170,11 +170,13 @@ function MyProfileView() {
       }
 
       const formData = new FormData(this);
-      const password = formData.get('password');
+      const password = formData.get('profileOriginalPassword');
+      const newPassword = formData.get('profileNewPassword');
+      const retypedPassword = formData.get('profileNewPasswordRetyped');
 
-      const isPasswordValid = validationHandler.checkIfPasswordIsValid(password);
-      if (!isPasswordValid) {
-        const errorMessage = validationHandler.getValidationText(ValidationCodes.INVALID_PASSWORD);
+      const validationCode = validationHandler.validateUpdatePassword(password, newPassword, retypedPassword);
+      if (validationCode !== ValidationCodes.SUCCESS) {
+        const errorMessage = validationHandler.getValidationText(validationCode);
         console.error(errorMessage);
         utils.showAjaxAlert("Error", errorMessage);
         return;
@@ -182,7 +184,8 @@ function MyProfileView() {
 
       const request = {
         username: username,
-        password: password
+        originalPassword: password,
+        newPassword: newPassword
       }
 
       const response = await fetch(USER_UPDATE_PASSWORD, {
@@ -193,23 +196,22 @@ function MyProfileView() {
         body: JSON.stringify(request)
       });
 
-      if (!response.ok) {
+
+      if (response.ok) {
+        console.log(SUCCESSFULLY_UPDATED_USER_PASSWORD);
+        utils.showAjaxAlert("Success", SUCCESSFULLY_UPDATED_USER_PASSWORD);
+      } else {
+        const error = await response.json();
         if (response.status == 400) {
-          throw new Error(NO_USER_PASSWORD_CHANGES);
+          console.error(error);
+          utils.showAjaxAlert("Warning", error.error);
         } else {
           throw new Error(FAILED_TO_UPDATE_USER_PASSWORD);
         }
       }
-
-      console.log(SUCCESSFULLY_UPDATED_USER_PASSWORD);
-      utils.showAjaxAlert("Success", SUCCESSFULLY_UPDATED_USER_PASSWORD);
     } catch (error) {
       console.error(error);
-      if (error.message == NO_USER_PASSWORD_CHANGES) {
-        utils.showAjaxAlert("Warning", error.message);
-      } else {
-        utils.showAjaxAlert("Error", error.message);
-      }
+      utils.showAjaxAlert("Error", error.message);
     };
   });
 }

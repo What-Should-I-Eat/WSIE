@@ -19,10 +19,12 @@ const PUT_ACTION = "PUT";
 const DELETE_ACTION = "DELETE";
 const DEFAULT_DATA_TYPE = "application/json";
 
+// Client Server Routes
+const SIGNOUT_ROUTE = "/signout";
+
 // Redirects
 const BASE_HOME_REDIRECT = "/";
-const RECIPES_DIRECT = `/recipes/recipes.html`;
-const RECIPE_DETAILS_REDIRECT = "recipes/recipes_details.html";
+const MY_RECIPES_ROUTE = "/account/my_recipes";
 
 // Authentication API Endpoints
 const REGISTER_URL = `${HOST}/${API_VERSION}/users/register`;
@@ -57,8 +59,10 @@ const USER_UPDATE_EMAIL = `${HOST}/${API_VERSION}/users/profile/update_email`;
 const USER_UPDATE_PASSWORD = `${HOST}/${API_VERSION}/users/profile/update_password`;
 
 // Edamam API Endpoints
-const EDAMAM_API_URL = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
-const EDAMAM_RECIPE_URI_URL = "https://api.edamam.com/api/recipes/v2/by-uri?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&uri";
+const EDAMAM_BASE_API_URL = "https://api.edamam.com/api/recipes/v2"
+const EDAMAM_API_URL = `${EDAMAM_BASE_API_URL}?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=`;
+const EDAMAM_API_EMPTY_SEARCH_URL = `${EDAMAM_BASE_API_URL}?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&`;
+const EDAMAM_RECIPE_URI_URL = `${EDAMAM_BASE_API_URL}/by-uri?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&uri`;
 
 // Authentication Modals
 const authClassesToRemove = ['alert-danger', 'alert-success', 'alert-warning'];
@@ -68,15 +72,16 @@ const INTERNAL_SERVER_ERROR_OCCURRED = "Internal server error occurred - check l
 
 // Sign-In / Sign-Up Messages
 const SUCCESSFUL_LOGIN = "You were successfully logged in!";
+const SUCCESSFUL_SIGNOUT = "You were successfully signed out";
 const ACCOUNT_CREATION = "Account successfully created!";
 const ACCOUNT_NOT_VERIFIED = "User account is not verified";
 
 // Verification Messages
 const SUCCESSFULLY_RESET_ACCOUNT = "Successfully reset account - please sign-in!";
 const CHECK_EMAIL_FOR_VERIFICATION_CODE = "Please check your email and enter the 6 digit code below. Code expires in 10 minutes";
-const VERIFY_ACCOUNT = `Account is not yet verified. ${CHECK_EMAIL_FOR_VERIFICATION_CODE}`;
-const RESENT_VERIFICATION_CODE = `Verification code has been resent. ${CHECK_EMAIL_FOR_VERIFICATION_CODE}`;
-const RESET_ACCOUNT = `Account reset in progress. ${CHECK_EMAIL_FOR_VERIFICATION_CODE}`;
+const VERIFY_ACCOUNT = `Account is not yet verified.${CHECK_EMAIL_FOR_VERIFICATION_CODE}`;
+const RESENT_VERIFICATION_CODE = `Verification code has been resent.${CHECK_EMAIL_FOR_VERIFICATION_CODE} `;
+const RESET_ACCOUNT = `Account reset in progress.${CHECK_EMAIL_FOR_VERIFICATION_CODE} `;
 const ERROR_OCCURRED_GETTING_VERIFICATION = "Error occurred fetching verification code";
 
 // Success / Error / Log Messages
@@ -90,7 +95,7 @@ const FAILED_TO_VERIFY_USER = "Failed to verify user";
 const FAILED_TO_VERIFY_USER_MISSING_INFO = `${FAILED_TO_VERIFY_USER}. Missing user information`;
 const FAILED_TO_VERIFY_USER_MISSING_USERNAME = `${FAILED_TO_VERIFY_USER}. Missing username`;
 const FAILED_TO_VERIFY_USER_MISSING_NAME = `${FAILED_TO_VERIFY_USER}. Missing name`;
-const FAILED_TO_VERIFY_USER_INVALID_VERIFICATION_CODE = `${FAILED_TO_VERIFY_USER}. Verification code must be 6 numbers. Please try again`;
+const FAILED_TO_VERIFY_USER_INVALID_VERIFICATION_CODE = `${FAILED_TO_VERIFY_USER}. Verification code must be 6 numbers.Please try again`;
 const FAILED_TO_RESEND_CODE = "Failed to resend code";
 const FAILED_TO_RESEND_CODE_MISSING_USERNAME = `${FAILED_TO_RESEND_CODE}. Missing username`;
 const FAILED_TO_RESEND_CODE_MISSING_EMAIL = `${FAILED_TO_RESEND_CODE}. Missing email`;
@@ -107,7 +112,7 @@ const FAILED_TO_GET_USER_PROFILE = "Error occurred getting profile using cookies
 
 // Search
 const EDAMAM_QUERY_ERROR = "Error occurred getting recipes. Verify dietary restrictions don't contradict your search request";
-const NO_IMAGE_AVAILABLE = "/static/img/no_image_available.svg";
+const NO_IMAGE_AVAILABLE = "/static/img/food-loss.svg";
 const NO_RECIPES_FOUND = "0 recipes found.";
 
 // Recipe Details
@@ -122,6 +127,13 @@ const UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN = "User must login or create account
 const UNABLE_TO_FAVORITE_UNEXPECTED_ERROR = "Error occurred trying to favorite recipe";
 const UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR = "Error occurred trying to un-favorite recipe";
 const ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE = "Error occurred checking to see if recipe is a favorite";
+
+// Create Recipe
+const UNABLE_TO_CREATE_USER_NOT_LOGGED_IN = "User must login or create account to create a recipe";
+const SUCCESSFULLY_CREATED_RECIPE = "Successfully created recipe";
+const UNABLE_TO_CREATE_RECIPE_UNEXPECTED_ERROR = "Error occurred trying to create recipe";
+const USER_CREATED_RECIPE_HAS_NO_IMAGE = "User created recipe has no image";
+const FAILED_TO_DECODE_USER_RECIPE_IMAGE = "Error occurred trying to decode user recipe image";
 
 // User Profile Updates
 const SUCCESSFULLY_UPDATED_USER_DETAILS = "Successfully updated user info";

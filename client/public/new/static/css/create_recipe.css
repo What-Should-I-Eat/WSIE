@@ -1,0 +1,15 @@
+textarea {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  resize: vertical;
+}
+
+input[type="file"] {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}

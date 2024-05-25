@@ -15,4 +15,8 @@ router.get('/my_profile', (_, res) => {
   res.sendFile(path.join(__dirname, `../${BASE_DIR_PATH}/account/my_profile.html`));
 });
 
+router.get('/create_recipe', (_, res) => {
+  res.sendFile(path.join(__dirname, `../${BASE_DIR_PATH}/account/create_recipe.html`));
+});
+
 module.exports = router;

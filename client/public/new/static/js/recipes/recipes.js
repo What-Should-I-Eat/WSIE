@@ -1,10 +1,11 @@
 function RecipesView() {
   const container = $('.recipes-container');
+  const paginationContainer = $('.pagination-container');
   const addedRecipesSet = new Set();
 
-  this.load = async (searchParam) => {
+  this.load = async (searchParam, apiUrl = null) => {
     try {
-      const recipes = await this.getRecipes(searchParam);
+      const recipes = await this.getRecipes(searchParam, apiUrl);
 
       if (recipes) {
         this.renderRecipes(recipes);
@@ -12,30 +13,31 @@ function RecipesView() {
         container.append(this.getNoRecipesFound());
       }
     } catch (error) {
-      console.error(EDAMAM_QUERY_ERROR);
-      // utils.showAjaxAlert("Error", EDAMAM_QUERY_ERROR);
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
       container.append(this.getNoRecipesFound());
     }
   };
 
-  this.getRecipes = async (searchParam) => {
-    let searchParamQuery = searchParam || "";
-    console.log(`Received search parameter: [${searchParamQuery}]`);
-    let apiUrl = EDAMAM_API_URL + searchParamQuery;
+  this.getRecipes = async (searchParam, apiUrl) => {
+    if (!apiUrl) {
+      let searchParamQuery = searchParam || "";
+      apiUrl = searchParamQuery ? EDAMAM_API_URL + searchParamQuery : EDAMAM_API_EMPTY_SEARCH_URL + getCurrentTimeMealType();
 
-    const username = utils.getUserNameFromCookie();
+      const username = utils.getUserNameFromCookie();
 
-    if (username) {
-      try {
-        const userData = await utils.getUserFromUsername(username);
-        console.log("Adding user diet and health restrictions to Edamam query");
-        const userDietString = getUserDietString(userData.diet);
-        const userHealthString = getUserHealthString(userData.health);
-        apiUrl += userDietString + userHealthString;
-      } catch (error) {
-        console.error(ERROR_UNABLE_TO_GET_USER, error);
-        utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
-        return;
+      if (username) {
+        try {
+          const userData = await utils.getUserFromUsername(username);
+          console.log("Adding user diet and health restrictions to Edamam query");
+          const userDietString = getUserDietString(userData.diet);
+          const userHealthString = getUserHealthString(userData.health);
+          apiUrl += userDietString + userHealthString;
+        } catch (error) {
+          console.error(ERROR_UNABLE_TO_GET_USER, error);
+          utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
+          return;
+        }
       }
     }
 
@@ -53,7 +55,6 @@ function RecipesView() {
       const recipes = await response.json();
       return recipes;
     } else {
-      console.error(EDAMAM_QUERY_ERROR);
       throw new Error(EDAMAM_QUERY_ERROR);
     }
   }
@@ -101,6 +102,13 @@ function RecipesView() {
         console.debug(`Skipping duplicate recipe: [${recipeName}] from source: [${source}], sourceUrl: [${sourceUrl}]`);
       }
     });
+
+    // Handling pagination
+    if (recipes._links && recipes._links.next) {
+      const nextPageLink = recipes._links.next.href;
+      const paginationButton = `<button onclick="recipesView.load(null, '${nextPageLink}')">Next Page</button>`;
+      paginationContainer.append(paginationButton);
+    }
   };
 
   this.getNoRecipesFound = () => {
@@ -121,4 +129,18 @@ function getUserDietString(dietArray) {
 
 function getUserHealthString(healthArray) {
   return healthArray.length ? healthArray.map(healthItem => `&health=${healthItem}`).join('') : "";
+}
+
+function getCurrentTimeMealType() {
+  const hours = new Date().getHours();
+
+  if (hours < 5 || hours > 21) {
+    return "mealType=Snack";
+  } else if (hours <= 10) {
+    return "mealType=Breakfast";
+  } else if (hours <= 15) {
+    return "mealType=Lunch";
+  } else {
+    return "mealType=Dinner";
+  }
 }
