@@ -24,8 +24,7 @@ const SIGNOUT_ROUTE = "/signout";
 
 // Redirects
 const BASE_HOME_REDIRECT = "/";
-const RECIPES_DIRECT = `/recipes/recipes.html`;
-const RECIPE_DETAILS_REDIRECT = "recipes/recipes_details.html";
+const MY_RECIPES_ROUTE = "/account/my_recipes";
 
 // Authentication API Endpoints
 const REGISTER_URL = `${HOST}/${API_VERSION}/users/register`;
@@ -128,6 +127,13 @@ const UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN = "User must login or create account
 const UNABLE_TO_FAVORITE_UNEXPECTED_ERROR = "Error occurred trying to favorite recipe";
 const UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR = "Error occurred trying to un-favorite recipe";
 const ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE = "Error occurred checking to see if recipe is a favorite";
+
+// Create Recipe
+const UNABLE_TO_CREATE_USER_NOT_LOGGED_IN = "User must login or create account to create a recipe";
+const SUCCESSFULLY_CREATED_RECIPE = "Successfully created recipe";
+const UNABLE_TO_CREATE_RECIPE_UNEXPECTED_ERROR = "Error occurred trying to create recipe";
+const USER_CREATED_RECIPE_HAS_NO_IMAGE = "User created recipe has no image";
+const FAILED_TO_DECODE_USER_RECIPE_IMAGE = "Error occurred trying to decode user recipe image";
 
 // User Profile Updates
 const SUCCESSFULLY_UPDATED_USER_DETAILS = "Successfully updated user info";
