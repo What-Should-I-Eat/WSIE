@@ -51,7 +51,7 @@ function MyRecipesView() {
 
         const recipeHtml = `
           <div class="box">
-              <a onclick="window.location.href='/recipes/recipe_details?source=${recipeSource}&sourceUrl=${recipeSourceUrl}&uri=${recipeUri}'">
+              <a href="/recipes/recipe_details?source=${recipeSource}&sourceUrl=${recipeSourceUrl}&uri=${recipeUri}">
                   <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
               </a>
               <h2>${recipeName}</h2>
@@ -63,12 +63,12 @@ function MyRecipesView() {
       } else if (recipe.userCreated) {
         const recipeName = recipe.recipeName;
         const recipeCalories = Math.round(recipe.recipeCalories);
-        const recipeImage = await getUserRecipeImage(recipe);
+        const recipeImage = await utils.getUserRecipeImage(recipe);
 
         const recipeHtml = `
           <div class="box">
-              <a>
-                  <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
+              <a href="/recipes/recipe_details?userRecipeName=${encodeURIComponent(recipeName)}">
+                <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
               </a>
               <h2>${recipeName}</h2>
               <p>Calories: ${recipeCalories}</p>
@@ -104,40 +104,4 @@ function isValidRecipe(recipe) {
  */
 function hasValidImage(recipe) {
   return recipe.recipeImage && recipe.recipeImage !== "";
-}
-
-/**
- * Retrieves and decodes the user recipe image from the recipe data.
- * Handles errors by reverting to a default "no image available" state.
- * @param {Object} recipe - A recipe object containing image data.
- * @returns {Promise<string>} - A Promise that resolves to the image URL or a default image.
- */
-async function getUserRecipeImage(recipe) {
-  try {
-    return await decodeUserRecipeImage(recipe);
-  } catch (error) {
-    console.error(error);
-    return NO_IMAGE_AVAILABLE;
-  }
-}
-
-/**
- * Converts the recipe image data to a data URL using FileReader.
- * @param {Object} recipe - A recipe object containing image data.
- * @returns {Promise<string>} - A Promise that resolves to a data URL.
- */
-async function decodeUserRecipeImage(recipe) {
-  if (!recipe.userRecipeImage || !recipe.userRecipeImage.recipeImageData) {
-    throw new Error(`${USER_CREATED_RECIPE_HAS_NO_IMAGE} for [${recipe.recipeName}]`);
-  }
-
-  const { data, imageType } = recipe.userRecipeImage.recipeImageData;
-  const blob = new Blob([new Uint8Array(data)], { type: imageType });
-  const reader = new FileReader();
-
-  return new Promise((resolve, reject) => {
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error(`${FAILED_TO_DECODE_USER_RECIPE_IMAGE} for [${recipe.recipeName}]`));
-    reader.readAsDataURL(blob);
-  });
 }
