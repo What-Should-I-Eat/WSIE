@@ -6,8 +6,8 @@
  */
 
 // Server URL Configurations
-const HOST = 'http://localhost:8080';  // NGINX (active)
-// const HOST = 'http://localhost:3001'; // Locally
+// const HOST = 'http://localhost:8080';  // NGINX (active)
+const HOST = 'http://localhost:3001'; // Locally
 // const HOST = "";                     // VM Deployment
 // const HOST = "";                     // Local IP (Testing Mobile)
 const API_VERSION = "api/v1";
@@ -111,7 +111,7 @@ const FAILED_TO_GET_USER_PROFILE = "Error occurred getting profile using cookies
 
 // Search
 const EDAMAM_QUERY_ERROR = "Error occurred getting recipes. Verify dietary restrictions don't contradict your search request";
-const NO_IMAGE_AVAILABLE = "/static/img/no_image_available.svg";
+const NO_IMAGE_AVAILABLE = "/static/img/food-loss.svg";
 const NO_RECIPES_FOUND = "0 recipes found.";
 
 // Recipe Details
