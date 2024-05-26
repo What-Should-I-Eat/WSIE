@@ -33,6 +33,10 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
             </Pressable>
             </View>}
             <View style={IndividualFavoritesStyles.divider}/>
+            <Text style={IndividualFavoritesStyles.calories}>
+              Calories: {individualRecipe.calories}
+            </Text>
+            <View style={IndividualFavoritesStyles.divider}/>
             <Text style={IndividualFavoritesStyles.ingredientsHeader}>
               Ingredients:
             </Text>
@@ -85,6 +89,15 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
         fontSize: 30,
         fontWeight: '600',
         color: '#ffffff'
+    },
+    calories: {
+      fontSize: 28,
+      fontWeight: '400',
+      width: 150,
+      marginVertical: 10,
+      textAlign: 'center',
+      alignContent: "center",
+      alignItems: "center",
     },
     searchArea:{
       alignContent: "center",

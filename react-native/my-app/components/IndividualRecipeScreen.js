@@ -45,31 +45,23 @@ export default function IndividualRecipeScreen({ route, navigation }) {
                 source={ { uri: individualRecipe.image}} 
                 style={IndividualRecipeStyles.images} 
             />
-            {!isFavorited && <Pressable style={IndividualRecipeStyles.favoritesButton} onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, directionsOfRecipe, true)}>
-                {/* <Text style={IndividualRecipeStyles.buttonText}>
-                    Add to favorites
-                </Text> */}
-                <Image style={IndividualRecipeStyles.favImage}
-                  source={require('../assets/unfav-heart.png')}
-                />
-            </Pressable>}
-            {isFavorited && <View>
-            {/* <Text style={IndividualRecipeStyles.currentlyFavorited}>
-              --- Favorited ---
-              </Text> */}
-              <Pressable style={IndividualRecipeStyles.unfavoritesButton} onPress={() => removeRecipeFromFavorites(individualRecipe, setIsFavorited, true)}>
-                {/* <Text style={IndividualRecipeStyles.buttonText}>
-                    Remove favorite
-                </Text> */}
-                <Image style={IndividualRecipeStyles.favImage}
-                  source={require('../assets/fav-heart.png')}
-                />
-            </Pressable>
-            </View>}
-            
-            <Text style={IndividualRecipeStyles.calories}>
-                Calories: {individualRecipe.calories}
-            </Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {!isFavorited && <Pressable onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, directionsOfRecipe, true)}>
+                  <Image style={IndividualRecipeStyles.favImage}
+                    source={require('../assets/unfav-heart.png')}
+                  />
+              </Pressable>}
+              {isFavorited && <View>
+                <Pressable onPress={() => removeRecipeFromFavorites(individualRecipe, setIsFavorited, true)}>
+                  <Image style={IndividualRecipeStyles.favImage}
+                    source={require('../assets/fav-heart.png')}
+                  />
+              </Pressable>
+              </View>}
+              <Text style={IndividualRecipeStyles.calories}>
+                  Calories:{'\n'}{individualRecipe.calories}
+              </Text>
+            </View>
             <View style={IndividualRecipeStyles.divider}/>
             <Text style={IndividualRecipeStyles.ingredientsHeader}>
               Ingredients:
@@ -97,31 +89,6 @@ export default function IndividualRecipeScreen({ route, navigation }) {
       justifyContent: 'top',
       height: 'max'
     },
-    favoritesButton: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 4,
-        elevation: 3,
-        width: 250,
-        height: 65,
-        marginVertical: 10, 
-        backgroundColor: '#3cb04c' 
-    },
-    unfavoritesButton: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 4,
-        elevation: 3,
-        width: 250,
-        height: 65,
-        marginVertical: 10, 
-        backgroundColor: 'red' 
-    },
-    buttonText:{
-        fontSize: 30,
-        fontWeight: '600',
-        color: '#ffffff'
-    },
     searchArea:{
       alignContent: "center",
       alignItems: "center",
@@ -134,6 +101,7 @@ export default function IndividualRecipeScreen({ route, navigation }) {
       resizeMode: 'contain',
       alignContent: "center",
       alignItems: "center",
+      marginVertical: 5,
     },
     favImage: {
       width: 75,
@@ -161,9 +129,11 @@ export default function IndividualRecipeScreen({ route, navigation }) {
     calories: {
       fontSize: 28,
       fontWeight: '400',
-      width: 220,
-      marginTop: 5,
-      marginBottom: 5,
+      width: 150,
+      marginTop: 10,
+      marginLeft: 20,
+      marginRight: -15,
+      marginBottom: 10,
       textAlign: 'center',
       alignContent: "center",
       alignItems: "center",

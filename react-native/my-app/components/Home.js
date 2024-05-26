@@ -27,7 +27,7 @@ export default function Home({ navigation }) {
           {
             backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
           },
-          styles.goToButton, styles.goToRecipeSearch]}
+          styles.goToButton]}
       >
         <Text style={styles.buttonText}>Search Recipes</Text>
       </Pressable>
@@ -38,9 +38,20 @@ export default function Home({ navigation }) {
           {
             backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
           },
-          styles.goToButton, styles.goToFavorites]}
+          styles.goToButton]}
       >
         <Text style={styles.buttonText}>View Favorites</Text>
+        </Pressable>
+      <Pressable
+        title="Go to Upload Recipe"
+        onPress={() => {navigation.navigate("UploadRecipeScreen");}}
+        style={({ pressed }) =>[
+          {
+            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+          },
+          styles.goToButton]}
+      >
+        <Text style={styles.buttonText}>Upload Recipe</Text>
         </Pressable>
       <Pressable
         title="Logout"
@@ -51,7 +62,7 @@ export default function Home({ navigation }) {
           },
           styles.goToButton, styles.goToLogin]}
       >
-        <Text style={styles.buttonText}>Logout</Text>
+        <Text style={[styles.buttonText, styles.logoutText]}>Logout</Text>
         </Pressable>
     </View>
   );
@@ -66,7 +77,7 @@ const styles = StyleSheet.create({
     userInfo: {
       fontSize: 40,
       marginTop: -30,
-      marginBottom: 30,
+      marginBottom: 15,
       fontWeight: '600',
       alignItems: 'center',
       justifyContent: 'center',
@@ -80,7 +91,7 @@ const styles = StyleSheet.create({
         elevation: 3,
         width: 325,
         height: 120,
-        margin: 20,        
+        margin: 12,        
     },
     buttonText:{
         fontSize: 40,
@@ -90,8 +101,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: lightSilverText
     },
+    logoutText:{
+      color: 'white',
+    },
     goToLogin: {
         backgroundColor: '#FF0000',
+        width: 250,
+        height: 80,
     },
     goToDietaryRestrictions: {
       width: 325,

@@ -14,6 +14,7 @@ import AllergiesScreen from './components/AllergiesScreen';
 import FavoritesScreen from './components/FavoritesScreen';
 import IndividualRecipeScreen from './components/IndividualRecipeScreen';
 import IndividualFavoritesScreen from './components/IndividualFavoritesScreen';
+import UploadRecipeScreen from './components/UploadRecipeScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -157,6 +158,18 @@ export default function App() {
            <Stack.Screen 
             name="IndividualFavoritesScreen" 
             component={IndividualFavoritesScreen} 
+            options={
+              {
+                title: appTitle,
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                }
+              }}
+          />
+           <Stack.Screen 
+            name="UploadRecipeScreen" 
+            component={UploadRecipeScreen} 
             options={
               {
                 title: appTitle,
