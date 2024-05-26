@@ -46,18 +46,24 @@ export default function IndividualRecipeScreen({ route, navigation }) {
                 style={IndividualRecipeStyles.images} 
             />
             {!isFavorited && <Pressable style={IndividualRecipeStyles.favoritesButton} onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, directionsOfRecipe, true)}>
-                <Text style={IndividualRecipeStyles.buttonText}>
+                {/* <Text style={IndividualRecipeStyles.buttonText}>
                     Add to favorites
-                </Text>
+                </Text> */}
+                <Image style={IndividualRecipeStyles.favImage}
+                  source={require('../assets/unfav-heart.png')}
+                />
             </Pressable>}
             {isFavorited && <View>
-            <Text style={IndividualRecipeStyles.currentlyFavorited}>
+            {/* <Text style={IndividualRecipeStyles.currentlyFavorited}>
               --- Favorited ---
-              </Text>
+              </Text> */}
               <Pressable style={IndividualRecipeStyles.unfavoritesButton} onPress={() => removeRecipeFromFavorites(individualRecipe, setIsFavorited, true)}>
-                <Text style={IndividualRecipeStyles.buttonText}>
+                {/* <Text style={IndividualRecipeStyles.buttonText}>
                     Remove favorite
-                </Text>
+                </Text> */}
+                <Image style={IndividualRecipeStyles.favImage}
+                  source={require('../assets/fav-heart.png')}
+                />
             </Pressable>
             </View>}
             
@@ -125,6 +131,13 @@ export default function IndividualRecipeScreen({ route, navigation }) {
     images: {
       width: 300,
       height: 300,
+      resizeMode: 'contain',
+      alignContent: "center",
+      alignItems: "center",
+    },
+    favImage: {
+      width: 75,
+      height: 75,
       resizeMode: 'contain',
       alignContent: "center",
       alignItems: "center",

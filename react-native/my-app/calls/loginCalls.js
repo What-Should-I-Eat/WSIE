@@ -10,7 +10,7 @@ const onLogin = (textUsername, textPassword, navigation) => {
 
     if(areInputsFilledIn(textUsername, textPassword)){
         const userLoginRequest = {
-            userName: textUsername,
+            username: textUsername,
             password: textPassword
         };
         fetch(`${hostForAppCalls}/api/v1/users/find-username`, {
@@ -34,8 +34,8 @@ const onLogin = (textUsername, textPassword, navigation) => {
         })
         .then(data => {
           console.log("DATA = ", data);
-          console.log(data.userName);
-          loggedInUser = data.userName;
+          console.log(data.username);
+          loggedInUser = data.username;
           navigation.navigate("Home");
         })
         .catch(error => {

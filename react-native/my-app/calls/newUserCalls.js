@@ -12,7 +12,7 @@ const onNewUserCalls = async (textUsername, textRealName, textEmail, textPasswor
         console.log(verificationCode);
         const newUserData = {
             fullName: textRealName,
-            userName: textUsername,
+            username: textUsername,
             password: textPasswordOne,
             email: textEmail,
             verificationCode: verificationCode,
