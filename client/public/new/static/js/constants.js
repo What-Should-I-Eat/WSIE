@@ -5,11 +5,14 @@
  * by directly using them as if they were local.
  */
 
-// Server URL Configurations
-const HOST = 'http://localhost:8080';  // NGINX (active)
-// const HOST = 'http://localhost:3001'; // Locally
-// const HOST = "";                     // VM Deployment
-// const HOST = "";                     // Local IP (Testing Mobile)
+// Server Base URL
+const HOST = 'http://localhost:8080';
+// Local IP Deployment
+// const HOST = '';
+// VM Deployment
+// const HOST = '34.16.148.238'
+
+// Server API Version
 const API_VERSION = "api/v1";
 
 // Fetch Constants

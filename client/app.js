@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require("./routes/users");
 var recipesRouter = require("./routes/recipe");
 var accountRouter = require("./routes/account");
 var aboutRouter = require("./routes/about");
@@ -27,7 +26,6 @@ console.log(`Client is being served from: [${BASE_DIR_PATH}]`);
 app.use(express.static(path.join(__dirname, BASE_DIR_PATH)));
 
 app.use('/', indexRouter);
-app.use("/users", usersRouter);
 app.use("/recipes", recipesRouter);
 app.use("/account", accountRouter);
 app.use("/about", aboutRouter);
