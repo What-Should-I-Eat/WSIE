@@ -168,4 +168,4 @@ async function getUserId(username){
     }
   }
 
-export { addRecipeToFavorites, removeRecipeFromFavorites, isRecipeAlreadyFavorited, getUserFavoritesFromSever };
+export { addRecipeToFavorites, removeRecipeFromFavorites, isRecipeAlreadyFavorited, getUserFavoritesFromSever, getUserId };

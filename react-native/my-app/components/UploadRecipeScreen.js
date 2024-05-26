@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { appBackgroundColor, mainIndigoButtonBackground, lightSilverText } from "../calls/colorConstants";
 import ImagePicker from 'react-native-image-picker';
+import { uploadNewRecipe } from '../calls/uploadRecipeCalls';
 
 export default function UploadRecipeScreen({ navigation }) {
 
@@ -96,7 +97,7 @@ export default function UploadRecipeScreen({ navigation }) {
                   backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
                 },
                 uploadStyles.newRecipeButton]} 
-            //   onPress={}
+              onPress={() => uploadNewRecipe(textRecipeName, textCalories, textIngredients, textDirections)}
               >
               <Text style={uploadStyles.buttonText}>
               Upload Recipe</Text>
