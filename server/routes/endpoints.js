@@ -627,50 +627,6 @@ endpoints.delete('/users/:id/favorites', async (req, res) => {
   }
 });
 
-endpoints.post('/users/:id/create_recipes', upload.single('userRecipeImage'), async (req, res) => {
-  try {
-    const userId = req.params.id;
-    const user = await mongoose.model('User').findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    const recipeToAdd = req.body.recipeName;
-    const index = user.favorites.findIndex(x => x.recipeName === recipeToAdd);
-    if (index !== -1) {
-      console.error(`[${recipeToAdd}] is already added.. skipping`);
-      return res.status(409).json({ error: "Recipe already created" });
-    }
-
-    let newRecipe = {
-      ...req.body
-    };
-
-    let imageType = null;
-    let imageData = null;
-    if (req.file && req.file.buffer) {
-      const type = await fileType.fromBuffer(req.file.buffer);
-      imageType = type ? type.mime : 'application/octet-stream';
-
-      imageData = Buffer.from(req.file.buffer);
-      newRecipe = {
-        ...req.body,
-        userRecipeImage: {
-          recipeImageData: imageData,
-          recipeImageType: imageType
-        }
-      };
-    }
-
-    user.favorites.push(newRecipe);
-    await user.save();
-    res.json(user);
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
 /////////////////////////////////////////////////////////
 // START: Updating User Profile from 'My Profile' View //
 /////////////////////////////////////////////////////////
@@ -783,6 +739,104 @@ endpoints.put("/users/profile/update_password", async (req, res) => {
 ///////////////////////////////////////////////////////
 // END: Updating User Profile from 'My Profile' View //
 ///////////////////////////////////////////////////////
+
+/////////////////////////
+// START: User Recipes //
+/////////////////////////
+endpoints.post('/users/:id/recipe/create_recipe', upload.single('userRecipeImage'), async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await mongoose.model('User').findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const recipeToAdd = req.body.recipeName;
+    const index = user.favorites.findIndex(x => x.recipeName === recipeToAdd);
+    if (index !== -1) {
+      console.error(`[${recipeToAdd}] is already added.. skipping`);
+      return res.status(409).json({ error: "Recipe already created" });
+    }
+
+    let newRecipe = {
+      ...req.body
+    };
+
+    let imageType = null;
+    let imageData = null;
+    if (req.file && req.file.buffer) {
+      const type = await fileType.fromBuffer(req.file.buffer);
+      imageType = type ? type.mime : 'application/octet-stream';
+
+      imageData = Buffer.from(req.file.buffer);
+      newRecipe = {
+        ...req.body,
+        userRecipeImage: {
+          recipeImageData: imageData,
+          recipeImageType: imageType
+        }
+      };
+    }
+
+    user.favorites.push(newRecipe);
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+endpoints.get('/users/:id/recipe/get_recipe', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await mongoose.model('User').findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const recipeName = req.query.recipeName;
+    const matchingRecipe = user.favorites.find(recipe => recipe.userCreated && recipe.recipeName === recipeName);
+
+    if (!matchingRecipe) {
+      return res.status(404).json({ error: `[${recipeName} not found]` });
+    }
+
+    res.json(matchingRecipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error trying to get user recipe' });
+  }
+});
+
+endpoints.delete('/users/:id/recipe/delete_recipe', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const recipeName = req.body.favorites.recipeName;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const result = await User.updateOne(
+      { _id: userId },
+      { $pull: { favorites: { recipeName: recipeName, userCreated: true } } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ error: `No matching recipe found for: [${recipeName}]` });
+    }
+
+    res.status(200).json({ message: 'Successfully deleted recipe' });
+  } catch (error) {
+    console.error('Error deleting recipe: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+///////////////////////
+// END: User Recipes //
+///////////////////////
 
 //Validates password from find-username endpoint
 async function validatePassword(user, inputtedPassword) {

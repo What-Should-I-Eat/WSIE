@@ -51,7 +51,7 @@ const UPDATE_USER_HEALTH_URL = `${HOST}/${API_VERSION}/users/health`;
 const RECIPE_SCRAPE_URL = `${HOST}/${API_VERSION}/scrape-recipe`;
 
 // User Favorites API Endpoints
-const USER_FAVORITE_RECIPE = `${HOST}/${API_VERSION}/users`;
+const USER_FAVORITES_RECIPES_CRUD_URL = `${HOST}/${API_VERSION}/users`;
 
 // User Profile API Endpoints
 const USER_UPDATE_DETAILS = `${HOST}/${API_VERSION}/users/profile/update_details`;
@@ -118,14 +118,17 @@ const NO_RECIPES_FOUND = "0 recipes found.";
 // Recipe Details
 const ADD_TO_FAVORITES = "Add Recipe to Favorites";
 const REMOVE_FROM_FAVORITES = "Remove Recipe from Favorites";
+const DELETE_RECIPE = "Delete Recipe";
 
 // Recipe Favorites
 const NO_SAVED_RECIPES = "No saved recipes!";
 const SUCCESSFULLY_FAVORITE_RECIPE = "Successfully added recipe";
-const SUCCESSFULLY_UNFAVORITE_RECIPE = "Successfully removed recipe";
+const SUCCESSFULLY_UNFAVORITE_RECIPE = "Successfully un-favorited recipe";
+const SUCCESSFULLY_DELETED_RECIPE = "Successfully deleted recipe";
 const UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN = "User must login or create account to favorite a recipe";
 const UNABLE_TO_FAVORITE_UNEXPECTED_ERROR = "Error occurred trying to favorite recipe";
 const UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR = "Error occurred trying to un-favorite recipe";
+const UNABLE_TO_DELETE_RECIPE_ERROR = "Error occurred deleting user created recipe";
 const ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE = "Error occurred checking to see if recipe is a favorite";
 
 // Create Recipe

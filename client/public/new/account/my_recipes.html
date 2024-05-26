@@ -42,6 +42,13 @@
         utils.removeFromStorage("createRecipeMessage");
       }
 
+      // Handles showing delete recipe messages
+      const deleteRecipeMessage = utils.getFromStorage("deleteRecipeMessage");
+      if (deleteRecipeMessage) {
+        utils.showAjaxAlert("Success", deleteRecipeMessage);
+        utils.removeFromStorage("deleteRecipeMessage");
+      }
+
       const myRecipes = new MyRecipesView();
       myRecipes.load();
     });

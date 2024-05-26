@@ -347,6 +347,12 @@ const utils = (() => {
     alertMessage.text(message);
     alertDiv.show();
     alertDiv.alert();
+
+    // Scroll the window to the top whenever an alert is displayed
+    window.scroll({
+      top: 0,
+      behavior: 'smooth'
+    });
   }
 
   /**
@@ -366,6 +372,42 @@ const utils = (() => {
     clearCookies();
   }
 
+  /**
+ * Retrieves and decodes the user recipe image from the recipe data.
+ * Handles errors by reverting to a default "no image available" state.
+ * @param {Object} recipe - A recipe object containing image data.
+ * @returns {Promise<string>} - A Promise that resolves to the image URL or a default image.
+ */
+  async function getUserRecipeImage(recipe) {
+    try {
+      return await decodeUserRecipeImage(recipe);
+    } catch (error) {
+      console.error(error);
+      return NO_IMAGE_AVAILABLE;
+    }
+  }
+
+  /**
+   * Converts the recipe image data to a data URL using FileReader.
+   * @param {Object} recipe - A recipe object containing image data.
+   * @returns {Promise<string>} - A Promise that resolves to a data URL.
+   */
+  async function decodeUserRecipeImage(recipe) {
+    if (!recipe.userRecipeImage || !recipe.userRecipeImage.recipeImageData) {
+      throw new Error(`${USER_CREATED_RECIPE_HAS_NO_IMAGE} for [${recipe.recipeName}]`);
+    }
+
+    const { data, imageType } = recipe.userRecipeImage.recipeImageData;
+    const blob = new Blob([new Uint8Array(data)], { type: imageType });
+    const reader = new FileReader();
+
+    return new Promise((resolve, reject) => {
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error(`${FAILED_TO_DECODE_USER_RECIPE_IMAGE} for [${recipe.recipeName}]`));
+      reader.readAsDataURL(blob);
+    });
+  }
+
   return {
     setStorage,
     removeFromStorage,
@@ -383,6 +425,7 @@ const utils = (() => {
     arraysEqual,
     showAjaxAlert,
     clearCookies,
-    cleanupSignOut
+    cleanupSignOut,
+    getUserRecipeImage
   };
 })();

@@ -347,56 +347,57 @@
   </div> -->
 
   <div class="container mt-5">
-    <div class="mb-5">
+    <div class="create-recipe-container ">
       <form id="createRecipeForm">
         <h2>Create Recipe</h2>
 
         <hr />
 
-        <div class="mb-3">
-          <label for="recipeName" class="form-label">Recipe Name</label>
-          <input type="text" class="form-control" id="recipeName" name="recipeName" required />
+        <div class="form-group">
+          <label for="recipeName">Recipe Name</label>
+          <input type="text" id="recipeName" name="recipeName" required />
         </div>
 
-        <div class="mb-3">
-          <label for="recipeIngredients" class="form-label">Ingredients</label>
+        <div class="form-group">
+          <label for="recipeIngredients">Ingredients</label>
           <textarea id="recipeIngredients" name="recipeIngredients" required></textarea>
         </div>
 
-        <div class="mb-3">
-          <label for="recipeDirections" class="form-label">Preparation</label>
+        <div class="form-group">
+          <label for="recipeDirections">Preparation</label>
           <textarea id="recipeDirections" name="recipeDirections" required></textarea>
         </div>
 
-        <div class="mb-3">
-          <label for="recipeCalories" class="form-label">Calories (kcal)</label>
-          <input type="number" class="form-control" id="recipeCalories" name="recipeCalories" placeholder="" />
+        <div class="form-group">
+          <label for="recipeCalories">Calories (kcal)</label>
+          <input type="number" id="recipeCalories" name="recipeCalories" />
         </div>
 
-        <div class="mb-3">
-          <label for="recipeCarbs" class="form-label">Carbohydrates (g)</label>
-          <input type="number" class="form-control" id="recipeCarbs" name="recipeCarbs" placeholder="" />
+        <div class="form-group">
+          <label for="recipeCarbs">Carbohydrates (g)</label>
+          <input type="number" id="recipeCarbs" name="recipeCarbs" />
         </div>
 
-        <div class="mb-3">
-          <label for="recipeFats" class="form-label">Fats (g)</label>
-          <input type="number" class="form-control" id="recipeFats" name="recipeFats" placeholder="" />
+        <div class="form-group">
+          <label for="recipeFats">Fats (g)</label>
+          <input type="number" id="recipeFats" name="recipeFats" />
         </div>
 
-        <div class="mb-3">
-          <label for="recipeProtein" class="form-label">Protein (g)</label>
-          <input type="number" class="form-control" id="recipeProtein" name="recipeProtein" placeholder="" />
+        <div class="form-group">
+          <label for="recipeProtein">Protein (g)</label>
+          <input type="number" id="recipeProtein" name="recipeProtein" />
         </div>
 
-        <div class="mb-3">
-          <label for="userRecipeImage" class="form-label">Recipe Image</label>
-          <input type="file" class="form-control" id="userRecipeImage" name="userRecipeImage" accept="image/*">
+        <div class="form-group">
+          <label for="userRecipeImage">Recipe Image</label>
+          <input type="file" id="userRecipeImage" name="userRecipeImage" accept="image/*">
         </div>
 
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary" id="createRecipeButton">Create</button>
       </form>
     </div>
   </div>
+
   <!-- END: Create Recipe -->
 
   <!-- START: Footer -->
