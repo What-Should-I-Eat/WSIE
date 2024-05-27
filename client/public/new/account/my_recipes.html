@@ -34,8 +34,24 @@
   <script src="/static/js/account/my_recipes.js"></script>
 
   <script>
-    const myRecipesView = new MyRecipesView();
-    myRecipesView.load();
+    $(document).ready(function () {
+      // Handles showing create recipe messages
+      const createRecipeMessage = utils.getFromStorage("createRecipeMessage");
+      if (createRecipeMessage) {
+        utils.showAjaxAlert("Success", createRecipeMessage);
+        utils.removeFromStorage("createRecipeMessage");
+      }
+
+      // Handles showing delete recipe messages
+      const deleteRecipeMessage = utils.getFromStorage("deleteRecipeMessage");
+      if (deleteRecipeMessage) {
+        utils.showAjaxAlert("Success", deleteRecipeMessage);
+        utils.removeFromStorage("deleteRecipeMessage");
+      }
+
+      const myRecipes = new MyRecipesView();
+      myRecipes.load();
+    });
   </script>
 </head>
 
@@ -59,10 +75,10 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/about.html">About Us</a>
+                <a class="nav-link" href="/about">About Us</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/recipes/recipes.html">Find Recipes</a>
+                <a class="nav-link" href="/recipes">Find Recipes</a>
               </li>
             </ul>
 
@@ -80,21 +96,21 @@
           class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxSuccessMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertError"
           class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxErrorMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertWarning"
           class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxWarningMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
       </div>
@@ -352,38 +368,18 @@
   </div> -->
 
   <div class="container mt-5">
-    <div class="mb-5">
-      <h1>My Recipes</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 id="myRecipesHeader">My Recipes</h2>
+      <div class="d-flex flex-column align-items-end">
+        <a href="/account/create_recipe" class="btn btn-primary btn-block mb-3" role="button">Create Recipe</a>
+      </div>
     </div>
 
-    <!-- START: My Recipe Results -->
-    <div class="recipes-container">
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-        <button class="btn btn-danger">Remove</button>
-      </div>
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-        <button class="btn btn-danger">Remove</button>
-      </div>
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-        <button class="btn btn-danger">Remove</button>
-      </div>
+    <hr />
+
+    <div class="my-recipes-container">
+      <!-- Dynamically add results in my_recipes.js-->
     </div>
-    <!-- END: My Recipes Results -->
   </div>
   <!-- END: My Recipes View -->
 

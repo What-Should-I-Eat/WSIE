@@ -36,8 +36,13 @@
   <script src="/static/js/recipes/recipes.js"></script>
 
   <script>
-    const recipes = new Recipes();
-    recipes.load();
+    $(document).ready(function () {
+      const params = new URLSearchParams(window.location.search);
+      const search = params.get('search_recipes');
+
+      const recipes = new RecipesView();
+      recipes.load(search);
+    });
   </script>
 </head>
 
@@ -61,10 +66,10 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/about.html">About Us</a>
+                <a class="nav-link" href="/about">About Us</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/recipes/recipes.html">Find Recipes</a>
+                <a class="nav-link" href="/recipes">Find Recipes</a>
               </li>
             </ul>
 
@@ -82,21 +87,21 @@
           class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxSuccessMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertError"
           class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxErrorMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertWarning"
           class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxWarningMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
       </div>
@@ -355,7 +360,7 @@
 
   <div class="container mt-5">
     <!-- START: Search Bar -->
-    <form class="d-flex mb-5 recipes-search-bar" id="searchRecipes" action="/recipes" method="GET">
+    <form class="d-flex mb-5 recipes-search-bar" id="searchRecipesForm">
       <input type="text" class="recipe-search-input form-control d-block py-2 my-0" id="search_recipes"
         name="search_recipes" placeholder="Search by Recipe Name, Ingredients..." />
       <div class="d-flex flex-row justify-content-between">
@@ -366,75 +371,7 @@
 
     <!-- START: Recipes Search Results -->
     <div class="recipes-container">
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-      </div>
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-      </div>
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-      </div>
-    </div>
-
-    <div class="recipes-container">
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-      </div>
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-      </div>
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-      </div>
-    </div>
-
-    <div class="recipes-container">
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-      </div>
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-      </div>
-      <div class="box">
-        <a href="/recipes/recipe_details.html">
-          <img src="/static/img/salad.png" alt="Caesar Salad">
-        </a>
-        <h2>Caesar Salad</h2>
-        <p>250 Calories</p>
-      </div>
+      <!-- Dynamically add results in recipes.js-->
     </div>
     <!-- END: Recipes Search Results -->
   </div>

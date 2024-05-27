@@ -12,6 +12,13 @@ const json = require("body-parser/lib/types/json");
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const { chromium } = require('playwright');
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 50 * 1024 * 1024 }
+});
+const fileType = require('file-type');
 
 //Endpoint Setup
 endpoints.use(bodyParser.json()); //express app uses the body parser
@@ -108,7 +115,113 @@ endpoints.post("/users/getUserEmail", async (req, res) => {
   }
 });
 
+//---------------------------------------------------------------------------------------------------------------------------------------
 
+endpoints.post("/users/getUserFavorites", async (req, res) => {
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    console.log(user.favorites);
+    res.json(user.favorites);
+  } catch (error) {
+    console.error('Error finding user: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+//-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
+
+endpoints.get('/edamam', async (req, res) => {
+  const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
+});
+
+endpoints.get('/scrape-recipe', async (req, res) => {
+  const recipeLink = req.query.recipeLink;
+  const source = req.query.source;
+
+  try {
+    const data = await determineSite(recipeLink, source);
+    console.log("SCRAPED DATA: " + data);
+    res.json(data);
+  } catch (error) {
+    console.error('Error during scraping:', error);
+    res.status(500).json({ error: 'Failed to scrape data, please check the provided URL and source.' });
+  }
+});
+
+async function determineSite(link, source) {
+  console.log("Link in determineSite(): " + link);
+  console.log("Source in determineSite() |" + source + "|");
+
+  let data = [];
+  let scraper;
+  let findScraper;
+
+  try {
+    switch (source.toLowerCase()) { // Use toLowerCase() to handle case variations
+      case 'bbc good food':
+        scraper = '.js-piano-recipe-method .grouped-list__list li';
+        findScraper = 'p';
+        break;
+      case 'simply recipes':
+        scraper = '#mntl-sc-block_3-0';
+        findScraper = 'p.mntl-sc-block-html';
+        break;
+      case 'martha stewart':
+        scraper = 'div#recipe__steps-content_1-0 p';
+        findScraper = '';
+        break;
+      case 'food network':
+        scraper = '.o-Method__m-Body ol';
+        findScraper = 'li';
+        break;
+      case 'delish':
+        scraper = 'ul.directions li ol';
+        findScraper = 'li';
+        break;
+      case 'eatingwell':
+        scraper = 'div#recipe__steps-content_1-0 ol li';
+        findScraper = 'p';
+        break;
+      default:
+        throw new Error("Unsupported source provided.");
+    }
+
+    data = await getRecipeDirectionsFromSource(link, scraper, findScraper);
+    console.log("directions: " + data);
+    return data;
+  } catch (error) {
+    console.error("Error in determineSite:", error);
+    throw error;
+  }
+}
+
+async function getRecipeDirectionsFromSource(link, scraper, findScraper) {
+  console.log(`Made it to get data. Link = ${link}`);
+  try {
+    const response = await axios.get(link);
+    const html = response.data;
+    const $ = cheerio.load(html);
+    const recipeDirections = [];
+
+    $(scraper).each((index, element) => {
+      const directionElement = findScraper ? $(element).find(findScraper) : $(element);
+      const directionText = directionElement.text().trim().split('\n\n');
+      recipeDirections.push(directionText);
+    });
+
+    console.log(`Recipe directions: ${recipeDirections}`);
+    return recipeDirections;
+  } catch (error) {
+    console.error(`Error in scraping recipe directions: ${error}`);
+    throw error;
+  }
+}
 
 //____________________________________________MIDDLEWARE____________________________________________________________
 //Everything after this point requires authentication_______________________________________________________________
@@ -146,14 +259,7 @@ endpoints.post("/users/register", async (req, res) => {
       incorrectPasswordAttemptTime: currentTimestamp,
       diet: req.body.diet,
       health: req.body.health,
-      favorites: [{
-        recipeId: req.body.recipeId,
-        recipeName: req.body.recipeName,
-        recipeIngredients: req.body.recipeIngredients,
-        recipeDirections: req.body.recipeDirections,
-        recipeImage: req.body.recipeImage,
-        recipeUri: req.body.recipeUri
-      }]
+      favorites: req.body.favorites
     });
 
     if (existingUsernameCheck) {
@@ -299,8 +405,6 @@ endpoints.post('/users/find-username', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
 
 //Get user's profile if they're logged in
 endpoints.get('/users/profile', (req, res) => {
@@ -524,95 +628,216 @@ endpoints.delete('/users/:id/favorites', async (req, res) => {
   }
 });
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
-
-endpoints.get('/edamam', async (req, res) => {
-  const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
-});
-
-endpoints.get('/scrape-recipe', async (req, res) => {
-  const recipeLink = req.query.recipeLink;
-  const source = req.query.source;
-
-  const data = await determineSite(recipeLink, source);
-
-  console.log("SCRAPED DATA: " + data);
-  res.json(data);
-});
-
-//Support methods
-async function determineSite(link, source) {
-  console.log("Link in determineSite(): " + link);
-  console.log("Source in determineSite() |" + source + "|");
-
-  let data = [];
-  let scraper;
-  let findScraper;
-
+/////////////////////////////////////////////////////////
+// START: Updating User Profile from 'My Profile' View //
+/////////////////////////////////////////////////////////
+endpoints.put("/users/profile/update_details", async (req, res) => {
   try {
-    switch (source) {
-      case 'bbc good food': //need to test 3/11
-        scraper = '.js-piano-recipe-method .grouped-list__list li';
-        findScraper = 'p';
-        break;
-      case 'simply recipes': //working
-        scraper = '#mntl-sc-block_3-0';
-        findScraper = 'p.mntl-sc-block-html';
-        break;
-      case 'martha stewart': //working
-        scraper = 'div#recipe__steps-content_1-0 p';
-        findScraper = '';
-        break;
-      case 'food network': //working
-        scraper = '.o-Method__m-Body ol';
-        findScraper = 'li';
-        break;
-      case 'delish': //working but adding weird stuff
-        scraper = 'ul.directions li ol';
-        findScraper = 'li';
-        break;
-      case 'eatingwell': //working
-        scraper = 'div#recipe__steps-content_1-0 ol li';
-        findScraper = 'p';
-        break;
+    const user = await User.findOne({ username: req.body.username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    data = await getRecipeDirectionsFromSource(link, scraper, findScraper);
-    console.log("directions: " + data);
-    return data;
+    if (!user.verified) {
+      return res.status(404).json({ error: "User not validated" });
+    }
+
+    const fullName = req.body.firstName + " " + req.body.lastName;
+
+    const fieldToUpdate = { $set: { "fullName": fullName } };
+    const options = { upsert: true, new: true };
+
+    const updatedFullName = await User.updateOne(user, fieldToUpdate, options);
+
+    if (updatedFullName) {
+      return res.status(200).json(updatedFullName);
+    } else {
+      return res.status(400).json({ error: "Error occurred trying to update user details" });
+    }
   } catch (error) {
-    console.error("Error in determineSite:", error);
-    throw error;
+    console.error("Error occurred trying to update user details", error);
+    res.status(500).json({ error: "Internal server error occurred trying to update user details" });
   }
-}
+});
 
-async function getRecipeDirectionsFromSource(link, scraper, findScraper) {
-  console.log(`Made it to get data. Link = ${link}`);
-
+endpoints.put("/users/profile/update_email", async (req, res) => {
   try {
-    console.log("here")
-    const response = await axios.get(link);
-    console.log("get data response: ", response);
-    const html = response.data;
-    const $ = cheerio.load(html);
-    const recipeDirections = [];
-    console.log("after cherrio,");
+    const user = await User.findOne({ username: req.body.username });
 
-    $(scraper).each((index, element) => {
-      const directionElement = findScraper ? $(element).find(findScraper) : $(element);
-      const directionText = directionElement.text().trim().split('\n\n');
-      recipeDirections.push(directionText);
-    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
-    console.log(`Recipe directions: ${recipeDirections}`);
-    return recipeDirections;
+    if (!user.verified) {
+      return res.status(404).json({ error: "User not validated" });
+    }
+
+    const email = req.body.email;
+
+    const fieldToUpdate = { $set: { "email": email } };
+    const options = { upsert: true, new: true };
+
+    const updatedEmail = await User.updateOne(user, fieldToUpdate, options);
+
+    if (updatedEmail) {
+      return res.status(200).json(updatedEmail);
+    } else {
+      return res.status(400).json({ error: "Error occurred trying to update user email" });
+    }
   } catch (error) {
-    console.error(`Error in scraping recipe directions: ${error}`);
-    throw error;
+    console.error("Error occurred trying to update user email", error);
+    res.status(500).json({ error: "Internal server error occurred trying to update user email" });
   }
-}
+});
+
+endpoints.put("/users/profile/update_password", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.verified) {
+      return res.status(404).json({ error: "User not validated" });
+    }
+
+    const originalPassword = req.body.originalPassword;
+    const newPassword = req.body.newPassword;
+
+    // If existing and entered existing do not match, return invalid
+    let arePasswordsEqual = await validatePassword(user, originalPassword);
+    if (!arePasswordsEqual) {
+      console.log("Existing and user provided password DO NOT MATCH");
+      return res.status(400).json({ error: "Original password entered does not match existing. Failed to update user password" });
+    }
+
+    // If existing and new password match, return invalid
+    arePasswordsEqual = await validatePassword(user, newPassword);
+    if (arePasswordsEqual) {
+      console.log("Existing and new user provided password MATCH");
+      return res.status(400).json({ error: "Passwords are identical - nothing to update" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+    const fieldToUpdate = { $set: { "password": hashedPassword, "incorrectPasswordAttempts": 0 } };
+    const options = { upsert: true, new: true };
+
+    const updatedPassword = await User.updateOne(user, fieldToUpdate, options);
+
+    if (updatedPassword) {
+      return res.status(200).json(updatedPassword);
+    } else {
+      return res.status(500).json({ error: "Error occurred trying to update user password" });
+    }
+  } catch (error) {
+    console.error("Error occurred trying to update user password", error);
+    res.status(500).json({ error: "Internal server error occurred trying to update user password" });
+  }
+});
+///////////////////////////////////////////////////////
+// END: Updating User Profile from 'My Profile' View //
+///////////////////////////////////////////////////////
+
+/////////////////////////
+// START: User Recipes //
+/////////////////////////
+endpoints.post('/users/:id/recipe/create_recipe', upload.single('userRecipeImage'), async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await mongoose.model('User').findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const recipeToAdd = req.body.recipeName;
+    const index = user.favorites.findIndex(x => x.recipeName === recipeToAdd);
+    if (index !== -1) {
+      console.error(`[${recipeToAdd}] is already added.. skipping`);
+      return res.status(409).json({ error: "Recipe already created" });
+    }
+
+    let newRecipe = {
+      ...req.body
+    };
+
+    let imageType = null;
+    let imageData = null;
+    if (req.file && req.file.buffer) {
+      const type = await fileType.fromBuffer(req.file.buffer);
+      imageType = type ? type.mime : 'application/octet-stream';
+
+      imageData = Buffer.from(req.file.buffer);
+      newRecipe = {
+        ...req.body,
+        userRecipeImage: {
+          recipeImageData: imageData,
+          recipeImageType: imageType
+        }
+      };
+    }
+
+    user.favorites.push(newRecipe);
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+endpoints.get('/users/:id/recipe/get_recipe', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await mongoose.model('User').findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const recipeName = req.query.recipeName;
+    const matchingRecipe = user.favorites.find(recipe => recipe.userCreated && recipe.recipeName === recipeName);
+
+    if (!matchingRecipe) {
+      return res.status(404).json({ error: `[${recipeName} not found]` });
+    }
+
+    res.json(matchingRecipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error trying to get user recipe' });
+  }
+});
+
+endpoints.delete('/users/:id/recipe/delete_recipe', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const recipeName = req.body.favorites.recipeName;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const result = await User.updateOne(
+      { _id: userId },
+      { $pull: { favorites: { recipeName: recipeName, userCreated: true } } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ error: `No matching recipe found for: [${recipeName}]` });
+    }
+
+    res.status(200).json({ message: 'Successfully deleted recipe' });
+  } catch (error) {
+    console.error('Error deleting recipe: ', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+///////////////////////
+// END: User Recipes //
+///////////////////////
 
 //Validates password from find-username endpoint
 async function validatePassword(user, inputtedPassword) {

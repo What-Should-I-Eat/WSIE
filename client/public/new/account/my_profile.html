@@ -30,7 +30,14 @@
   <script src="/static/js/verification.js"></script>
   <script src="/static/js/forgot-password.js"></script>
   <script src="/static/js/login.js"></script>
-  <script src="/static/js/account/profile.js"></script>
+  <script src="/static/js/account/my_profile.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      const profileView = new MyProfileView();
+      profileView.load();
+    });
+  </script>
 </head>
 
 <body>
@@ -53,10 +60,10 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/about.html">About Us</a>
+                <a class="nav-link" href="/about">About Us</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/recipes/recipes.html">Find Recipes</a>
+                <a class="nav-link" href="/recipes">Find Recipes</a>
               </li>
             </ul>
 
@@ -74,21 +81,21 @@
           class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxSuccessMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertError"
           class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxErrorMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertWarning"
           class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxWarningMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
       </div>
@@ -341,28 +348,26 @@
   <!-- START: Edit Profile -->
   <!-- <div class="container-fluid px-0">
     <div class="mb-3 container-fluid navbar-decoration px-0 d-flex align-items-center justify-content-center">
-      <h1 class="display-3">My Settings</h1>
+      <h1 class="display-3">My Profile</h1>
     </div>
   </div> -->
 
   <div class="container mt-5">
     <div class="mb-5">
-      <!-- TODO: Set the server route -->
-      <form id="updateMyInfoForm" action="" method="POST">
+      <form id="updateMyInfoForm">
         <h2>Personal Information</h2>
+
         <div class="mb-3">
           <label for="username" class="form-label">Username</label>
-          <input type="text" class="form-control" id="username" name="username" value="johndoe1" required disabled />
+          <input type="text" class="form-control" id="username" name="username" required readonly />
         </div>
         <div class="mb-3">
           <label for="first_name" class="form-label">First Name</label>
-          <input type="text" class="form-control" id="first_name" name="first_name" value="John"
-            data-initial-value="{{ user.first_name }}" required />
+          <input type="text" class="form-control" id="first_name" name="first_name" required />
         </div>
         <div class="mb-3">
           <label for="last_name" class="form-label">Last Name</label>
-          <input type="text" class="form-control" id="last_name" name="last_name" value="Doe"
-            data-initial-value="{{ user.last_name }}" required />
+          <input type="text" class="form-control" id="last_name" name="last_name" required />
         </div>
         <button type="submit" class="btn btn-primary">Update Details</button>
       </form>
@@ -371,13 +376,12 @@
     <hr />
 
     <div class="mb-5">
-      <!-- TODO: Set the server route -->
-      <form id="updateEmailAddressForm" action="" method="POST">
+      <form id="updateEmailAddressForm">
         <h2>Email Address</h2>
         <div class="mb-3">
           <label for="email_address" class="form-label">Email Address</label>
-          <input type="email" class="form-control" id="email_address" name="email_address" value="johndoe1@gmail.com"
-            data-initial-value="{{ user.email_address|default('', true) }}" placeholder="Enter email" required />
+          <input type="email" class="form-control" id="email_address" name="email_address" placeholder="Enter email"
+            required />
         </div>
         <button type="submit" class="btn btn-primary">Update Email</button>
       </form>
@@ -386,17 +390,44 @@
     <hr />
 
     <div class="mb-5">
-      <!-- TODO: Set the server route -->
-      <form id="updatePasswordForm" action="" method="POST">
+      <form id="updatePasswordForm">
         <h2>Update Password</h2>
         <div class="mb-3">
-          <label for="password" class="form-label">New Password</label>
-          <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password"
-            required />
+          <label for="password" class="form-label">Existing Password</label>
+          <div class="input-group" id="profileOriginalPasswordInputToggle">
+            <input id="profileOriginalPasswordInput" type="password" class="form-control" name="profileOriginalPassword"
+              placeholder="" required />
+            <div class="input-group-addon">
+              <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+            </div>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary">Update Password</button>
-      </form>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">New Password</label>
+          <div class="input-group" id="profileNewPasswordInputToggle">
+            <input id="profileNewPasswordInputToggle" type="password" class="form-control" name="profileNewPassword"
+              placeholder="" required />
+            <div class="input-group-addon">
+              <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Re-Type New Password</label>
+          <div class="input-group" id="profileNewPasswordRetypedInputToggle">
+            <input id="profileNewPasswordRetypedInput" type="password" class="form-control"
+              name="profileNewPasswordRetyped" placeholder="" required />
+            <div class="input-group-addon">
+              <a href="#" class="toggle-password"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
     </div>
+    <button type="submit" class="btn btn-primary">Update Password</button>
+    </form>
+  </div>
   </div>
   <!-- END: Edit Profile -->
 

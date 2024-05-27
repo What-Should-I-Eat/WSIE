@@ -27,7 +27,8 @@ function MyDietaryView() {
       initialDietRestrictions = [...dietRestrictions];
       initialHealthRestrictions = [...healthRestrictions];
     }).catch(error => {
-      console.error("Error occurred getting user information:", error);
+      console.error(ERROR_UNABLE_TO_GET_USER, error);
+      utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
     });
   };
 
@@ -37,7 +38,7 @@ function MyDietaryView() {
       const button = $(this);
       const restriction = getEdamamRestrictionMapping(button.text());
 
-      if (user.diet.includes(restriction)) {
+      if (user.diet.includes(restriction) || user.health.includes(restriction)) {
         button.addClass('selected');
         if (!restrictionsList.includes(restriction)) {
           restrictionsList.push(restriction);
@@ -77,8 +78,8 @@ function MyDietaryView() {
 
     console.log(`Updating ${username} ${isDietForm ? 'dietary restrictions' : 'food allergies'}`);
     if (utils.arraysEqual(currentRestrictions, initialRestrictions)) {
-      console.warn(NO_CHANGED_DETECTED);
-      utils.showAjaxAlert("Warning", NO_CHANGED_DETECTED);
+      console.warn(NO_USER_DIETARY_CHANGES_DETECTED);
+      utils.showAjaxAlert("Warning", NO_USER_DIETARY_CHANGES_DETECTED);
       return;
     }
 
@@ -93,7 +94,8 @@ function MyDietaryView() {
       body: JSON.stringify(request)
     }).then(response => {
       if (!response.ok) {
-        throw new Error("Failed to update user data");
+        const errorMessage = isDietForm ? FAILED_TO_UPDATED_USER_DIETARY : FAILED_TO_UPDATE_USER_HEALTH;
+        throw new Error(errorMessage);
       }
 
       initialRestrictions.splice(0, initialRestrictions.length, ...currentRestrictions);

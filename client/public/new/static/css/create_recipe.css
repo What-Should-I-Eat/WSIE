@@ -1,0 +1,38 @@
+.create-recipe-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+button {
+  width: 100%;
+}
+
+input[type="file"] {
+  cursor: pointer;
+  background-color: #f8f9fa;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+}

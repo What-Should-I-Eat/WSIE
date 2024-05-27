@@ -33,7 +33,6 @@
   <script src="/static/js/login.js"></script>
   <script src="/static/js/account/my_dietary.js"></script>
 
-  <!-- As an inline script -->
   <script>
     $(document).ready(function () {
       const dietaryView = new MyDietaryView();
@@ -62,10 +61,10 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/about.html">About Us</a>
+                <a class="nav-link" href="/about">About Us</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/recipes/recipes.html">Find Recipes</a>
+                <a class="nav-link" href="/recipes">Find Recipes</a>
               </li>
             </ul>
 
@@ -83,21 +82,21 @@
           class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxSuccessMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertError"
           class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxErrorMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertWarning"
           class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxWarningMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
       </div>
@@ -362,7 +361,6 @@
           <div class="d-flex flex-column align-items-end">
             <button type="submit" form="updateDietaryRestrictionsForm" class="mb-3 btn btn-primary btn-block">Update
               Restrictions</button>
-            <!-- <a href="#" id="updateDietaryRestrictionsButton" class="btn btn-primary">Update Restrictions</a> -->
           </div>
         </div>
 

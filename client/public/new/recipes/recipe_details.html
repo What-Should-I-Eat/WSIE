@@ -33,13 +33,23 @@
   <script src="/static/js/login.js"></script>
   <script src="/static/js/recipes/recipe_details.js"></script>
 
-  <!-- <script>
-    var recipe_details_data = {{ recipe_details_data | tojson | safe }};
+  <script>
+    $(document).ready(function () {
+      const params = new URLSearchParams(window.location.search);
+      const userRecipeName = params.get('userRecipeName');
 
-    document.addrecipeListener("DOMContentLoaded", function () {
-      new recipeDetailsView(recipe_details_data);
+      const recipeDetails = new RecipeDetailsView();
+
+      if (userRecipeName) {
+        recipeDetails.loadUserRecipe(userRecipeName);
+      } else {
+        const source = params.get('source');
+        const sourceUrl = decodeURIComponent(params.get('sourceUrl'));
+        const uri = decodeURIComponent(params.get('uri'));
+        recipeDetails.load(source, sourceUrl, uri);
+      }
     });
-  </script> -->
+  </script>
 </head>
 
 <body>
@@ -62,10 +72,10 @@
                 <a class="nav-link" href="/">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/about.html">About Us</a>
+                <a class="nav-link" href="/about">About Us</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/recipes/recipes.html">Find Recipes</a>
+                <a class="nav-link" href="/recipes">Find Recipes</a>
               </li>
             </ul>
 
@@ -83,21 +93,21 @@
           class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxSuccessMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertError"
           class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxErrorMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div id="ajaxAlertWarning"
           class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show" role="alert"
           style="display: none;">
           <span id="ajaxWarningMessage"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+          <button type="button" class="close" data-hide="alert" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
       </div>
@@ -138,7 +148,8 @@
         <div class="modal-footer">
           <div class="w-100 d-flex flex-column">
             <button type="submit" form="signInForm" class="mb-3 btn btn-primary btn-block">Sign In</button>
-            <button id="signUpSwitch" type="button" class="mb-3 btn btn-link btn-block">Don't have an account? Sign
+            <button id="signUpSwitch" type="button" class="mb-3 btn btn-link btn-block">Don't have an
+              account? Sign
               up</button>
             <button id="signInForgotUsernamePasswordBtn" type="button" class="mb-3 btn btn-link btn-block">Forgot
               username or password? Click here</button>
@@ -197,7 +208,8 @@
         <div class="modal-footer">
           <div class="w-100 d-flex flex-column">
             <button type="submit" form="signUpForm" class="mb-3 btn btn-primary btn-block">Sign Up</button>
-            <button id="signInSwitch" type="button" class="mb-3 btn btn-link btn-block">Already have an account? Sign
+            <button id="signInSwitch" type="button" class="mb-3 btn btn-link btn-block">Already have an
+              account? Sign
               in</button>
             <button id="signUpForgotUsernamePasswordBtn" type="button" class="mb-3 btn btn-link btn-block">Forgot
               username or password? Click here</button>
@@ -228,9 +240,11 @@
         <div class="modal-footer">
           <div class="w-100 d-flex flex-column">
             <button type="submit" form="verifyAccountForm" class="mb-3 btn btn-primary btn-block">Verify</button>
-            <button id="signInSwitchVerification" type="button" class="mb-3 btn btn-link btn-block">Already verified?
+            <button id="signInSwitchVerification" type="button" class="mb-3 btn btn-link btn-block">Already
+              verified?
               Sign in</button>
-            <button id="resendVerificationCodeBtn" type="button" class="mb-3 btn btn-link btn-block">Click here to
+            <button id="resendVerificationCodeBtn" type="button" class="mb-3 btn btn-link btn-block">Click
+              here to
               re-send code</button>
           </div>
         </div>
@@ -277,7 +291,8 @@
         <div class="modal-body">
           <form id="forgotUsernamePasswordVerifyAccountForm">
             <div class="form-group">
-              <label for="forgotUsernamePasswordVerificationCodeInput" class="form-label">Enter Your Verification
+              <label for="forgotUsernamePasswordVerificationCodeInput" class="form-label">Enter Your
+                Verification
                 Code</label>
               <input type="number" class="form-control" id="forgotUsernamePasswordVerificationCodeInput"
                 name="forgotUsernamePasswordVerificationCodeInput" required />
@@ -338,7 +353,8 @@
         <div class="modal-footer">
           <div class="w-100 d-flex flex-column">
             <button type="submit" form="resetAccountForm" class="mb-3 btn btn-primary btn-block">Reset</button>
-            <button id="signInSwitch" type="button" class="mb-3 btn btn-link btn-block">Back to Sign in</button>
+            <button id="signInSwitch" type="button" class="mb-3 btn btn-link btn-block">Back to Sign
+              in</button>
           </div>
         </div>
       </div>
@@ -348,52 +364,49 @@
   <!-- END: Sign Up / Sign Modal -->
 
   <!-- START: Recipe Details -->
-  <div class="recipe-container">
-    <header class="recipe-header" id="recipe-header">
-      <h1 id="recipe-name">Caesar Salad</h1>
-      <img id="recipe-image" src="/static/img/salad.png" alt="Recipe Image" style="max-width: 100%; height: auto;" />
-    </header>
+  <form id="recipeForm">
+    <div class="recipe-container">
+      <header class="recipe-header" id="recipe-header">
+        <h1 id="recipe-name">Loading...</h1>
+        <img id="recipe-image" src="/static/img/loading-spinner.svg" alt="Loading recipe image"
+          style="max-width: 100%; height: auto;" />
+      </header>
 
-    <div class="recipe-info">
-      <h3>Ingredients</h3>
-      <ul>
-        <li>1 cup of ingredient 1</li>
-        <li>1 cup of ingredient 2</li>
-        <li>1 cup of ingredient 3</li>
-        <li>1 cup of ingredient 4</li>
-        <li>1 cup of ingredient 5</li>
-      </ul>
-    </div>
+      <section class="recipe-info">
+        <h3>Ingredients</h3>
+        <ul id="ingredients-list">
+          <!-- Dynamically building ingredients here -->
+        </ul>
+      </section>
 
-    <div class="recipe-info">
-      <h3>Directions</h3>
-      <ul>
-        <li>Do something that will be your first step in building a salad</li>
-        <li>Do another something that will be your first step in building a salad</li>
-      </ul>
-    </div>
+      <section class="recipe-info">
+        <h3>Preparation</h3>
+        <ul id="preparation-list">
+          <!-- Dynamically building preparation here -->
+        </ul>
+      </section>
 
-    <div class="recipe-info inline-div">
-      <h3>Nutritional Facts</h3>
-      <ul>
-        <li>250 Calories</li>
-        <li>10 Fat</li>
-        <li>20 Carbohydrates</li>
-        <li>5 Protein</li>
-      </ul>
-    </div>
+      <section class="recipe-info inline-div">
+        <h3>Nutritional Facts</h3>
+        <ul id="nutritional-facts-list">
+          <!-- Dynamically building nutritional facts here -->
+        </ul>
+      </section>
 
-    <div class="recipe-info inline-div">
-      <h3>Dietary Labels</h3>
-      <ul>
-        <li>Vegan</li>
-        <li>Vegetarian</li>
-      </ul>
-    </div>
+      <section class="recipe-info inline-div">
+        <h3>Dietary Labels</h3>
+        <ul id="dietary-labels-list">
+          <!-- Dynamically building dietary labels here -->
+        </ul>
+      </section>
 
-    <div class="recipe-info add-to-favorites">
-      <button type="button" class="btn btn-primary" id="addToFavorites">Add Recipe to Favorites</button>
+      <section class="recipe-info add-to-favorites">
+        <button type="submit" class="btn btn-primary" id="addToFavorites">Add Recipe to Favorites</button>
+      </section>
     </div>
+  </form>
+  <div class="pagination-container" style="text-align: center; margin-top: 20px;">
+    <!-- Pagination buttons will be dynamically created here -->
   </div>
   <!-- END: Recipe Details -->
 

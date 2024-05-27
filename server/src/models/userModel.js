@@ -22,7 +22,19 @@ const UserSchema = new Schema({
         recipeIngredients: [String],
         recipeDirections: [String],
         recipeImage: String,
-        recipeUri: String
+        recipeUri: String,
+        recipeCalories: Number,
+        recipeSource: String,
+        recipeSourceUrl: String,
+        // Below this line is specific to the user create recipe
+        userCreated: Boolean,
+        userRecipeImage: {
+            recipeImageData: Buffer,
+            recipeImageType: String
+        },
+        recipeCarbs: Number,
+        recipeFats: Number,
+        recipeProtein: Number,
     }],
 });
 

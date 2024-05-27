@@ -2,6 +2,20 @@ $(document).ready(function () {
   // Render navbar
   utils.renderNavbar();
 
+  // Handles showing logged in message
+  const loginMessage = utils.getFromStorage("loginMessage");
+  if (loginMessage) {
+    utils.showAjaxAlert("Success", loginMessage);
+    utils.removeFromStorage("loginMessage");
+  }
+
+  // Handles showing sign out message
+  const signOutMessage = utils.getFromStorage("signOutMessage");
+  if (signOutMessage) {
+    utils.showAjaxAlert("Success", signOutMessage);
+    utils.removeFromStorage('signOutMessage');
+  }
+
   // Handles sign-up form submission logic
   $("#signUpForm").on("submit", async function (event) {
     event.preventDefault();
@@ -72,6 +86,7 @@ $(document).ready(function () {
     const form = $(this);
     const formArray = form.serializeArray();
     const formJson = utils.convertToJson(formArray);
+    const username = formJson.username;
 
     fetch(LOGIN_URL, {
       method: POST_ACTION,
@@ -83,15 +98,22 @@ $(document).ready(function () {
       .then(async response => {
         if (response.ok) {
           const data = await response.json();
-          utils.setStorage("user", data);
           utils.setStorage("username", data.username);
           utils.cookieWorkaround(data.username);
-          window.location.href = BASE_HOME_REDIRECT;
+          // Update the storage for the banner
+          utils.setStorage("loginMessage", SUCCESSFUL_LOGIN);
+          // Hide the modal
+          $("#signInModalContent").hide();
+          $("#signInForm")[0].reset();
+          $("#authModal").modal("show");
+          // Refresh the page
+          window.location.reload();
         } else {
           const data = await response.json();
           const error = data.error;
           console.error(error);
           if (error === ACCOUNT_NOT_VERIFIED) {
+            utils.setStorage("username", username);
             $("#signInModalContent").hide();
             $("#signInForm")[0].reset();
             utils.clearMessageFromAuthModal(authClassesToRemove);
@@ -136,14 +158,6 @@ $(document).ready(function () {
     $("#authModal").modal("show");
   });
 
-  // Handles user signout
-  $("a[href='/signout']").on("click", function (event) {
-    event.preventDefault();
-    utils.setStorage("user", undefined);
-    utils.setStorage("username", undefined);
-    utils.setStorage("verificationCode", undefined);
-    window.location.href = BASE_HOME_REDIRECT;
-  });
 
   // Toggle Password Show/Hide
   $(".toggle-password").on('click', function (event) {
