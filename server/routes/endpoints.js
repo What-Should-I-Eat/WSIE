@@ -7,6 +7,7 @@ const cors = require('cors');
 const endpoints = express.Router();
 const RecipeInput = require("../src/models/recipeSearch_model.js");
 const User = require("../src/models/userModel.js");
+const Recipe = require("../src/models/recipeModel.js");
 const json = require("body-parser/lib/types/json");
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
@@ -888,6 +889,28 @@ function generateRandomVerificationCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
+endpoints.post('/create-recipe', async (req, res) => {
+  // const userId = req.params.id;
+  const name = req.body.name;
+  const ingredients = req.body.ingredients;
+  const steps = req.body.steps;
+  const photo = req.body.photo;
+
+  try {
+    const recipe = new Recipe({
+      name: name,
+      ingredients: ingredients,
+      steps: steps,
+      photo: photo,
+    })
+
+    const savedRecipe = await recipe.save();
+    res.json(savedRecipe);
+  }
+  catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error: ' + error });
+  }
+});
 
 module.exports = endpoints;
 
