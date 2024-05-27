@@ -1,5 +1,5 @@
 // NOTE: Change the IP here for your localhost, your own network IP, or IP of host VM
-const host = 'http://localhost:8080';
+const host = '';
 
 async function getUserId(username) {
   try {
