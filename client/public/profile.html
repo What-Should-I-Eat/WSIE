@@ -3,142 +3,146 @@
 
 <head>
     <title>Profile</title>
-    <script type="text/javascript" src="./processingAlgorithms/currentUser.js"></script>
-    <script type="text/javascript" src="./processingAlgorithms/profile.js"></script>
-    <script type="text/javascript" src="./processingAlgorithms/edamam.js"></script>
-    <script type="text/javascript" src="./processingAlgorithms/login.js"></script>
-    <link rel="stylesheet" href="/stylesheets/styles.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./processingAlgorithms/currentUser.js" type="text/javascript"></script>
+    <script src="./processingAlgorithms/profile.js" type="text/javascript"></script>
+    <script src="./processingAlgorithms/edamam.js" type="text/javascript"></script>
+    <script src="./processingAlgorithms/login.js" type="text/javascript"></script>
+    <link href="/stylesheets/styles.css" rel="stylesheet">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 </head>
 
 <body>
 
-    <header>
-        <h1 id="profile-header">What Should I Eat?</h1>
-        <nav class="nav-header">
-            <ul>
-                <li><a href="test.html" id="test">Search</a></li>
-                <li><a href="favorites.html" id="favorites">Favorites</a></li>
-                <li><a href="profile.html" id="profile">Profile</a></li>
-                <li><a href="index.html" id="search">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
-
+<header>
+    <h1 id="profile-header">What Should I Eat?</h1>
+    <nav class="nav-header">
+        <ul>
+            <li><a href="test.html" id="test">Search</a></li>
+            <li><a href="favorites.html" id="favorites">Favorites</a></li>
+            <li><a href="profile.html" id="profile">Profile</a></li>
+            <li><a href="index.html" id="search">Logout</a></li>
+        </ul>
+    </nav>
     <div>
-        <h2 id="user-identification"></h2>
+        <a href="create_recipe.html" class="create-recipe-button" id="create-recipe-btn">Create Your Recipe</a>
     </div>
+</header>
 
-    <div id="user-diet" class="diet-container">
-        <table>
-            <tr>
-                <th>Diets</th>
-            </tr>
-            <tr>
-                <td>
-                    <button class="lowcarb-button">Low Carb</button>
-                    <button class="lowfat-button">Low Fat</button>
-                    <button class="lowsodium-button">Low Sodium</button>
+<div>
+    <h2 id="user-identification"></h2>
+</div>
 
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button class="balanced-button">Balanced</button>
-                    <button class="highfiber-button">High Fiber</button>
-                    <button class="highprotein-button">High Protein</button>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div id="user-health-1" class="health-container-1">
-        <table>
-            <tr>
-                <td>
-                    <button class="vegan-button">Vegan</button>
-                    <button class="vegetarian-button">Vegetarian</button>
-                    <button class="paleo-button">Paleo</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button class="keto-button">Keto</button>
-                    <button class="kosher-button">Kosher</button>
-                    <button class="pork-button">Pork Free</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button class="pescatarian-button">Pescatarian</button>
-                    <button class="red-meat-button">Red Meat Free</button>
-                    <button class="fodmap-button">Low FODMAP</button>
-                </td>
-            </tr>
-        </table>
-    </div>
+<div class="diet-container" id="user-diet">
+    <table>
+        <tr>
+            <th>Diets</th>
+        </tr>
+        <tr>
+            <td>
+                <button class="lowcarb-button">Low Carb</button>
+                <button class="lowfat-button">Low Fat</button>
+                <button class="lowsodium-button">Low Sodium</button>
 
-    <div id="user-health" class="health-container-2">
-        <table>
-            <tr>
-                <th>Food Allergies</th>
-            </tr>
-            <tr>
-                <td>
-                    <button class="gluten-button">Gluten</button>
-                    <button class="dairy-button">Dairy</button>
-                    <button class="eggs-button">Eggs</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button class="soy-button">Soy</button>
-                    <button class="wheat-button">Wheat</button>
-                    <button class="fish-button">Fish</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button class="shellfish-button">Shellfish</button>
-                    <button class="treenuts-button">Tree Nuts</button>
-                    <button class="peanuts-button">Peanuts</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button class="sesame-button">Sesame</button>
-                    <button class="lowsugar-button">Low Sugar</button>
-                    <button class="alcoholfree-button">Alcohol Free</button>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <br><br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="balanced-button">Balanced</button>
+                <button class="highfiber-button">High Fiber</button>
+                <button class="highprotein-button">High Protein</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="health-container-1" id="user-health-1">
+    <table>
+        <tr>
+            <td>
+                <button class="vegan-button">Vegan</button>
+                <button class="vegetarian-button">Vegetarian</button>
+                <button class="paleo-button">Paleo</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="keto-button">Keto</button>
+                <button class="kosher-button">Kosher</button>
+                <button class="pork-button">Pork Free</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="pescatarian-button">Pescatarian</button>
+                <button class="red-meat-button">Red Meat Free</button>
+                <button class="fodmap-button">Low FODMAP</button>
+            </td>
+        </tr>
+    </table>
+</div>
 
-    <br><br><br><br><br>
-    <footer>
-    </footer>
+<div class="health-container-2" id="user-health">
+    <table>
+        <tr>
+            <th>Food Allergies</th>
+        </tr>
+        <tr>
+            <td>
+                <button class="gluten-button">Gluten</button>
+                <button class="dairy-button">Dairy</button>
+                <button class="eggs-button">Eggs</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="soy-button">Soy</button>
+                <button class="wheat-button">Wheat</button>
+                <button class="fish-button">Fish</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="shellfish-button">Shellfish</button>
+                <button class="treenuts-button">Tree Nuts</button>
+                <button class="peanuts-button">Peanuts</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="sesame-button">Sesame</button>
+                <button class="lowsugar-button">Low Sugar</button>
+                <button class="alcoholfree-button">Alcohol Free</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<br><br><br>
 
-    <script>
-        function getUserNameFromCookie() {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; username=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
+<br><br><br><br><br>
+<footer>
+</footer>
 
-        const username = getUserNameFromCookie().toUpperCase();
+<script>
+    function getUserNameFromCookie() {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; username=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
 
-        const userIdentification = document.getElementById('user-identification');
-        userIdentification.textContent = username ? `${username}'s Dietary Profile` : 'User Profile';
+    const username = getUserNameFromCookie().toUpperCase();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            restrictionsHandler.handleRestrictions();
+    const userIdentification = document.getElementById('user-identification');
+    userIdentification.textContent = username ? `${username}'s Dietary Profile` : 'User Profile';
 
-            document.getElementById('search').href = "index.html";
-            document.getElementById('test').href = `test.html`;
-            document.getElementById('favorites').href = `favorites.html`;
-            document.getElementById('profile').href = `profile.html`;
-        });
-    </script>
+    document.addEventListener('DOMContentLoaded', () => {
+        restrictionsHandler.handleRestrictions();
+
+        document.getElementById('search').href = "index.html";
+        document.getElementById('test').href = `test.html`;
+        document.getElementById('favorites').href = `favorites.html`;
+        document.getElementById('profile').href = `profile.html`;
+    });
+
+</script>
 
 </body>
 
