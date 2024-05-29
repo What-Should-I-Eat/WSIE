@@ -44,7 +44,10 @@ const onLogin = (textUsername, textPassword, navigation) => {
           if(error == 'Error: User account is not verified'){
             Alert.alert(loginError, "Account is not yet verified.");
             onResendCode(textUsername);
-            navigation.navigate("VerificationCodeScreen");
+///////////////////////////////////////////////////////////////////////
+            navigation.navigate("VerificationCodeScreen",  {
+              user: textUsername
+            });        ///////////////////////////////////////////////////////////////////////
           } else if(error == 'Error: Must reset password'){
             Alert.alert(loginError, "Sorry, you've attempted at least 10 incorrect password attempts in a row. Please reset your password to login.");
             navigation.navigate("ForgotPasswordScreen");

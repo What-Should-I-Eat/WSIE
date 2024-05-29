@@ -190,8 +190,13 @@ const getRecipeDirections = async (source, sourceURL) => {
   const realDirections = await resp.json();
 
   let directionString = "";
-  for(var i = 0; i < realDirections.length; i++){
-    directionString += realDirections[i];
+  if(!realDirections){
+    directionString = "N/A";
+  } else{
+    for(var i = 0; i < realDirections.length; i++){
+      directionString += realDirections[i];
+      console.log(realDirections[i]);
+    }
   }
   console.log(directionString);
   return(directionString);

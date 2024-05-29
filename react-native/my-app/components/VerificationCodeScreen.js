@@ -3,9 +3,10 @@ import { Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView 
 import { onResendCode, onVerifyUser } from '../calls/verificationCodeCalls';
 import { appBackgroundColor } from "../calls/colorConstants";
 
-export default function VerificationCodeScreen({ navigation }) {
+export default function VerificationCodeScreen({ route, navigation }) {
 
-    const [textUsername, setUsernameText] = useState('');
+    const [textUsername, setUsernameText] = useState(route.params);
+    // const [textUsername, setUsernameText] = useState('');
     const [textVerificationCode, setVerificationCodeText] = useState('');
 
     return (
