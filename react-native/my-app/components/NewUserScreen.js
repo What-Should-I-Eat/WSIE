@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { appBackgroundColor, mainIndigoButtonBackground, lightSilverText } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
 
 import { onNewUserCalls } from '../calls/newUserCalls';
 
@@ -99,7 +99,11 @@ export default function NewUserScreen({ navigation }) {
                 onPress={togglePasswordVisibility} 
               />
             </View>
-            <Pressable style={newUserStyles.submitButton} 
+            <Pressable style={({ pressed }) =>[
+                {
+                  backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
+                },         
+              newUserStyles.submitButton]} 
                 onPress={() => onNewUserCalls(textUsername, textRealName, textEmail, textPasswordOne, textPasswordTwo, navigation)}
             >
               <Text style={newUserStyles.buttonText}>Submit</Text>
@@ -119,17 +123,16 @@ export default function NewUserScreen({ navigation }) {
     submitButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 4,
+        borderRadius: 8,
         elevation: 3,
         width: 300,
-        height: 70,
+        height: 80,
         margin: 20,     
-        backgroundColor: mainIndigoButtonBackground 
     },
     buttonText:{
         fontSize: 40,
         fontWeight: '600',
-        color: lightSilverText
+        color: 'white'
     },
     inputBox: {
       padding: 18,

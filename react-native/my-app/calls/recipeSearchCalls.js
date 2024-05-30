@@ -190,12 +190,19 @@ const getRecipeDirections = async (source, sourceURL) => {
   const realDirections = await resp.json();
 
   let directionString = "";
+  let entryLines = 1;
   if(!realDirections){
     directionString = "N/A";
   } else{
     for(var i = 0; i < realDirections.length; i++){
-      directionString += realDirections[i];
-      console.log(realDirections[i]);
+      if(realDirections[i] != "Rachel Marek"){
+        directionString += entryLines + ") ";
+        directionString += realDirections[i];
+        if(i < (realDirections.length - 1)){
+          directionString += "\n";
+        }
+        entryLines++;
+      }
     }
   }
   console.log(directionString);

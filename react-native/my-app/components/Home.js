@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { loggedInUser } from "../calls/loginCalls";
-import { appBackgroundColor, mainIndigoButtonBackground, lightSilverText } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
 
 export default function Home({ navigation }) {
 
@@ -13,7 +13,7 @@ export default function Home({ navigation }) {
         onPress={() => {navigation.navigate("DietaryRestrictionsScreen");}}
         style={({ pressed }) =>[
           {
-            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+            backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
           },
         styles.goToButton, styles.goToDietaryRestrictions]}
       >
@@ -25,7 +25,7 @@ export default function Home({ navigation }) {
         onPress={() => navigation.navigate("RecipeSearchScreen")}
         style={({ pressed }) =>[
           {
-            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+            backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
           },
           styles.goToButton]}
       >
@@ -36,7 +36,7 @@ export default function Home({ navigation }) {
         onPress={() => {navigation.navigate("FavoritesScreen");}}
         style={({ pressed }) =>[
           {
-            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+            backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
           },
           styles.goToButton]}
       >
@@ -47,7 +47,7 @@ export default function Home({ navigation }) {
         onPress={() => {navigation.navigate("UploadRecipeScreen");}}
         style={({ pressed }) =>[
           {
-            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+            backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
           },
           styles.goToButton]}
       >
@@ -58,7 +58,7 @@ export default function Home({ navigation }) {
         onPress={() => navigation.navigate("LoginScreen")}
         style={({ pressed }) =>[
           {
-            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+            backgroundColor: pressed ? '#FF0000' : 'black',
           },
           styles.goToButton, styles.goToLogin]}
       >
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
     goToButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 10,
-        borderWidth: 5,
+        borderRadius: 8,
+        borderWidth: 1,
         elevation: 3,
         width: 325,
         height: 120,
@@ -95,17 +95,16 @@ const styles = StyleSheet.create({
     },
     buttonText:{
         fontSize: 40,
-        fontWeight: '600',
+        fontWeight: '500',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        color: lightSilverText
+        color: 'white'
     },
     logoutText:{
       color: 'white',
     },
     goToLogin: {
-        backgroundColor: '#FF0000',
         width: 250,
         height: 80,
     },

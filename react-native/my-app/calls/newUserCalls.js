@@ -45,7 +45,7 @@ const onNewUserCalls = async (textUsername, textRealName, textEmail, textPasswor
               Alert.alert("Account Successfully Created", "You have successfully created a WSIE profile.\nTo verify your account, please enter the 6 digit code from your email below.\nCode expires in 10 minutes")
 ///////////////////////////////////////////////////////////////////////
               navigation.navigate("VerificationCodeScreen",  {
-                user: username
+                user: textUsername
               });        ///////////////////////////////////////////////////////////////////////
             })
             .catch(error => {

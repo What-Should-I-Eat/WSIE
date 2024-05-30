@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
-import { appBackgroundColor } from "../calls/colorConstants";
+import { appBackgroundColor, blueClicked } from "../calls/colorConstants";
 
 export default function IndividualFavoritesScreen({ route, navigation }) {
 
@@ -20,13 +20,19 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
                 source={ { uri: individualRecipe.image}} 
                 style={IndividualFavoritesStyles.images} 
             />
-            {!isFavorited && <Pressable style={IndividualFavoritesStyles.favoritesButton}  onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, individualRecipe.directions, true)}>
+            {!isFavorited && <Pressable style={({ pressed }) =>[
+                {
+                  backgroundColor: pressed ? blueClicked : '#3cb04c'
+                }, IndividualFavoritesStyles.favoritesButton]}  onPress={() => addRecipeToFavorites(individualRecipe, setIsFavorited, individualRecipe.directions, true)}>
                 <Text style={IndividualFavoritesStyles.buttonText}>
                     Add to favorites
                 </Text>
             </Pressable>}
             {isFavorited && <View>
-              <Pressable  style={IndividualFavoritesStyles.unfavoritesButton} onPress={() => removeRecipeFromFavorites(individualRecipe, setIsFavorited, true)}>
+              <Pressable style={({ pressed }) =>[
+                {
+                  backgroundColor: pressed ? blueClicked : 'red'
+                },IndividualFavoritesStyles.unfavoritesButton]} onPress={() => removeRecipeFromFavorites(individualRecipe, setIsFavorited, true)}>
                 <Text style={IndividualFavoritesStyles.buttonText}>
                     Remove favorite
                 </Text>
@@ -72,7 +78,7 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
         height: 65,
         margin: 10,
         marginTop: 20,   
-        backgroundColor: '#3cb04c' 
+        // backgroundColor: '#3cb04c' 
     },
     unfavoritesButton: {
       alignItems: 'center',
@@ -83,7 +89,7 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
       height: 65,
       margin: 10,
       marginTop: 20,   
-      backgroundColor: 'red' 
+      // backgroundColor: 'red' 
   },
     buttonText:{
         fontSize: 30,

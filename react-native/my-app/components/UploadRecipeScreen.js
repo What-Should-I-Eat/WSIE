@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView, Image } from 'react-native';
-import { appBackgroundColor, mainIndigoButtonBackground, lightSilverText } from "../calls/colorConstants";
-import ImagePicker from 'react-native-image-picker';
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
+import { launchImageLibrary } from 'react-native-image-picker';
 import { uploadNewRecipe } from '../calls/uploadRecipeCalls';
 
 export default function UploadRecipeScreen({ navigation }) {
@@ -13,7 +13,12 @@ export default function UploadRecipeScreen({ navigation }) {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const handleImageUpload = () => {
-        ImagePicker.launchImageLibrary({}, (response) => {
+      const options = {
+        mediaType: 'photo',
+        quality: 0.8,
+        includeBase64: true,
+      };
+        launchImageLibrary(options, (response) => {
             if(response.didCancel){
                 console.log("user cancelled image selection");
             } else if(response.error){
@@ -21,7 +26,7 @@ export default function UploadRecipeScreen({ navigation }) {
             } else{
                 setSelectedImage(response.uri);
             }
-        })
+        });
     }
 
     return (
@@ -94,7 +99,7 @@ export default function UploadRecipeScreen({ navigation }) {
             </View>
             <Pressable style={({ pressed }) =>[
                 {
-                  backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+                  backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
                 },
                 uploadStyles.newRecipeButton]} 
               onPress={() => uploadNewRecipe(textRecipeName, textCalories, textIngredients, textDirections)}
@@ -123,17 +128,17 @@ export default function UploadRecipeScreen({ navigation }) {
     newRecipeButton: {
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 12,
+      borderRadius: 8,
       elevation: 3,
       width: 300,
       height: 100,
       marginTop: 20,
-      borderWidth: 3,
+      borderWidth: 1,
   },
     buttonText:{
-        fontSize: 40,
-        fontWeight: '600',
-        color: lightSilverText,
+        fontSize: 38,
+        fontWeight: '500',
+        color: 'white',
     },
     nameBox: {
       padding: 18,
