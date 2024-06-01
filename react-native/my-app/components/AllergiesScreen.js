@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Pressable, Text, View, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { Pressable, Text, View, StyleSheet } from 'react-native';
 import { MultiSelectListAllergy, selectedAllergyArray } from './AllergiesList';
 import { sendHealthData } from '../calls/dietHealthCalls';
 import { appBackgroundColor, blueClicked } from "../calls/colorConstants";

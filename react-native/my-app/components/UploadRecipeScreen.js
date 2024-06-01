@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
-import { launchImageLibrary} from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { uploadNewRecipe } from '../calls/uploadRecipeCalls';
 
 export default function UploadRecipeScreen({ navigation }) {
@@ -11,29 +11,31 @@ export default function UploadRecipeScreen({ navigation }) {
     const [textIngredients, setTextIngredients] = useState('');
     const [textDirections, setTextDirections] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
+    const [trimmedImageFileName, setTrimmedImageFileName] = useState('');
 
-    const handleImageUpload = () => {
-      const options = {
-        mediaType: 'photo',
-        quality: 0.8,
-        includeBase64: true,
-      };
-      launchImageLibrary(options, (response) => {
-            if(response.didCancel){
-                console.log("user cancelled image selection");
-            } else if(response.error){
-                console.log("error found: ", response.error);
-            } else{
-                setSelectedImage(response.uri);
-            }
-        });
+    const handleImageUpload = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+        selectionLimit: 1,
+      });
+      if(!result.canceled){
+        setSelectedImage(result.assets[0].uri);
+        trimFileText(result.assets[0].uri);
+      }
+    }
+    const trimFileText = (inputtedFileName) => {
+      const trimmedName = inputtedFileName.length > 15 ? "..." + inputtedFileName.substring(inputtedFileName.length - 15) : inputtedFileName;
+      setTrimmedImageFileName(trimmedName);
     }
 
     return (
       <SafeAreaView style={uploadStyles.container}>
       <ScrollView>
         <View style={uploadStyles.container}>
-            <Text style={[uploadStyles.inputLabel, {marginTop: 15}]}>
+            <Text style={[uploadStyles.inputLabel, {marginTop: 10}]}>
               Recipe Name:
             </Text>
             <TextInput
@@ -62,14 +64,14 @@ export default function UploadRecipeScreen({ navigation }) {
             </Text>
             <TextInput
                   style={uploadStyles.biggerBox}
-                  placeholder="Pepper, rice, ..."
+                  placeholder="Peppers, rice, spinach..."
                   placeholderTextColor={"#8c8c8c"}
                   autoCapitalize="none"
                   multiline={true}
                   onChangeText={value => setTextIngredients(value)}
                   defaultValue={textIngredients}
             />
-            <Text style={uploadStyles.inputLabel}>
+            <Text style={[uploadStyles.inputLabel, {marginTop: -2}]}>
               Directions:
             </Text>
             <TextInput
@@ -82,27 +84,37 @@ export default function UploadRecipeScreen({ navigation }) {
                   defaultValue={textDirections}
             />
              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={uploadStyles.inputLabel}>
-                Photo:
+                <Text style={[{marginRight: 10}, uploadStyles.inputLabel]}>
+                Image:
                 </Text>
-                {selectedImage && (
-                    <Image 
-                        source={{ uri: selectedImage}}
-                        style={uploadStyles.images}
-                    />
-                )}
                 <Pressable onPress={handleImageUpload}>
-                    <Text style={uploadStyles.imageSelectLabel}>
-                        Select Image
+                  <View style={uploadStyles.imageSelectLabelBox}>
+                  <Text style={uploadStyles.imageSelectLabel}>
+                        Select Photo
                     </Text>
+                  </View>
                 </Pressable>
             </View>
+            {!selectedImage && (
+              <View style={{height: 70}}></View>
+            )}
+            {selectedImage && (
+              <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 5}}>
+                 <Image 
+                    source={{ uri: selectedImage}}
+                    style={uploadStyles.images}
+                  />
+                  <View style={uploadStyles.imageUriLabel}>
+                    <Text style={{fontSize: 20, color: "#2B5FFF"}}>{trimmedImageFileName}</Text>
+                  </View>
+              </View>
+            )}
             <Pressable style={({ pressed }) =>[
                 {
                   backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
                 },
                 uploadStyles.newRecipeButton]} 
-              onPress={() => uploadNewRecipe(textRecipeName, textCalories, textIngredients, textDirections)}
+              onPress={() => uploadNewRecipe(textRecipeName, textCalories, textIngredients, textDirections, selectedImage)}
               >
               <Text style={uploadStyles.buttonText}>
               Upload Recipe</Text>
@@ -120,10 +132,10 @@ export default function UploadRecipeScreen({ navigation }) {
       justifyContent: 'top',
     },
     images: {
-      width: 75,
-      height: 75,
+      width: 60,
+      height: 60,
       resizeMode: 'contain',
-      marginVertical: 10,
+      marginRight: 10
     },
     newRecipeButton: {
       alignItems: 'center',
@@ -132,7 +144,7 @@ export default function UploadRecipeScreen({ navigation }) {
       elevation: 3,
       width: 300,
       height: 100,
-      marginTop: 20,
+      marginTop: 7,
       borderWidth: 1,
   },
     buttonText:{
@@ -141,7 +153,8 @@ export default function UploadRecipeScreen({ navigation }) {
         color: 'white',
     },
     nameBox: {
-      padding: 18,
+      paddingVertical: 12,
+      paddingHorizontal: 18,
       margin: 10,
       position: 'relative',
       top: 0,
@@ -154,20 +167,20 @@ export default function UploadRecipeScreen({ navigation }) {
       borderRadius: 5,
     },
     calorieBox: {
-      padding: 16,
-      margin: 10,
+      padding: 10,
+      margin: 5,
       position: 'relative',
       top: 0,
       borderWidth: 1,
       borderColor: '#404040',
       backgroundColor: '#f9f9f9',
-      width: 110,
-      height: 60,
-      fontSize: 30,
+      width: 105,
+      height: 50,
+      fontSize: 27,
       borderRadius: 5,
     },
     biggerBox: {
-      padding: 16,
+      padding: 10,
       margin: 10,
       position: 'relative',
       top: 0,
@@ -177,20 +190,31 @@ export default function UploadRecipeScreen({ navigation }) {
       width: 350,
       height: 120,
       textAlignVertical: 'top',
-      fontSize: 30,
+      fontSize: 28,
       borderRadius: 5,
     },
     inputLabel: {
         fontSize: 30,
         fontWeight: '500',
         marginTop: 10,
-        marginBottom: 5,
+        marginBottom: 3,
     },
     imageSelectLabel: {
-        fontSize: 27,
-        fontWeight: '300',
-        marginLeft: 10,
-        marginTop: 5,
+        fontSize: 25,
+        fontWeight: '400',
+        margin: 5,
+        color: '#3E3E3E'
     },
+    imageSelectLabelBox: {
+      borderWidth: 1, 
+      marginTop: 8,
+      borderRadius: 3,
+      borderColor: '#646464',
+      backgroundColor: '#E6E6E6'
+    },
+    imageUriLabel: {
+      width: 200,
+      height: 30,
+    }
   }
 );

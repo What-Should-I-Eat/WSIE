@@ -107,6 +107,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                     placeholder="pASswORd35"
                     placeholderTextColor={"#8c8c8c"}
                     autoCapitalize="none"
+                    secureTextEntry={!passwordVisible}
                     onChangeText={value => setPasswordTwoText(value)}
                     defaultValue={textPasswordTwo}
                 />

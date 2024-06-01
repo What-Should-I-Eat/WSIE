@@ -30,7 +30,7 @@ export default function NewUserScreen({ navigation }) {
             </Text>
             <TextInput
                 style={newUserStyles.inputBox}
-                placeholder="Username"
+                placeholder="iLoveFood45"
                 placeholderTextColor={"#8c8c8c"}
                 autoCapitalize="none"
                 onChangeText={value => setUsernameText(value)}
@@ -63,7 +63,7 @@ export default function NewUserScreen({ navigation }) {
             <View style={newUserStyles.passwordOneBox}>
               <TextInput
                   style={newUserStyles.inputBox}
-                  placeholder="Password1"
+                  placeholder="PasSWoRd1"
                   placeholderTextColor={"#8c8c8c"}
                   autoCapitalize="none"
                   secureTextEntry={!passwordVisible}
@@ -84,7 +84,7 @@ export default function NewUserScreen({ navigation }) {
             <View style={newUserStyles.passwordTwoBox}>
               <TextInput
                   style={newUserStyles.inputBox}
-                  placeholder="Password1"
+                  placeholder="PasSWoRd1"
                   placeholderTextColor={"#8c8c8c"}
                   autoCapitalize="none"
                   secureTextEntry={!passwordVisible}

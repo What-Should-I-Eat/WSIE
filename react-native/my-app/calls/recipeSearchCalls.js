@@ -72,7 +72,7 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                             ingredientsString += ", ";
                           }
                         }
-                        console.log(ingredientsString);
+                        // console.log(ingredientsString);
 
                         var individualRecipe = {
                             name: data.recipe.label,
@@ -87,7 +87,7 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                         // ensures no two recipes are added twice
                         if(!(arrayOfResults.some(thisRecipe => thisRecipe.uri === data.recipe.uri))){
                           arrayOfResults.push(individualRecipe);
-                          console.log("individual recipe: ",individualRecipe);
+                          // console.log("individual recipe: ",individualRecipe);
                         }
                       }
                     });

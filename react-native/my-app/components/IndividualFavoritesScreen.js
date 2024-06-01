@@ -78,7 +78,6 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
         height: 65,
         margin: 10,
         marginTop: 20,   
-        // backgroundColor: '#3cb04c' 
     },
     unfavoritesButton: {
       alignItems: 'center',
@@ -89,7 +88,6 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
       height: 65,
       margin: 10,
       marginTop: 20,   
-      // backgroundColor: 'red' 
   },
     buttonText:{
         fontSize: 30,
@@ -166,7 +164,8 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
       marginTop: 10
     },
     foodTitle: {
-      fontSize: 40,
+      fontSize: 38,
+      width: 375,
       fontWeight: '600',
       marginTop: 20,
       marginBottom: 20,

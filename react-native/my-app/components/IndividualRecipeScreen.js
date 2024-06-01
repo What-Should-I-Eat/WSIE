@@ -120,7 +120,8 @@ export default function IndividualRecipeScreen({ route, navigation }) {
       marginTop: 3
     },
     foodTitle: {
-      fontSize: 40,
+      fontSize: 38,
+      width: 375,
       fontWeight: '600',
       marginTop: 20,
       marginBottom: 5,

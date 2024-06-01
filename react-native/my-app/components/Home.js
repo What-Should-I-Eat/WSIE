@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { loggedInUser } from "../calls/loginCalls";
 import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     },
     userInfo: {
       fontSize: 40,
-      marginTop: -30,
+      marginTop: -20,
       marginBottom: 15,
       fontWeight: '600',
       alignItems: 'center',
