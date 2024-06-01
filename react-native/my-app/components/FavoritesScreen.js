@@ -60,6 +60,7 @@ export default function FavoritesScreen({ navigation }) {
       backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
+      paddingBottom: 30,
     },
     noRecipeFeedback: {
         fontSize: 35,

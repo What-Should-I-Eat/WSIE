@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchImageLibrary} from 'react-native-image-picker';
 import { uploadNewRecipe } from '../calls/uploadRecipeCalls';
 
 export default function UploadRecipeScreen({ navigation }) {
@@ -18,7 +18,7 @@ export default function UploadRecipeScreen({ navigation }) {
         quality: 0.8,
         includeBase64: true,
       };
-        launchImageLibrary(options, (response) => {
+      launchImageLibrary(options, (response) => {
             if(response.didCancel){
                 console.log("user cancelled image selection");
             } else if(response.error){

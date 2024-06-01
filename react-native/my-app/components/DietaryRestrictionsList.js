@@ -29,7 +29,7 @@ const MultiSelectListDiet = ({ data }) => {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => toggleItem(item)}>
-      <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', width: 250, marginLeft: 60}}>
         <Text style={{fontSize: 30, marginVertical: 4, color: selectedItems.includes(item) ? 'green' : 'black'}}>{item}</Text>
         {selectedItems.includes(item) && <Text style={{fontSize: 30, fontWeight: 700, marginVertical: 4, color: 'green'}}> ✓</Text>}
       </View>

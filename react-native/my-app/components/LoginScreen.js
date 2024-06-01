@@ -100,7 +100,8 @@ export default function LoginScreen({ navigation }) {
       justifyContent: 'top',
     },
     icon: {
-      marginLeft: -40,
+      marginLeft: -45,
+      marginRight: 10
     },
     images: {
       width: 75,

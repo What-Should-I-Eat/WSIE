@@ -43,7 +43,7 @@ export default function DietsScreen({ navigation }) {
         width: 300,
         height: 70,
         margin: 15,   
-        marginBottom: 30,  
+        marginBottom: 30,
     },
     buttonText:{
         fontSize: 37,

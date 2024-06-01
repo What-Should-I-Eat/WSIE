@@ -191,7 +191,7 @@ const getRecipeDirections = async (source, sourceURL) => {
 
   let directionString = "";
   let entryLines = 1;
-  if(!realDirections){
+  if(!realDirections || realDirections.length == 0){
     directionString = "N/A";
   } else{
     for(var i = 0; i < realDirections.length; i++){

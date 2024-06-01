@@ -176,6 +176,7 @@ export default function NewUserScreen({ navigation }) {
     },
     icon: {
       marginLeft: -40,
+      marginBottom: 5,
     },
   }
 );
