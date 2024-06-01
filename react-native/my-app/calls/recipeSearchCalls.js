@@ -72,22 +72,21 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                             ingredientsString += ", ";
                           }
                         }
-                        // console.log(ingredientsString);
 
                         var individualRecipe = {
-                            name: data.recipe.label,
-                            image: imageURL,
-                            uri: data.recipe.uri,
-                            calories: caloriesAsWholeNumber,
-                            ingredients: ingredientsString,
-                            source: source,
-                            sourceURL: sourceURL
+                          name: data.recipe.label,
+                          image: imageURL,
+                          uri: data.recipe.uri,
+                          calories: caloriesAsWholeNumber,
+                          ingredients: ingredientsString,
+                          source: source,
+                          sourceURL: sourceURL
                         }
 
                         // ensures no two recipes are added twice
                         if(!(arrayOfResults.some(thisRecipe => thisRecipe.uri === data.recipe.uri))){
                           arrayOfResults.push(individualRecipe);
-                          // console.log("individual recipe: ",individualRecipe);
+                          console.log("individual recipe: ", individualRecipe);
                         }
                       }
                     });
