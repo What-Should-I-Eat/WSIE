@@ -37,14 +37,18 @@ To run the application locally, first ensure you are within the app's directory 
 
 Now from within this location, run:
 
-`npm run ios`
-
-This will start the mobile app on the iOS Simulator if the Simulator is open. 
+`npm run`
 
 At this point, the following screen shall appear within the console. If the Expo app is installed on a mobile device (on the same local network), scanning the QR code enables the app to load within the Expo app on your local mobile device.
 
-![Screen Shot 2024-06-02 at 3 49 25 PM](https://github.com/torieee/WSIE/assets/122702221/66006b59-3b53-465a-b604-26a749158236)
+![Screen Shot 2024-06-02 at 3 55 02 PM](https://github.com/torieee/WSIE/assets/122702221/6b3124a4-cfbc-4d26-a3ee-d843e89d258f)
+
+Type `i` - this will start the mobile app on the iOS Simulator if the Simulator is open. 
+
+Alternatively, the iOS Simulator can be launched directly by running the `npm run ios` command.
 
 **It is important to note that this application is currently configured to run locally only. This requires the Docker containers to be active while running the mobile app. To run the containers, return to the root of the project and run the `npm start` command.**
 
 *If you're running this mobile application for an android device, the instructions remain the same except the run command is instead `npm run android`. Similarly, the Docker containers would have to be running concurrently. An android device simulator may also be necessary.*
+
+For the previous commands which specifically relate to the mobile application, any instances of `npm run` can be replaced with `npx expo start`.
