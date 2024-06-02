@@ -14,11 +14,13 @@ import AllergiesScreen from './components/AllergiesScreen';
 import FavoritesScreen from './components/FavoritesScreen';
 import IndividualRecipeScreen from './components/IndividualRecipeScreen';
 import IndividualFavoritesScreen from './components/IndividualFavoritesScreen';
+import UploadRecipeScreen from './components/UploadRecipeScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const appTitle = "WSIE";
+  const backButton = "Back";
   return(
       <NavigationContainer>
         <Stack.Navigator>
@@ -39,11 +41,12 @@ export default function App() {
             component={Home}
             options={
               {
-                title: appTitle,
+                title: "Home",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: 'Logout'
               }}
           />
           <Stack.Screen
@@ -51,11 +54,12 @@ export default function App() {
             component={ForgotPasswordScreen}
             options={
               {
-                title: appTitle,
+                title: "Forgot Password",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
               }}
           />
            <Stack.Screen 
@@ -63,11 +67,12 @@ export default function App() {
             component={NewUserScreen} 
             options={
               {
-                title: appTitle,
+                title: "New WSIE User",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
               }}
           />
            <Stack.Screen 
@@ -75,11 +80,12 @@ export default function App() {
             component={VerificationCodeScreen} 
             options={
               {
-                title: appTitle,
+                title: "Verify Account",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
               }}
           />
            <Stack.Screen 
@@ -87,11 +93,12 @@ export default function App() {
             component={RecipeSearchScreen} 
             options={
               {
-                title: appTitle,
+                title: "Recipe Search",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
               }}
           />
            <Stack.Screen 
@@ -99,11 +106,12 @@ export default function App() {
             component={DietaryRestrictionsScreen} 
             options={
               {
-                title: appTitle,
+                title: "Update Preferences",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
               }}
           />
            <Stack.Screen 
@@ -111,11 +119,12 @@ export default function App() {
             component={DietsScreen} 
             options={
               {
-                title: appTitle,
+                title: "Update Diets",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
               }}
           />
            <Stack.Screen 
@@ -123,11 +132,12 @@ export default function App() {
             component={AllergiesScreen} 
             options={
               {
-                title: appTitle,
+                title: "Update Allergies",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
               }}
           />
            <Stack.Screen 
@@ -135,11 +145,12 @@ export default function App() {
             component={FavoritesScreen} 
             options={
               {
-                title: appTitle,
+                title: "Favorites",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
               }}
           />
            <Stack.Screen 
@@ -147,11 +158,12 @@ export default function App() {
             component={IndividualRecipeScreen} 
             options={
               {
-                title: appTitle,
+                title: "Recipe View",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
               }}
           />
            <Stack.Screen 
@@ -159,11 +171,25 @@ export default function App() {
             component={IndividualFavoritesScreen} 
             options={
               {
-                title: appTitle,
+                title: "Recipe View",
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
+                headerBackTitle: backButton
+              }}
+          />
+           <Stack.Screen 
+            name="UploadRecipeScreen" 
+            component={UploadRecipeScreen} 
+            options={
+              {
+                title: "Upload Recipe",
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                },
+                headerBackTitle: backButton
               }}
           />
         </Stack.Navigator>

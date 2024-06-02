@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { onLogin } from '../calls/loginCalls';
-import { appBackgroundColor, mainIndigoButtonBackground, lightSilverText } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
 
 export default function LoginScreen({ navigation }) {
 
@@ -61,16 +61,16 @@ export default function LoginScreen({ navigation }) {
               </View>
             <Pressable style={({ pressed }) =>[
                 {
-                  backgroundColor: pressed ? 'white' : '#2A9000',
+                  backgroundColor: pressed ? blueClicked : '#155724',
                 },
                 loginStyles.loginButton]} 
                 onPress={() => onLogin(textUsername, textPassword, navigation)}
             >
               <Text style={loginStyles.buttonText}>Login</Text>
             </Pressable>
-            <Pressable  style={({ pressed }) =>[
+            <Pressable style={({ pressed }) =>[
                 {
-                  backgroundColor: pressed ? 'white' : '#ff0000',
+                  backgroundColor: pressed ? blueClicked : '#ff0000',
                 },
                 loginStyles.forgotPasswordButton]} 
               onPress={() => navigation.navigate("ForgotPasswordScreen")}
@@ -79,7 +79,7 @@ export default function LoginScreen({ navigation }) {
             </Pressable>
             <Pressable style={({ pressed }) =>[
                 {
-                  backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+                  backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
                 },
                 loginStyles.newUserButton]} 
               onPress={() => navigation.navigate("NewUserScreen")}
@@ -100,7 +100,8 @@ export default function LoginScreen({ navigation }) {
       justifyContent: 'top',
     },
     icon: {
-      marginLeft: -40,
+      marginLeft: -45,
+      marginRight: 10
     },
     images: {
       width: 75,
@@ -111,9 +112,9 @@ export default function LoginScreen({ navigation }) {
     loginButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 12,
+        borderRadius: 8,
         elevation: 3,
-        borderWidth: 3,
+        borderWidth: 1,
         width: 300,
         height: 100,
         margin: 10,
@@ -122,9 +123,9 @@ export default function LoginScreen({ navigation }) {
     forgotPasswordButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 12,
-        borderWidth: 2,
+        borderRadius: 8,
         elevation: 3,
+        borderWidth: 1,
         width: 300,
         height: 100,
         margin: 10, 
@@ -138,22 +139,22 @@ export default function LoginScreen({ navigation }) {
     newUserButton: {
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 12,
+      borderRadius: 8,
       elevation: 3,
       width: 300,
       height: 100,
       margin: 10,
-      borderWidth: 3,
+      borderWidth: 1,
   },
     buttonText:{
         fontSize: 40,
         fontWeight: '600',
-        color: lightSilverText,
+        color: 'white'
     },
     buttonTextSmall:{
         fontSize: 34,
-        fontWeight: '600',
-        color: lightSilverText
+        fontWeight: '700',
+        color: 'white'
     },
     loginBox: {
       padding: 18,

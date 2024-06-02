@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { onResendCode, onVerifyUser } from '../calls/verificationCodeCalls';
-import { appBackgroundColor } from "../calls/colorConstants";
+import { appBackgroundColor, blueClicked } from "../calls/colorConstants";
 
-export default function VerificationCodeScreen({ navigation }) {
+export default function VerificationCodeScreen({ route, navigation }) {
+    const [textUsername, setUsernameText] = useState(route.params.user);
 
-    const [textUsername, setUsernameText] = useState('');
     const [textVerificationCode, setVerificationCodeText] = useState('');
 
     return (
@@ -37,12 +37,20 @@ export default function VerificationCodeScreen({ navigation }) {
                 onChangeText={value => setVerificationCodeText(value)}
                 defaultValue={textVerificationCode}
             />
-            <Pressable style={verificationCodeStyles.submitCodeButton} 
+            <Pressable  style={({ pressed }) =>[
+                {
+                  backgroundColor: pressed ? blueClicked : '#155724',
+                },
+                verificationCodeStyles.submitCodeButton]} 
                 onPress={() => onVerifyUser(textUsername, textVerificationCode, navigation)}
             >
               <Text style={verificationCodeStyles.buttonText}>Verify Account</Text>
             </Pressable>
-            <Pressable style={verificationCodeStyles.resendCodeButton} 
+            <Pressable style={({ pressed }) =>[
+                {
+                  backgroundColor: pressed ? blueClicked : '#ff0000',
+                },
+                verificationCodeStyles.resendCodeButton]} 
               onPress={() => onResendCode(textUsername)}
             >
               <Text style={verificationCodeStyles.buttonText}>Resend Code</Text>
@@ -65,25 +73,23 @@ export default function VerificationCodeScreen({ navigation }) {
     submitCodeButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 12,
+        borderRadius: 8,
         elevation: 3,
-        borderWidth: 2,
+        borderWidth: 1,
         width: 300,
         height: 100,
         margin: 10,
         marginTop: 30,   
-        backgroundColor: '#2A9000' 
     },
     resendCodeButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 12,
+        borderRadius: 8,
         elevation: 3,
-        borderWidth: 2,
+        borderWidth: 1,
         width: 300,
         height: 100,
         margin: 10, 
-        backgroundColor: '#ff0000' 
     },
     buttonText:{
         fontSize: 38,

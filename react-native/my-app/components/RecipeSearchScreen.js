@@ -75,7 +75,8 @@ export default function RecipeSearchScreen({ navigation }) {
       backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
-      height: 'max'
+      height: 'max',
+      paddingBottom: 200,
     },
     searchButton: {
         alignItems: 'center',

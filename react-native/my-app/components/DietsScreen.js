@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, Text, View, StyleSheet } from 'react-native';
 import { MultiSelectListDiet, selectedDietArray } from './DietaryRestrictionsList';
 import { sendDietData } from '../calls/dietHealthCalls';
-import { appBackgroundColor } from "../calls/colorConstants";
+import { appBackgroundColor, blueClicked } from "../calls/colorConstants";
 
 export default function DietsScreen({ navigation }) {
 
@@ -16,7 +16,11 @@ export default function DietsScreen({ navigation }) {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <MultiSelectListDiet data={diets} />
             </View>
-            <Pressable style={DietsStyles.updateButton}
+            <Pressable style={({ pressed }) =>[
+                {
+                  backgroundColor: pressed ? blueClicked : '#008000'
+                },
+                DietsStyles.updateButton]}
               onPress={() => sendDietData(selectedDietArray)}
             >
               <Text style={DietsStyles.buttonText}>Update Diets</Text>
@@ -39,13 +43,12 @@ export default function DietsScreen({ navigation }) {
         width: 300,
         height: 70,
         margin: 15,   
-        marginBottom: 30,  
-        backgroundColor: '#008000' 
+        marginBottom: 30,
     },
     buttonText:{
         fontSize: 37,
         fontWeight: '500',
-        color: '#ffffff'
+        color: 'white'
     },
     instructions: {
         fontSize: 30,

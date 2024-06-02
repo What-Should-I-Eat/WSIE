@@ -12,7 +12,7 @@ const onVerifyUser = (textUsername, textVerificationCode, navigation) => {
         'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            userName: textUsername,            
+            username: textUsername,            
             verificationCode: textVerificationCode
         }),
     })
@@ -59,7 +59,7 @@ const onResendCode = async (textUsername) => {
             'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userName: textUsername,            
+                username: textUsername,            
                 verificationCode: newlyGeneratedVerificationCode
             }),
         })
@@ -120,7 +120,7 @@ async function getUserEmail(username){
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userName: username,            
+            username: username,            
         }),
       })
         .then(response => {

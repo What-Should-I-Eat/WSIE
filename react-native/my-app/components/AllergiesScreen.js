@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import { Pressable, Text, View, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { Pressable, Text, View, StyleSheet } from 'react-native';
 import { MultiSelectListAllergy, selectedAllergyArray } from './AllergiesList';
 import { sendHealthData } from '../calls/dietHealthCalls';
-import { appBackgroundColor } from "../calls/colorConstants";
+import { appBackgroundColor, blueClicked } from "../calls/colorConstants";
 
 export default function AllergiesScreen({ navigation }) {
   
@@ -14,7 +14,11 @@ export default function AllergiesScreen({ navigation }) {
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <MultiSelectListAllergy data={allergies} />
         </View>
-        <Pressable style={AllergiesStyles.updateButton}
+        <Pressable style={({ pressed }) =>[
+          {
+            backgroundColor: pressed ? blueClicked : 'red'
+          },
+          AllergiesStyles.updateButton]}
           onPress={() => sendHealthData(selectedAllergyArray)}
         >
           <Text style={AllergiesStyles.buttonText}>Update Allergies</Text>
@@ -37,7 +41,6 @@ export default function AllergiesScreen({ navigation }) {
         width: 300,
         height: 100,
         margin: 30,     
-        backgroundColor: 'red' 
     },
     buttonText:{
         fontSize: 35,

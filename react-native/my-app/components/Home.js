@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { loggedInUser } from "../calls/loginCalls";
-import { appBackgroundColor, mainIndigoButtonBackground, lightSilverText } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
 
 export default function Home({ navigation }) {
 
@@ -13,7 +13,7 @@ export default function Home({ navigation }) {
         onPress={() => {navigation.navigate("DietaryRestrictionsScreen");}}
         style={({ pressed }) =>[
           {
-            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+            backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
           },
         styles.goToButton, styles.goToDietaryRestrictions]}
       >
@@ -25,9 +25,9 @@ export default function Home({ navigation }) {
         onPress={() => navigation.navigate("RecipeSearchScreen")}
         style={({ pressed }) =>[
           {
-            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+            backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
           },
-          styles.goToButton, styles.goToRecipeSearch]}
+          styles.goToButton]}
       >
         <Text style={styles.buttonText}>Search Recipes</Text>
       </Pressable>
@@ -36,22 +36,33 @@ export default function Home({ navigation }) {
         onPress={() => {navigation.navigate("FavoritesScreen");}}
         style={({ pressed }) =>[
           {
-            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+            backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
           },
-          styles.goToButton, styles.goToFavorites]}
+          styles.goToButton]}
       >
         <Text style={styles.buttonText}>View Favorites</Text>
+        </Pressable>
+      <Pressable
+        title="Go to Upload Recipe"
+        onPress={() => {navigation.navigate("UploadRecipeScreen");}}
+        style={({ pressed }) =>[
+          {
+            backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
+          },
+          styles.goToButton]}
+      >
+        <Text style={styles.buttonText}>Upload Recipe</Text>
         </Pressable>
       <Pressable
         title="Logout"
         onPress={() => navigation.navigate("LoginScreen")}
         style={({ pressed }) =>[
           {
-            backgroundColor: pressed ? 'white' : mainIndigoButtonBackground,
+            backgroundColor: pressed ? '#FF0000' : 'black',
           },
           styles.goToButton, styles.goToLogin]}
       >
-        <Text style={styles.buttonText}>Logout</Text>
+        <Text style={[styles.buttonText, styles.logoutText]}>Logout</Text>
         </Pressable>
     </View>
   );
@@ -65,8 +76,8 @@ const styles = StyleSheet.create({
     },
     userInfo: {
       fontSize: 40,
-      marginTop: -30,
-      marginBottom: 30,
+      marginTop: -20,
+      marginBottom: 15,
       fontWeight: '600',
       alignItems: 'center',
       justifyContent: 'center',
@@ -75,23 +86,27 @@ const styles = StyleSheet.create({
     goToButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 10,
-        borderWidth: 5,
+        borderRadius: 8,
+        borderWidth: 1,
         elevation: 3,
         width: 325,
         height: 120,
-        margin: 20,        
+        margin: 12,        
     },
     buttonText:{
         fontSize: 40,
-        fontWeight: '600',
+        fontWeight: '500',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        color: lightSilverText
+        color: 'white'
+    },
+    logoutText:{
+      color: 'white',
     },
     goToLogin: {
-        backgroundColor: '#FF0000',
+        width: 250,
+        height: 80,
     },
     goToDietaryRestrictions: {
       width: 325,

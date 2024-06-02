@@ -72,22 +72,21 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
                             ingredientsString += ", ";
                           }
                         }
-                        console.log(ingredientsString);
 
                         var individualRecipe = {
-                            name: data.recipe.label,
-                            image: imageURL,
-                            uri: data.recipe.uri,
-                            calories: caloriesAsWholeNumber,
-                            ingredients: ingredientsString,
-                            source: source,
-                            sourceURL: sourceURL
+                          name: data.recipe.label,
+                          image: imageURL,
+                          uri: data.recipe.uri,
+                          calories: caloriesAsWholeNumber,
+                          ingredients: ingredientsString,
+                          source: source,
+                          sourceURL: sourceURL
                         }
 
                         // ensures no two recipes are added twice
                         if(!(arrayOfResults.some(thisRecipe => thisRecipe.uri === data.recipe.uri))){
                           arrayOfResults.push(individualRecipe);
-                          console.log("individual recipe: ",individualRecipe);
+                          console.log("individual recipe: ", individualRecipe);
                         }
                       }
                     });
@@ -190,8 +189,20 @@ const getRecipeDirections = async (source, sourceURL) => {
   const realDirections = await resp.json();
 
   let directionString = "";
-  for(var i = 0; i < realDirections.length; i++){
-    directionString += realDirections[i];
+  let entryLines = 1;
+  if(!realDirections || realDirections.length == 0){
+    directionString = "N/A";
+  } else{
+    for(var i = 0; i < realDirections.length; i++){
+      if(realDirections[i] != "Rachel Marek"){
+        directionString += entryLines + ") ";
+        directionString += realDirections[i];
+        if(i < (realDirections.length - 1)){
+          directionString += "\n";
+        }
+        entryLines++;
+      }
+    }
   }
   console.log(directionString);
   return(directionString);

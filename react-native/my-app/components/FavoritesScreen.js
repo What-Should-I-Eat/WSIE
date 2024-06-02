@@ -27,7 +27,7 @@ export default function FavoritesScreen({ navigation }) {
         <View style={FavoritesStyles.container}>
 
         {noCurrentFavorites && <Text style={FavoritesStyles.noRecipeFeedback}>
-          Sorry, you have no favorites to show right now.{'\n\n'}Try searching for some new recipes to add!</Text>}
+          Sorry, you have no favorites to show right now.{'\n\n'}Try searching for some new recipes to add or upload your own!</Text>}
 
         <FlatList
               data={favoritesResults}
@@ -60,6 +60,7 @@ export default function FavoritesScreen({ navigation }) {
       backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
+      paddingBottom: 30,
     },
     noRecipeFeedback: {
         fontSize: 35,

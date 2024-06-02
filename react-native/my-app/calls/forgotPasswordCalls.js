@@ -70,7 +70,7 @@ async function putVerificationCodeInDB(username, verificationCode){
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userName: username,
+                username: username,
                 verificationCode: verificationCode,
             }),
         });
@@ -109,7 +109,7 @@ async function validateCode(username, verificationCodeInput){
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userName: username,
+                username: username,
                 verificationCode: verificationCodeInput,
             }),
         });
@@ -141,7 +141,7 @@ const onEnteredNewPasswords = async (textPasswordOne, textPasswordTwo, navigatio
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userName: username,
+                    username: username,
                     password: textPasswordOne,
                 }),
             });

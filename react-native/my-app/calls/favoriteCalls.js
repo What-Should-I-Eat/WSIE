@@ -1,36 +1,43 @@
 import { hostForAppCalls } from "./hostCallConst";
 import { loggedInUser } from "./loginCalls";
 import { getUserData } from "./recipeSearchCalls";
+import { Alert } from "react-native";
 
 const addRecipeToFavorites = async (givenRecipe, setIsFavorited, directionsOfRecipe, isThisComingFromRecipeSearch) => {
 
     let newFavoritedRecipe = {};
+    let addedDirections;
+    if(directionsOfRecipe == "Loading..."){
+      addedDirections = "N/A";
+    } else{
+      addedDirections = directionsOfRecipe;
+    }
     // accounts for differences in schema between two locations
     if(isThisComingFromRecipeSearch){
       newFavoritedRecipe = {
-        // recipeId: givenRecipe.name,
         recipeName: givenRecipe.name,
         recipeIngredients: givenRecipe.ingredients,
-        recipeDirections: directionsOfRecipe,
+        recipeDirections: addedDirections,
         recipeImage: givenRecipe.image,
         recipeUri: givenRecipe.uri,
+        recipeCalories: givenRecipe.calories
       };
     } else {
       newFavoritedRecipe = {
-        // recipeId: givenRecipe.recipeName,
         recipeName: givenRecipe.recipeName,
         recipeIngredients: givenRecipe.recipeIngredients,
-        recipeDirections: directionsOfRecipe,
+        recipeDirections: addedDirections,
         recipeImage: givenRecipe.recipeImage,
         recipeUri: givenRecipe.recipeUri,
+        recipeCalories: givenRecipe.recipeCalories
       };
     }
-
       console.log("adding to favorites (name): ", newFavoritedRecipe.recipeName);
       console.log("adding to favorites (ingredients): ", newFavoritedRecipe.recipeIngredients);
       console.log("adding to favorites (directions): ", newFavoritedRecipe.recipeDirections);
       console.log("adding to favorites (uri): ", newFavoritedRecipe.recipeUri);
       console.log("adding to favorites (image): ", newFavoritedRecipe.recipeImage);
+      console.log("adding to favorites (calories): ", newFavoritedRecipe.recipeCalories);
       try {
         const userId = await getUserId(loggedInUser);
         const response = await fetch(`${hostForAppCalls}/api/v1/users/${userId}/favorites`, {
@@ -47,6 +54,7 @@ const addRecipeToFavorites = async (givenRecipe, setIsFavorited, directionsOfRec
         const updatedUser = await response.json();
         console.log('Updated user favorites:', updatedUser);
         setIsFavorited(true);
+        Alert.alert("Favorite Added", "Recipe has been added to your favorites!");
       } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
       }
@@ -83,6 +91,7 @@ const removeRecipeFromFavorites = async (givenRecipe, setIsFavorited, isThisComi
     const updatedUser = await response.json();
     console.log('Updated user favorites:', updatedUser);
     setIsFavorited(false);
+    Alert.alert("Favorite Removed", "Recipe has been removed from your favorites!");
   } catch (error) {
     console.error('There was a problem with the delete operation:', error);
   }
@@ -147,7 +156,8 @@ async function getUserId(username){
         uri: data.recipeUri,
         id: data._id,
         ingredients: data.recipeIngredients,
-        directions: data.recipeDirections
+        directions: data.recipeDirections,
+        calories: data.recipeCalories
       }));
 
       console.log('Favorites: ' + arrayOfResults);
@@ -158,4 +168,4 @@ async function getUserId(username){
     }
   }
 
-export { addRecipeToFavorites, removeRecipeFromFavorites, isRecipeAlreadyFavorited, getUserFavoritesFromSever };
+export { addRecipeToFavorites, removeRecipeFromFavorites, isRecipeAlreadyFavorited, getUserFavoritesFromSever, getUserId };

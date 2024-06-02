@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { appBackgroundColor, lightSilverText } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
 
 export default function DietaryRestrictionsScreen({ navigation }) {
 
@@ -13,7 +13,7 @@ export default function DietaryRestrictionsScreen({ navigation }) {
             </Text>
             <Pressable style={({ pressed }) =>[
                 {
-                  backgroundColor: pressed ? 'white' : lightSilverText,
+                  backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground
                 },
               DietaryRestrictionsStyles.pathButton]} 
               onPress={() => navigation.navigate("DietsScreen")}
@@ -23,7 +23,7 @@ export default function DietaryRestrictionsScreen({ navigation }) {
             
             <Pressable style={({ pressed }) =>[
                 {
-                  backgroundColor: pressed ? 'white' : lightSilverText,
+                  backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground
                 },
                 DietaryRestrictionsStyles.pathButton]} 
               onPress={() => navigation.navigate("AllergiesScreen")}
@@ -46,26 +46,20 @@ export default function DietaryRestrictionsScreen({ navigation }) {
     pathButton:{
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 12,
+      borderRadius: 8,
       elevation: 3,
       width: 300,
-      height: 150,
+      height: 175,
       margin: 30,     
-      borderWidth: 4,
+      borderWidth: 1,
     },
     buttonText:{
-        fontSize: 50,
-        fontWeight: '600',
-        color: '#ffffff',
+        fontSize: 55,
+        fontWeight: '400',
+        color: 'white',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center'
-    },
-    dietsText:{
-      color: 'green',
-    },
-    allergiesText:{
-      color: 'red'
     },
     instructions: {
         fontSize: 32,

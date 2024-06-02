@@ -30,7 +30,7 @@ const MultiSelectListAllergy = ({ data }) => {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => toggleItem(item)}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', width: 200, marginLeft: 45 }}>
         <Text style={{fontSize: 30, marginVertical: 4, color: selectedItems.includes(item) ? 'red' : 'black'}}>{item}</Text>
         {selectedItems.includes(item) && <Text style={{fontSize: 30, marginVertical: 4, color: 'red'}}> X</Text>}
       </View>

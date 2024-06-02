@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { onEnteredCodeForForgotPassword, onEnteredEmailForForgotPassword, onEnteredNewPasswords } from '../calls/forgotPasswordCalls';
-import { appBackgroundColor, mainIndigoButtonBackground } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
 
 export default function ForgotPasswordScreen({ navigation }) {
 
@@ -40,7 +40,11 @@ export default function ForgotPasswordScreen({ navigation }) {
                   onChangeText={value => setEmailText(value)}
                   defaultValue={textEmail}
               />
-              <Pressable style={forgotPasswordStyles.submitButton} 
+              <Pressable style={({ pressed }) =>[
+                  {
+                    backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
+                  },
+                  forgotPasswordStyles.submitButton]} 
                   onPress={() => onEnteredEmailForForgotPassword(textEmail, setIsEmailEntryVisible, setIsCodeEntryVisible)}
               >
                 <Text style={forgotPasswordStyles.buttonText}>Submit</Text>
@@ -60,7 +64,11 @@ export default function ForgotPasswordScreen({ navigation }) {
                   onChangeText={value => setVerificationCodeText(value)}
                   defaultValue={textVerificationCode}
               />
-              <Pressable style={forgotPasswordStyles.submitButton} 
+              <Pressable style={({ pressed }) =>[
+                  {
+                    backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
+                  },
+                  forgotPasswordStyles.submitButton]}  
                   onPress={() => onEnteredCodeForForgotPassword(textVerificationCode, setIsCodeEntryVisible, setIsPasswordEntryVisible)}
               >
                 <Text style={forgotPasswordStyles.buttonText}>Submit</Text>
@@ -99,6 +107,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                     placeholder="pASswORd35"
                     placeholderTextColor={"#8c8c8c"}
                     autoCapitalize="none"
+                    secureTextEntry={!passwordVisible}
                     onChangeText={value => setPasswordTwoText(value)}
                     defaultValue={textPasswordTwo}
                 />
@@ -110,7 +119,11 @@ export default function ForgotPasswordScreen({ navigation }) {
                 onPress={togglePasswordVisibility} 
               />
             </View>
-              <Pressable style={forgotPasswordStyles.submitButton} 
+              <Pressable style={({ pressed }) =>[
+                  {
+                    backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
+                  },
+                  forgotPasswordStyles.submitButton]}  
                   onPress={() => onEnteredNewPasswords(textPasswordOne, textPasswordTwo, navigation)}
               >
                 <Text style={forgotPasswordStyles.buttonText}>Submit</Text>
@@ -132,13 +145,12 @@ export default function ForgotPasswordScreen({ navigation }) {
     submitButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 12,
-        borderWidth: 2,
+        borderRadius: 8,
+        borderWidth: 1,
         elevation: 3,
         width: 300,
         height: 100,
         margin: 30,     
-        backgroundColor: mainIndigoButtonBackground, 
     },
     buttonText:{
         fontSize: 40,

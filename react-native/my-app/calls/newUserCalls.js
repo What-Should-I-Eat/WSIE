@@ -12,7 +12,7 @@ const onNewUserCalls = async (textUsername, textRealName, textEmail, textPasswor
         console.log(verificationCode);
         const newUserData = {
             fullName: textRealName,
-            userName: textUsername,
+            username: textUsername,
             password: textPasswordOne,
             email: textEmail,
             verificationCode: verificationCode,
@@ -43,8 +43,10 @@ const onNewUserCalls = async (textUsername, textRealName, textEmail, textPasswor
               console.log(userId);
 
               Alert.alert("Account Successfully Created", "You have successfully created a WSIE profile.\nTo verify your account, please enter the 6 digit code from your email below.\nCode expires in 10 minutes")
-
-              navigation.navigate("VerificationCodeScreen");
+///////////////////////////////////////////////////////////////////////
+              navigation.navigate("VerificationCodeScreen",  {
+                user: textUsername
+              });        ///////////////////////////////////////////////////////////////////////
             })
             .catch(error => {
                 console.error('Fetch error:', error);

@@ -1,10 +1,6 @@
 
-
 const appBackgroundColor = "#fafafa";
+const mainIndigoButtonBackground = "#4c4b63";
+const blueClicked = "#5386e4";
 
-const mainIndigoButtonBackground = "#002957";
-
-const lightSilverText = "#DFDFDF";
-
-
-export { appBackgroundColor, mainIndigoButtonBackground, lightSilverText }
+export { appBackgroundColor, mainIndigoButtonBackground, blueClicked }
