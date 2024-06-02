@@ -4,7 +4,7 @@
 
 The purpose of this readme file is to provide context for how to run the mobile application wtihin this subfolder. 
 
-**It is important to note that this application is currently configured to run locally only. 
+**It is important to note that this mobile application is currently configured to run locally only. 
 This requires the Docker containers to be active while running the mobile app. To run the containers, return to the root of the project and run the `npm start` command.
 For any of the Expo app functionality to work, please update the `localhost` configurations within the app and overall project to run on your local IP network.**
 
