@@ -52,3 +52,5 @@ Alternatively, the iOS Simulator can be launched directly by running the `npm ru
 *If you're running this mobile application for an android device, the instructions remain the same except the run command is instead `npm run android`. Similarly, the Docker containers would have to be running concurrently. An android device simulator may also be necessary.*
 
 For the previous commands which specifically relate to the mobile application, any instances of `npm run` can be replaced with `npx expo start`.
+
+Further Expo documentation is found [here](https://docs.expo.dev/).
