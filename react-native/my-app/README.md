@@ -2,7 +2,11 @@
 
 ## Overview
 
-The purpose of this readme file is to provide context for how to run the mobile application wtihin this subfolder.
+The purpose of this readme file is to provide context for how to run the mobile application wtihin this subfolder. 
+
+**It is important to note that this application is currently configured to run locally only. 
+This requires the Docker containers to be active while running the mobile app. To run the containers, return to the root of the project and run the `npm start` command.
+For any of the Expo app functionality to work, please update the `localhost` configurations within the app and overall project to run on your local IP network.**
 
 ## Recommended Pre-requisites
 
@@ -23,7 +27,7 @@ Simulator can be downloaded from the application store with the [following instr
 
 ![Screen Shot 2024-06-02 at 3 30 54 PM](https://github.com/torieee/WSIE/assets/122702221/515e06b5-fdc7-4ba2-b84f-1466daa62329)
 
-While the Simulator desktop app can run the mobile application, another tool to run the platform on is the Expo mobile application. Once the project is running, one can access the application on a mobile device if the mobile device is on the same network as the desktop running the app.
+While the Simulator desktop app can run the mobile application, another tool to run the platform on is the Expo mobile application. Once the project is running, one can access the application on a mobile device if the mobile device is on the same network as the desktop running the app. Please note caveat in beginning of readme file explaining the limitations of the mobile app access for the present configuration of the app since the host calls and overall project are configured to `localhost` rather than the local IP adress of the user's network.
 
 To download the Expo app, refer to the following
 - [Apple App Store](https://apps.apple.com/us/app/expo-go/id982107779)
@@ -46,8 +50,6 @@ At this point, the following screen shall appear within the console. If the Expo
 Type `i` - this will start the mobile app on the iOS Simulator if the Simulator is open. 
 
 Alternatively, the iOS Simulator can be launched directly by running the `npm run ios` command.
-
-**It is important to note that this application is currently configured to run locally only. This requires the Docker containers to be active while running the mobile app. To run the containers, return to the root of the project and run the `npm start` command.**
 
 *If you're running this mobile application for an android device, the instructions remain the same except the run command is instead `npm run android`. Similarly, the Docker containers would have to be running concurrently. An android device simulator may also be necessary.*
 
