@@ -1,4 +1,7 @@
-const host = '34.16.148.238'
+// Local Deployment
+const host = 'localhost';
+// VM Deployment
+// const host = '34.16.148.238';
 
 let DB_URI = "mongodb://" + host + ":27017/WSIE";;
 

@@ -217,13 +217,20 @@ function RecipeDetailsView() {
     nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.totalNutrients.PROCNT.quantity)} ${recipe.totalNutrients.PROCNT.unit}</li>`;
 
     // Update dietary labels
-    const dietaryLabelsList = document.querySelectorAll('.recipe-info')[3].querySelector('ul');
+    const dietaryContainer = document.querySelectorAll('.recipe-info')[3]
+    const dietaryLabelsList = dietaryContainer.querySelector('ul');
     dietaryLabelsList.innerHTML = '';
-    recipe.dietLabels.forEach(label => {
-      const listItem = document.createElement('li');
-      listItem.textContent = label;
-      dietaryLabelsList.appendChild(listItem);
-    });
+    if (recipe.dietLabels && recipe.dietLabels.length > 0) {
+      recipe.dietLabels.forEach(label => {
+        const listItem = document.createElement('li');
+        listItem.textContent = label;
+        dietaryLabelsList.appendChild(listItem);
+      });
+    } else {
+      const noDietaryText = document.createElement('p');
+      noDietaryText.innerHTML = `No dietary labels.`;
+      dietaryContainer.appendChild(noDietaryText);
+    }
   }
 
   this.buildUserView = async (recipe) => {
