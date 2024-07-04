@@ -20,8 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Change this to 'public/new' for new client
-const BASE_DIR_PATH = "public/new";
+const BASE_DIR_PATH = "public";
 console.log(`Client is being served from: [${BASE_DIR_PATH}]`);
 app.use(express.static(path.join(__dirname, BASE_DIR_PATH)));
 

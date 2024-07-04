@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path');
-const BASE_DIR_PATH = "public/new";
+const BASE_DIR_PATH = "public";
 
 router.get('/my_dietary', function (_, res) {
   res.sendFile(path.join(__dirname, `../${BASE_DIR_PATH}/account/my_dietary.html`));

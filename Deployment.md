@@ -103,7 +103,7 @@ npm run install-all
 1. Update the client
 
 ```bash
-cd ~/WSIE/client/public/new/static/js/
+cd ~/WSIE/client/public/static/js/
 # This opens the file
 # When opened, comment the line below:
 # const HOST = 'http://localhost:8080';
