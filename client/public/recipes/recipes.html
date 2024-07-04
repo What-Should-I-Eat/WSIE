@@ -39,9 +39,7 @@
     $(document).ready(function () {
       const params = new URLSearchParams(window.location.search);
       const search = params.get('search_recipes');
-
-      const recipes = new RecipesView();
-      recipes.load(search);
+      recipesView.load(search);
     });
   </script>
 </head>
@@ -374,6 +372,12 @@
       <!-- Dynamically add results in recipes.js-->
     </div>
     <!-- END: Recipes Search Results -->
+
+    <!-- START: Recipe Pagination -->
+    <nav>
+      <ul id="paginationList" class="pagination justify-content-center"></ul>
+    </nav>
+    <!-- END: Recipe Pagination -->
   </div>
   <!-- END: Recipes View -->
 
