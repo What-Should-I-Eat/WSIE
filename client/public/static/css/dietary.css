@@ -29,3 +29,16 @@
   background-color: #0056b3;
   color: white;
 }
+
+/* Responsive Adjustments for Tablets and Mobiles */
+@media (max-width: 768px) {
+  .toggle-btn {
+    flex: 0 1 calc(50% - 20px); /* Two columns on smaller tablets */
+  }
+}
+
+@media (max-width: 576px) {
+  .toggle-btn {
+    flex: 0 1 calc(100% - 20px); /* One column layout for mobile devices */
+  }
+}

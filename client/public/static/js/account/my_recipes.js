@@ -70,7 +70,7 @@ function MyRecipesView() {
               <a href="/recipes/recipe_details?userRecipeName=${encodeURIComponent(recipeName)}">
                 <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
               </a>
-              <h2>${recipeName}</h2>
+              <h3>${recipeName}</h3>
               <p>Calories: ${recipeCalories}</p>
           </div>`;
 

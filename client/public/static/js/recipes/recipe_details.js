@@ -174,9 +174,21 @@ function RecipeDetailsView() {
     const addToFavoritesBtn = document.getElementById('addToFavorites');
     addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
 
-    // Update header name and image
+    // Update header name
     document.getElementById('recipe-name').textContent = recipe.label;
-    document.getElementById('recipe-image').src = hasValidImage(recipe) ? recipe.images.LARGE.url : NO_IMAGE_AVAILABLE;
+
+    // Update image
+    let imageSrc = NO_IMAGE_AVAILABLE;
+    if (hasValidImage(recipe)) {
+      // Use the LARGE as default in recipe details
+      if (recipe.images.LARGE && recipe.images.LARGE.url) {
+        imageSrc = recipe.images.LARGE.url;
+      } else {
+        imageSrc = recipe.images.REGULAR.url
+      }
+    }
+
+    document.getElementById('recipe-image').src = imageSrc
     document.getElementById('recipe-image').alt = `Image of ${recipe.label}`;
 
     // Update ingredients list
@@ -453,7 +465,8 @@ function isValidResult(recipeDetails) {
 }
 
 function hasValidImage(recipe) {
-  return recipe.images && recipe.images.LARGE && recipe.images.LARGE.url;
+  return recipe.images && ((recipe.images.LARGE && recipe.images.LARGE.url) ||
+    (recipe.images.REGULAR && recipe.images.REGULAR.url));
 }
 
 async function checkIfFavorite(username, recipeName) {

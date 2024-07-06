@@ -60,10 +60,12 @@ const USER_UPDATE_EMAIL = `${HOST}/${API_VERSION}/users/profile/update_email`;
 const USER_UPDATE_PASSWORD = `${HOST}/${API_VERSION}/users/profile/update_password`;
 
 // Edamam API Endpoints
+const EDAMAM_APP_ID = "3cd9f1b4";
+const EDAMAM_APP_KEY = "e19d74b936fc6866b5ae9e2bd77587d9";
 const EDAMAM_BASE_API_URL = "https://api.edamam.com/api/recipes/v2"
-const EDAMAM_API_URL = `${EDAMAM_BASE_API_URL}?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=`;
-const EDAMAM_API_EMPTY_SEARCH_URL = `${EDAMAM_BASE_API_URL}?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&`;
-const EDAMAM_RECIPE_URI_URL = `${EDAMAM_BASE_API_URL}/by-uri?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&uri`;
+const EDAMAM_API_URL = `${EDAMAM_BASE_API_URL}?type=public&app_id=${EDAMAM_APP_ID}&app_key=${EDAMAM_APP_KEY}&q=`;
+const EDAMAM_API_EMPTY_SEARCH_URL = `${EDAMAM_BASE_API_URL}?type=public&app_id=${EDAMAM_APP_ID}&app_key=${EDAMAM_APP_KEY}`;
+const EDAMAM_RECIPE_URI_URL = `${EDAMAM_BASE_API_URL}/by-uri?type=public&app_id=${EDAMAM_APP_ID}&app_key=${EDAMAM_APP_KEY}&uri`;
 
 // Authentication Modals
 const authClassesToRemove = ['alert-danger', 'alert-success', 'alert-warning'];

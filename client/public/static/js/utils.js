@@ -349,10 +349,7 @@ const utils = (() => {
     alertDiv.alert();
 
     // Scroll the window to the top whenever an alert is displayed
-    window.scroll({
-      top: 0,
-      behavior: 'smooth'
-    });
+    scrollToTop();
   }
 
   /**
@@ -408,6 +405,18 @@ const utils = (() => {
     });
   }
 
+  /**
+   * Helper function that will scroll the window nice and smooth to the top.
+   * This should be used for things such as alerts to the user and for
+   * pagination
+   */
+  function scrollToTop() {
+    window.scroll({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
   return {
     setStorage,
     removeFromStorage,
@@ -426,6 +435,7 @@ const utils = (() => {
     showAjaxAlert,
     clearCookies,
     cleanupSignOut,
-    getUserRecipeImage
+    getUserRecipeImage,
+    scrollToTop
   };
 })();
