@@ -370,7 +370,7 @@
           <h2 id="dietaryRestrictionsHeader">Dietary Restrictions</h2>
           <div class="d-flex flex-column align-items-end">
             <button type="submit" form="updateDietaryRestrictionsForm" class="mb-3 btn btn-primary btn-block">Update
-              Restrictions</button>
+              Dietary</button>
           </div>
         </div>
 
@@ -378,25 +378,16 @@
 
         <div id="dietaryRestrictionsContainer" class="dietary-restrictions-container">
           <!-- First Row -->
-          <button type="button" class="btn toggle-btn">Low Carb</button>
-          <button type="button" class="btn toggle-btn">Low Fat</button>
-          <button type="button" class="btn toggle-btn">Low Sodium</button>
+          <button type="button" class="btn toggle-btn"
+            title="Protein/Fat/Carb values in 15/35/50 ratio">Balanced</button>
+          <button type="button" class="btn toggle-btn" title="More than 5g fiber per serving">High Fiber</button>
+          <button type="button" class="btn toggle-btn" title="More than 50% of total calories from proteins">High
+            Protein</button>
           <!-- Second Row -->
-          <button type="button" class="btn toggle-btn">Balanced</button>
-          <button type="button" class="btn toggle-btn">High Fiber</button>
-          <button type="button" class="btn toggle-btn">High Protein</button>
-          <!-- Third Row -->
-          <button type="button" class="btn toggle-btn">Vegan</button>
-          <button type="button" class="btn toggle-btn">Vegetarian</button>
-          <button type="button" class="btn toggle-btn">Paleo</button>
-          <!-- Fourth Row -->
-          <button type="button" class="btn toggle-btn">Keto</button>
-          <button type="button" class="btn toggle-btn">Kosher</button>
-          <button type="button" class="btn toggle-btn">Pork Free</button>
-          <!-- Fifth Row -->
-          <button type="button" class="btn toggle-btn">Pescatarian</button>
-          <button type="button" class="btn toggle-btn">Red Meat Free</button>
-          <button type="button" class="btn toggle-btn">Low FODMAP</button>
+          <button type="button" class="btn toggle-btn" title="Less than 20% of total calories from carbs">Low
+            Carb</button>
+          <button type="button" class="btn toggle-btn" title="Less than 15% of total calories from fat">Low Fat</button>
+          <button type="button" class="btn toggle-btn" title="Less than 140mg Na per serving">Low Sodium</button>
         </div>
       </form>
     </div>
@@ -404,43 +395,93 @@
 
     <hr />
 
-    <!-- START: Food Allergies -->
+    <!-- START: Health Restrictions -->
     <div class="container mt-5">
       <div class="mb-5">
-        <form id="updateFoodAllergiesForm">
+        <form id="updateHealthRestrictionsForm">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 id="foodAllergiesHeader">Food Allergies</h2>
+            <h2 id="healthRestrictionsHeader">Health Restrictions</h2>
             <div class="d-flex flex-column align-items-end">
-              <button type="submit" form="updateFoodAllergiesForm" class="mb-3 btn btn-primary btn-block">Update
-                Allergies</button>
-              <!-- <a href="#" id="updateAllergiesButton" class="btn btn-primary">Update Allergies</a> -->
+              <button type="submit" form="updateHealthRestrictionsForm" class="mb-3 btn btn-primary btn-block">Update
+                Health</button>
             </div>
           </div>
 
           <hr />
 
-          <div id="foodAllergiesContainer" class="food-allergies-container">
-            <!-- First Row -->
-            <button type="button" class="btn toggle-btn">Gluten</button>
-            <button type="button" class="btn toggle-btn">Dairy</button>
-            <button type="button" class="btn toggle-btn">Eggs</button>
-            <!-- Second Row -->
-            <button type="button" class="btn toggle-btn">Soy</button>
-            <button type="button" class="btn toggle-btn">Wheat</button>
-            <button type="button" class="btn toggle-btn">Fish</button>
-            <!-- Third Row -->
-            <button type="button" class="btn toggle-btn">Shellfish</button>
-            <button type="button" class="btn toggle-btn">Tree Nuts</button>
-            <button type="button" class="btn toggle-btn">Peanuts</button>
-            <!-- Fourth Row -->
-            <button type="button" class="btn toggle-btn">Sesame</button>
-            <button type="button" class="btn toggle-btn">Low Sugar</button>
-            <button type="button" class="btn toggle-btn">Alcohol Free</button>
+          <div id="healthRestrictionsContainer" class="health-restrictions-container">
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn" title="No alcohol used or contained">Alcohol Free</button>
+            <button type="button" class="btn toggle-btn" title="Does not contain celery or derivatives">Celery
+              Free</button>
+            <button type="button" class="btn toggle-btn"
+              title="Does not contain crustaceans (shrimp, lobster etc.) or derivatives">Crustacean Free</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn" title="No dairy; no lactose">Dairy Free</button>
+            <button type="button" class="btn toggle-btn" title="No eggs or products containing eggs">Egg Free</button>
+            <button type="button" class="btn toggle-btn" title="No fish or fish derivatives">Fish Free</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn" title="Does not contain FODMAP foods">FODMAP Free</button>
+            <button type="button" class="btn toggle-btn" title="No ingredients containing gluten">Gluten Free</button>
+            <button type="button" class="btn toggle-btn"
+              title="Recipes which fit a science-based approach to eating to strengthen the immune system">Immuno
+              Supportive</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn" title="Maximum 7 grams of net carbs per serving">Keto
+              Friendly</button>
+            <button type="button" class="btn toggle-btn"
+              title="Per serving - phosphorus less than 250 mg AND potassium less than 500 mg AND sodium less than 500 mg">Kidney
+              Friendly</button>
+            <button type="button" class="btn toggle-btn"
+              title="Contains only ingredients allowed by the kosher diet. However it does not guarantee kosher preparation of the ingredients themselves">Kosher</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn" title="Less than 150mg per serving">Low Potassium</button>
+            <button type="button" class="btn toggle-btn"
+              title="No simple sugars - glucose, dextrose, galactose, fructose, sucrose, lactose, maltose">Low
+              Sugar</button>
+            <button type="button" class="btn toggle-btn" title="Does not contain lupine or derivatives">Lupine
+              Free</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn" title="Mediterranean diet">Mediterranean</button>
+            <button type="button" class="btn toggle-btn" title="No mollusks">Mollusk Free</button>
+            <button type="button" class="btn toggle-btn" title="Does not contain mustard or derivatives">Mustard
+              Free</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn"
+              title="No oil added except to what is contained in the basic ingredients">No Oil Added</button>
+            <button type="button" class="btn toggle-btn"
+              title="Excludes what are perceived to be agricultural products; grains, legumes, dairy products, potatoes, refined salt, refined sugar, and processed oils">Paleo</button>
+            <button type="button" class="btn toggle-btn" title="No peanuts or products containing peanuts">Peanut
+              Free</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn"
+              title="Does not contain meat or meat based products, can contain dairy and fish">Pescatarian</button>
+            <button type="button" class="btn toggle-btn" title="Does not contain pork or derivatives">Pork Free</button>
+            <button type="button" class="btn toggle-btn"
+              title="Does not contain beef, lamb, pork, duck, goose, game, horse, and other types of red meat or products containing red meat.">Red
+              Meat Free</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn" title="Does not contain sesame seed or derivatives">Sesame
+              Free</button>
+            <button type="button" class="btn toggle-btn" title="No shellfish or shellfish derivatives">Shellfish
+              Free</button>
+            <button type="button" class="btn toggle-btn" title="No soy or products containing soy">Soy Free</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn" title="Less than 4g of sugar per serving">Sugar
+              Conscious</button>
+            <button type="button" class="btn toggle-btn" title="No Sulfites">Sulfite Free</button>
+            <button type="button" class="btn toggle-btn" title="No tree nuts or products containing tree nuts">Tree Nut
+              Free</button>
+            <!-- New Row -->
+            <button type="button" class="btn toggle-btn"
+              title="No meat, poultry, fish, dairy, eggs or honey">Vegan</button>
+            <button type="button" class="btn toggle-btn" title="No meat, poultry, or fish">Vegetarian</button>
+            <button type="button" class="btn toggle-btn" title="No wheat, can have gluten though">Wheat Free</button>
           </div>
         </form>
       </div>
     </div>
-    <!-- END: Food Allergies -->
+    <!-- END: Health Restrictions -->
 
     <!-- START: Footer -->
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">

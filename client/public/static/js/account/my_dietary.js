@@ -21,7 +21,7 @@ function MyDietaryView() {
     utils.getUserFromUsername(username).then(user => {
       console.log("Updating Dietary for username:", username);
       updateDietaryButtons(user, ".dietary-restrictions-container button", dietRestrictions);
-      updateDietaryButtons(user, ".food-allergies-container button", healthRestrictions);
+      updateDietaryButtons(user, ".health-restrictions-container button", healthRestrictions);
 
       // Set initial restrictions at page load
       initialDietRestrictions = [...dietRestrictions];
@@ -33,10 +33,9 @@ function MyDietaryView() {
   };
 
   const updateDietaryButtons = (user, selector, restrictionsList) => {
-    const buttons = $(selector);
-    buttons.each(function () {
+    $(selector).each(function () {
       const button = $(this);
-      const restriction = getEdamamRestrictionMapping(button.text());
+      const restriction = getButtonEdamamMapping(cleanButtonText(button.text()));
 
       if (user.diet.includes(restriction) || user.health.includes(restriction)) {
         button.addClass('selected');
@@ -46,26 +45,28 @@ function MyDietaryView() {
       }
 
       button.off('click').on('click', function () {
-        $(this).toggleClass('selected');
-        const index = restrictionsList.indexOf(restriction);
-        if (index === -1) {
-          restrictionsList.push(restriction);
-          console.log('Added [', restriction, '] to array');
-        } else {
-          restrictionsList.splice(index, 1);
-          console.log('Removed: [', restriction, '] from array');
-        }
-
-        console.log("Current State:", restrictionsList);
+        toggleRestriction(button, restriction, restrictionsList);
       });
     });
   };
 
-  // Handles dietary and food allergies submission form logic
-  $("#updateDietaryRestrictionsForm, #updateFoodAllergiesForm").on("submit", function (event) {
+  const toggleRestriction = (button, restriction, restrictionsList) => {
+    button.toggleClass('selected');
+    const index = restrictionsList.indexOf(restriction);
+    if (index === -1) {
+      restrictionsList.push(restriction);
+      console.log(`Added [${restriction}] from array`);
+    } else {
+      restrictionsList.splice(index, 1);
+      console.log(`Removed [${restriction}] from array`);
+    }
+    console.log("Current State:", restrictionsList);
+  };
+
+
+  $("#updateDietaryRestrictionsForm, #updateHealthRestrictionsForm").on("submit", function (event) {
     event.preventDefault();
-    const formId = $(this).attr('id');
-    const isDietForm = formId === "updateDietaryRestrictionsForm";
+    const isDietForm = this.id === "updateDietaryRestrictionsForm";
     const currentRestrictions = isDietForm ? dietRestrictions : healthRestrictions;
     const initialRestrictions = isDietForm ? initialDietRestrictions : initialHealthRestrictions;
 
@@ -76,13 +77,17 @@ function MyDietaryView() {
       return;
     }
 
-    console.log(`Updating ${username} ${isDietForm ? 'dietary restrictions' : 'food allergies'}`);
+    console.log(`Updating ${username} ${isDietForm ? 'dietary restrictions' : 'health restrictions'}`);
     if (utils.arraysEqual(currentRestrictions, initialRestrictions)) {
       console.warn(NO_USER_DIETARY_CHANGES_DETECTED);
       utils.showAjaxAlert("Warning", NO_USER_DIETARY_CHANGES_DETECTED);
       return;
     }
 
+    updateUserRestrictions(isDietForm, username, currentRestrictions, initialRestrictions);
+  });
+
+  const updateUserRestrictions = (isDietForm, username, currentRestrictions, initialRestrictions) => {
     const request = getRequest(isDietForm, username, currentRestrictions);
     const url = isDietForm ? UPDATE_USER_DIET_URL : UPDATE_USER_HEALTH_URL;
 
@@ -93,68 +98,74 @@ function MyDietaryView() {
       },
       body: JSON.stringify(request)
     }).then(response => {
-      if (!response.ok) {
-        const errorMessage = isDietForm ? FAILED_TO_UPDATED_USER_DIETARY : FAILED_TO_UPDATE_USER_HEALTH;
-        throw new Error(errorMessage);
-      }
+      if (!response.ok) throw new Error(isDietForm ? FAILED_TO_UPDATED_USER_DIETARY : FAILED_TO_UPDATE_USER_HEALTH);
 
       initialRestrictions.splice(0, initialRestrictions.length, ...currentRestrictions);
-
-      const successMessage = isDietForm ? SUCCESSFULLY_UPDATED_USER_DIETARY : SUCCESSFULLY_UPDATED_USER_HEALTH
+      const successMessage = isDietForm ? SUCCESSFULLY_UPDATED_USER_DIETARY : SUCCESSFULLY_UPDATED_USER_HEALTH;
       console.log(successMessage);
       utils.showAjaxAlert("Success", successMessage);
     }).catch(error => {
       console.log(error);
       utils.showAjaxAlert("Error", error.message);
     });
-  });
-}
-
-function getRequest(isDietForm, username, currentRestrictions) {
-  if (isDietForm) {
-    return {
-      username: username,
-      diet: currentRestrictions
-    }
-  } else {
-    return {
-      username: username,
-      health: currentRestrictions
-    }
-  }
-}
-
-function getEdamamRestrictionMapping(buttonName) {
-  const restrictionMap = {
-    'Balanced': 'balanced',
-    'High Fiber': 'high-fiber',
-    'High Protein': 'high-protein',
-    'Low Carb': 'low-carb',
-    'Low Fat': 'low-fat',
-    'Low Sodium': 'low-sodium',
-    'Vegan': 'vegan',
-    'Vegetarian': 'vegetarian',
-    'Alcohol Free': 'alcohol-free',
-    'Dairy': 'dairy-free',
-    'Eggs': 'egg-free',
-    'Fish': 'fish-free',
-    'Low FODMAP': 'fodmap-free',
-    'Gluten': 'gluten-free',
-    'Immunity Supporting': 'immuno-supportive',
-    'Keto': 'keto-friendly',
-    'Kosher': 'kosher',
-    'Low Sugar': 'low-sugar',
-    'Paleo': 'paleo',
-    'Peanuts': 'peanut-free',
-    'Pescatarian': 'pescatarian',
-    'Pork Free': 'pork-free',
-    'Sesame': 'sesame-free',
-    'Red Meat Free': 'red-meat-free',
-    'Shellfish': 'shellfish-free',
-    'Soy': 'soy-free',
-    'Tree Nuts': 'tree-nut-free',
-    'Wheat': 'wheat-free'
   };
 
-  return restrictionMap[buttonName] || null;
+  const getRequest = (isDietForm, username, currentRestrictions) => ({
+    username,
+    [isDietForm ? 'diet' : 'health']: currentRestrictions
+  });
+
+  const cleanButtonText = (text) => {
+    // Normalize the text: trim and replace multiple spaces with a single space
+    return text.trim().replace(/\s+/g, ' ');
+  };
+
+  // API For Diet and Health can be found here: https://developer.edamam.com/edamam-docs-recipe-api
+  const getButtonEdamamMapping = (buttonName) => {
+    const buttonApiMap = {
+      // Diet
+      'Balanced': 'balanced',
+      'High Fiber': 'high-fiber',
+      'High Protein': 'high-protein',
+      'Low Carb': 'low-carb',
+      'Low Fat': 'low-fat',
+      'Low Sodium': 'low-sodium',
+      // Health
+      'Alcohol Free': 'alcohol-free',
+      'Celery Free': 'celery-free',
+      'Crustacean Free': 'crustacean-free',
+      'Dairy Free': 'dairy-free',
+      'Egg Free': 'egg-free',
+      'Fish Free': 'fish-free',
+      'FODMAP Free': 'fodmap-free',
+      'Gluten Free': 'gluten-free',
+      'Immuno Supportive': 'immuno-supportive',
+      'Keto Friendly': 'keto-friendly',
+      'Kidney Friendly': 'kidney-friendly',
+      'Kosher': 'kosher',
+      'Low Potassium': 'low-potassium',
+      'Low Sugar': 'low-sugar',
+      'Lupine Free': 'lupine-free',
+      'Mediterranean': 'Mediterranean',
+      'Mollusk Free': 'mollusk-free',
+      'Mustard Free': 'mustard-free',
+      'No Oil Added': 'no-oil-added',
+      'Paleo': 'paleo',
+      'Peanut Free': 'peanut-free',
+      'Pescatarian': 'pescatarian',
+      'Pork Free': 'pork-free',
+      'Red Meat Free': 'red-meat-free',
+      'Sesame Free': 'sesame-free',
+      'Shellfish Free': 'shellfish-free',
+      'Soy Free': 'soy-free',
+      'Sugar Conscious': 'sugar-conscious',
+      'Sulfite Free': 'sulfite-free',
+      'Tree Nut Free': 'tree-nut-free',
+      'Vegan': 'vegan',
+      'Vegetarian': 'vegetarian',
+      'Wheat Free': 'wheat-free',
+    };
+
+    return buttonApiMap[buttonName] || null;
+  };
 }

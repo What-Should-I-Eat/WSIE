@@ -10,23 +10,27 @@ function RecipesView() {
 
   this.load = async (searchParam, apiUrl = null, pageUrl = null) => {
     const container = $('.recipes-container');
+    const pagination = $("#paginationList");
 
     try {
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl);
       const recipes = await this.getRecipes(url);
-      console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
 
-      if (recipes) {
+      if (hasRecipeHits(recipes)) {
+        console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
         this.renderRecipes(recipes, container);
         this.updatePagination(recipes, url, `${recipes.from}-${recipes.to}`);
+        pagination.show();
       } else {
+        console.warn(NO_RECIPES_FOUND);
         container.append(this.getNoRecipesFound());
+        pagination.empty().hide();
       }
     } catch (error) {
       console.error(error);
       utils.showAjaxAlert("Error", error.message);
       container.append(this.getNoRecipesFound());
-      $("#paginationList").empty();
+      pagination.empty().hide();
     }
   };
 
@@ -87,14 +91,7 @@ function RecipesView() {
     container.empty();
     addedRecipesSet.clear();
 
-    const recipeResults = recipes.hits;
-
-    if (!recipeResults || recipeResults.length === 0) {
-      container.append(this.getNoRecipesFound());
-      return;
-    }
-
-    recipeResults.forEach(data => {
+    recipes.hits.forEach(data => {
       const recipe = data.recipe;
       const identifier = `${recipe.label}-${recipe.source}-${recipe.url}`;
 
@@ -177,16 +174,22 @@ function RecipesView() {
   };
 }
 
+function hasRecipeHits(recipes) {
+  return recipes && recipes.hits && recipes.hits.length > 0;
+}
+
 function hasValidImage(recipe) {
   return recipe.images && ((recipe.images.LARGE && recipe.images.LARGE.url) ||
     (recipe.images.REGULAR && recipe.images.REGULAR.url));
 }
 
 function getUserDietString(dietArray) {
+  console.debug(`User Dietary Restrictions: [${dietArray}]`);
   return dietArray.length ? dietArray.map(dietItem => `&diet=${dietItem}`).join('') : "";
 }
 
 function getUserHealthString(healthArray) {
+  console.debug(`User Health Restrictions: [${healthArray}]`);
   return healthArray.length ? healthArray.map(healthItem => `&health=${healthItem}`).join('') : "";
 }
 

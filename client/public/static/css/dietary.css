@@ -1,5 +1,5 @@
 .dietary-restrictions-container,
-.food-allergies-container {
+.health-restrictions-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;

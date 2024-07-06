@@ -106,7 +106,7 @@ const FAILED_TO_RESEND_CODE_MISSING_NAME = `${FAILED_TO_RESEND_CODE}. Missing na
 
 // Dietary Updates
 const SUCCESSFULLY_UPDATED_USER_DIETARY = "Successfully updated user diet";
-const SUCCESSFULLY_UPDATED_USER_HEALTH = "Successfully updated user food allergies";
+const SUCCESSFULLY_UPDATED_USER_HEALTH = "Successfully updated user health";
 const FAILED_TO_UPDATED_USER_DIETARY = "Error occurred trying to update user diet";
 const FAILED_TO_UPDATE_USER_HEALTH = "Error occurred trying to update user health";
 const NO_USER_DIETARY_CHANGES_DETECTED = "No user dietary changes detected";
