@@ -26,7 +26,6 @@ input[type="password"] {
   /* Causing issues with show/hide alignment */
   /* margin: 8px 0; */
   display: inline-block;
-  border: 1px solid #ccc;
   box-sizing: border-box;
 }
 
@@ -63,4 +62,8 @@ input[type="password"] {
 a,
 a:hover {
   color: #333;
+}
+
+.input-group input {
+  padding: 6px 12px;
 }
