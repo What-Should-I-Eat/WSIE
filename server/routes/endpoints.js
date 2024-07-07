@@ -79,7 +79,8 @@ endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
 //Change password
 endpoints.put("/users/changePassword", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let userToLower = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: userToLower });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -102,7 +103,8 @@ endpoints.put("/users/changePassword", async (req, res) => {
 // gets user's email based on username - needed for login
 endpoints.post("/users/getUserEmail", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let userToLower = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: userToLower });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -119,7 +121,8 @@ endpoints.post("/users/getUserEmail", async (req, res) => {
 
 endpoints.post("/users/getUserFavorites", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let userToLower = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: userToLower });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -240,8 +243,9 @@ endpoints.use(session({
 //~~~~~ POST a new user - WORKS!
 endpoints.post("/users/register", async (req, res) => {
   try {
+    let userToLower = req.body.username.toLowerCase();
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const existingUsernameCheck = await User.findOne({ username: req.body.username });
+    const existingUsernameCheck = await User.findOne({ username: userToLower });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
     const currentTimestamp = new Date();
@@ -249,7 +253,7 @@ endpoints.post("/users/register", async (req, res) => {
     const user = new User({
       id: req.body.id,
       fullName: req.body.fullName,
-      username: req.body.username,
+      username: userToLower,
       password: hashedPassword,
       email: req.body.email,
       verified: false,
@@ -280,7 +284,8 @@ endpoints.post("/users/register", async (req, res) => {
 
 endpoints.put("/users/verify", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let userToLower = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: userToLower });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -313,7 +318,8 @@ endpoints.put("/users/verify", async (req, res) => {
 // //Changing this: response is now the verification code
 endpoints.put("/users/resendVerificationCode", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let userToLower = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: userToLower });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -336,7 +342,8 @@ endpoints.put("/users/resendVerificationCode", async (req, res) => {
 //~~~~~ POST specific user by user - changed from GET so we could have a body
 endpoints.post('/users/find-username', async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let userToLower = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: userToLower });
     const inputtedPassword = req.body.password;
 
     if (!user) {
@@ -431,7 +438,7 @@ endpoints.get('/users/profile', (req, res) => {
 
 endpoints.get('/users/findUserData', async (req, res) => {
   try {
-    const username = req.query.username;
+    const username = req.query.username.toLowerCase();
     const user = await User.findOne({ username: username });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -472,7 +479,7 @@ endpoints.get('/users', async (req, res) => { //WORKS!
 //Find user id by username - WORKS! returns username's id
 endpoints.get('/users/findUserId', async (req, res) => {
   try {
-    const username = req.query.username; // Access the username from query parameters
+    const username = req.query.username.toLowerCase(); // Access the username from query parameters
     // const username_cookie = req.headers.getSetCookie();
     const user = await User.findOne({ username: username });
     if (!user) {
@@ -490,7 +497,7 @@ endpoints.get('/users/findUserId', async (req, res) => {
 //Find user by username - not for login purposes - WORKS!
 endpoints.get('/users/finduser/:username', async (req, res) => {
   try {
-    const username = req.params.username; // Access the username from query parameters
+    const username = req.params.username.toLowerCase(); // Access the username from query parameters
     const user = await User.findOne({ username: username });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -522,7 +529,7 @@ endpoints.delete("/users/:id", async (req, res) => { //WORKS!
 //~~~~~ PUT a change in a user's diet array
 endpoints.put('/users/diet', async (req, res) => {
   try {
-    const username = req.body.username;
+    const username = req.body.username.toLowerCase();
     console.log("Username = ", username);
     const user = await User.findOne({ username: username });
     if (!user) {
@@ -543,7 +550,7 @@ endpoints.put('/users/diet', async (req, res) => {
 //~~~~~ PUT a change in a user's health array
 endpoints.put('/users/health', async (req, res) => {
   try {
-    const username = req.body.username;
+    const username = req.body.username.toLowerCase();
     const user = await User.findOne({ username: username });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -633,7 +640,8 @@ endpoints.delete('/users/:id/favorites', async (req, res) => {
 /////////////////////////////////////////////////////////
 endpoints.put("/users/profile/update_details", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let userToLower = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: userToLower });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -663,7 +671,8 @@ endpoints.put("/users/profile/update_details", async (req, res) => {
 
 endpoints.put("/users/profile/update_email", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let userToLower = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: userToLower });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -693,7 +702,8 @@ endpoints.put("/users/profile/update_email", async (req, res) => {
 
 endpoints.put("/users/profile/update_password", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    let userToLower = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: userToLower });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
