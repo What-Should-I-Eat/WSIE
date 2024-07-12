@@ -45,7 +45,6 @@ function MyRecipesView() {
         const recipeSource = encodeURIComponent(source);
         const recipeSourceUrl = encodeURIComponent(sourceUrl);
         const recipeName = recipe.recipeName;
-        const recipeCalories = Math.round(recipe.recipeCalories);
         const recipeUri = encodeURIComponent(recipe.recipeUri);
         const recipeImage = hasValidImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
 
@@ -54,15 +53,14 @@ function MyRecipesView() {
               <a href="/recipes/recipe_details?source=${recipeSource}&sourceUrl=${recipeSourceUrl}&uri=${recipeUri}">
                   <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
               </a>
-              <h2>${recipeName}</h2>
-              <p>Calories: ${recipeCalories}</p>
+              <h4>${recipeName}</h4>
+              <p><a href="${sourceUrl}" target="_blank">${source}</a></p>
           </div>`;
 
         console.debug(`Adding [${recipeName}] from source: [${source}], sourceUrl: [${sourceUrl}]`);
         container.append(recipeHtml);
       } else if (recipe.userCreated) {
         const recipeName = recipe.recipeName;
-        const recipeCalories = Math.round(recipe.recipeCalories);
         const recipeImage = await utils.getUserRecipeImage(recipe);
 
         const recipeHtml = `
@@ -70,8 +68,10 @@ function MyRecipesView() {
               <a href="/recipes/recipe_details?userRecipeName=${encodeURIComponent(recipeName)}">
                 <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
               </a>
+              <div class="user-icon">
+                <i class="fas fa-user"></i>
+              </div>
               <h3>${recipeName}</h3>
-              <p>Calories: ${recipeCalories}</p>
           </div>`;
 
         console.debug(`Adding user created recipe: [${recipeName}]`);

@@ -101,15 +101,11 @@ function RecipesView() {
 
         const recipeHtml = `
             <div class="box">
-                <a onclick="window.location.href='/recipes/recipe_details?source=${encodeURIComponent(recipe.source)}&sourceUrl=${encodeURIComponent(recipe.url)}&uri=${encodeURIComponent(recipe.uri)}'">
+                <a href="/recipes/recipe_details?source=${encodeURIComponent(recipe.source)}&sourceUrl=${encodeURIComponent(recipe.url)}&uri=${encodeURIComponent(recipe.uri)}">
                     <img src="${recipeImage}" alt="${recipe.label}" title="View more about ${recipe.label}">
                 </a>
                 <h4>${recipe.label}</h4>
                 <p><a href="${recipe.url}" target="_blank">${recipe.source}</a></p>
-                <!-- Leave commented out to drive traffic to view the recipe
-                and not be swayed by calorie count 
-                <p>Calories: ${Math.round(recipe.calories)}</p>
-                -->
             </div>`;
 
         console.debug(`Adding [${recipe.label}] from source: [${recipe.source}], sourceUrl: [${recipe.url}]`);

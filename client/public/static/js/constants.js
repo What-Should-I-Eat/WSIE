@@ -115,7 +115,10 @@ const FAILED_TO_GET_USER_PROFILE = "Error occurred getting profile using cookies
 
 // Search
 const EDAMAM_QUERY_ERROR = "Error occurred getting recipes. Verify dietary restrictions don't contradict your search request";
-const NO_IMAGE_AVAILABLE = "/static/img/food-loss.svg";
+// This is trash can with food
+// const NO_IMAGE_AVAILABLE = "/static/img/food-loss.svg";
+// This is a generic no image available
+const NO_IMAGE_AVAILABLE = "/static/img/no_image_available.svg";
 const NO_RECIPES_FOUND = "0 recipes found.";
 
 // Recipe Details
