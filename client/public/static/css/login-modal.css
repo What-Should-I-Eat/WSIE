@@ -23,8 +23,6 @@ input[type="text"],
 input[type="password"] {
   width: 100%;
   padding: 12px 20px;
-  /* Causing issues with show/hide alignment */
-  /* margin: 8px 0; */
   display: inline-block;
   box-sizing: border-box;
 }
