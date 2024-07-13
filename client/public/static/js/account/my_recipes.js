@@ -54,7 +54,6 @@ function MyRecipesView() {
                   <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
               </a>
               <h4>${recipeName}</h4>
-              <p><a href="${sourceUrl}" target="_blank">${source}</a></p>
           </div>`;
 
         console.debug(`Adding [${recipeName}] from source: [${source}], sourceUrl: [${sourceUrl}]`);
