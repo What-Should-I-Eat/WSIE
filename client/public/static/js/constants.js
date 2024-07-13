@@ -59,6 +59,9 @@ const USER_UPDATE_DETAILS = `${HOST}/${API_VERSION}/users/profile/update_details
 const USER_UPDATE_EMAIL = `${HOST}/${API_VERSION}/users/profile/update_email`;
 const USER_UPDATE_PASSWORD = `${HOST}/${API_VERSION}/users/profile/update_password`;
 
+// Contact Us API Endpoints
+const CONTACT_US_URL = `${HOST}/${API_VERSION}/contact/create_message`;
+
 // Edamam API Endpoints
 const EDAMAM_APP_ID = "3cd9f1b4";
 const EDAMAM_APP_KEY = "e19d74b936fc6866b5ae9e2bd77587d9";

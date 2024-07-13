@@ -31,6 +31,7 @@
   <script src="/static/js/verification.js"></script>
   <script src="/static/js/forgot-password.js"></script>
   <script src="/static/js/login.js"></script>
+  <script src="/static/js/contact_us.js"></script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -371,51 +372,28 @@
   <div class="container mt-5">
     <div class="contact-us-container">
       <form id="contactUsForm">
-        <h2>Contact Us</h2>
-
-        <hr />
 
         <div class="form-group">
-          <label for="recipeName">Recipe Name</label>
-          <input type="text" id="recipeName" name="recipeName" class="contact-us-input" required />
+          <label for="first_name">First Name</label>
+          <input type="text" id="first_name" name="first_name" class="contact-us-input" required />
         </div>
 
         <div class="form-group">
-          <label for="recipeIngredients">Ingredients</label>
-          <textarea id="recipeIngredients" name="recipeIngredients" class="contact-us-input" required></textarea>
+          <label for="last_name">Last Name</label>
+          <input type="text" id="last_name" name="last_name" class="contact-us-input" required />
         </div>
 
         <div class="form-group">
-          <label for="recipeDirections">Preparation</label>
-          <textarea id="recipeDirections" name="recipeDirections" class="contact-us-input" required></textarea>
+          <label for="email_address">Email</label>
+          <input type="email" id="email_address" name="email_address" class="contact-us-input" required />
         </div>
 
         <div class="form-group">
-          <label for="recipeCalories">Calories (kcal)</label>
-          <input type="number" id="recipeCalories" name="recipeCalories" class="contact-us-input" />
+          <label for="your_message">Message</label>
+          <textarea id="your_message" name="your_message" class="contact-us-input" required></textarea>
         </div>
 
-        <div class="form-group">
-          <label for="recipeCarbs">Carbohydrates (g)</label>
-          <input type="number" id="recipeCarbs" name="recipeCarbs" class="contact-us-input" />
-        </div>
-
-        <div class="form-group">
-          <label for="recipeFats">Fats (g)</label>
-          <input type="number" id="recipeFats" name="recipeFats" class="contact-us-input" />
-        </div>
-
-        <div class="form-group">
-          <label for="recipeProtein">Protein (g)</label>
-          <input type="number" id="recipeProtein" name="recipeProtein" class="contact-us-input" />
-        </div>
-
-        <div class="form-group">
-          <label for="userRecipeImage">Recipe Image</label>
-          <input type="file" id="userRecipeImage" name="userRecipeImage" class="contact-us-input" accept="image/*" />
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="contactUsButton">Create</button>
+        <button type="submit" class="btn btn-primary" id="contactUsButton">Send Message</button>
       </form>
     </div>
   </div>

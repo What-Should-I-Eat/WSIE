@@ -14,18 +14,10 @@ var cors = require('cors');
 
 var endpoints = express.Router();
 
-var Ingredient = require("./src/models/ingredients_model"); //Need to keep this even though its greyed out
-
-
-var Restriction = require("./src/models/dietaryRestrictions_model");
-
-var RecipeInput = require("./src/models/recipeSearch_model.js");
-
 var RestrictionInput = require("./src/models/restrictionInput_model.js");
 
 var User = require("./src/models/userModel.js");
 
-var json = require("body-parser/lib/types/json"); //Endpoint Setup
 
 
 endpoints.use(bodyParser.json()); //express app uses the body parser
@@ -473,13 +465,6 @@ endpoints.post("/search-input", function _callee11(req, res) {
   return regeneratorRuntime.async(function _callee11$(_context11) {
     while (1) {
       switch (_context11.prev = _context11.next) {
-        case 0:
-          recipeInput = new RecipeInput({
-            input: req.body.input
-          });
-          _context11.next = 3;
-          return regeneratorRuntime.awrap(recipeInput.save());
-
         case 3:
           savedRecipeInput = _context11.sent;
           res.json(savedRecipeInput);
@@ -547,7 +532,7 @@ endpoints.post("/restriction-input", function _callee13(req, res) {
 }); //---------------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
 
-endpoints.get('/edamam', function _callee14(req, res) {
+endpoints.get('/edamam', function _callee14() {
   var edamamLink;
   return regeneratorRuntime.async(function _callee14$(_context14) {
     while (1) {
