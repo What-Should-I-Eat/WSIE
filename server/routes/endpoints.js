@@ -5,13 +5,10 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const endpoints = express.Router();
-const RecipeInput = require("../src/models/recipeSearch_model.js");
 const User = require("../src/models/userModel.js");
-const Recipe = require("../src/models/recipeModel.js");
-const json = require("body-parser/lib/types/json");
+const ContactUs = require("../src/models/contact_us_model.js");
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
-const { chromium } = require('playwright');
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -136,12 +133,45 @@ endpoints.post("/users/getUserFavorites", async (req, res) => {
   }
 });
 
+///////////////////////
+// START: Contact Us //
+///////////////////////
+endpoints.post('/contact/create_message', async (req, res) => {
+  try {
+    const contactUs = new ContactUs({
+      id: req.body.id,
+      full_name: req.body.fullName,
+      email: req.body.email,
+      message: req.body.message
+    });
+
+    const savedMessage = await contactUs.save();
+    if (savedMessage) {
+      res.status(200).json({ success: "Successfully sent contact us message" });
+    } else {
+      res.status(500).json({ error: "Error occurred sending contact us message" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error occurred sending contact us message" });
+  }
+});
+
+endpoints.get('/contact/get_messages', async (_, res) => {
+  try {
+    const messages = await mongoose.model("ContactUs").find({});
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error occurred getting contact us message" });
+  }
+});
+/////////////////////
+// END: Contact Us //
+/////////////////////
+
 
 //-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
-
-endpoints.get('/edamam', async (req, res) => {
-  const edamamLink = "https://api.edamam.com/api/recipes/v2?type=public&app_id=3cd9f1b4&app_key=e19d74b936fc6866b5ae9e2bd77587d9&q=";
-});
 
 endpoints.get('/scrape-recipe', async (req, res) => {
   const recipeLink = req.query.recipeLink;
@@ -898,29 +928,6 @@ function hasTenMinutesPassed(originalTimestamp) {
 function generateRandomVerificationCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
-
-endpoints.post('/create-recipe', async (req, res) => {
-  // const userId = req.params.id;
-  const name = req.body.name;
-  const ingredients = req.body.ingredients;
-  const steps = req.body.steps;
-  const photo = req.body.photo;
-
-  try {
-    const recipe = new Recipe({
-      name: name,
-      ingredients: ingredients,
-      steps: steps,
-      photo: photo,
-    })
-
-    const savedRecipe = await recipe.save();
-    res.json(savedRecipe);
-  }
-  catch (error) {
-    return res.status(500).json({ error: 'Internal Server Error: ' + error });
-  }
-});
 
 module.exports = endpoints;
 

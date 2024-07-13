@@ -1,18 +1,19 @@
-.create-recipe-container {
+.contact-us-container {
   background: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.create-recipe-container .form-group {
+.contact-us-container .form-group {
   margin-bottom: 20px;
 }
 
-.create-recipe-container input[type="text"],
-.create-recipe-container input[type="number"],
-.create-recipe-container input[type="file"],
-.create-recipe-container textarea {
+.contact-us-container input[type="text"],
+.contact-us-container input[type="number"],
+.contact-us-container input[type="email"],
+.contact-us-container input[type="file"],
+.contact-us-container textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -20,16 +21,16 @@
   box-sizing: border-box;
 }
 
-.create-recipe-container textarea {
+.contact-us-container textarea {
   height: 120px;
   resize: vertical;
 }
 
-.create-recipe-container button {
+.contact-us-container button {
   width: 100%;
 }
 
-.create-recipe-container input[type="file"] {
+.contact-us-container input[type="file"] {
   cursor: pointer;
   background-color: #f8f9fa;
   border: none;
