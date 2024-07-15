@@ -6,7 +6,9 @@ function RecipeDetailsView() {
 
       try {
         const recipeDetails = await this.getRecipeDetails(recipeUri);
-        const recipeInstructions = await this.getRecipeInstructions(source, sourceUrl);
+        const recipe = recipeDetails.hits[0].recipe;
+        const recipeName = recipe.label;
+        const recipeInstructions = await this.getRecipeInstructions(source, sourceUrl, recipe.label);
 
         if (isValidResult(recipeDetails)) {
           this.buildView(recipeDetails, recipeInstructions);
@@ -66,9 +68,9 @@ function RecipeDetailsView() {
     }
   }
 
-  this.getRecipeInstructions = async (source, sourceUrl) => {
+  this.getRecipeInstructions = async (source, sourceUrl, recipeName) => {
     const sourceTrimmed = source.toLowerCase().trim();
-    const apiUrl = `${RECIPE_SCRAPE_URL}/?recipeLink=${sourceUrl}&source=${sourceTrimmed}`;
+    const apiUrl = `${RECIPE_SCRAPE_URL}/?recipeLink=${sourceUrl}&source=${sourceTrimmed}&recipeName=${recipeName}`;
 
     console.log("Querying Server for:", apiUrl);
 
@@ -211,14 +213,17 @@ function RecipeDetailsView() {
         preparationList.appendChild(listItem);
       });
     } else {
-      const source = recipe.source;
-      const url = recipe.url;
-
       console.log(`No scraped instructions for: [${recipe.label}]`);
       const noInstructionsText = document.createElement('p');
-      noInstructionsText.innerHTML = `No instructions available. View more at <a href="${url}" target="_blank">${source}</a>`;
+      noInstructionsText.innerHTML = `No instructions were able to be migrated.`;
       preparationContainer.appendChild(noInstructionsText);
     }
+    const source = recipe.source;
+    const url = recipe.url;
+
+    const urlLinkToInstructionsText = document.createElement('p');
+    urlLinkToInstructionsText.innerHTML = `View full instructions and more at <a href="${url}" target="_blank">${source}</a>`;
+    preparationContainer.appendChild(urlLinkToInstructionsText);
 
     // Update nutritional facts
     const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
