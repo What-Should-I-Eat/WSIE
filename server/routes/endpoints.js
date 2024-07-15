@@ -217,6 +217,11 @@ async function getRecipeDirectionsFromSource(link, recipeName) {
               console.log('found method and will start scraping');
               startScrapingDirections = true;
             }
+            result = htmlObjectContentsLower.localeCompare("preparation");
+            if(result === 0){
+              console.log('found method and will start scraping');
+              startScrapingDirections = true;
+            }
             /*result = htmlObjectContents.localeCompare(recipeName);
             if(result === 0){
               console.log('found directions and will start scraping');
