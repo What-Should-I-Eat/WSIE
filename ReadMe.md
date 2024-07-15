@@ -104,7 +104,7 @@ The following endpoints provide functionality related to users of the applicatio
 
 #### Scraping Endpoints
 
-`GET /scrape-recipe`: Accepts query parameters of Edamam recipe link and Edamam recipe source. Calls `determineSite()` which determines the site of origin and creates a scraper for the recipe directions in that site. `determineSite()` calls `getRecipeDirectionsFromSource()`, which gets the text content of the recipe directions on the respective site. Recipe data is ultimately returned as a JSON object to `/scrape-recipe`.
+`GET /scrape-recipe`: Accepts query parameters of Edamam recipe link and Edamam recipe source. Calls  `getRecipeDirectionsFromSource()`, which gets the text content of the recipe directions on the respective site. Recipe data is ultimately returned as a JSON object to `/scrape-recipe`.
 
 ### Models
 

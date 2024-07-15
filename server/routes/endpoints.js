@@ -176,9 +176,10 @@ endpoints.get('/contact/get_messages', async (_, res) => {
 endpoints.get('/scrape-recipe', async (req, res) => {
   const recipeLink = req.query.recipeLink;
   const source = req.query.source;
+  const recipeName = req.query.recipeName;
 
   try {
-    const data = await determineSite(recipeLink, source);
+    const data = await getRecipeDirectionsFromSource(recipeLink, recipeName);
     console.log("SCRAPED DATA: " + data);
     res.json(data);
   } catch (error) {
@@ -187,65 +188,79 @@ endpoints.get('/scrape-recipe', async (req, res) => {
   }
 });
 
-async function determineSite(link, source) {
-  console.log("Link in determineSite(): " + link);
-  console.log("Source in determineSite() |" + source + "|");
-
-  let data = [];
-  let scraper;
-  let findScraper;
-
-  try {
-    switch (source.toLowerCase()) { // Use toLowerCase() to handle case variations
-      case 'bbc good food':
-        scraper = '.js-piano-recipe-method .grouped-list__list li';
-        findScraper = 'p';
-        break;
-      case 'simply recipes':
-        scraper = '#mntl-sc-block_3-0';
-        findScraper = 'p.mntl-sc-block-html';
-        break;
-      case 'martha stewart':
-        scraper = 'div#recipe__steps-content_1-0 p';
-        findScraper = '';
-        break;
-      case 'food network':
-        scraper = '.o-Method__m-Body ol';
-        findScraper = 'li';
-        break;
-      case 'delish':
-        scraper = 'ul.directions li ol';
-        findScraper = 'li';
-        break;
-      case 'eatingwell':
-        scraper = 'div#recipe__steps-content_1-0 ol li';
-        findScraper = 'p';
-        break;
-      default:
-        throw new Error("Unsupported source provided.");
-    }
-
-    data = await getRecipeDirectionsFromSource(link, scraper, findScraper);
-    console.log("directions: " + data);
-    return data;
-  } catch (error) {
-    console.error("Error in determineSite:", error);
-    throw error;
-  }
-}
-
-async function getRecipeDirectionsFromSource(link, scraper, findScraper) {
+async function getRecipeDirectionsFromSource(link, recipeName) {
   console.log(`Made it to get data. Link = ${link}`);
   try {
     const response = await axios.get(link);
     const html = response.data;
     const $ = cheerio.load(html);
+    const directionsScrape = '*:not(script,style,noscript,figcaption)';
     const recipeDirections = [];
+    var startScrapingDirections = false;
+    var firstElementRead = false;
+    var stopScraping = false;
+    var classNameOfElement = '';
+    var firstInstructionElement ='';
 
-    $(scraper).each((index, element) => {
-      const directionElement = findScraper ? $(element).find(findScraper) : $(element);
-      const directionText = directionElement.text().trim().split('\n\n');
-      recipeDirections.push(directionText);
+    $(directionsScrape).each((index,element) => {
+      if(!stopScraping){
+        var htmlObjectContents = ($(element).contents().filter(function() {
+          return this.type === 'text';
+        }).text().trim());
+        if(htmlObjectContents.length === 0 || htmlObjectContents.length === undefined){
+        }else{
+          if(startScrapingDirections){
+            classNameOfElement = $(element).get(0).tagName;
+            var elementResult = classNameOfElement.localeCompare(firstInstructionElement);
+            htmlObjectContentsLower = htmlObjectContents.toLowerCase()
+            var resultReview = htmlObjectContentsLower.indexOf("reviews");
+            var commentsReview = htmlObjectContentsLower.indexOf("comments");
+            if((firstElementRead && (elementResult != 0) && (htmlObjectContents.length > 30)) || (resultReview >= 0) || (commentsReview >= 0)){
+              stopScraping = true;
+            }else{
+            /*at this point string length of 30 is an arbitrary number that is used to disregard image captions or other random strings between steps
+            unfortunately this can also cause issues with some other recipes that have really long subtitles for each step*/
+              if(htmlObjectContents.length > 30){
+                if(!firstElementRead){
+                  firstElementRead = true;
+                  firstInstructionElement = classNameOfElement;
+                }
+                recipeDirections.push(htmlObjectContents);
+              }
+            }
+          }
+
+          if(!startScrapingDirections){
+            htmlObjectContentsLower = htmlObjectContents.toLowerCase()
+            var result = htmlObjectContentsLower.localeCompare("directions");
+            if(result === 0){
+              console.log('found directions and will start scraping');
+              startScrapingDirections = true;
+            }
+            result = htmlObjectContentsLower.localeCompare("instructions");
+            if(result === 0){
+              console.log('found instructions and will start scraping');
+              startScrapingDirections = true;
+            }
+            result = htmlObjectContentsLower.localeCompare("method");
+            if(result === 0){
+              console.log('found method and will start scraping');
+              startScrapingDirections = true;
+            }
+            result = htmlObjectContentsLower.localeCompare("preparation");
+            if(result === 0){
+              console.log('found method and will start scraping');
+              startScrapingDirections = true;
+            }
+            /*result = htmlObjectContents.localeCompare(recipeName);
+            if(result === 0){
+              console.log('found directions and will start scraping');
+              startScrapingDirections = true;
+              console.log(htmlObjectContents);
+            }*/
+          }
+        }
+      }
     });
 
     console.log(`Recipe directions: ${recipeDirections}`);
