@@ -39,14 +39,6 @@
   <script src="/static/js/forgot-password.js"></script>
   <script src="/static/js/login.js"></script>
   <script src="/static/js/recipes/recipes.js"></script>
-
-  <script>
-    $(document).ready(function () {
-      const params = new URLSearchParams(window.location.search);
-      const search = params.get('search_recipes');
-      recipesView.load(search);
-    });
-  </script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -654,70 +646,6 @@
     <div class="badge" id="edamam-badge" data-color="white"></div>
   </footer>
   <!-- END: Footer -->
-
-  <!-- Custom Script for Filter Modal -->
-  <script>
-    var mealTypeSelections = [];
-    var dishTypeSelections = [];
-    var cuisineTypeSelections = [];
-
-    function clearAllSelections() {
-      document.querySelectorAll('.form-check-input').forEach(function (checkbox) {
-        checkbox.checked = false;
-      });
-      mealTypeSelections = [];
-      dishTypeSelections = [];
-      cuisineTypeSelections = [];
-      console.log('All selections cleared');
-    }
-
-    document.querySelectorAll('.form-check-input').forEach(function (checkbox) {
-      checkbox.addEventListener('change', function () {
-        var category = this.getAttribute('data-category');
-        var selectionArray;
-
-        switch (category) {
-          case 'mealType':
-            selectionArray = mealTypeSelections;
-            break;
-          case 'dishType':
-            selectionArray = dishTypeSelections;
-            break;
-          case 'cuisineType':
-            selectionArray = cuisineTypeSelections;
-            break;
-        }
-
-        if (this.checked) {
-          selectionArray.push(this.id);
-          console.log(this.id + ' added to ' + category);
-        } else {
-          const index = selectionArray.indexOf(this.id);
-          if (index > -1) {
-            selectionArray.splice(index, 1);
-            console.log(this.id + ' removed from ' + category);
-          }
-        }
-        console.log(category + ' selections: ', selectionArray);
-      });
-    });
-
-    document.getElementById('clearSelections').addEventListener('click', function () {
-      clearAllSelections();
-    });
-
-    $('#recipe-filter-modal').on('hidden.bs.modal', function () {
-      clearAllSelections();
-    });
-
-    document.getElementById('applyFilter').addEventListener('click', function () {
-      console.log('Meal Type Selections: ', mealTypeSelections);
-      console.log('Dish Type Selections: ', dishTypeSelections);
-      console.log('Cuisine Type Selections: ', cuisineTypeSelections);
-      $('#recipe-filter-modal').modal('hide');
-    });
-  </script>
-
 </body>
 
 </html>

@@ -417,6 +417,25 @@ const utils = (() => {
     });
   }
 
+  /**
+   * Helper function that will remove filters from the browser's session 
+   * storage based on the current URL. We only remove the session storage 
+   * for the given checkbox selection when we are NOT on a page that
+   * contains `/recipes/`
+   */
+  function clearRecipesFilterStorageWrapper() {
+    const urlPart = "/recipes/";
+    const currentUrl = window.location.href;
+    const itemsToRemove = ["mealTypeSelections", "dishTypeSelections", "cuisineTypeSelections"];
+
+    if (!currentUrl.includes(urlPart)) {
+      itemsToRemove.forEach(item => {
+        console.log(`Removing [${item}] from session storage`);
+        removeFromStorage(item);
+      });
+    }
+  }
+
   return {
     setStorage,
     removeFromStorage,
@@ -436,6 +455,7 @@ const utils = (() => {
     clearCookies,
     cleanupSignOut,
     getUserRecipeImage,
-    scrollToTop
+    scrollToTop,
+    clearRecipesFilterStorageWrapper
   };
 })();
