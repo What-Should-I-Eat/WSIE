@@ -84,3 +84,103 @@
     flex: auto;
   }
 }
+
+.recipes-filter-btn {
+  border-radius: 0px;
+  border-right: 1px solid #fff;
+}
+
+/* Filter Modal CSS */
+.custom-modal-bg .modal-body {
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+
+  /* background-image: url("../img/FoodBackground.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; */
+}
+
+/* Custom styles for the recipe-filter-modal */
+.recipe-filter-modal .modal-content {
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.recipe-filter-modal .modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.recipe-filter-modal .modal-body {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 10px 5px 0 5px;
+  gap: 5px; /* Add space between columns */
+}
+
+.recipe-filter-modal .recipe-filter-modal-column {
+  flex: 1;
+  margin: 0 2px;
+  min-width: 150px;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.recipe-filter-modal h4 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 18px;
+  text-align: center;
+}
+
+.recipe-filter-modal label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  font-size: 14px;
+  display: block;
+}
+
+.recipe-filter-modal .form-check {
+  margin-bottom: 5px;
+}
+
+.recipe-filter-modal .form-check-input:hover + .form-check-label,
+.recipe-filter-modal .form-check-label:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 2px 4px;
+}
+
+.recipe-filter-modal .modal-dialog {
+  max-width: 40%;
+  margin: 0 auto; /* Center the modal */
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 992px) {
+  .recipe-filter-modal .modal-dialog {
+    max-width: 60%;
+    margin: 0 auto; /* Center the modal */
+  }
+  .recipe-filter-modal .recipe-filter-modal-column {
+    flex: 1 1 calc(50% - 10px); /* Two columns */
+    margin-bottom: 10px; /* Add vertical space between columns */
+  }
+}
+
+@media (max-width: 768px) {
+  .recipe-filter-modal .modal-dialog {
+    max-width: 80%;
+    margin: 0 auto; /* Center the modal */
+  }
+  .recipe-filter-modal .recipe-filter-modal-column {
+    flex: 1 1 calc(100% - 10px); /* One column */
+    margin-bottom: 5px; /* Add vertical space between columns */
+  }
+}

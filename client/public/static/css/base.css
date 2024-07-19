@@ -132,6 +132,8 @@ header {
 
 .navbar-decoration,
 .cover-img {
+  /* background: linear-gradient(to right, #ff7e5f, #feb47b); */
+
   background-image: url("../img/FoodBackground.svg");
   background-size: cover;
   background-repeat: no-repeat;
