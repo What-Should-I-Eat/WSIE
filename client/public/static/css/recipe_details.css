@@ -1,3 +1,8 @@
+#recipeForm{
+  background-color: rgba(255, 200, 116, 0.651);
+  background-size: cover;
+}
+
 .recipe-container {
   max-width: 800px;
   margin: 20px auto;
