@@ -39,14 +39,6 @@
   <script src="/static/js/forgot-password.js"></script>
   <script src="/static/js/login.js"></script>
   <script src="/static/js/recipes/recipes.js"></script>
-
-  <script>
-    $(document).ready(function () {
-      const params = new URLSearchParams(window.location.search);
-      const search = params.get('search_recipes');
-      recipesView.load(search);
-    });
-  </script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -389,6 +381,8 @@
       <input type="text" class="recipe-search-input form-control d-block py-2 my-0" id="search_recipes"
         name="search_recipes" placeholder="Search by Recipe Name, Ingredients..." />
       <div class="d-flex flex-row justify-content-between">
+        <button id="bn" name="bn" type="button" class="recipes-filter-btn btn btn-primary" data-toggle="modal"
+          data-target="#recipe-filter-modal">Filter</button>
         <button type="submit" class="recipe-search-btn btn btn-primary">Search</button>
       </div>
     </form>
@@ -405,6 +399,236 @@
       <ul id="paginationList" class="pagination justify-content-center"></ul>
     </nav>
     <!-- END: Recipe Pagination -->
+
+    <!-- START: Filter Modal -->
+    <div class="modal fade recipe-filter-modal custom-modal-bg" id="recipe-filter-modal" tabindex="-1"
+      aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="myModalLabel">Select Preferences</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <div class="recipe-filter-modal-column">
+              <h4>Meal Type</h4>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="breakfast" data-category="mealType">
+                <label class="form-check-label" for="breakfast">Breakfast</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="lunch" data-category="mealType">
+                <label class="form-check-label" for="lunch">Lunch</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="dinner" data-category="mealType">
+                <label class="form-check-label" for="dinner">Dinner</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="snack" data-category="mealType">
+                <label class="form-check-label" for="snack">Snack</label>
+              </div>
+            </div>
+            <div class="recipe-filter-modal-column">
+              <h4>Dish Type</h4>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="alcoholCocktail" data-category="dishType">
+                <label class="form-check-label" for="alcoholCocktail">Alcohol Cocktail</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="biscuitsAndCookies" data-category="dishType">
+                <label class="form-check-label" for="biscuitsAndCookies">Biscuits and Cookies</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="bread" data-category="dishType">
+                <label class="form-check-label" for="bread">Bread</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="cereals" data-category="dishType">
+                <label class="form-check-label" for="cereals">Cereals</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="condimentsAndSauces" data-category="dishType">
+                <label class="form-check-label" for="condimentsAndSauces">Condiments and Sauces</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="desserts" data-category="dishType">
+                <label class="form-check-label" for="desserts">Desserts</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="drinks" data-category="dishType">
+                <label class="form-check-label" for="drinks">Drinks</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="egg" data-category="dishType">
+                <label class="form-check-label" for="egg">Egg</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="iceCreamAndCustard" data-category="dishType">
+                <label class="form-check-label" for="iceCreamAndCustard">Ice Cream and Custard</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="mainCourse" data-category="dishType">
+                <label class="form-check-label" for="mainCourse">Main Course</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="pancake" data-category="dishType">
+                <label class="form-check-label" for="pancake">Pancake</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="pasta" data-category="dishType">
+                <label class="form-check-label" for="pasta">Pasta</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="pastry" data-category="dishType">
+                <label class="form-check-label" for="pastry">Pastry</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="piesAndTarts" data-category="dishType">
+                <label class="form-check-label" for="piesAndTarts">Pies and Tarts</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="pizza" data-category="dishType">
+                <label class="form-check-label" for="pizza">Pizza</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="preps" data-category="dishType">
+                <label class="form-check-label" for="preps">Preps</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="preserve" data-category="dishType">
+                <label class="form-check-label" for="preserve">Preserve</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="salad" data-category="dishType">
+                <label class="form-check-label" for="salad">Salad</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="sandwiches" data-category="dishType">
+                <label class="form-check-label" for="sandwiches">Sandwiches</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="seafood" data-category="dishType">
+                <label class="form-check-label" for="seafood">Seafood</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="sideDish" data-category="dishType">
+                <label class="form-check-label" for="sideDish">Side Dish</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="soup" data-category="dishType">
+                <label class="form-check-label" for="soup">Soup</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="specialOccasions" data-category="dishType">
+                <label class="form-check-label" for="specialOccasions">Special Occasions</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="starter" data-category="dishType">
+                <label class="form-check-label" for="starter">Starter</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="sweets" data-category="dishType">
+                <label class="form-check-label" for="sweets">Sweets</label>
+              </div>
+            </div>
+            <div class="recipe-filter-modal-column">
+              <h4>Cuisine Type</h4>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="american" data-category="cuisineType">
+                <label class="form-check-label" for="american">American</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="asian" data-category="cuisineType">
+                <label class="form-check-label" for="asian">Asian</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="british" data-category="cuisineType">
+                <label class="form-check-label" for="british">British</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="caribbean" data-category="cuisineType">
+                <label class="form-check-label" for="caribbean">Caribbean</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="centralEurope" data-category="cuisineType">
+                <label class="form-check-label" for="centralEurope">Central Europe</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="chinese" data-category="cuisineType">
+                <label class="form-check-label" for="chinese">Chinese</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="easternEurope" data-category="cuisineType">
+                <label class="form-check-label" for="easternEurope">Eastern Europe</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="french" data-category="cuisineType">
+                <label class="form-check-label" for="french">French</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="greek" data-category="cuisineType">
+                <label class="form-check-label" for="greek">Greek</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="indian" data-category="cuisineType">
+                <label class="form-check-label" for="indian">Indian</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="italian" data-category="cuisineType">
+                <label class="form-check-label" for="italian">Italian</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="japanese" data-category="cuisineType">
+                <label class="form-check-label" for="japanese">Japanese</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="korean" data-category="cuisineType">
+                <label class="form-check-label" for="korean">Korean</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="kosher" data-category="cuisineType">
+                <label class="form-check-label" for="kosher">Kosher</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="mediterranean" data-category="cuisineType">
+                <label class="form-check-label" for="mediterranean">Mediterranean</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="mexican" data-category="cuisineType">
+                <label class="form-check-label" for="mexican">Mexican</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="middleEastern" data-category="cuisineType">
+                <label class="form-check-label" for="middleEastern">Middle Eastern</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="nordic" data-category="cuisineType">
+                <label class="form-check-label" for="nordic">Nordic</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="southAmerican" data-category="cuisineType">
+                <label class="form-check-label" for="southAmerican">South American</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="southEastAsian" data-category="cuisineType">
+                <label class="form-check-label" for="southEastAsian">South East Asian</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="world" data-category="cuisineType">
+                <label class="form-check-label" for="world">World</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="clearSelections">Clear Selections</button>
+            <button type="button" class="btn btn-primary" id="applyFilter">Apply Filter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END: Filter Modal -->
   </div>
   <!-- END: Recipes View -->
 
