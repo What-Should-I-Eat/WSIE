@@ -1,3 +1,8 @@
+#recipeForm{
+  background: linear-gradient(to bottom, #ff7e5f, #feb47b);
+  background-size: cover;
+}
+
 .recipe-container {
   max-width: 800px;
   margin: 20px auto;

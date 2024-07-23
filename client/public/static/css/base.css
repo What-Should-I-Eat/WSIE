@@ -69,6 +69,10 @@ header {
   width: 50%;
 }
 
+.hero-info.mr-4.text-center{
+  margin-top: 5%;
+}
+
 .hero-img {
   width: 50%;
 }
