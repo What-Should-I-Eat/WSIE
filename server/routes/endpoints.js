@@ -201,6 +201,7 @@ async function getRecipeDirectionsFromSource(link, recipeName) {
     var stopScraping = false;
     var classNameOfElement = '';
     var firstInstructionElement ='';
+    const keyTerms = [ 'recipe from', 'you rate', 'originally posted at' ];
 
     $(directionsScrape).each((index,element) => {
       if(!stopScraping){
@@ -212,15 +213,16 @@ async function getRecipeDirectionsFromSource(link, recipeName) {
           if(startScrapingDirections){
             classNameOfElement = $(element).get(0).tagName;
             var elementResult = classNameOfElement.localeCompare(firstInstructionElement);
-            htmlObjectContentsLower = htmlObjectContents.toLowerCase()
+            htmlObjectContentsLower = htmlObjectContents.toLowerCase();
             var resultReview = htmlObjectContentsLower.indexOf("reviews");
             var commentsReview = htmlObjectContentsLower.indexOf("comments");
-            if((firstElementRead && (elementResult != 0) && (htmlObjectContents.length > 30)) || (resultReview >= 0) || (commentsReview >= 0)){
+            if((firstElementRead && (elementResult != 0) && (htmlObjectContents.length > 40)) || (resultReview >= 0) || (commentsReview >= 0)){
               stopScraping = true;
             }else{
             /*at this point string length of 30 is an arbitrary number that is used to disregard image captions or other random strings between steps
             unfortunately this can also cause issues with some other recipes that have really long subtitles for each step*/
-              if(htmlObjectContents.length > 30){
+            console.log("contents: " + htmlObjectContentsLower);
+              if(htmlObjectContents.length > 40 && !(keyTerms.some(term => htmlObjectContentsLower.includes(term)))){
                 if(!firstElementRead){
                   firstElementRead = true;
                   firstInstructionElement = classNameOfElement;
