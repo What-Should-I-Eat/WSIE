@@ -69,7 +69,7 @@ header {
   width: 50%;
 }
 
-.hero-info.mr-4.text-center{
+.hero-info.mr-4.text-center {
   margin-top: 5%;
 }
 
@@ -136,9 +136,8 @@ header {
 
 .navbar-decoration,
 .cover-img {
-  /* background: linear-gradient(to right, #ff7e5f, #feb47b); */
-
   background-image: url("../img/FoodBackground.svg");
+  /* background-image: url("../img/FoodBackground-NoDots.svg"); */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

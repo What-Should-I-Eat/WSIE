@@ -144,8 +144,9 @@ function RecipesView() {
         addedRecipesSet.add(identifier);
         const recipeImage = hasValidImage(recipe) ? recipe.images.REGULAR.url : NO_IMAGE_AVAILABLE;
 
+        // Note: The `box-shadow-custom` adds the pop of the mouse going over the box
         const recipeHtml = `
-          <div class="box">
+          <div class="box box-shadow-custom">
             <a href="/recipes/recipe_details?source=${encodeURIComponent(recipe.source)}&sourceUrl=${encodeURIComponent(recipe.url)}&uri=${encodeURIComponent(recipe.uri)}">
               <img src="${recipeImage}" alt="${recipe.label}" title="View more about ${recipe.label}">
             </a>
