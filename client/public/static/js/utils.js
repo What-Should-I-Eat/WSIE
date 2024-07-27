@@ -379,7 +379,7 @@ const utils = (() => {
     try {
       return await decodeUserRecipeImage(recipe);
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       return NO_IMAGE_AVAILABLE;
     }
   }

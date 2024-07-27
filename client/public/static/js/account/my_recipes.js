@@ -95,7 +95,7 @@ function MyRecipesView() {
  * @returns {boolean} - True if the recipe is valid, false otherwise.
  */
 function isValidRecipe(recipe) {
-  return recipe && recipe.recipeName && recipe.recipeUri && recipe.recipeCalories && recipe.recipeSource && recipe.recipeSourceUrl;
+  return recipe && recipe.recipeName && recipe.recipeUri && recipe.recipeSource && recipe.recipeSourceUrl;
 }
 
 /**

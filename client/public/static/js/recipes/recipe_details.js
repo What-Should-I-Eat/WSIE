@@ -169,6 +169,16 @@ function RecipeDetailsView() {
     }
     hiddenRecipeSourceUrlInput.value = recipe.url;
 
+    // Hidden Recipe Source URL
+    let hiddenRecipeServingsInput = document.getElementById('recipe-servings');
+    if (!hiddenRecipeServingsInput) {
+      hiddenRecipeServingsInput = document.createElement('input');
+      hiddenRecipeServingsInput.type = 'hidden';
+      hiddenRecipeServingsInput.id = 'recipe-servings';
+      form.appendChild(hiddenRecipeServingsInput);
+    }
+    hiddenRecipeServingsInput.value = recipe.yield;
+
     // Check if the recipe is a favorite
     const username = utils.getUserNameFromCookie();
     const isFavorite = await checkIfFavorite(username, recipe.label);
@@ -227,6 +237,7 @@ function RecipeDetailsView() {
     // Update nutritional facts
     const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
     nutritionalFactsList.innerHTML = '';
+    nutritionalFactsList.innerHTML += `<li>Servings: ${Math.round(recipe.yield)}</li>`;
     nutritionalFactsList.innerHTML += `<li>Calories: ${Math.round(recipe.totalNutrients.ENERC_KCAL.quantity)} ${recipe.totalNutrients.ENERC_KCAL.unit}</li>`;
     nutritionalFactsList.innerHTML += `<li>Fat: ${Math.round(recipe.totalNutrients.FAT.quantity)} ${recipe.totalNutrients.FAT.unit}</li>`;
     nutritionalFactsList.innerHTML += `<li>Carbohydrates: ${Math.round(recipe.totalNutrients.CHOCDF.quantity)} ${recipe.totalNutrients.CHOCDF.unit}</li>`;
@@ -293,6 +304,16 @@ function RecipeDetailsView() {
     }
     hiddenRecipeSourceUrlInput.value = "";
 
+    // Hidden Recipe Source URL
+    let hiddenRecipeServingsInput = document.getElementById('recipe-servings');
+    if (!hiddenRecipeServingsInput) {
+      hiddenRecipeServingsInput = document.createElement('input');
+      hiddenRecipeServingsInput.type = 'hidden';
+      hiddenRecipeServingsInput.id = 'recipe-servings';
+      form.appendChild(hiddenRecipeServingsInput);
+    }
+    hiddenRecipeServingsInput.value = recipe.yield;
+
     // Check if the recipe is a favorite
     const addToFavoritesBtn = document.getElementById('addToFavorites');
     addToFavoritesBtn.textContent = DELETE_RECIPE;
@@ -333,6 +354,7 @@ function RecipeDetailsView() {
     // Update nutritional facts
     const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
     nutritionalFactsList.innerHTML = '';
+    nutritionalFactsList.innerHTML += `<li>Servings: ${Math.round(recipe.recipeServings)}</li>`;
     nutritionalFactsList.innerHTML += `<li>Calories: ${Math.round(recipe.recipeCalories)} kcal</li>`;
     nutritionalFactsList.innerHTML += `<li>Fat: ${Math.round(recipe.recipeFats)} g</li>`;
     nutritionalFactsList.innerHTML += `<li>Carbohydrates: ${Math.round(recipe.recipeCarbs)} g</li>`;
@@ -374,6 +396,7 @@ function RecipeDetailsView() {
     const recipeCalories = document.getElementById('recipe-calories').value;
     const recipeSource = document.getElementById('recipe-source').value;
     const recipeSourceUrl = document.getElementById('recipe-source-url').value;
+    const recipeServings = document.getElementById('recipe-servings').value;
 
     const buttonText = form.find("#addToFavorites").text();
 
@@ -395,6 +418,7 @@ function RecipeDetailsView() {
         recipeCalories: recipeCalories,
         recipeSource: recipeSource,
         recipeSourceUrl: recipeSourceUrl,
+        recipeServings: recipeServings,
         userCreated: false
       };
       newButtonText = REMOVE_FROM_FAVORITES;

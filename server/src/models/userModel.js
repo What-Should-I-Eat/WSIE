@@ -31,6 +31,7 @@ const UserSchema = new Schema({
             recipeImageData: Buffer,
             recipeImageType: String
         },
+        recipeServings: Number,
         recipeCarbs: Number,
         recipeFats: Number,
         recipeProtein: Number,
