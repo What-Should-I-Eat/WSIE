@@ -1,5 +1,4 @@
 function RecipeDetailsView() {
-
   this.load = async (source, sourceUrl, recipeUri) => {
     if (hasAllData(source, sourceUrl, recipeUri)) {
       console.log("Loading view from Edamam recipe");
@@ -184,13 +183,13 @@ function RecipeDetailsView() {
     if (hasValidImage(recipe)) {
       // Use the LARGE as default in recipe details
       if (recipe.images.LARGE && recipe.images.LARGE.url) {
-        imageSrc = recipe.images.LARGE.url;
+        imageSrc = await utils.getEdamamRecipeImage(recipe.images.LARGE.url);
       } else {
-        imageSrc = recipe.images.REGULAR.url
+        imageSrc = await utils.getEdamamRecipeImage(recipe.images.REGULAR.url);
       }
     }
 
-    document.getElementById('recipe-image').src = imageSrc
+    document.getElementById('recipe-image').src = imageSrc;
     document.getElementById('recipe-image').alt = `Image of ${recipe.label}`;
 
     // Update ingredients list
@@ -234,7 +233,7 @@ function RecipeDetailsView() {
     nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.totalNutrients.PROCNT.quantity)} ${recipe.totalNutrients.PROCNT.unit}</li>`;
 
     // Update dietary labels
-    const dietaryContainer = document.querySelectorAll('.recipe-info')[3]
+    const dietaryContainer = document.querySelectorAll('.recipe-info')[3];
     const dietaryLabelsList = dietaryContainer.querySelector('ul');
     dietaryLabelsList.innerHTML = '';
     if (recipe.dietLabels && recipe.dietLabels.length > 0) {
@@ -340,7 +339,7 @@ function RecipeDetailsView() {
     nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.recipeProtein)} g</li>`;
 
     // Update dietary labels
-    const dietaryContainer = document.querySelectorAll('.recipe-info')[3]
+    const dietaryContainer = document.querySelectorAll('.recipe-info')[3];
     const dietaryLabelsList = dietaryContainer.querySelector('ul');
     dietaryLabelsList.innerHTML = '';
     const noDietaryText = document.createElement('p');
@@ -372,9 +371,9 @@ function RecipeDetailsView() {
     const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
     const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
     const recipeUri = document.getElementById('recipe-uri').value;
-    const recipeCalories = document.getElementById('recipe-calories').value;;
-    const recipeSource = document.getElementById('recipe-source').value;;
-    const recipeSourceUrl = document.getElementById('recipe-source-url').value;;
+    const recipeCalories = document.getElementById('recipe-calories').value;
+    const recipeSource = document.getElementById('recipe-source').value;
+    const recipeSourceUrl = document.getElementById('recipe-source-url').value;
 
     const buttonText = form.find("#addToFavorites").text();
 

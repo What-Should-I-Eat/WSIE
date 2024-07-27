@@ -406,6 +406,23 @@ const utils = (() => {
   }
 
   /**
+   * Handles requesting Edamam recipe image for recipe details and my recipes view
+   * @param {string} imageUrl - A recipes image
+   * @returns {Promise<string>} - A Promise that resolves to a data URL.
+   */
+  async function getEdamamRecipeImage(imageUrl) {
+    try {
+      // Let the client's server handle the data
+      const response = await fetch(`/recipes/get_edamam_image?url=${encodeURIComponent(imageUrl)}`);
+      const data = await response.json();
+      return `data:${data.imageType};base64,${data.base64Image}`;
+    } catch (error) {
+      console.error(error);
+      return NO_IMAGE_AVAILABLE;
+    }
+  }
+
+  /**
    * Helper function that will scroll the window nice and smooth to the top.
    * This should be used for things such as alerts to the user and for
    * pagination
@@ -455,6 +472,7 @@ const utils = (() => {
     clearCookies,
     cleanupSignOut,
     getUserRecipeImage,
+    getEdamamRecipeImage,
     scrollToTop,
     clearRecipesFilterStorageWrapper
   };
