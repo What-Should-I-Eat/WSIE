@@ -1,0 +1,38 @@
+.update-recipe-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.update-recipe-container .form-group {
+  margin-bottom: 20px;
+}
+
+.update-recipe-container input[type="text"],
+.update-recipe-container input[type="number"],
+.update-recipe-container input[type="file"],
+.update-recipe-container textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.update-recipe-container textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+.update-recipe-container button {
+  width: 100%;
+}
+
+.update-recipe-container input[type="file"] {
+  cursor: pointer;
+  background-color: #f8f9fa;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+}

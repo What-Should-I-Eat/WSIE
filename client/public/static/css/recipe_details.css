@@ -40,3 +40,12 @@
 .add-to-favorites button {
   width: 70%;
 }
+
+.updateRecipeButton{
+  max-width: 800px;
+  margin: 20px auto;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 70%;
+}

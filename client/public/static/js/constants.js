@@ -146,6 +146,9 @@ const SUCCESSFULLY_CREATED_RECIPE = "Successfully created recipe";
 const UNABLE_TO_CREATE_RECIPE_UNEXPECTED_ERROR = "Error occurred trying to create recipe";
 const USER_CREATED_RECIPE_HAS_NO_IMAGE = "User created recipe has no image";
 const FAILED_TO_DECODE_USER_RECIPE_IMAGE = "Error occurred trying to decode user recipe image";
+const SUCCESSFULLY_UPDATED_RECIPE = "Successfully updated recipe";
+const UNABLE_TO_UPDATE_RECIPE_UNEXPECTED_ERROR = "Error occurred trying to update recipe";
+const UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN = "User must login or create account to update a recipe";
 
 // User Profile Updates
 const SUCCESSFULLY_UPDATED_USER_DETAILS = "Successfully updated user info";

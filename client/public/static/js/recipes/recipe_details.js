@@ -346,6 +346,16 @@ function RecipeDetailsView() {
     const noDietaryText = document.createElement('p');
     noDietaryText.innerHTML = `No user dietary labels.`;
     dietaryContainer.appendChild(noDietaryText);
+
+    const button = document.createElement("button");
+    const recipeName = recipe.recipeName;
+    button.textContent = "Update Recipe";
+    button.classList.add("updateRecipeButton"); // Add a class for styling
+    button.addEventListener("click", function() {
+      document.location.href = "/account/update_recipe?userRecipeName="+recipeName;
+    });
+    var container = document.getElementById("updateRecipeContainer");
+    container.appendChild(button);
   };
 
   // Handles favorite/unfavorite logic
@@ -413,7 +423,7 @@ function RecipeDetailsView() {
       errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
     }
     // Delete recipe
-    else {
+    else{
       urlAction = DELETE_ACTION;
       request = {
         recipeName: document.getElementById('recipe-name').textContent
