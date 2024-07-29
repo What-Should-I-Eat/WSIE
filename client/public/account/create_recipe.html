@@ -375,32 +375,31 @@
   <!-- END: Sign Up / Sign Modal -->
 
   <!-- START: Create Recipe -->
-  <!-- <div class="container-fluid px-0">
-    <div class="mb-3 container-fluid navbar-decoration px-0 d-flex align-items-center justify-content-center">
-      <h1 class="display-3">Create Recipe</h1>
-    </div>
-  </div> -->
-
   <div class="container mt-5">
-    <div class="create-recipe-container ">
+    <div class="create-recipe-container">
       <form id="createRecipeForm">
         <h2>Create Recipe</h2>
 
         <hr />
 
         <div class="form-group">
-          <label for="recipeName">Recipe Name</label>
+          <label for="recipeName">Recipe Name <span style="color: red;">*</span></label>
           <input type="text" id="recipeName" name="recipeName" class="create-recipe-input" required />
         </div>
 
         <div class="form-group">
-          <label for="recipeIngredients">Ingredients</label>
+          <label for="recipeIngredients">Ingredients <span style="color: red;">*</span></label>
           <textarea id="recipeIngredients" name="recipeIngredients" class="create-recipe-input" required></textarea>
         </div>
 
         <div class="form-group">
-          <label for="recipeDirections">Preparation</label>
+          <label for="recipeDirections">Preparation <span style="color: red;">*</span></label>
           <textarea id="recipeDirections" name="recipeDirections" class="create-recipe-input" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="recipeServings">Servings</label>
+          <input type="number" id="recipeServings" name="recipeServings" class="create-recipe-input" />
         </div>
 
         <div class="form-group">
@@ -432,6 +431,7 @@
       </form>
     </div>
   </div>
+
   <!-- END: Create Recipe -->
 
   <!-- START: Footer -->

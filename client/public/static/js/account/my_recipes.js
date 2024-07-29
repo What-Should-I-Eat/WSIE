@@ -48,8 +48,9 @@ function MyRecipesView() {
         const recipeUri = encodeURIComponent(recipe.recipeUri);
         const recipeImage = hasValidImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
 
+        // Note: The `box-shadow-custom` adds the pop of the mouse going over the box
         const recipeHtml = `
-          <div class="box">
+          <div class="box box-shadow-custom">
               <a href="/recipes/recipe_details?source=${recipeSource}&sourceUrl=${recipeSourceUrl}&uri=${recipeUri}">
                   <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
               </a>
@@ -62,8 +63,9 @@ function MyRecipesView() {
         const recipeName = recipe.recipeName;
         const recipeImage = await utils.getUserRecipeImage(recipe);
 
+        // Note: The `box-shadow-custom` adds the pop of the mouse going over the box
         const recipeHtml = `
-          <div class="box">
+          <div class="box box-shadow-custom">
               <a href="/recipes/recipe_details?userRecipeName=${encodeURIComponent(recipeName)}">
                 <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
               </a>
@@ -93,7 +95,7 @@ function MyRecipesView() {
  * @returns {boolean} - True if the recipe is valid, false otherwise.
  */
 function isValidRecipe(recipe) {
-  return recipe && recipe.recipeName && recipe.recipeUri && recipe.recipeCalories && recipe.recipeSource && recipe.recipeSourceUrl;
+  return recipe && recipe.recipeName && recipe.recipeUri && recipe.recipeSource && recipe.recipeSourceUrl;
 }
 
 /**

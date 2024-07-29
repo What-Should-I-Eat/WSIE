@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
-
 const UserSchema = new Schema({
     id: Number,
     fullName: String,
@@ -32,6 +31,7 @@ const UserSchema = new Schema({
             recipeImageData: Buffer,
             recipeImageType: String
         },
+        recipeServings: Number,
         recipeCarbs: Number,
         recipeFats: Number,
         recipeProtein: Number,
