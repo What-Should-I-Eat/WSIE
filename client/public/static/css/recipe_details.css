@@ -41,11 +41,23 @@
   width: 70%;
 }
 
-.updateRecipeButton{
+.updateRecipeContainer{
   max-width: 800px;
   margin: 20px auto;
   background: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.updateRecipeButton{
+  width: 64%;
+  height: 35px;
+  border-radius: 4px;
+  margin-left: 18%;
   text-align: center;
-  width: 70%;
+  background-color: var(--secondary-color);
+  border: none;
+  color: white;
+}
+
+.updateRecipeButton:hover {
+  background-color: var(--primary-color);
 }
