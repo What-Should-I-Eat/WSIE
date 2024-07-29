@@ -44,7 +44,7 @@
     $(document).ready(function () {
       const params = new URLSearchParams(window.location.search);
       const userRecipeName = params.get('userRecipeName');
-      const recipeDetails = new RecipeDetailsView();
+      const recipeDetails = new UserRecipeDetailsView();
       recipeDetails.loadUserRecipe(userRecipeName);
     });
   </script>

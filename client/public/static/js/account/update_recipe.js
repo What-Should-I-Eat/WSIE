@@ -77,7 +77,7 @@ $(document).ready(function () {
   });
 });
 
-function RecipeDetailsView() {
+function UserRecipeDetailsView() {
 
   this.loadUserRecipe = async (userRecipeName) => {
     try {
