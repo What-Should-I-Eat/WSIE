@@ -108,20 +108,8 @@ cd ~/WSIE/client/public/static/js/
 # When opened, comment the line below:
 # const HOST = 'http://localhost:8080';
 # Uncomment the below line for VM Deployment:
-# const HOST = '34.16.212.5';
+# const HOST = '';
 vim constants.js
-```
-
-2. Update the server
-
-```bash
-cd ~/WSIE/server/src/config
-# This opens the file
-# When opened, comment this line:
-# const host = 'localhost';
-# Uncomment this line for VM Deployment
-# const host = '34.16.212.5';
-vim index.js
 ```
 
 ### Start the Application
@@ -132,7 +120,7 @@ npm run deploy
 
 ## Deployment Verification
 
-In your browser, navigate to the external IP of the VM created to verify the deployment has been successful. As of 06/04/2024, the currently deployed instance is at [34.16.212.5](http://34.16.212.5:8080)
+In your browser, navigate to the external IP of the VM created to verify the deployment has been successful. As of 06/04/2024, the currently deployed instance is at [34.125.64.47](http://34.125.64.47:8080)
 
 ### Verification Tests
 
