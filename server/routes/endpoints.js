@@ -1,14 +1,14 @@
 const express = require("express");
 const axios = require("axios");
 const cheerio = require('cheerio');
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const endpoints = express.Router();
-const User = require("../src/models/userModel.js");
-const ContactUs = require("../src/models/contact_us_model.js");
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
+const mongoose = require("mongoose");
+const User = require("../src/models/userModel.js");
+const ContactUs = require("../src/models/contactUsModel.js");
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -17,12 +17,14 @@ const upload = multer({
 });
 const fileType = require('file-type');
 
-//Endpoint Setup
-endpoints.use(bodyParser.json()); //express app uses the body parser
+endpoints.use(bodyParser.json());
 endpoints.use(cors());
 
-// used to clear current database, can be deleted or commented out at the end of the project if needed
-endpoints.get('/clearUserDatabase', async (req, res) => {
+// Success / Error Logs
+const INTERNAL_SERVER_ERROR = "Internal Server Error";
+const USER_NOT_FOUND_ERROR = "User not found";
+
+endpoints.get('/clearUserDatabase', async (_, res) => {
   try {
     const cleared = await mongoose.model('User').deleteMany({});
     res.json(cleared);
@@ -33,30 +35,22 @@ endpoints.get('/clearUserDatabase', async (req, res) => {
   }
 });
 
-//TORIE NOTE: I don't think we need this endpoint bc emailjs needs a browser but keeping it for now
-//Changing this: response is now the verification code
-endpoints.get("/users/getVerificationCode", async (req, res) => {
+endpoints.get("/users/getVerificationCode", async (_, res) => {
   try {
     const verificationCode = generateRandomVerificationCode();
-    const hashedVerificationCode = await bcrypt.hash(verificationCode, 10);
-
-    const verificationUpdate = { $set: { "verificationCode": verificationCode } };
-    const options = { upsert: true, new: true };
-
-    res.json(verificationCode); //change to hashed code once I know this works
+    res.json(verificationCode);
   } catch (error) {
     console.error('Error fetching verification code: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
-//Get user by email (for forgot username/password)
 endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
   try {
     const email = req.query.email;
     const user = await User.findOne({ email: email });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
     const forgotUserInfo = {
@@ -69,18 +63,17 @@ endpoints.get('/users/requestInfoForPasswordReset', async (req, res) => {
   }
   catch (error) {
     console.error('Error finding this email: ', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
-//Change password
 endpoints.put("/users/changePassword", async (req, res) => {
   try {
     let userToLower = req.body.username.toLowerCase();
     const user = await User.findOne({ username: userToLower });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
     if (!user.verified) {
       return res.status(404).json({ error: 'User not validated' });
@@ -94,27 +87,25 @@ endpoints.put("/users/changePassword", async (req, res) => {
     res.json(updatedPassword);
   } catch (error) {
     console.error('Error changing password: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
-// gets user's email based on username - needed for login
+
 endpoints.post("/users/getUserEmail", async (req, res) => {
   try {
     let userToLower = req.body.username.toLowerCase();
     const user = await User.findOne({ username: userToLower });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
     res.json(user);
   } catch (error) {
     console.error('Error finding user: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
-
-//---------------------------------------------------------------------------------------------------------------------------------------
 
 endpoints.post("/users/getUserFavorites", async (req, res) => {
   try {
@@ -122,14 +113,14 @@ endpoints.post("/users/getUserFavorites", async (req, res) => {
     const user = await User.findOne({ username: userToLower });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
     console.log(user.favorites);
     res.json(user.favorites);
   } catch (error) {
     console.error('Error finding user: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
@@ -171,8 +162,9 @@ endpoints.get('/contact/get_messages', async (_, res) => {
 /////////////////////
 
 
-//-------------------------------------------------------------Edamam Endpoints----------------------------------------------------------
-
+//////////////////////////////////////
+// START: Recipe Scraping Endpoints //
+//////////////////////////////////////
 endpoints.get('/scrape-recipe', async (req, res) => {
   const recipeLink = req.query.recipeLink;
   const source = req.query.source;
@@ -200,30 +192,30 @@ async function getRecipeDirectionsFromSource(link, recipeName) {
     var firstElementRead = false;
     var stopScraping = false;
     var classNameOfElement = '';
-    var firstInstructionElement ='';
-    const keyTerms = [ 'recipe from', 'you rate', 'originally posted at' ];
+    var firstInstructionElement = '';
+    const keyTerms = ['recipe from', 'you rate', 'originally posted at'];
 
-    $(directionsScrape).each((index,element) => {
-      if(!stopScraping){
-        var htmlObjectContents = ($(element).contents().filter(function() {
+    $(directionsScrape).each((index, element) => {
+      if (!stopScraping) {
+        var htmlObjectContents = ($(element).contents().filter(function () {
           return this.type === 'text';
         }).text().trim());
-        if(htmlObjectContents.length === 0 || htmlObjectContents.length === undefined){
-        }else{
-          if(startScrapingDirections){
+        if (htmlObjectContents.length === 0 || htmlObjectContents.length === undefined) {
+        } else {
+          if (startScrapingDirections) {
             classNameOfElement = $(element).get(0).tagName;
             var elementResult = classNameOfElement.localeCompare(firstInstructionElement);
             htmlObjectContentsLower = htmlObjectContents.toLowerCase();
             var resultReview = htmlObjectContentsLower.indexOf("reviews");
             var commentsReview = htmlObjectContentsLower.indexOf("comments");
-            if((firstElementRead && (elementResult != 0) && (htmlObjectContents.length > 40)) || (resultReview >= 0) || (commentsReview >= 0)){
+            if ((firstElementRead && (elementResult != 0) && (htmlObjectContents.length > 40)) || (resultReview >= 0) || (commentsReview >= 0)) {
               stopScraping = true;
-            }else{
-            /*at this point string length of 30 is an arbitrary number that is used to disregard image captions or other random strings between steps
-            unfortunately this can also cause issues with some other recipes that have really long subtitles for each step*/
-            console.log("contents: " + htmlObjectContentsLower);
-              if(htmlObjectContents.length > 40 && !(keyTerms.some(term => htmlObjectContentsLower.includes(term)))){
-                if(!firstElementRead){
+            } else {
+              /*at this point string length of 30 is an arbitrary number that is used to disregard image captions or other random strings between steps
+              unfortunately this can also cause issues with some other recipes that have really long subtitles for each step*/
+              console.log("contents: " + htmlObjectContentsLower);
+              if (htmlObjectContents.length > 40 && !(keyTerms.some(term => htmlObjectContentsLower.includes(term)))) {
+                if (!firstElementRead) {
                   firstElementRead = true;
                   firstInstructionElement = classNameOfElement;
                 }
@@ -232,25 +224,25 @@ async function getRecipeDirectionsFromSource(link, recipeName) {
             }
           }
 
-          if(!startScrapingDirections){
+          if (!startScrapingDirections) {
             htmlObjectContentsLower = htmlObjectContents.toLowerCase()
             var result = htmlObjectContentsLower.localeCompare("directions");
-            if(result === 0){
+            if (result === 0) {
               console.log('found directions and will start scraping');
               startScrapingDirections = true;
             }
             result = htmlObjectContentsLower.localeCompare("instructions");
-            if(result === 0){
+            if (result === 0) {
               console.log('found instructions and will start scraping');
               startScrapingDirections = true;
             }
             result = htmlObjectContentsLower.localeCompare("method");
-            if(result === 0){
+            if (result === 0) {
               console.log('found method and will start scraping');
               startScrapingDirections = true;
             }
             result = htmlObjectContentsLower.localeCompare("preparation");
-            if(result === 0){
+            if (result === 0) {
               console.log('found method and will start scraping');
               startScrapingDirections = true;
             }
@@ -265,13 +257,17 @@ async function getRecipeDirectionsFromSource(link, recipeName) {
       }
     });
 
-    console.log(`Recipe directions: ${recipeDirections}`);
+    // Leave commented out so it doesn't flood the logs
+    // console.log(`Recipe directions: ${recipeDirections}`);
     return recipeDirections;
   } catch (error) {
     console.error(`Error in scraping recipe directions: ${error}`);
     throw error;
   }
 }
+//////////////////////////////////////
+// END: Recipe Scraping Endpoints //
+//////////////////////////////////////
 
 //____________________________________________MIDDLEWARE____________________________________________________________
 //Everything after this point requires authentication_______________________________________________________________
@@ -286,11 +282,10 @@ endpoints.use(session({
   }
 }));
 
-
-//~~~~~ POST a new user - WORKS!
 endpoints.post("/users/register", async (req, res) => {
   try {
-    let userToLower = req.body.username.toLowerCase();
+    const userToLower = req.body.username.toLowerCase();
+    const fullName = req.body.fullName;
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const existingUsernameCheck = await User.findOne({ username: userToLower });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
@@ -299,7 +294,7 @@ endpoints.post("/users/register", async (req, res) => {
 
     const user = new User({
       id: req.body.id,
-      fullName: req.body.fullName,
+      fullName: fullName,
       username: userToLower,
       password: hashedPassword,
       email: req.body.email,
@@ -319,9 +314,9 @@ endpoints.post("/users/register", async (req, res) => {
       res.status(445).json({ error: 'Email already exists' });
     } else {
       const savedUser = await user.save();
+      console.log(`Successfully created User: [${fullName}] with Username: [${userToLower}]`);
       res.json(savedUser);
     }
-
   }
   catch (error) {
     console.error('Error occurred during user registration:', error);
@@ -335,14 +330,12 @@ endpoints.put("/users/verify", async (req, res) => {
     const user = await User.findOne({ username: userToLower });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
     const inputtedCode = req.body.verificationCode;
-
     const validatedVerificationCode = await validateVerificationCode(user, inputtedCode);
 
     if (validatedVerificationCode) {
-
       if (hasTenMinutesPassed(user.verificationCodeTimestamp)) {
         return res.status(437).json({ error: 'Code has expired' });
       }
@@ -352,24 +345,22 @@ endpoints.put("/users/verify", async (req, res) => {
 
       const verifiedUser = await User.updateOne(user, verificationUpdate, options);
       res.json(verifiedUser);
-
     } else {
       return res.status(401).json({ error: 'Incorrect verification code' });
     }
   } catch (error) {
     console.error('Error fetching unique user: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
-// //Changing this: response is now the verification code
 endpoints.put("/users/resendVerificationCode", async (req, res) => {
   try {
     let userToLower = req.body.username.toLowerCase();
     const user = await User.findOne({ username: userToLower });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
@@ -382,11 +373,10 @@ endpoints.put("/users/resendVerificationCode", async (req, res) => {
     res.json(updatedCode);
   } catch (error) {
     console.error('Error fetching verification code: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
-//~~~~~ POST specific user by user - changed from GET so we could have a body
 endpoints.post('/users/find-username', async (req, res) => {
   try {
     let userToLower = req.body.username.toLowerCase();
@@ -394,11 +384,10 @@ endpoints.post('/users/find-username', async (req, res) => {
     const inputtedPassword = req.body.password;
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     } else if (user.verified == false) {
       return res.status(450).json({ error: 'User account is not verified' });
     }
-
 
     try {
       if ((user.incorrectPasswordAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))) {
@@ -408,12 +397,10 @@ endpoints.post('/users/find-username', async (req, res) => {
       }
       const passwordValidated = await validatePassword(user, inputtedPassword);
       if (passwordValidated) {
-        console.log("Password is correct!");
-
         const resetAttempts = { $set: { "incorrectPasswordAttempts": 0 } };
         const options = { upsert: true, new: true };
 
-        const resetIncorrectAttempts = await User.updateOne(user, resetAttempts, options);
+        const _ = await User.updateOne(user, resetAttempts, options);
 
         req.session.isLoggedIn = true;
         req.session.userId = user._id;
@@ -439,7 +426,7 @@ endpoints.post('/users/find-username', async (req, res) => {
         const passwordAttemptsUpdate = { $set: { "incorrectPasswordAttempts": updatedAttempts, "incorrectPasswordAttemptTime": currentTimestamp } };
         const options = { upsert: true, new: true };
 
-        const updatedUser = await User.updateOne(user, passwordAttemptsUpdate, options);
+        const _ = await User.updateOne(user, passwordAttemptsUpdate, options);
         console.log(updatedAttempts);
 
         if ((updatedAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))) {
@@ -452,33 +439,30 @@ endpoints.post('/users/find-username', async (req, res) => {
       }
     } catch (error) {
       console.error('Error validating password: ', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: INTERNAL_SERVER_ERROR });
     }
   } catch (error) {
     console.error('Error fetching unique user: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
-//Get user's profile if they're logged in
 endpoints.get('/users/profile', (req, res) => {
   const isLoggedIn = req.session.isLoggedIn;
   const userId = req.session.userId;
   const username = req.session.username;
-  console.log("Inside /profile endpoint. isLoggedIn = ", isLoggedIn);
-  console.log("username = ", username);
 
   User.findById(userId)
     .then(user => {
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
       }
-      console.log("user (inside endpoint): ", user);
+
       res.json({ user });
     })
     .catch(error => {
       console.error('Error fetching user data:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: INTERNAL_SERVER_ERROR });
     });
 
 });
@@ -488,13 +472,14 @@ endpoints.get('/users/findUserData', async (req, res) => {
     const username = req.query.username.toLowerCase();
     const user = await User.findOne({ username: username });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
+
     res.json(user);
   }
   catch (error) {
     console.error('Error finding this username: ', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
@@ -510,9 +495,7 @@ endpoints.use((req, res, next) => {
   }
 });
 
-//------------------------------------------------------------- ORIGINAL User Endpoints------------------------------------------------------------
-//~~~~~ GET all users
-endpoints.get('/users', async (req, res) => { //WORKS!
+endpoints.get('/users', async (_, res) => {
   try {
     const users = await mongoose.model('User').find();
     res.json(users);
@@ -523,105 +506,75 @@ endpoints.get('/users', async (req, res) => { //WORKS!
   }
 });
 
-//Find user id by username - WORKS! returns username's id
 endpoints.get('/users/findUserId', async (req, res) => {
   try {
     const username = req.query.username.toLowerCase(); // Access the username from query parameters
     // const username_cookie = req.headers.getSetCookie();
     const user = await User.findOne({ username: username });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
     const idNum = user._id;
     res.json(idNum);
   }
   catch (error) {
     console.error('Error finding this username: ', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
-//Find user by username - not for login purposes - WORKS!
-endpoints.get('/users/finduser/:username', async (req, res) => {
-  try {
-    const username = req.params.username.toLowerCase(); // Access the username from query parameters
-    const user = await User.findOne({ username: username });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.json(user);
-  }
-  catch (error) {
-    console.error('Error finding this username: ', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
-//~~~~~ DELETE a user
-endpoints.delete("/users/:id", async (req, res) => { //WORKS!
-  try {
-    const deletedUser = await mongoose.model('User').findByIdAndDelete(req.params.id);
-    if (!deletedUser) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.json(deletedUser);
-  }
-  catch (error) {
-    console.error('Error deleting user: ', error);
-    res.status(500).json({ error: 'Delete user - Internal Server Error' });
-  }
-});
-
-//~~~~~ PUT a change in a user's diet array
 endpoints.put('/users/diet', async (req, res) => {
   try {
     const username = req.body.username.toLowerCase();
-    console.log("Username = ", username);
+
     const user = await User.findOne({ username: username });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
     const newDiet = req.body.diet;
     user.diet = newDiet;
     await user.save();
 
+    console.log(`Updated diet for user: [${username}]`);
     res.json(user.diet);
   }
   catch (error) {
     console.error('Error updating diet: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
-//~~~~~ PUT a change in a user's health array
 endpoints.put('/users/health', async (req, res) => {
   try {
     const username = req.body.username.toLowerCase();
     const user = await User.findOne({ username: username });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
+
     const newHealth = req.body.health;
     user.health = newHealth;
     await user.save();
+
+    console.log(`Updated health for user: [${username}]`);
     res.json(user);
   }
   catch (error) {
     console.error('Error updating health: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
-//~~~~~ Check if user has already favorited this recipe
 endpoints.post('/users/:id/favorites', async (req, res) => {
   const userId = req.params.id;
   const recipeToAdd = req.body.favorites.recipeName;
+
   try {
     const user = await mongoose.model('User').findById(userId);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
+
     const index = user.favorites.findIndex(x => x.recipeName == recipeToAdd);
     if (index != -1) { // found favorite already in list
       return res.json(true)
@@ -630,11 +583,10 @@ endpoints.post('/users/:id/favorites', async (req, res) => {
     }
   }
   catch (error) {
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
-//~~~~~ PUT a change in a user's favorite recipes
 endpoints.put('/users/:id/favorites', async (req, res) => {
   const userId = req.params.id;
   const newFavorites = req.body.favorites;
@@ -642,20 +594,21 @@ endpoints.put('/users/:id/favorites', async (req, res) => {
   try {
     const user = await mongoose.model('User').findById(userId);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
     const index = user.favorites.findIndex(x => x.recipeName == recipeToAdd);
     console.log("Index: ", index)
     if (index != -1) {
-      console.log("already added"); // don't add duplicates
+      console.log(`User already has [${recipeToAdd}] favorited!`);
     } else {
       user.favorites.push(newFavorites);
     }
+
     await user.save();
     res.json(user);
   }
   catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
@@ -666,19 +619,19 @@ endpoints.delete('/users/:id/favorites', async (req, res) => {
   try {
     const user = await mongoose.model('User').findById(userId);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
     // finds index where recipe names match the one to remove
     const index = user.favorites.findIndex(x => x.recipeName == recipeToRemove);
     if (index == -1) { // no index found
       return res.status(404).json({ error: 'favorite not found for user!' });
     }
-    const x = user.favorites.splice(index, 1);
+    const _ = user.favorites.splice(index, 1);
     await user.save();
     res.json(user);
   }
   catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
@@ -806,7 +759,7 @@ endpoints.post('/users/:id/recipe/create_recipe', upload.single('userRecipeImage
     const userId = req.params.id;
     const user = await mongoose.model('User').findById(userId);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
     const recipeToAdd = req.body.recipeName;
@@ -841,7 +794,7 @@ endpoints.post('/users/:id/recipe/create_recipe', upload.single('userRecipeImage
     res.json(user);
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
@@ -850,7 +803,7 @@ endpoints.get('/users/:id/recipe/get_recipe', async (req, res) => {
     const userId = req.params.id;
     const user = await mongoose.model('User').findById(userId);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
     const recipeName = req.query.recipeName;
@@ -874,7 +827,7 @@ endpoints.delete('/users/:id/recipe/delete_recipe', async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
     const result = await User.updateOne(
@@ -889,7 +842,7 @@ endpoints.delete('/users/:id/recipe/delete_recipe', async (req, res) => {
     res.status(200).json({ message: 'Successfully deleted recipe' });
   } catch (error) {
     console.error('Error deleting recipe: ', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 ///////////////////////
@@ -905,7 +858,7 @@ async function validatePassword(user, inputtedPassword) {
         return;
       }
       if (passwordsMatch) {
-        console.log("PASSWORDS MATCH!");
+        console.log("Passwords MATCH");
         resolve(true);
       } else {
         resolve(false);
@@ -922,7 +875,7 @@ async function validateVerificationCode(user, inputtedVerificationCode) {
         return;
       }
       if (codesMatch) {
-        console.log("VERIFICATION CODES MATCH!");
+        console.log("Verification Codes MATCH");
         resolve(true);
       } else {
         resolve(false);

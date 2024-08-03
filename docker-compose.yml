@@ -13,11 +13,13 @@ services:
     environment:
       - MONGO_DB_URI=mongodb://db/WSIE
   db:
-    image: mongo
+    build: "./mongo"
     ports:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+    environment:
+      - LOAD_ADMIN_DATA=true
   nginx:
     image: nginx:latest
     ports:

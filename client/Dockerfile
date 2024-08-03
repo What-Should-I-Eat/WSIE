@@ -1,8 +1,8 @@
 FROM node:20
 
-COPY . /src
+COPY . /client
 
-WORKDIR /src
+WORKDIR /client
 
 RUN npm install --production
 
