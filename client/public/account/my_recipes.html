@@ -29,6 +29,9 @@
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+  <!-- PDF Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   <!-- Email Script -->
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <!-- Custom Scripts -->
@@ -56,9 +59,6 @@
         utils.showAjaxAlert("Success", deleteRecipeMessage);
         utils.removeFromStorage("deleteRecipeMessage");
       }
-
-      const myRecipes = new MyRecipesView();
-      myRecipes.load();
     });
   </script>
 </head>
@@ -396,24 +396,21 @@
   <!-- END: Sign Up / Sign Modal -->
 
   <!-- START: My Recipes View -->
-  <!-- <div class="container-fluid px-0">
-    <div class="mb-3 container-fluid navbar-decoration px-0 d-flex align-items-center justify-content-center">
-      <h1 class="display-3">My Recipes</h1>
-    </div>
-  </div> -->
-
   <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 id="myRecipesHeader">My Recipes</h2>
-      <div class="d-flex flex-column align-items-end">
-        <a href="/account/create_recipe" class="btn btn-primary btn-block mb-3" role="button">Create Recipe</a>
+      <div class="d-flex align-items-end">
+        <a href="/account/create_recipe" class="btn btn-primary btn-block button-spacing" role="button">
+          <i class="fas fa-plus"></i>
+        </a>
+        <button id="export-pdf" class="btn btn-primary btn-block">
+          <i class="fas fa-download"></i>
+        </button>
       </div>
     </div>
-
     <hr />
-
     <div class="my-recipes-container">
-      <!-- Dynamically add results in my_recipes.js-->
+      <!-- Dynamically add results in my_recipes.js -->
     </div>
   </div>
   <!-- END: My Recipes View -->

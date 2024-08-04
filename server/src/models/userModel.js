@@ -22,18 +22,21 @@ const UserSchema = new Schema({
         recipeDirections: [String],
         recipeImage: String,
         recipeUri: String,
+        // TODO: Add units
         recipeCalories: Number,
         recipeSource: String,
         recipeSourceUrl: String,
-        // Below this line is specific to the user create recipe
         userCreated: Boolean,
         userRecipeImage: {
             recipeImageData: Buffer,
             recipeImageType: String
         },
         recipeServings: Number,
+        // TODO: Add units
         recipeCarbs: Number,
+        // TODO: Add units
         recipeFats: Number,
+        // TODO: Add units
         recipeProtein: Number,
     }],
 });

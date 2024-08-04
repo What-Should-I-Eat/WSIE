@@ -184,3 +184,8 @@
     margin-bottom: 5px; /* Add vertical space between columns */
   }
 }
+
+/* Used for icons on my recipes */
+.button-spacing {
+  margin-right: 5px;
+}
