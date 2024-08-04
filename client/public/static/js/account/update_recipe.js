@@ -56,7 +56,7 @@ $(document).ready(function () {
     formData.append('userCreated', true);
     console.log("FORM DATA: " + formData);
 
-    url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/create_recipe`;
+    url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/update_recipe`;
     console.log(`Sending request to: ${url}`);
 
     fetch(url, {
