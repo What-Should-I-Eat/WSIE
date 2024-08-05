@@ -327,7 +327,8 @@ function RecipeDetailsView() {
     const ingredientsList = document.querySelector('.recipe-info ul');
     ingredientsList.innerHTML = '';
     if (recipe.recipeIngredients) {
-      recipe.recipeIngredients.forEach(ingredient => {
+      var ingredientsString = recipe.recipeIngredients[0].split(/\r\n/);
+      ingredientsString.forEach(ingredient => {
         const listItem = document.createElement('li');
         listItem.textContent = ingredient;
         ingredientsList.appendChild(listItem);
@@ -339,7 +340,8 @@ function RecipeDetailsView() {
     const preparationList = preparationContainer.querySelector('ul');
     preparationList.innerHTML = '';
     if (recipe.recipeDirections) {
-      recipe.recipeDirections.forEach(step => {
+      var directionsString = recipe.recipeDirections[0].split(/\r\n/);
+      directionsString.forEach(step => {
         const listItem = document.createElement('li');
         listItem.textContent = step;
         preparationList.appendChild(listItem);
