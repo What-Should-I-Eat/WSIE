@@ -139,6 +139,8 @@ function UserRecipeDetailsView() {
     formRecipeIngredients.value = recipe.recipeIngredients;
     let formRecipeDirections = document.getElementById('recipeDirections');
     formRecipeDirections.value = recipe.recipeDirections;
+    let formRecipeServings = document.getElementById('recipeServings');
+    formRecipeServings.value = recipe.recipeServings;
     let formRecipeCalories = document.getElementById('recipeCalories');
     formRecipeCalories.value = recipe.recipeCalories;
     let formRecipeCarbs = document.getElementById('recipeCarbs');
