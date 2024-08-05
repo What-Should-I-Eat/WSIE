@@ -1,5 +1,4 @@
 function RecipeDetailsView() {
-
   this.load = async (source, sourceUrl, recipeUri) => {
     if (hasAllData(source, sourceUrl, recipeUri)) {
       console.log("Loading view from Edamam recipe");
@@ -170,6 +169,16 @@ function RecipeDetailsView() {
     }
     hiddenRecipeSourceUrlInput.value = recipe.url;
 
+    // Hidden Recipe Source URL
+    let hiddenRecipeServingsInput = document.getElementById('recipe-servings');
+    if (!hiddenRecipeServingsInput) {
+      hiddenRecipeServingsInput = document.createElement('input');
+      hiddenRecipeServingsInput.type = 'hidden';
+      hiddenRecipeServingsInput.id = 'recipe-servings';
+      form.appendChild(hiddenRecipeServingsInput);
+    }
+    hiddenRecipeServingsInput.value = recipe.yield;
+
     // Check if the recipe is a favorite
     const username = utils.getUserNameFromCookie();
     const isFavorite = await checkIfFavorite(username, recipe.label);
@@ -184,13 +193,13 @@ function RecipeDetailsView() {
     if (hasValidImage(recipe)) {
       // Use the LARGE as default in recipe details
       if (recipe.images.LARGE && recipe.images.LARGE.url) {
-        imageSrc = recipe.images.LARGE.url;
+        imageSrc = await utils.getEdamamRecipeImage(recipe.images.LARGE.url);
       } else {
-        imageSrc = recipe.images.REGULAR.url
+        imageSrc = await utils.getEdamamRecipeImage(recipe.images.REGULAR.url);
       }
     }
 
-    document.getElementById('recipe-image').src = imageSrc
+    document.getElementById('recipe-image').src = imageSrc;
     document.getElementById('recipe-image').alt = `Image of ${recipe.label}`;
 
     // Update ingredients list
@@ -228,13 +237,14 @@ function RecipeDetailsView() {
     // Update nutritional facts
     const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
     nutritionalFactsList.innerHTML = '';
+    nutritionalFactsList.innerHTML += `<li>Servings: ${Math.round(recipe.yield)}</li>`;
     nutritionalFactsList.innerHTML += `<li>Calories: ${Math.round(recipe.totalNutrients.ENERC_KCAL.quantity)} ${recipe.totalNutrients.ENERC_KCAL.unit}</li>`;
     nutritionalFactsList.innerHTML += `<li>Fat: ${Math.round(recipe.totalNutrients.FAT.quantity)} ${recipe.totalNutrients.FAT.unit}</li>`;
     nutritionalFactsList.innerHTML += `<li>Carbohydrates: ${Math.round(recipe.totalNutrients.CHOCDF.quantity)} ${recipe.totalNutrients.CHOCDF.unit}</li>`;
     nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.totalNutrients.PROCNT.quantity)} ${recipe.totalNutrients.PROCNT.unit}</li>`;
 
     // Update dietary labels
-    const dietaryContainer = document.querySelectorAll('.recipe-info')[3]
+    const dietaryContainer = document.querySelectorAll('.recipe-info')[3];
     const dietaryLabelsList = dietaryContainer.querySelector('ul');
     dietaryLabelsList.innerHTML = '';
     if (recipe.dietLabels && recipe.dietLabels.length > 0) {
@@ -294,6 +304,16 @@ function RecipeDetailsView() {
     }
     hiddenRecipeSourceUrlInput.value = "";
 
+    // Hidden Recipe Source URL
+    let hiddenRecipeServingsInput = document.getElementById('recipe-servings');
+    if (!hiddenRecipeServingsInput) {
+      hiddenRecipeServingsInput = document.createElement('input');
+      hiddenRecipeServingsInput.type = 'hidden';
+      hiddenRecipeServingsInput.id = 'recipe-servings';
+      form.appendChild(hiddenRecipeServingsInput);
+    }
+    hiddenRecipeServingsInput.value = recipe.yield;
+
     // Check if the recipe is a favorite
     const addToFavoritesBtn = document.getElementById('addToFavorites');
     addToFavoritesBtn.textContent = DELETE_RECIPE;
@@ -334,13 +354,14 @@ function RecipeDetailsView() {
     // Update nutritional facts
     const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
     nutritionalFactsList.innerHTML = '';
+    nutritionalFactsList.innerHTML += `<li>Servings: ${Math.round(recipe.recipeServings)}</li>`;
     nutritionalFactsList.innerHTML += `<li>Calories: ${Math.round(recipe.recipeCalories)} kcal</li>`;
     nutritionalFactsList.innerHTML += `<li>Fat: ${Math.round(recipe.recipeFats)} g</li>`;
     nutritionalFactsList.innerHTML += `<li>Carbohydrates: ${Math.round(recipe.recipeCarbs)} g</li>`;
     nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.recipeProtein)} g</li>`;
 
     // Update dietary labels
-    const dietaryContainer = document.querySelectorAll('.recipe-info')[3]
+    const dietaryContainer = document.querySelectorAll('.recipe-info')[3];
     const dietaryLabelsList = dietaryContainer.querySelector('ul');
     dietaryLabelsList.innerHTML = '';
     const noDietaryText = document.createElement('p');
@@ -382,9 +403,10 @@ function RecipeDetailsView() {
     const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
     const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
     const recipeUri = document.getElementById('recipe-uri').value;
-    const recipeCalories = document.getElementById('recipe-calories').value;;
-    const recipeSource = document.getElementById('recipe-source').value;;
-    const recipeSourceUrl = document.getElementById('recipe-source-url').value;;
+    const recipeCalories = document.getElementById('recipe-calories').value;
+    const recipeSource = document.getElementById('recipe-source').value;
+    const recipeSourceUrl = document.getElementById('recipe-source-url').value;
+    const recipeServings = document.getElementById('recipe-servings').value;
 
     const buttonText = form.find("#addToFavorites").text();
 
@@ -406,6 +428,7 @@ function RecipeDetailsView() {
         recipeCalories: recipeCalories,
         recipeSource: recipeSource,
         recipeSourceUrl: recipeSourceUrl,
+        recipeServings: recipeServings,
         userCreated: false
       };
       newButtonText = REMOVE_FROM_FAVORITES;

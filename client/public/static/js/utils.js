@@ -379,7 +379,7 @@ const utils = (() => {
     try {
       return await decodeUserRecipeImage(recipe);
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       return NO_IMAGE_AVAILABLE;
     }
   }
@@ -403,6 +403,23 @@ const utils = (() => {
       reader.onerror = () => reject(new Error(`${FAILED_TO_DECODE_USER_RECIPE_IMAGE} for [${recipe.recipeName}]`));
       reader.readAsDataURL(blob);
     });
+  }
+
+  /**
+   * Handles requesting Edamam recipe image for recipe details and my recipes view
+   * @param {string} imageUrl - A recipes image
+   * @returns {Promise<string>} - A Promise that resolves to a data URL.
+   */
+  async function getEdamamRecipeImage(imageUrl) {
+    try {
+      // Let the client's server handle the data
+      const response = await fetch(`/recipes/get_edamam_image?url=${encodeURIComponent(imageUrl)}`);
+      const data = await response.json();
+      return `data:${data.imageType};base64,${data.base64Image}`;
+    } catch (error) {
+      console.error(error);
+      return NO_IMAGE_AVAILABLE;
+    }
   }
 
   /**
@@ -455,6 +472,7 @@ const utils = (() => {
     clearCookies,
     cleanupSignOut,
     getUserRecipeImage,
+    getEdamamRecipeImage,
     scrollToTop,
     clearRecipesFilterStorageWrapper
   };

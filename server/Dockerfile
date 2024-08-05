@@ -1,10 +1,8 @@
-FROM node:14
+FROM node:20
 
-COPY . /src
+COPY . /server
 
-WORKDIR /src
-
-#COPY initializedb.js /app
+WORKDIR /server
 
 RUN npm install --production
 
