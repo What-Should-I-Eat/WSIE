@@ -564,6 +564,50 @@ privateRouter.delete('/users/:id/recipe/delete_recipe', async (req, res) => {
   }
 });
 
+privateRouter.post('/users/:id/recipe/update_recipe', upload.single('userRecipeImage'), async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await mongoose.model('User').findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
+    }
+
+    const recipeToAdd = req.body.recipeName;
+    const index = user.favorites.findIndex(x => x.recipeName === recipeToAdd);
+    if (index !== -1) {
+      console.error(`[${recipeToAdd}] is already added.. skipping`);
+      return res.status(409).json({ error: "Recipe already created" });
+    }
+
+    let newRecipe = {
+      ...req.body
+    };
+
+    let imageType = null;
+    let imageData = null;
+    if (req.file && req.file.buffer) {
+      const type = await fileType.fromBuffer(req.file.buffer);
+      imageType = type ? type.mime : 'application/octet-stream';
+
+      imageData = Buffer.from(req.file.buffer);
+      newRecipe = {
+        ...req.body,
+        userRecipeImage: {
+          recipeImageData: imageData,
+          recipeImageType: imageType
+        }
+      };
+    }
+
+    user.favorites.push(newRecipe);
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+  }
+});
+
 async function validatePassword(user, inputtedPassword) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(inputtedPassword, user.password, function (err, passwordsMatch) {

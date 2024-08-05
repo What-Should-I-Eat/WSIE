@@ -327,7 +327,8 @@ function RecipeDetailsView() {
     const ingredientsList = document.querySelector('.recipe-info ul');
     ingredientsList.innerHTML = '';
     if (recipe.recipeIngredients) {
-      recipe.recipeIngredients.forEach(ingredient => {
+      var ingredientsString = recipe.recipeIngredients[0].split(/\r\n/);
+      ingredientsString.forEach(ingredient => {
         const listItem = document.createElement('li');
         listItem.textContent = ingredient;
         ingredientsList.appendChild(listItem);
@@ -339,7 +340,8 @@ function RecipeDetailsView() {
     const preparationList = preparationContainer.querySelector('ul');
     preparationList.innerHTML = '';
     if (recipe.recipeDirections) {
-      recipe.recipeDirections.forEach(step => {
+      var directionsString = recipe.recipeDirections[0].split(/\r\n/);
+      directionsString.forEach(step => {
         const listItem = document.createElement('li');
         listItem.textContent = step;
         preparationList.appendChild(listItem);
@@ -367,6 +369,16 @@ function RecipeDetailsView() {
     const noDietaryText = document.createElement('p');
     noDietaryText.innerHTML = `No user dietary labels.`;
     dietaryContainer.appendChild(noDietaryText);
+
+    const button = document.createElement("button");
+    const recipeName = recipe.recipeName;
+    button.textContent = "Update Recipe";
+    button.classList.add("updateRecipeButton"); // Add a class for styling
+    button.addEventListener("click", function() {
+      document.location.href = "/account/update_recipe?userRecipeName="+recipeName;
+    });
+    var container = document.getElementById("updateRecipeContainer");
+    container.appendChild(button);
   };
 
   // Handles favorite/unfavorite logic
@@ -436,7 +448,7 @@ function RecipeDetailsView() {
       errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
     }
     // Delete recipe
-    else {
+    else{
       urlAction = DELETE_ACTION;
       request = {
         recipeName: document.getElementById('recipe-name').textContent

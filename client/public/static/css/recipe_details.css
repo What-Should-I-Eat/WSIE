@@ -40,3 +40,24 @@
 .add-to-favorites button {
   width: 70%;
 }
+
+.updateRecipeContainer{
+  max-width: 800px;
+  margin: 20px auto;
+  background: white;
+}
+
+.updateRecipeButton{
+  width: 64%;
+  height: 35px;
+  border-radius: 4px;
+  margin-left: 18%;
+  text-align: center;
+  background-color: var(--secondary-color);
+  border: none;
+  color: white;
+}
+
+.updateRecipeButton:hover {
+  background-color: var(--primary-color);
+}
