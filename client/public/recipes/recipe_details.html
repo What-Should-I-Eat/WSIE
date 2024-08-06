@@ -399,51 +399,56 @@
   <!-- END: Sign Up / Sign Modal -->
 
   <!-- START: Recipe Details -->
-  <form id="recipeForm">
+  <div class="backgroundColor">
     <div class="recipe-container">
-      <header class="recipe-header" id="recipe-header">
-        <h1 id="recipe-name">Loading...</h1>
-        <img id="recipe-image" src="/static/img/loading-spinner.svg" alt="Loading recipe image"
-          style="max-width: 100%; height: auto;" />
-      </header>
+      <form id="recipeForm">
+        <header class="recipe-header" id="recipe-header">
+          <h1 id="recipe-name">Loading...</h1>
+          <img id="recipe-image" src="/static/img/loading-spinner.svg" alt="Loading recipe image"
+            style="max-width: 100%; height: auto;" />
+        </header>
 
-      <section class="recipe-info">
-        <h3>Ingredients</h3>
-        <ul id="ingredients-list">
-          <!-- Dynamically building ingredients here -->
-        </ul>
-      </section>
+        <section class="recipe-info">
+          <h3>Ingredients</h3>
+          <ul id="ingredients-list">
+            <!-- Dynamically building ingredients here -->
+          </ul>
+        </section>
 
-      <section class="recipe-info">
-        <h3>Preparation</h3>
-        <ul id="preparation-list">
-          <!-- Dynamically building preparation here -->
-        </ul>
-      </section>
+        <section class="recipe-info">
+          <h3>Preparation</h3>
+          <ul id="preparation-list">
+            <!-- Dynamically building preparation here -->
+          </ul>
+        </section>
 
-      <section class="recipe-info inline-div">
-        <h3>Nutritional Facts</h3>
-        <ul id="nutritional-facts-list">
-          <!-- Dynamically building nutritional facts here -->
-        </ul>
-      </section>
+        <section class="recipe-info inline-div">
+          <h3>Nutritional Facts</h3>
+          <ul id="nutritional-facts-list">
+            <!-- Dynamically building nutritional facts here -->
+          </ul>
+        </section>
 
-      <section class="recipe-info inline-div">
-        <h3>Dietary Labels</h3>
-        <ul id="dietary-labels-list">
-          <!-- Dynamically building dietary labels here -->
-        </ul>
-      </section>
-      
-      <form id="updateRecipeForm">
-        <section id="updateRecipeContainer"></section>
+        <section class="recipe-info inline-div">
+          <h3>Dietary Labels</h3>
+          <ul id="dietary-labels-list">
+            <!-- Dynamically building dietary labels here -->
+          </ul>
+        </section>
+        
+        <form id="updateRecipeForm">
+          <section id="updateRecipeContainer"></section>
+        </form>
+
+        <section class="recipe-info add-to-favorites">
+          <button type="submit" class="btn btn-primary" id="addToFavorites">Add Recipe to Favorites</button>
+        </section>
       </form>
-
-      <section class="recipe-info add-to-favorites">
-        <button type="submit" class="btn btn-primary" id="addToFavorites">Add Recipe to Favorites</button>
-      </section>
+      <form id="publishRecipeRequestForm">
+        <section id="publishRecipeContainer"></section>
+      </form>
     </div>
-  </form>
+  </div>
   <div class="pagination-container" style="text-align: center; margin-top: 20px;">
     <!-- Pagination buttons will be dynamically created here -->
   </div>

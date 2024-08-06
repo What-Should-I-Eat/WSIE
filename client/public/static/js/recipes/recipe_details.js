@@ -370,15 +370,21 @@ function RecipeDetailsView() {
     noDietaryText.innerHTML = `No user dietary labels.`;
     dietaryContainer.appendChild(noDietaryText);
 
-    const button = document.createElement("button");
+    const updateRecipeButton = document.createElement("button");
     const recipeName = recipe.recipeName;
-    button.textContent = "Update Recipe";
-    button.classList.add("updateRecipeButton"); // Add a class for styling
-    button.addEventListener("click", function() {
+    updateRecipeButton.textContent = "Update Recipe";
+    updateRecipeButton.classList.add("updateRecipeButton"); // Add a class for styling
+    updateRecipeButton.addEventListener("click", function() {
       document.location.href = "/account/update_recipe?userRecipeName="+recipeName;
     });
     var container = document.getElementById("updateRecipeContainer");
-    container.appendChild(button);
+    container.appendChild(updateRecipeButton);
+
+    const publishRecipeButton = document.createElement("button");
+    publishRecipeButton.textContent = "Request to Publish Recipe";
+    publishRecipeButton.classList.add("publishRecipeButton");
+    var container = document.getElementById("publishRecipeContainer");
+    container.appendChild(publishRecipeButton);
   };
 
   // Handles favorite/unfavorite logic
@@ -493,6 +499,53 @@ function RecipeDetailsView() {
       console.log(error);
       utils.showAjaxAlert("Error", error.message);
     });
+  });
+
+  // Handles publishing request logic
+  $("#publishRecipeRequestForm").on("submit", async function (event) {
+    event.preventDefault();
+    const recipeName = document.getElementById('recipe-name').textContent;
+    const username = utils.getUserNameFromCookie();
+    const userId = await utils.getUserIdFromUsername(username);
+    const recipeImage = document.getElementById('recipe-image').src;
+    const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
+    const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
+    const recipeCalories = document.getElementById('recipe-calories').value;
+    const recipeServings = document.getElementById('recipe-servings').value;
+
+    let request = {
+      recipeName: recipeName,
+      recipeIngredients: recipeIngredients.join(", "),
+      recipeDirections: recipeDirections.join(". "),
+      recipeImage: recipeImage,
+      recipeCalories: recipeCalories,
+      recipeServings: recipeServings,
+      userCreated: true,
+      isPublished: false
+    };
+  
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+    try {
+      const response = await fetch(url, {
+        method: POST_ACTION,
+        body: JSON.stringify(request),
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      console.log(data.success);
+      utils.showAjaxAlert("Success", data.success);
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
   });
 }
 

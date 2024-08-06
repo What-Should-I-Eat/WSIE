@@ -1,15 +1,14 @@
-#recipeForm{
+.backgroundColor{
   background: linear-gradient(to bottom, #ff7e5f, #feb47b);
   background-size: cover;
 }
 
-.recipe-container {
+.recipe-container{
   max-width: 800px;
   margin: 20px auto;
   background: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-
 .recipe-header {
   background-color: white;
   background-size: cover;
@@ -58,6 +57,21 @@
   color: white;
 }
 
+.publishRecipeButton{
+  width: 64%;
+  height: 35px;
+  border-radius: 4px;
+  margin-left: 18%;
+  text-align: center;
+  background-color: var(--secondary-color);
+  border: none;
+  color: white;
+}
+
 .updateRecipeButton:hover {
+  background-color: var(--primary-color);
+}
+
+.publishRecipeButton:hover {
   background-color: var(--primary-color);
 }
