@@ -517,9 +517,9 @@ function RecipeDetailsView() {
       recipeName: recipeName,
       recipeIngredients: recipeIngredients.join(", "),
       recipeDirections: recipeDirections.join(". "),
-      recipeImage: recipeImage,
+      //recipeImage: recipeImage,
       recipeCalories: recipeCalories,
-      recipeServings: recipeServings,
+      //recipeServings: recipeServings,
       userCreated: true,
       isPublished: false
     };
@@ -533,13 +533,10 @@ function RecipeDetailsView() {
           'Content-Type': DEFAULT_DATA_TYPE
         }
       });
-
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error);
       }
-
       console.log(data.success);
       utils.showAjaxAlert("Success", data.success);
     } catch (error) {

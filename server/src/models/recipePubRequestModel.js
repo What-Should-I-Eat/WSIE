@@ -3,11 +3,13 @@ const Schema = mongoose.Schema;
 
 const recipePubRequestSchema = new Schema({
   recipeName: String,
-  recipeImage: Number,
   recipeIngredients: String,
   recipeDirections: String,
+  //recipeImage: Number,
   recipeCalories: Number,
-  recipeServings: Number
+  //recipeServings: Number,
+  userCreated: Boolean,
+  isPublished: Boolean
 });
 
 module.exports = mongoose.model('RecipePubRequest', recipePubRequestSchema);
