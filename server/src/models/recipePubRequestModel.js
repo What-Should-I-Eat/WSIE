@@ -5,9 +5,8 @@ const recipePubRequestSchema = new Schema({
   recipeName: String,
   recipeIngredients: String,
   recipeDirections: String,
-  //recipeImage: Number,
-  recipeCalories: Number,
-  //recipeServings: Number,
+  recipeNutrition: String,
+  recipeImage: String,
   userCreated: Boolean,
   isPublished: Boolean
 });

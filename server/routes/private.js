@@ -621,9 +621,8 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
       recipeName: req.body.recipeName,
       recipeIngredients: req.body.recipeIngredients,
       recipeDirections: req.body.recipeDirections,
+      recipeNutrition: req.body.recipeNutrition,
       recipeImage: req.body.recipeImage,
-      recipeCalories: req.body.recipeCalories,
-      recipeServings: req.body.recipeServings,
       userCreated: req.body.userCreated,
       isPublished: req.body.isPublished
     });

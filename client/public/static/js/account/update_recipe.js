@@ -149,7 +149,7 @@ function UserRecipeDetailsView() {
     formRecipeFats.value = recipe.recipeFats;
     let formRecipeProtein = document.getElementById('recipeProtein');
     formRecipeProtein.value = recipe.recipeProtein;
-    let formRecipeImage = document.getElementById('userRecipeImage');
+    let formRecipeImage = document.getElementById('userRecipeImage').src;
     formRecipeImage.value = recipe.userRecipeImage;
   };
 }

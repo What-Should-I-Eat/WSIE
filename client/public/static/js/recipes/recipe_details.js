@@ -510,16 +510,14 @@ function RecipeDetailsView() {
     const recipeImage = document.getElementById('recipe-image').src;
     const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
     const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
-    const recipeCalories = document.getElementById('recipe-calories').value;
-    const recipeServings = document.getElementById('recipe-servings').value;
+    const recipeNutrition = Array.from(document.getElementById('nutritional-facts-list').children).map(li => li.textContent);
 
     let request = {
       recipeName: recipeName,
       recipeIngredients: recipeIngredients.join(", "),
       recipeDirections: recipeDirections.join(". "),
-      //recipeImage: recipeImage,
-      recipeCalories: recipeCalories,
-      //recipeServings: recipeServings,
+      recipeNutrition: recipeNutrition.join(", "),
+      recipeImage: recipeImage,
       userCreated: true,
       isPublished: false
     };
