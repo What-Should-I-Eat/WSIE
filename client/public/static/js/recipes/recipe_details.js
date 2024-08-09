@@ -139,16 +139,6 @@ function RecipeDetailsView() {
     }
     hiddenUriInput.value = recipe.uri;
 
-    // Hidden Recipe Calories
-    let hiddenRecipeCaloriesInput = document.getElementById('recipe-calories');
-    if (!hiddenRecipeCaloriesInput) {
-      hiddenRecipeCaloriesInput = document.createElement('input');
-      hiddenRecipeCaloriesInput.type = 'hidden';
-      hiddenRecipeCaloriesInput.id = 'recipe-calories';
-      form.appendChild(hiddenRecipeCaloriesInput);
-    }
-    hiddenRecipeCaloriesInput.value = recipe.calories;
-
     // Hidden Recipe Source
     let hiddenRecipeSourceInput = document.getElementById('recipe-source');
     if (!hiddenRecipeSourceInput) {
@@ -168,16 +158,6 @@ function RecipeDetailsView() {
       form.appendChild(hiddenRecipeSourceUrlInput);
     }
     hiddenRecipeSourceUrlInput.value = recipe.url;
-
-    // Hidden Recipe Source URL
-    let hiddenRecipeServingsInput = document.getElementById('recipe-servings');
-    if (!hiddenRecipeServingsInput) {
-      hiddenRecipeServingsInput = document.createElement('input');
-      hiddenRecipeServingsInput.type = 'hidden';
-      hiddenRecipeServingsInput.id = 'recipe-servings';
-      form.appendChild(hiddenRecipeServingsInput);
-    }
-    hiddenRecipeServingsInput.value = recipe.yield;
 
     // Check if the recipe is a favorite
     const username = utils.getUserNameFromCookie();
@@ -274,16 +254,6 @@ function RecipeDetailsView() {
     }
     hiddenUriInput.value = "";
 
-    // Hidden Recipe Calories
-    let hiddenRecipeCaloriesInput = document.getElementById('recipe-calories');
-    if (!hiddenRecipeCaloriesInput) {
-      hiddenRecipeCaloriesInput = document.createElement('input');
-      hiddenRecipeCaloriesInput.type = 'hidden';
-      hiddenRecipeCaloriesInput.id = 'recipe-calories';
-      form.appendChild(hiddenRecipeCaloriesInput);
-    }
-    hiddenRecipeCaloriesInput.value = "";
-
     // Hidden Recipe Source
     let hiddenRecipeSourceInput = document.getElementById('recipe-source');
     if (!hiddenRecipeSourceInput) {
@@ -374,8 +344,8 @@ function RecipeDetailsView() {
     const recipeName = recipe.recipeName;
     button.textContent = "Update Recipe";
     button.classList.add("updateRecipeButton"); // Add a class for styling
-    button.addEventListener("click", function() {
-      document.location.href = "/account/update_recipe?userRecipeName="+recipeName;
+    button.addEventListener("click", function () {
+      document.location.href = "/account/update_recipe?userRecipeName=" + recipeName;
     });
     var container = document.getElementById("updateRecipeContainer");
     container.appendChild(button);
@@ -405,10 +375,17 @@ function RecipeDetailsView() {
     const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
     const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
     const recipeUri = document.getElementById('recipe-uri').value;
-    const recipeCalories = document.getElementById('recipe-calories').value;
     const recipeSource = document.getElementById('recipe-source').value;
     const recipeSourceUrl = document.getElementById('recipe-source-url').value;
-    const recipeServings = document.getElementById('recipe-servings').value;
+
+    const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
+    const listItems = nutritionalFactsList.querySelectorAll('li');
+
+    const servingsValue = listItems[0].textContent.split(': ')[1];
+    const [caloriesValue, caloriesUnit] = listItems[1].textContent.split(' ').slice(1);
+    const [fatValue, fatUnit] = listItems[2].textContent.split(' ').slice(1);
+    const [carbsValue, carbsUnit] = listItems[3].textContent.split(' ').slice(1);
+    const [proteinValue, proteinUnit] = listItems[4].textContent.split(' ').slice(1);
 
     const buttonText = form.find("#addToFavorites").text();
 
@@ -427,10 +404,17 @@ function RecipeDetailsView() {
         recipeDirections: recipeDirections.join(". "),
         recipeImage: recipeImage,
         recipeUri: recipeUri,
-        recipeCalories: recipeCalories,
         recipeSource: recipeSource,
         recipeSourceUrl: recipeSourceUrl,
-        recipeServings: recipeServings,
+        recipeServings: servingsValue,
+        recipeCalories: caloriesValue,
+        recipeCaloriesUnits: caloriesUnit,
+        recipeCarbs: carbsValue,
+        recipeCarbsUnits: carbsUnit,
+        recipeFats: fatValue,
+        recipeFatsUnits: fatUnit,
+        recipeProtein: proteinValue,
+        recipeProteinUnits: proteinUnit,
         userCreated: false
       };
       newButtonText = REMOVE_FROM_FAVORITES;
@@ -448,7 +432,7 @@ function RecipeDetailsView() {
       errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
     }
     // Delete recipe
-    else{
+    else {
       urlAction = DELETE_ACTION;
       request = {
         recipeName: document.getElementById('recipe-name').textContent

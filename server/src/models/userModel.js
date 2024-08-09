@@ -22,22 +22,22 @@ const UserSchema = new Schema({
         recipeDirections: [String],
         recipeImage: String,
         recipeUri: String,
-        // TODO: Add units
-        recipeCalories: Number,
         recipeSource: String,
         recipeSourceUrl: String,
+        recipeServings: Number,
+        recipeCalories: Number,
+        recipeCaloriesUnits: String,
+        recipeCarbs: Number,
+        recipeCarbsUnits: String,
+        recipeFats: Number,
+        recipeFatsUnits: String,
+        recipeProtein: Number,
+        recipeProteinUnits: String,
         userCreated: Boolean,
         userRecipeImage: {
             recipeImageData: Buffer,
             recipeImageType: String
         },
-        recipeServings: Number,
-        // TODO: Add units
-        recipeCarbs: Number,
-        // TODO: Add units
-        recipeFats: Number,
-        // TODO: Add units
-        recipeProtein: Number,
     }],
 });
 
