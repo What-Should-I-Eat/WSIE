@@ -34,10 +34,6 @@ const UserSchema = new Schema({
         recipeProtein: Number,
         recipeProteinUnits: String,
         userCreated: Boolean,
-        userRecipeImage: {
-            recipeImageData: Buffer,
-            recipeImageType: String
-        },
     }],
 });
 

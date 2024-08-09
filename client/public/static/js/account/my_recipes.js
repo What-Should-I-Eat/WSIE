@@ -157,7 +157,7 @@ $(document).ready(function () {
           addToFavoritesArray(recipe, recipeName, recipeImage, "JPEG");
         } else if (recipe.userCreated) {
           const recipeName = recipe.recipeName;
-          const recipeImage = await utils.getUserRecipeImage(recipe);
+          const recipeImage = hasValidImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
 
           const recipeHtml = `
                       <div class="box box-shadow-custom">
@@ -174,7 +174,7 @@ $(document).ready(function () {
           container.append(recipeHtml);
 
           // Add to array for export
-          addToFavoritesArray(recipe, recipeName, recipeImage, recipe.userRecipeImage.recipeImageType.split('/')[1].toUpperCase());
+          addToFavoritesArray(recipe, recipeName, recipeImage, "JPEG");
         }
       });
     };

@@ -370,14 +370,18 @@ const utils = (() => {
   }
 
   /**
- * Retrieves and decodes the user recipe image from the recipe data.
- * Handles errors by reverting to a default "no image available" state.
- * @param {Object} recipe - A recipe object containing image data.
- * @returns {Promise<string>} - A Promise that resolves to the image URL or a default image.
- */
+   * Retrieves and decodes the user recipe image from the recipe data.
+   * Handles errors by reverting to a default "no image available" state.
+   * @param {Object} recipe - A recipe object containing image data.
+   * @returns {Promise<string>} - A Promise that resolves to the image URL or a default image.
+   */
   async function getUserRecipeImage(recipe) {
     try {
-      return await decodeUserRecipeImage(recipe);
+      if (recipe.recipeImage) {
+        return recipe.recipeImage;
+      } else {
+        return NO_IMAGE_AVAILABLE;
+      }
     } catch (error) {
       console.error(error.message);
       return NO_IMAGE_AVAILABLE;
