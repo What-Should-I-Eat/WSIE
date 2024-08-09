@@ -219,7 +219,7 @@ function RecipeDetailsView() {
     nutritionalFactsList.innerHTML = '';
     nutritionalFactsList.innerHTML += `<li>Servings: ${Math.round(recipe.yield)}</li>`;
     nutritionalFactsList.innerHTML += `<li>Calories: ${Math.round(recipe.totalNutrients.ENERC_KCAL.quantity)} ${recipe.totalNutrients.ENERC_KCAL.unit}</li>`;
-    nutritionalFactsList.innerHTML += `<li>Fat: ${Math.round(recipe.totalNutrients.FAT.quantity)} ${recipe.totalNutrients.FAT.unit}</li>`;
+    nutritionalFactsList.innerHTML += `<li>Fats: ${Math.round(recipe.totalNutrients.FAT.quantity)} ${recipe.totalNutrients.FAT.unit}</li>`;
     nutritionalFactsList.innerHTML += `<li>Carbohydrates: ${Math.round(recipe.totalNutrients.CHOCDF.quantity)} ${recipe.totalNutrients.CHOCDF.unit}</li>`;
     nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.totalNutrients.PROCNT.quantity)} ${recipe.totalNutrients.PROCNT.unit}</li>`;
 
@@ -327,10 +327,10 @@ function RecipeDetailsView() {
     const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
     nutritionalFactsList.innerHTML = '';
     nutritionalFactsList.innerHTML += `<li>Servings: ${Math.round(recipe.recipeServings)}</li>`;
-    nutritionalFactsList.innerHTML += `<li>Calories: ${Math.round(recipe.recipeCalories)} kcal</li>`;
-    nutritionalFactsList.innerHTML += `<li>Fat: ${Math.round(recipe.recipeFats)} g</li>`;
-    nutritionalFactsList.innerHTML += `<li>Carbohydrates: ${Math.round(recipe.recipeCarbs)} g</li>`;
-    nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.recipeProtein)} g</li>`;
+    nutritionalFactsList.innerHTML += `<li>Calories: ${Math.round(recipe.recipeCalories)} ${recipe.recipeCaloriesUnits}</li>`;
+    nutritionalFactsList.innerHTML += `<li>Fats: ${Math.round(recipe.recipeFats)} ${recipe.recipeFatsUnits}</li>`;
+    nutritionalFactsList.innerHTML += `<li>Carbohydrates: ${Math.round(recipe.recipeCarbs)} ${recipe.recipeCarbsUnits}</li>`;
+    nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.recipeProtein)} ${recipe.recipeProteinUnits}</li>`;
 
     // Update dietary labels
     const dietaryContainer = document.querySelectorAll('.recipe-info')[3];
@@ -400,8 +400,8 @@ function RecipeDetailsView() {
       urlAction = PUT_ACTION;
       request = {
         recipeName: recipeName,
-        recipeIngredients: recipeIngredients.join(", "),
-        recipeDirections: recipeDirections.join(". "),
+        recipeIngredients: recipeIngredients,
+        recipeDirections: recipeDirections,
         recipeImage: recipeImage,
         recipeUri: recipeUri,
         recipeSource: recipeSource,
