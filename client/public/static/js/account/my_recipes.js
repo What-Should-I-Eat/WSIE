@@ -148,10 +148,9 @@ $(document).ready(function () {
         currentY = addBulletPoints(doc, item.instructions, 20, currentY, 170, 6);
       } else {
         currentY = addTextWithWrap(doc, 'No instructions were able to be migrated.', 20, currentY, 170, 6);
-        const source = item.source;
-        const url = item.url;
         currentY += 10;
-        currentY = addTextWithWrap(doc, `View full instructions and more at ${source}: ${url}`, 20, currentY, 170, 6);
+        const sourceWithUrl = `View full instructions and more at: ${item.source}`;
+        doc.textWithLink(sourceWithUrl, 20, currentY, { url: item.url });
       }
 
       currentY += 10;
@@ -260,7 +259,7 @@ $(document).ready(function () {
           container.append(recipeHtml);
 
           // Add to array for export
-          addToFavoritesArray(recipe, recipeName, recipeImage, recipeImageType);
+          addToFavoritesArray(recipe, recipeImage, recipeImageType);
         } else if (recipe.userCreated) {
           const recipeName = recipe.recipeName;
           let recipeImage = "";
@@ -289,7 +288,7 @@ $(document).ready(function () {
           container.append(recipeHtml);
 
           // Add to array for export
-          addToFavoritesArray(recipe, recipeName, recipeImage, recipeImageType);
+          addToFavoritesArray(recipe, recipeImage, recipeImageType);
         }
       });
     };
@@ -314,9 +313,9 @@ $(document).ready(function () {
     return recipeImage.match(/data:image\/(.*);/)[1].toUpperCase();
   }
 
-  function addToFavoritesArray(recipe, recipeName, recipeImage, imageType) {
+  function addToFavoritesArray(recipe, recipeImage, imageType) {
     favoriteRecipesArray.push({
-      recipeName,
+      recipeName: recipe.recipeName,
       instructions: recipe.recipeDirections || "",
       ingredients: recipe.recipeIngredients || "",
       nutrition: {
@@ -331,7 +330,9 @@ $(document).ready(function () {
         proteinUnits: recipe.recipeProteinUnits || "g",
       },
       recipeImage,
-      imageType: imageType
+      imageType: imageType,
+      source: recipe.recipeSource,
+      url: recipe.recipeSourceUrl
     });
   }
 
