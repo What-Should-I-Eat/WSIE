@@ -184,6 +184,7 @@ $(document).ready(function () {
 
   function MyRecipesView() {
     const container = $('.my-recipes-container');
+    const exportButton = document.getElementById('export-pdf');
 
     this.load = async () => {
       try {
@@ -217,8 +218,13 @@ $(document).ready(function () {
 
       if (!favoriteRecipes || favoriteRecipes.length === 0) {
         container.append(this.getNoSavedRecipes());
+        // Disable export if there are no recipes
+        exportButton.disabled = true;
         return;
       }
+
+      // Enable export if there are recipes
+      exportButton.disabled = false;
 
       console.log(`About to iterate through: ${favoriteRecipes.length} favorite recipes`);
       favoriteRecipes.forEach(async recipe => {
