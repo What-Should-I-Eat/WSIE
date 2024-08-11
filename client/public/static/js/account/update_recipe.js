@@ -4,7 +4,8 @@ $(document).ready(function () {
     const username = utils.getUserNameFromCookie();
     const userId = await utils.getUserIdFromUsername(username);
     let formRecipeName = document.getElementById('recipeName');
-    
+  
+    //delete currently existing recipe as we will replace it with a "new" recipe
     let urlAction = "";
     let request = {};
     let successMessage = "";
@@ -151,5 +152,7 @@ function UserRecipeDetailsView() {
     formRecipeProtein.value = recipe.recipeProtein;
     let formRecipeImage = document.getElementById('userRecipeImage');
     formRecipeImage.value = recipe.userRecipeImage;
-  };
+    document.getElementById('currentImage').src = await utils.getUserRecipeImage(recipe);
+    document.getElementById('currentImage').alt = `Image of ${recipe.recipeName}`;
+    };
 }
