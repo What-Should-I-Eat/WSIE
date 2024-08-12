@@ -491,19 +491,16 @@ privateRouter.post('/users/:id/recipe/create_recipe', upload.single('userRecipeI
       ...req.body
     };
 
-    let imageType = null;
-    let imageData = null;
     if (req.file && req.file.buffer) {
-      const type = await fileType.fromBuffer(req.file.buffer);
-      imageType = type ? type.mime : 'application/octet-stream';
+      const buffer = req.file.buffer;
+      const type = await fileType.fromBuffer(buffer);
+      const imageType = type ? type.mime : 'application/octet-stream';
+      const base64Image = buffer.toString('base64');
+      const recipeImage = `data:${imageType};base64,${base64Image}`
 
-      imageData = Buffer.from(req.file.buffer);
       newRecipe = {
         ...req.body,
-        userRecipeImage: {
-          recipeImageData: imageData,
-          recipeImageType: imageType
-        }
+        recipeImage: recipeImage
       };
     }
 
