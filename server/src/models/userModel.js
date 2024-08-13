@@ -15,26 +15,8 @@ const UserSchema = new Schema({
     incorrectPasswordAttemptTime: Date,
     diet: [String],
     health: [String],
-    favorites: [{
-        recipeId: Number,
-        recipeName: String,
-        recipeIngredients: [String],
-        recipeDirections: [String],
-        recipeImage: String,
-        recipeUri: String,
-        recipeSource: String,
-        recipeSourceUrl: String,
-        recipeServings: Number,
-        recipeCalories: Number,
-        recipeCaloriesUnits: String,
-        recipeCarbs: Number,
-        recipeCarbsUnits: String,
-        recipeFats: Number,
-        recipeFatsUnits: String,
-        recipeProtein: Number,
-        recipeProteinUnits: String,
-        userCreated: Boolean,
-    }],
+    // Reference by Id
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recipe' }],
 });
 
 UserSchema.methods.validPassword = function (password) {

@@ -4,7 +4,7 @@ $(document).ready(function () {
     const username = utils.getUserNameFromCookie();
     const userId = await utils.getUserIdFromUsername(username);
     let formRecipeName = document.getElementById('recipeName');
-    
+
     let urlAction = "";
     let request = {};
     let successMessage = "";
@@ -16,7 +16,7 @@ $(document).ready(function () {
     }
     successMessage = SUCCESSFULLY_DELETED_RECIPE;
     errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
-    
+
     let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
     console.log(`Sending [${urlAction}] request to: ${url}`)
 
@@ -68,7 +68,7 @@ $(document).ready(function () {
         utils.setStorage("createRecipeMessage", SUCCESSFULLY_UPDATED_RECIPE);
         window.location = MY_RECIPES_ROUTE;
       } else {
-        throw new Error(UNABLE_TO_UPDATE_RECIPE_UNEXPECTED_ERROR);
+        throw new Error(UNABLE_TO_UPDATE_RECIPE_ERROR);
       }
     }).catch(error => {
       console.log(error);

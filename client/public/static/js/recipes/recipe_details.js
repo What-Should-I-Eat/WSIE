@@ -425,7 +425,7 @@ function RecipeDetailsView() {
     else if (buttonText.includes("Remove")) {
       urlAction = DELETE_ACTION;
       request = {
-        recipeName: document.getElementById('recipe-name').textContent
+        recipeName: recipeName
       }
       newButtonText = ADD_TO_FAVORITES;
       successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
@@ -435,7 +435,7 @@ function RecipeDetailsView() {
     else {
       urlAction = DELETE_ACTION;
       request = {
-        recipeName: document.getElementById('recipe-name').textContent
+        recipeName: recipeName
       }
       newButtonText = "";
       successMessage = SUCCESSFULLY_DELETED_RECIPE;
@@ -449,34 +449,36 @@ function RecipeDetailsView() {
       url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
     }
 
-    console.log(`Sending [${urlAction}] request to: ${url}`)
+    console.log(`Sending [${urlAction}] request to: ${url}`);
 
-    fetch(url, {
-      method: urlAction,
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      },
-      body: JSON.stringify({ favorites: request })
-    }).then(response => {
+    try {
+      const response = await fetch(url, {
+        method: urlAction,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+
+      const responseData = await response.json();
+
       if (!response.ok) {
-        throw new Error(errorMessage);
-      }
-
-      return response.json();
-    }).then(data => {
-      if (data.message === successMessage) {
-        console.log(successMessage);
-        utils.setStorage("deleteRecipeMessage", successMessage);
-        window.location = MY_RECIPES_ROUTE;
+        console.error(responseData.error || errorMessage);
+        throw new Error(responseData.error || errorMessage);
       } else {
-        console.log(successMessage);
-        form.find("#addToFavorites").text(newButtonText);
-        utils.showAjaxAlert("Success", successMessage);
+        console.log(responseData.message || successMessage);
+        if (responseData.message === SUCCESSFULLY_DELETED_RECIPE) {
+          utils.setStorage("deleteRecipeMessage", successMessage);
+          window.location = MY_RECIPES_ROUTE;
+        } else {
+          form.find("#addToFavorites").text(newButtonText);
+          utils.showAjaxAlert("Success", responseData.message || successMessage);
+        }
       }
-    }).catch(error => {
-      console.log(error);
+    } catch (error) {
+      console.error(error);
       utils.showAjaxAlert("Error", error.message);
-    });
+    }
   });
 }
 

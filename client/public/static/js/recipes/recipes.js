@@ -15,6 +15,8 @@ function RecipesView() {
     try {
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
       const recipes = await this.getRecipes(url);
+      // TODO: Implement logic on separate branch
+      // const publicUserRecipes = await this.getPublicUserRecipes();
 
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
@@ -131,6 +133,30 @@ function RecipesView() {
       throw new Error(EDAMAM_QUERY_ERROR);
     }
   };
+
+  this.getPublicUserRecipes = async () => {
+    console.log(`Querying Server for Public User Recipes at: [${PUBLIC_USER_RECIPES_URL}]`)
+
+    try {
+      const response = await fetch(PUBLIC_USER_RECIPES_URL, {
+        method: GET_ACTION,
+        headers: {
+          'Accept': DEFAULT_DATA_TYPE,
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+
+      if (response.ok) {
+        return await response.json();
+      } else {
+        console.error()
+        throw new Error(ERROR_GETTING_PUBLIC_USER_RECIPES);
+      }
+    } catch (error) {
+      // Log the error here but don't flash user with error
+      console.error(ERROR_GETTING_PUBLIC_USER_RECIPES);
+    }
+  }
 
   this.renderRecipes = (recipes, container) => {
     container.empty();

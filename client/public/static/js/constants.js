@@ -51,6 +51,10 @@ const UPDATE_USER_HEALTH_URL = `${HOST}/${API_VERSION}/users/health`;
 // Recipe SCRAPE API Endpoint
 const RECIPE_SCRAPE_URL = `${HOST}/${API_VERSION}/scrape-recipe`;
 
+// Public User-Created Recipes API Endpint = 
+const PUBLIC_USER_RECIPES_URL = `${HOST}/${API_VERSION}/recipes`;
+const ERROR_GETTING_PUBLIC_USER_RECIPES = "Error occurred getting public user-created recipes";
+
 // User Favorites API Endpoints
 const USER_FAVORITES_RECIPES_CRUD_URL = `${HOST}/${API_VERSION}/users`;
 
@@ -143,11 +147,11 @@ const ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE = "Error occurred checking to s
 // Create Recipe
 const UNABLE_TO_CREATE_USER_NOT_LOGGED_IN = "User must login or create account to create a recipe";
 const SUCCESSFULLY_CREATED_RECIPE = "Successfully created recipe";
-const UNABLE_TO_CREATE_RECIPE_UNEXPECTED_ERROR = "Error occurred trying to create recipe";
+const UNABLE_TO_CREATE_RECIPE_ERROR = "Error occurred trying to create recipe";
 const USER_CREATED_RECIPE_HAS_NO_IMAGE = "User created recipe has no image";
 const FAILED_TO_DECODE_USER_RECIPE_IMAGE = "Error occurred trying to decode user recipe image";
 const SUCCESSFULLY_UPDATED_RECIPE = "Successfully updated recipe";
-const UNABLE_TO_UPDATE_RECIPE_UNEXPECTED_ERROR = "Error occurred trying to update recipe";
+const UNABLE_TO_UPDATE_RECIPE_ERROR = "Error occurred trying to update recipe";
 const UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN = "User must login or create account to update a recipe";
 
 // User Profile Updates
