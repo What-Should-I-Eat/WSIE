@@ -42,7 +42,6 @@ $(document).ready(function () {
   
       url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/update_recipe`;
       console.log(`Sending request to: ${url}`);
-  
       fetch(url, {
         method: PUT_ACTION,
         body: formData,
@@ -58,12 +57,13 @@ $(document).ready(function () {
         console.log(error);
         utils.showAjaxAlert("Error", error.message);
       });
-    }else{
+    } else {
       utils.showAjaxAlert("Error", "No changes to the recipe were made.");
     }
   });
 
-function compareUpdates(recipeDetails){
+
+  function compareUpdates(recipeDetails) {
     let changesFound = 0;
     changesFound = recipeDetails.recipeName.localeCompare(document.getElementById('recipeName').value);
     const origIngredientsString = recipeDetails.recipeIngredients[0].replace(/(?:\r\n|\r|\n)/g, '');
@@ -79,7 +79,7 @@ function compareUpdates(recipeDetails){
     changesFound += (recipeDetails.recipeProtein == document.getElementById('recipeProtein').value) ? 0 : 1;
     changesFound += document.getElementById('userRecipeImage').value;
     return changesFound;
-}
+  }
 
 });
 
@@ -156,5 +156,5 @@ function UserRecipeDetailsView() {
     formRecipeProtein.value = recipe.recipeProtein;
     document.getElementById('currentImage').src = await utils.getUserRecipeImage(recipe);
     document.getElementById('currentImage').alt = `Image of ${recipe.recipeName}`;
-    };
+  };
 }

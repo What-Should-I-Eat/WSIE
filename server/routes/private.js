@@ -1,58 +1,58 @@
 const express = require('express');
 const privateRouter = express.Router();
-const mongoose = require("mongoose");
 const User = require("../src/models/userModel.js");
+const Recipe = require("../src/models/recipeModel.js");
 const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const storage = multer.memoryStorage();
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 50 * 1024 * 1024 }
-});
+const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
 const fileType = require('file-type');
 
-// // Success / Error Logs
 const INTERNAL_SERVER_ERROR = "Internal Server Error";
 const USER_NOT_FOUND_ERROR = "User not found";
+
+const SUCCESSFULLY_FAVORITE_RECIPE = "Successfully favorited recipe";
+const UNABLE_TO_FAVORITE_UNEXPECTED_ERROR = "Error occurred trying to favorite recipe";
+const SUCCESSFULLY_UNFAVORITE_RECIPE = "Successfully un-favorited recipe";
+const UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR = "Error occurred trying to un-favorite recipe";
+const SUCCESSFULLY_CREATED_RECIPE = "Successfully created recipe";
+const UNABLE_TO_CREATE_RECIPE_ERROR = "Error occurred trying to create recipe";
+const SUCCESSFULLY_UPDATED_RECIPE = "Successfully updated recipe";
+const UNABLE_TO_UPDATE_RECIPE_ERROR = "Error occurred trying to update recipe";
+const SUCCESSFULLY_DELETED_RECIPE = "Successfully deleted recipe";
+const UNABLE_TO_DELETE_RECIPE_ERROR = "Error occurred deleting user created recipe";
 
 privateRouter.post("/users/register", async (req, res) => {
   try {
     const userToLower = req.body.username.toLowerCase();
-    const fullName = req.body.fullName;
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const existingUsernameCheck = await User.findOne({ username: userToLower });
     const existingEmailCheck = await User.findOne({ email: req.body.email });
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
-    const currentTimestamp = new Date();
-
-    const user = new User({
-      id: req.body.id,
-      fullName: fullName,
-      username: userToLower,
-      password: hashedPassword,
-      email: req.body.email,
-      verified: false,
-      verificationCode: hashedVerificationCode,
-      verificationCodeTimestamp: currentTimestamp,
-      incorrectPasswordAttempts: 0,
-      incorrectPasswordAttemptTime: currentTimestamp,
-      diet: req.body.diet,
-      health: req.body.health,
-      favorites: req.body.favorites
-    });
 
     if (existingUsernameCheck) {
-      res.status(444).json({ error: 'User already exists' });
-    } else if (existingEmailCheck) {
-      res.status(445).json({ error: 'Email already exists' });
-    } else {
-      const savedUser = await user.save();
-      console.log(`Successfully created User: [${fullName}] with Username: [${userToLower}]`);
-      res.json(savedUser);
+      return res.status(444).json({ error: 'User already exists' });
     }
-  }
-  catch (error) {
+    if (existingEmailCheck) {
+      return res.status(445).json({ error: 'Email already exists' });
+    }
+
+    const user = new User({
+      ...req.body,
+      username: userToLower,
+      password: hashedPassword,
+      verificationCode: hashedVerificationCode,
+      verificationCodeTimestamp: new Date(),
+      verified: false,
+      incorrectPasswordAttempts: 0,
+      incorrectPasswordAttemptTime: new Date()
+    });
+
+    const savedUser = await user.save();
+    console.log(`Successfully created User: [${req.body.fullName}] with Username: [${userToLower}]`);
+    res.json(savedUser);
+  } catch (error) {
     console.error('Error occurred during user registration:', error);
     res.status(500).json({ error: 'An error occurred during user registration' });
   }
@@ -60,28 +60,21 @@ privateRouter.post("/users/register", async (req, res) => {
 
 privateRouter.put("/users/verify", async (req, res) => {
   try {
-    let userToLower = req.body.username.toLowerCase();
-    const user = await User.findOne({ username: userToLower });
-
+    const user = await User.findOne({ username: req.body.username.toLowerCase() });
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
-    const inputtedCode = req.body.verificationCode;
-    const validatedVerificationCode = await validateVerificationCode(user, inputtedCode);
 
-    if (validatedVerificationCode) {
-      if (hasTenMinutesPassed(user.verificationCodeTimestamp)) {
-        return res.status(437).json({ error: 'Code has expired' });
-      }
-
-      const verificationUpdate = { $set: { "verified": true } };
-      const options = { upsert: true, new: true };
-
-      const verifiedUser = await User.updateOne(user, verificationUpdate, options);
-      res.json(verifiedUser);
-    } else {
+    const isCodeValid = await validateVerificationCode(user, req.body.verificationCode);
+    if (!isCodeValid) {
       return res.status(401).json({ error: 'Incorrect verification code' });
     }
+    if (hasTenMinutesPassed(user.verificationCodeTimestamp)) {
+      return res.status(437).json({ error: 'Code has expired' });
+    }
+
+    const verifiedUser = await User.updateOne(user, { $set: { verified: true } }, { upsert: true, new: true });
+    res.json(verifiedUser);
   } catch (error) {
     console.error('Error fetching unique user: ', error);
     res.status(500).json({ error: INTERNAL_SERVER_ERROR });
@@ -90,20 +83,17 @@ privateRouter.put("/users/verify", async (req, res) => {
 
 privateRouter.put("/users/resendVerificationCode", async (req, res) => {
   try {
-    let userToLower = req.body.username.toLowerCase();
-    const user = await User.findOne({ username: userToLower });
-
+    const user = await User.findOne({ username: req.body.username.toLowerCase() });
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
     const hashedVerificationCode = await bcrypt.hash(req.body.verificationCode, 10);
-    const currentTimestamp = new Date();
-
-    const verificationUpdate = { $set: { "verificationCode": hashedVerificationCode, "verificationCodeTimestamp": currentTimestamp } };
-    const options = { upsert: true, new: true };
-
-    const updatedCode = await User.updateOne(user, verificationUpdate, options);
+    const updatedCode = await User.updateOne(
+      user,
+      { $set: { verificationCode: hashedVerificationCode, verificationCodeTimestamp: new Date() } },
+      { upsert: true, new: true }
+    );
     res.json(updatedCode);
   } catch (error) {
     console.error('Error fetching verification code: ', error);
@@ -113,77 +103,47 @@ privateRouter.put("/users/resendVerificationCode", async (req, res) => {
 
 privateRouter.post('/users/find-username', async (req, res) => {
   try {
-    let userToLower = req.body.username.toLowerCase();
-    const user = await User.findOne({ username: userToLower });
-    const inputtedPassword = req.body.password;
-
+    const user = await User.findOne({ username: req.body.username.toLowerCase() });
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
-    } else if (user.verified == false) {
+    }
+    if (!user.verified) {
       return res.status(450).json({ error: 'User account is not verified' });
     }
 
-    try {
-      if ((user.incorrectPasswordAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))) {
-        return res.status(452).json({ error: '10 minute lockout' });
-      } else if (user.incorrectPasswordAttempts >= 10) {
-        return res.status(453).json({ error: 'Must reset password' });
-      }
-      const passwordValidated = await validatePassword(user, inputtedPassword);
-      if (passwordValidated) {
-        const resetAttempts = { $set: { "incorrectPasswordAttempts": 0 } };
-        const options = { upsert: true, new: true };
+    if ((user.incorrectPasswordAttempts === 5 && !hasTenMinutesPassed(user.incorrectPasswordAttemptTime)) || user.incorrectPasswordAttempts >= 10) {
+      return res.status(user.incorrectPasswordAttempts >= 10 ? 453 : 452).json({ error: user.incorrectPasswordAttempts >= 10 ? 'Must reset password' : '10 minute lockout' });
+    }
 
-        const _ = await User.updateOne(user, resetAttempts, options);
+    const passwordValidated = await validatePassword(user, req.body.password);
+    if (passwordValidated) {
+      await User.updateOne(user, { $set: { incorrectPasswordAttempts: 0 } }, { upsert: true, new: true });
 
-        req.session.isLoggedIn = true;
-        req.session.userId = user._id;
-        req.session.username = user.username;
+      req.session.isLoggedIn = true;
+      req.session.userId = user._id;
+      req.session.username = user.username;
 
-        // Set the cookie
-        res.cookie('sessionId', req.session.id, {
-          httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000,
-        });
+      res.cookie('sessionId', req.session.id, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+      res.cookie('username', req.session.username, { maxAge: 24 * 60 * 60 * 1000 });
 
-        res.cookie('username', req.session.username, {
-          maxAge: 24 * 60 * 60 * 1000,
-        });
+      console.log(`[${user.username}] successfully signed in.`);
+      res.json(user);
+    } else {
+      const updatedAttempts = user.incorrectPasswordAttempts + 1;
+      await User.updateOne(user, { $set: { incorrectPasswordAttempts: updatedAttempts, incorrectPasswordAttemptTime: new Date() } }, { upsert: true, new: true });
 
-        console.log(`[${user.username}] successfully signed in. Returning user with session cookies`);
-        return res.json(user);
-      } else {
-        const updatedAttempts = user.incorrectPasswordAttempts + 1;
-
-        const currentTimestamp = new Date();
-        const passwordAttemptsUpdate = { $set: { "incorrectPasswordAttempts": updatedAttempts, "incorrectPasswordAttemptTime": currentTimestamp } };
-        const options = { upsert: true, new: true };
-
-        const _ = await User.updateOne(user, passwordAttemptsUpdate, options);
-        console.log(updatedAttempts);
-
-        if ((updatedAttempts == 5) && (!hasTenMinutesPassed(user.incorrectPasswordAttemptTime))) {
-          return res.status(452).json({ error: '10 minute lockout' });
-        } else if (updatedAttempts >= 10) {
-          return res.status(453).json({ error: 'Must reset password' });
-        }
-
-        return res.status(401).json({ error: 'Incorrect password' });
-      }
-    } catch (error) {
-      console.error('Error validating password: ', error);
-      return res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+      console.log(updatedAttempts);
+      return res.status(401).json({ error: 'Incorrect password' });
     }
   } catch (error) {
-    console.error('Error fetching unique user: ', error);
+    console.error('Error validating password: ', error);
     res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
 privateRouter.get('/users/profile', (req, res) => {
-  const userId = req.session.userId;
-
-  User.findById(userId)
+  User.findById(req.session.userId)
+    .populate('favorites')
     .then(user => {
       if (!user) {
         return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
@@ -198,16 +158,14 @@ privateRouter.get('/users/profile', (req, res) => {
 
 privateRouter.get('/users/findUserData', async (req, res) => {
   try {
-    const username = req.query.username.toLowerCase();
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username: req.query.username.toLowerCase() }).populate('favorites');
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
     res.json(user);
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Error finding this username: ', error);
-    return res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
@@ -219,58 +177,47 @@ privateRouter.get('/users/findUserData', async (req, res) => {
 privateRouter.use((req, res, next) => {
   if (req.session && req.session.userId) {
     next();
-  }
-  else {
-    res.status(401).json({
-      error: 'Unauthorized'
-    });
+  } else {
+    res.status(401).json({ error: 'Unauthorized' });
   }
 });
 
-
-privateRouter.get('/users', async (_, res) => {
+privateRouter.get('/users', async (req, res) => {
   try {
-    const users = await mongoose.model('User').find();
+    const users = await User.find().populate('favorites');
     res.json(users);
-  }
-  catch (error) {
-    console.error('Error fetching users: ', error);
-    res.status(500).json({ error: 'users - Internal Server Error' });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
 privateRouter.get('/users/findUserId', async (req, res) => {
   try {
-    const username = req.query.username.toLowerCase();
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username: req.query.username.toLowerCase() });
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
-    const idNum = user._id;
-    res.json(idNum);
-  }
-  catch (error) {
+    res.json(user._id);
+  } catch (error) {
     console.error('Error finding this username: ', error);
-    return res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
 privateRouter.put('/users/diet', async (req, res) => {
   try {
-    const username = req.body.username.toLowerCase();
-
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username: req.body.username.toLowerCase() });
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
-    const newDiet = req.body.diet;
-    user.diet = newDiet;
+
+    user.diet = req.body.diet;
     await user.save();
 
-    console.log(`Updated diet for user: [${username}]`);
+    console.log(`Updated diet for user: [${req.body.username.toLowerCase()}]`);
     res.json(user.diet);
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Error updating diet: ', error);
     res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
@@ -278,118 +225,111 @@ privateRouter.put('/users/diet', async (req, res) => {
 
 privateRouter.put('/users/health', async (req, res) => {
   try {
-    const username = req.body.username.toLowerCase();
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username: req.body.username.toLowerCase() });
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
-    const newHealth = req.body.health;
-    user.health = newHealth;
+    user.health = req.body.health;
     await user.save();
 
-    console.log(`Updated health for user: [${username}]`);
+    console.log(`Updated health for user: [${req.body.username.toLowerCase()}]`);
     res.json(user);
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Error updating health: ', error);
     res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
 privateRouter.post('/users/:id/favorites', async (req, res) => {
-  const userId = req.params.id;
-  const recipeToAdd = req.body.favorites.recipeName;
-
   try {
-    const user = await mongoose.model('User').findById(userId);
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
-    const index = user.favorites.findIndex(x => x.recipeName == recipeToAdd);
-    if (index != -1) { // found favorite already in list
-      return res.json(true)
-    } else {
-      return res.json(false)  // not favorited yet
+    const recipe = await Recipe.findOne({ recipeName: req.body.favorites.recipeName });
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
     }
-  }
-  catch (error) {
-    return res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+
+    const alreadyFavorited = user.favorites.includes(recipe._id);
+    res.json(alreadyFavorited);
+  } catch (error) {
+    console.error("Error occurred checking if recipe is a favorite", error);
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 
 privateRouter.put('/users/:id/favorites', async (req, res) => {
-  const userId = req.params.id;
-  const newFavorites = req.body.favorites;
-  const recipeToAdd = req.body.favorites.recipeName;
   try {
-    const user = await mongoose.model('User').findById(userId);
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
-    const index = user.favorites.findIndex(x => x.recipeName == recipeToAdd);
-    console.log("Index: ", index)
-    if (index != -1) {
-      console.log(`User already has [${recipeToAdd}] favorited!`);
-    } else {
-      user.favorites.push(newFavorites);
+
+    let recipe = await Recipe.findOne({ recipeName: req.body.favorites.recipeName });
+    if (!recipe) {
+      recipe = await new Recipe(req.body.favorites).save();
     }
 
+    if (user.favorites.includes(recipe._id)) {
+      return res.status(409).json({ error: "Recipe already in favorites" });
+    }
+
+    user.favorites.push(recipe._id);
     await user.save();
-    res.json(user);
-  }
-  catch (error) {
-    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+
+    res.status(200).json({ message: SUCCESSFULLY_FAVORITE_RECIPE, user });
+  } catch (error) {
+    console.error(UNABLE_TO_FAVORITE_UNEXPECTED_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_FAVORITE_UNEXPECTED_ERROR });
   }
 });
 
 privateRouter.delete('/users/:id/favorites', async (req, res) => {
-  const userId = req.params.id;
-  const recipeToRemove = req.body.favorites.recipeName;
   try {
-    const user = await mongoose.model('User').findById(userId);
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
-    const index = user.favorites.findIndex(x => x.recipeName == recipeToRemove);
-    if (index == -1) {
-      return res.status(404).json({ error: 'favorite not found for user!' });
+
+    const recipe = await Recipe.findOne({ recipeName: req.body.favorites.recipeName });
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
     }
-    const _ = user.favorites.splice(index, 1);
+
+    user.favorites.pull(recipe._id);
     await user.save();
-    res.json(user);
-  }
-  catch (error) {
-    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+
+    const isRecipeFavoritedByOthers = await User.exists({ favorites: recipe._id });
+    if (!isRecipeFavoritedByOthers) {
+      await recipe.deleteOne();
+    }
+
+    res.status(200).json({ message: SUCCESSFULLY_UNFAVORITE_RECIPE, user });
+  } catch (error) {
+    console.error(UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR });
   }
 });
 
 privateRouter.put("/users/profile/update_details", async (req, res) => {
   try {
-    let userToLower = req.body.username.toLowerCase();
-    const user = await User.findOne({ username: userToLower });
-
+    const user = await User.findOne({ username: req.body.username.toLowerCase() });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
     if (!user.verified) {
       return res.status(404).json({ error: "User not validated" });
     }
 
-    const fullName = req.body.firstName + " " + req.body.lastName;
-
-    const fieldToUpdate = { $set: { "fullName": fullName } };
-    const options = { upsert: true, new: true };
-
-    const updatedFullName = await User.updateOne(user, fieldToUpdate, options);
-
-    if (updatedFullName) {
-      return res.status(200).json(updatedFullName);
-    } else {
+    const updatedFullName = await User.updateOne(user, { $set: { fullName: `${req.body.firstName} ${req.body.lastName}` } }, { upsert: true, new: true });
+    if (!updatedFullName) {
       return res.status(400).json({ error: "Error occurred trying to update user details" });
     }
+
+    res.status(200).json(updatedFullName);
   } catch (error) {
     console.error("Error occurred trying to update user details", error);
     res.status(500).json({ error: "Internal server error occurred trying to update user details" });
@@ -398,29 +338,20 @@ privateRouter.put("/users/profile/update_details", async (req, res) => {
 
 privateRouter.put("/users/profile/update_email", async (req, res) => {
   try {
-    let userToLower = req.body.username.toLowerCase();
-    const user = await User.findOne({ username: userToLower });
-
+    const user = await User.findOne({ username: req.body.username.toLowerCase() });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
     if (!user.verified) {
       return res.status(404).json({ error: "User not validated" });
     }
 
-    const email = req.body.email;
-
-    const fieldToUpdate = { $set: { "email": email } };
-    const options = { upsert: true, new: true };
-
-    const updatedEmail = await User.updateOne(user, fieldToUpdate, options);
-
-    if (updatedEmail) {
-      return res.status(200).json(updatedEmail);
-    } else {
+    const updatedEmail = await User.updateOne(user, { $set: { email: req.body.email } }, { upsert: true, new: true });
+    if (!updatedEmail) {
       return res.status(400).json({ error: "Error occurred trying to update user email" });
     }
+
+    res.status(200).json(updatedEmail);
   } catch (error) {
     console.error("Error occurred trying to update user email", error);
     res.status(500).json({ error: "Internal server error occurred trying to update user email" });
@@ -429,44 +360,30 @@ privateRouter.put("/users/profile/update_email", async (req, res) => {
 
 privateRouter.put("/users/profile/update_password", async (req, res) => {
   try {
-    let userToLower = req.body.username.toLowerCase();
-    const user = await User.findOne({ username: userToLower });
-
+    const user = await User.findOne({ username: req.body.username.toLowerCase() });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
     if (!user.verified) {
       return res.status(404).json({ error: "User not validated" });
     }
 
-    const originalPassword = req.body.originalPassword;
-    const newPassword = req.body.newPassword;
-
-    let arePasswordsEqual = await validatePassword(user, originalPassword);
-    if (!arePasswordsEqual) {
-      console.log("Existing and user provided password DO NOT MATCH");
+    const passwordValidated = await validatePassword(user, req.body.originalPassword);
+    if (!passwordValidated) {
       return res.status(400).json({ error: "Original password entered does not match existing. Failed to update user password" });
     }
 
-    arePasswordsEqual = await validatePassword(user, newPassword);
-    if (arePasswordsEqual) {
-      console.log("Existing and new user provided password MATCH");
+    if (await validatePassword(user, req.body.newPassword)) {
       return res.status(400).json({ error: "Passwords are identical - nothing to update" });
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10)
-
-    const fieldToUpdate = { $set: { "password": hashedPassword, "incorrectPasswordAttempts": 0 } };
-    const options = { upsert: true, new: true };
-
-    const updatedPassword = await User.updateOne(user, fieldToUpdate, options);
-
-    if (updatedPassword) {
-      return res.status(200).json(updatedPassword);
-    } else {
+    const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+    const updatedPassword = await User.updateOne(user, { $set: { password: hashedPassword, incorrectPasswordAttempts: 0 } }, { upsert: true, new: true });
+    if (!updatedPassword) {
       return res.status(500).json({ error: "Error occurred trying to update user password" });
     }
+
+    res.status(200).json(updatedPassword);
   } catch (error) {
     console.error("Error occurred trying to update user password", error);
     res.status(500).json({ error: "Internal server error occurred trying to update user password" });
@@ -475,58 +392,57 @@ privateRouter.put("/users/profile/update_password", async (req, res) => {
 
 privateRouter.post('/users/:id/recipe/create_recipe', upload.single('userRecipeImage'), async (req, res) => {
   try {
-    const userId = req.params.id;
-    const user = await mongoose.model('User').findById(userId);
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
-    const recipeToAdd = req.body.recipeName;
-    const index = user.favorites.findIndex(x => x.recipeName === recipeToAdd);
-    if (index !== -1) {
-      console.error(`[${recipeToAdd}] is already added.. skipping`);
-      return res.status(409).json({ error: "Recipe already created" });
+    const existingRecipe = await Recipe.findOne({ recipeName: req.body.recipeName, usernameCreator: user.username });
+    if (existingRecipe) {
+      return res.status(409).json({ error: "Recipe already exists" });
     }
 
-    let newRecipe = {
-      ...req.body
+    let newRecipeData = {
+      ...req.body,
+      recipeServings: req.body.recipeServings || 1,
+      recipeCalories: req.body.recipeCalories || 0,
+      recipeCarbs: req.body.recipeCarbs || 0,
+      recipeFats: req.body.recipeFats || 0,
+      recipeProtein: req.body.recipeProtein || 0,
+      userCreated: true,
+      usernameCreator: user.username,
+      isPublished: false,
+      pubRequested: false
     };
 
     if (req.file && req.file.buffer) {
-      const buffer = req.file.buffer;
-      const type = await fileType.fromBuffer(buffer);
+      const type = await fileType.fromBuffer(req.file.buffer);
       const imageType = type ? type.mime : 'application/octet-stream';
-      const base64Image = buffer.toString('base64');
-      const recipeImage = `data:${imageType};base64,${base64Image}`
-
-      newRecipe = {
-        ...req.body,
-        recipeImage: recipeImage
-      };
+      const base64Image = req.file.buffer.toString('base64');
+      newRecipeData.recipeImage = `data:${imageType};base64,${base64Image}`;
     }
 
-    user.favorites.push(newRecipe);
+    const newRecipe = await new Recipe(newRecipeData).save();
+    user.favorites.push(newRecipe._id);
     await user.save();
-    res.json(user);
+
+    res.status(200).json({ message: SUCCESSFULLY_CREATED_RECIPE, user });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+    console.error(UNABLE_TO_CREATE_RECIPE_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_CREATE_RECIPE_ERROR });
   }
 });
 
 privateRouter.get('/users/:id/recipe/get_recipe', async (req, res) => {
   try {
-    const userId = req.params.id;
-    const user = await mongoose.model('User').findById(userId);
+    const user = await User.findById(req.params.id).populate('favorites');
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
-    const recipeName = req.query.recipeName;
-    const matchingRecipe = user.favorites.find(recipe => recipe.userCreated && recipe.recipeName === recipeName);
-
+    const matchingRecipe = user.favorites.find(recipe => recipe.recipeName === req.query.recipeName && recipe.usernameCreator === user.username);
     if (!matchingRecipe) {
-      return res.status(404).json({ error: `[${recipeName} not found]` });
+      return res.status(404).json({ error: `[${req.query.recipeName}] not found` });
     }
 
     res.json(matchingRecipe);
@@ -538,69 +454,65 @@ privateRouter.get('/users/:id/recipe/get_recipe', async (req, res) => {
 
 privateRouter.delete('/users/:id/recipe/delete_recipe', async (req, res) => {
   try {
-    const userId = req.params.id;
-    const recipeName = req.body.favorites.recipeName;
-
-    const user = await User.findById(userId);
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
-    const result = await User.updateOne(
-      { _id: userId },
-      { $pull: { favorites: { recipeName: recipeName, userCreated: true } } }
-    );
-
-    if (result.modifiedCount === 0) {
-      return res.status(404).json({ error: `No matching recipe found for: [${recipeName}]` });
+    const recipe = await Recipe.findOne({ recipeName: req.body.favorites.recipeName, usernameCreator: user.username });
+    if (!recipe) {
+      return res.status(404).json({ error: `[${req.body.favorites.recipeName}] not found` });
     }
 
-    res.status(200).json({ message: 'Successfully deleted recipe' });
+    user.favorites.pull(recipe._id);
+    await user.save();
+
+    const isRecipeFavoritedByOthers = await User.exists({ favorites: recipe._id });
+    if (!isRecipeFavoritedByOthers) {
+      await recipe.deleteOne();
+    }
+
+    res.status(200).json({ message: SUCCESSFULLY_DELETED_RECIPE });
   } catch (error) {
-    console.error('Error deleting recipe: ', error);
-    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+    console.error(UNABLE_TO_DELETE_RECIPE_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_DELETE_RECIPE_ERROR });
   }
 });
 
 privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeImage'), async (req, res) => {
-  let fieldsToUpdate = {};
   try {
-    const userId = req.params.id;
-    const user = await User.findById(userId);
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
+    let recipe = await Recipe.findOne({ recipeName: req.body.recipeName, usernameCreator: user.username });
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+
+    let updatedRecipeData = {
+      ...req.body,
+      recipeServings: req.body.recipeServings || 1,
+      recipeCalories: req.body.recipeCalories || 0,
+      recipeCarbs: req.body.recipeCarbs || 0,
+      recipeFats: req.body.recipeFats || 0,
+      recipeProtein: req.body.recipeProtein || 0,
+    };
 
     if (req.file && req.file.buffer) {
-      const buffer = req.file.buffer;
-      const type = await fileType.fromBuffer(buffer);
+      const type = await fileType.fromBuffer(req.file.buffer);
       const imageType = type ? type.mime : 'application/octet-stream';
-      const base64Image = buffer.toString('base64');
-      const recipeImage = `data:${imageType};base64,${base64Image}`
-      fieldsToUpdate = {$set: { "favorites.$.recipeName": req.body.recipeName, "favorites.$.recipeIngredients": req.body.recipeIngredients,
-        "favorites.$.recipeDirections": req.body.recipeDirections, "favorites.$.recipeServings": req.body.recipeServings,
-        "favorites.$.recipeCalories": req.body.recipeCalories, "favorites.$.recipeCarbs": req.body.recipeCarbs,
-        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein, "favorites.$.pubRequested": false,
-        "favorites.$.isPublished": false, "favorites.$.recipeImage": recipeImage } };
-    }else{
-      fieldsToUpdate = {$set: { "favorites.$.recipeName": req.body.recipeName, "favorites.$.recipeIngredients": req.body.recipeIngredients,
-        "favorites.$.recipeDirections": req.body.recipeDirections, "favorites.$.recipeServings": req.body.recipeServings,
-        "favorites.$.recipeCalories": req.body.recipeCalories, "favorites.$.recipeCarbs": req.body.recipeCarbs,
-        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein, 
-        "favorites.$.pubRequested": false, "favorites.$.isPublished": false } };
+      const base64Image = req.file.buffer.toString('base64');
+      updatedRecipeData.recipeImage = `data:${imageType};base64,${base64Image}`;
     }
 
-    const options = { upsert: true, new: true };
-    const updatedRecipeName = await User.updateOne({"favorites.recipeId": req.body.favoriteId}, fieldsToUpdate, options);
+    Object.assign(recipe, updatedRecipeData);
+    await recipe.save();
 
-    if (updatedRecipeName) {
-      return res.status(200).json(updatedRecipeName);
-    } else {
-      return res.status(500).json({ error: "Error occurred trying to update recipe" });
-    }
+    res.status(200).json({ message: SUCCESSFULLY_UPDATED_RECIPE, recipe });
   } catch (error) {
-    console.error("Error occurred trying to update recipe", error);
-    res.status(500).json({ error: "Internal server error occurred trying to update recipe" });
+    console.error(UNABLE_TO_UPDATE_RECIPE_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_UPDATE_RECIPE_ERROR });
   }
 });
 
@@ -623,14 +535,14 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
 
     const savedRequest = await publishRequest.save();
     if (savedRequest) {
-        fieldsToUpdate = {$set: { "favorites.$.pubRequested": true } };
-        const options = { upsert: true, new: true };
-        const updatedPubRequest = await User.updateOne({"favorites.recipeName": req.body.recipeName}, fieldsToUpdate, options);
-        if (updatedPubRequest) {
-          res.status(200).json({ success: "Successfully sent a request to publish the recipe. If accepted your recipe will be published." });
-        }else{
-          return res.status(500).json({ error: "Error occurred trying to update pub request" });
-        }
+      fieldsToUpdate = { $set: { "favorites.$.pubRequested": true } };
+      const options = { upsert: true, new: true };
+      const updatedPubRequest = await User.updateOne({ "favorites.recipeName": req.body.recipeName }, fieldsToUpdate, options);
+      if (updatedPubRequest) {
+        res.status(200).json({ success: "Successfully sent a request to publish the recipe. If accepted your recipe will be published." });
+      } else {
+        return res.status(500).json({ error: "Error occurred trying to update pub request" });
+      }
     } else {
       res.status(500).json({ error: "Error occurred sending publish request message." });
     }
@@ -652,47 +564,25 @@ privateRouter.get('/users/:id/recipe/get_recipePubRequests', async (_, res) => {
 
 async function validatePassword(user, inputtedPassword) {
   return new Promise((resolve, reject) => {
-    bcrypt.compare(inputtedPassword, user.password, function (err, passwordsMatch) {
-      if (err) {
-        reject(err);
-        return;
-      }
-      if (passwordsMatch) {
-        console.log("Passwords MATCH");
-        resolve(true);
-      } else {
-        resolve(false);
-      }
+    bcrypt.compare(inputtedPassword, user.password, (err, passwordsMatch) => {
+      if (err) return reject(err);
+      resolve(passwordsMatch);
     });
   });
 }
 
 async function validateVerificationCode(user, inputtedVerificationCode) {
   return new Promise((resolve, reject) => {
-    bcrypt.compare(inputtedVerificationCode, user.verificationCode, function (err, codesMatch) {
-      if (err) {
-        reject(err);
-        return;
-      }
-      if (codesMatch) {
-        console.log("Verification Codes MATCH");
-        resolve(true);
-      } else {
-        resolve(false);
-      }
+    bcrypt.compare(inputtedVerificationCode, user.verificationCode, (err, codesMatch) => {
+      if (err) return reject(err);
+      resolve(codesMatch);
     });
   });
 }
 
 function hasTenMinutesPassed(originalTimestamp) {
-  const currentTimestamp = new Date().toISOString();
-  const tenMinutes = 60 * 10 * 1000;
-  const elapsedTimeInMilliseconds = (Date.parse(currentTimestamp) - Date.parse(originalTimestamp));
-  if (elapsedTimeInMilliseconds > tenMinutes) {
-    return true;
-  } else {
-    return false;
-  }
+  const elapsedTimeInMilliseconds = new Date().getTime() - new Date(originalTimestamp).getTime();
+  return elapsedTimeInMilliseconds > 600000;
 }
 
 module.exports = privateRouter;

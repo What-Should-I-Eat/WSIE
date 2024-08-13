@@ -17,34 +17,27 @@ $(document).ready(function () {
     }
 
     const formData = new FormData(this);
-    var seconds = new Date() / 1000;
-    let hexUserName = 0;
-    for(i = 0; i < username.length; i ++){
-      hexUserName = hexUserName + username.charCodeAt(i).toString(16);
-    }
-    recipeId = hexUserName & seconds;
-    formData.append('userCreated', true);
-    formData.append('recipeId', recipeId);
-    formData.append('isPublished', false);
-    formData.append('pubRequested', false);
-
     const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/create_recipe`;
     console.log(`Sending request to: ${url}`);
 
-    fetch(url, {
-      method: POST_ACTION,
-      body: formData,
-    }).then(response => {
+    try {
+      const response = await fetch(url, {
+        method: POST_ACTION,
+        body: formData,
+      });
+
+      const responseData = await response.json();
+
       if (response.ok) {
-        console.log(SUCCESSFULLY_CREATED_RECIPE);
-        utils.setStorage("createRecipeMessage", SUCCESSFULLY_CREATED_RECIPE);
+        console.log(responseData.message || SUCCESSFULLY_CREATED_RECIPE);
+        utils.setStorage("createRecipeMessage", responseData.message || SUCCESSFULLY_CREATED_RECIPE);
         window.location = MY_RECIPES_ROUTE;
       } else {
-        throw new Error(UNABLE_TO_CREATE_RECIPE_UNEXPECTED_ERROR);
+        throw new Error(responseData.error || UNABLE_TO_CREATE_RECIPE_ERROR);
       }
-    }).catch(error => {
+    } catch (error) {
       console.log(error);
       utils.showAjaxAlert("Error", error.message);
-    });
+    }
   });
 });

@@ -1,6 +1,5 @@
 const express = require('express');
 const contactUsRouter = express.Router();
-const mongoose = require("mongoose");
 const ContactUs = require("../src/models/contactUsModel.js");
 
 contactUsRouter.post('/create_message', async (req, res) => {
@@ -26,7 +25,7 @@ contactUsRouter.post('/create_message', async (req, res) => {
 
 contactUsRouter.get('/get_messages', async (_, res) => {
   try {
-    const messages = await mongoose.model("ContactUs").find({});
+    const messages = await ContactUs.find({});
     res.status(200).json(messages);
   } catch (error) {
     console.error(error);
