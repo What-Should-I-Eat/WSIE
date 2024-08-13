@@ -561,7 +561,8 @@ privateRouter.delete('/users/:id/recipe/delete_recipe', async (req, res) => {
   }
 });
 
-privateRouter.post('/users/:id/recipe/update_recipe', upload.single('userRecipeImage'), async (req, res) => {
+privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeImage'), async (req, res) => {
+  let fieldsToUpdate = {};
   try {
     const userId = req.params.id;
     const user = await mongoose.model('User').findById(userId);
@@ -569,39 +570,35 @@ privateRouter.post('/users/:id/recipe/update_recipe', upload.single('userRecipeI
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
-    const recipeToAdd = req.body.recipeName;
-    const index = user.favorites.findIndex(x => x.recipeName === recipeToAdd);
-    if (index !== -1) {
-      console.error(`[${recipeToAdd}] is already added.. skipping`);
-      return res.status(409).json({ error: "Recipe already created" });
-    }
-
-    let newRecipe = {
-      ...req.body
-    };
-
-    let imageType = null;
-    let imageData = null;
     if (req.file && req.file.buffer) {
-      const type = await fileType.fromBuffer(req.file.buffer);
-      imageType = type ? type.mime : 'application/octet-stream';
-
-      imageData = Buffer.from(req.file.buffer);
-      newRecipe = {
-        ...req.body,
-        userRecipeImage: {
-          recipeImageData: imageData,
-          recipeImageType: imageType
-        }
-      };
+      const buffer = req.file.buffer;
+      const type = await fileType.fromBuffer(buffer);
+      const imageType = type ? type.mime : 'application/octet-stream';
+      const base64Image = buffer.toString('base64');
+      const recipeImage = `data:${imageType};base64,${base64Image}`
+      fieldsToUpdate = {$set: { "favorites.$.recipeName": req.body.recipeName, "favorites.$.recipeIngredients": req.body.recipeIngredients,
+        "favorites.$.recipeDirections": req.body.recipeDirections, "favorites.$.recipeServings": req.body.recipeServings,
+        "favorites.$.recipeCalories": req.body.recipeCalories, "favorites.$.recipeCarbs": req.body.recipeCarbs,
+        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein, 
+        "favorites.$.recipeImage": recipeImage } };
+    }else{
+      fieldsToUpdate = {$set: { "favorites.$.recipeName": req.body.recipeName, "favorites.$.recipeIngredients": req.body.recipeIngredients,
+        "favorites.$.recipeDirections": req.body.recipeDirections, "favorites.$.recipeServings": req.body.recipeServings,
+        "favorites.$.recipeCalories": req.body.recipeCalories, "favorites.$.recipeCarbs": req.body.recipeCarbs,
+        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein } };
     }
 
-    user.favorites.push(newRecipe);
-    await user.save();
-    res.json(user);
+    const options = { upsert: true, new: true };
+    const updatedRecipeName = await User.updateOne({"favorites.recipeId": req.body.favoriteId}, fieldsToUpdate, options);
+
+    if (updatedRecipeName) {
+      return res.status(200).json(updatedRecipeName);
+    } else {
+      return res.status(500).json({ error: "Error occurred trying to update recipe" });
+    }
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+    console.error("Error occurred trying to update recipe", error);
+    res.status(500).json({ error: "Internal server error occurred trying to update recipe" });
   }
 });
 

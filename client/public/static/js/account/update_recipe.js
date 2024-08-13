@@ -1,81 +1,86 @@
 $(document).ready(function () {
+  const params = new URLSearchParams(window.location.search);
+  const userRecipeName = params.get('userRecipeName');
+
   $("#updateRecipeForm").on("submit", async function (event) {
     event.preventDefault();
     const username = utils.getUserNameFromCookie();
-    const userId = await utils.getUserIdFromUsername(username);
-    let formRecipeName = document.getElementById('recipeName');
-  
-    //delete currently existing recipe as we will replace it with a "new" recipe
-    let urlAction = "";
-    let request = {};
-    let successMessage = "";
-    let errorMessage = "";
-
-    urlAction = DELETE_ACTION;
-    request = {
-      recipeName: formRecipeName.value
+    if (!username) {
+      console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      return;
     }
-    successMessage = SUCCESSFULLY_DELETED_RECIPE;
-    errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
-    
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
-    console.log(`Sending [${urlAction}] request to: ${url}`)
 
-    fetch(url, {
-      method: urlAction,
+    const userId = await utils.getUserIdFromUsername(username);
+    if (!userId) {
+      console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      return;
+    }
+
+    let details = "";
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/get_recipe?recipeName=${userRecipeName}`;
+    console.log(`Querying Server at: ${url}`);
+
+    const response = await fetch(url, {
+      method: GET_ACTION,
       headers: {
         'Content-Type': DEFAULT_DATA_TYPE
-      },
-      body: JSON.stringify({ favorites: request })
-    }).then(response => {
-      if (!response.ok) {
-        throw new Error(errorMessage);
       }
-    }).then(data => {
-      if (data.message === successMessage) {
-        console.log(successMessage);
-        utils.setStorage("deleteRecipeMessage", successMessage);
-      }
-    }).catch(error => {
-      console.log(error);
-      utils.showAjaxAlert("Error", error.message);
     });
 
-    if (!username) {
-      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      return;
+    if (response.ok) {
+      details = await response.json();
+    } else {
+      console.error(`Error occurred getting user recipe for ${userRecipeName}`);
     }
 
-    if (!userId) {
-      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      return;
+    let changesFound = compareUpdates(details);
+    if(changesFound != 0){
+      const formData = new FormData(this);
+      formData.append('favoriteId',details.recipeId);
+  
+      url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/update_recipe`;
+      console.log(`Sending request to: ${url}`);
+  
+      fetch(url, {
+        method: PUT_ACTION,
+        body: formData,
+      }).then(async response => {
+        if (response.ok) {
+          console.log(SUCCESSFULLY_UPDATED_RECIPE);
+          utils.setStorage("createRecipeMessage", SUCCESSFULLY_UPDATED_RECIPE);
+          window.location = MY_RECIPES_ROUTE;
+        } else {
+          throw new Error(UNABLE_TO_UPDATE_RECIPE_UNEXPECTED_ERROR);
+        }
+      }).catch(error => {
+        console.log(error);
+        utils.showAjaxAlert("Error", error.message);
+      });
+    }else{
+      utils.showAjaxAlert("Error", "No changes to the recipe were made.");
     }
-
-    const formData = new FormData(this);
-    formData.append('userCreated', true);
-    console.log("FORM DATA: " + formData);
-
-    url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/update_recipe`;
-    console.log(`Sending request to: ${url}`);
-
-    fetch(url, {
-      method: POST_ACTION,
-      body: formData,
-    }).then(response => {
-      if (response.ok) {
-        console.log(SUCCESSFULLY_UPDATED_RECIPE);
-        utils.setStorage("createRecipeMessage", SUCCESSFULLY_UPDATED_RECIPE);
-        window.location = MY_RECIPES_ROUTE;
-      } else {
-        throw new Error(UNABLE_TO_UPDATE_RECIPE_UNEXPECTED_ERROR);
-      }
-    }).catch(error => {
-      console.log(error);
-      utils.showAjaxAlert("Error", error.message);
-    });
   });
+
+function compareUpdates(recipeDetails){
+    let changesFound = 0;
+    changesFound = recipeDetails.recipeName.localeCompare(document.getElementById('recipeName').value);
+    const origIngredientsString = recipeDetails.recipeIngredients[0].replace(/(?:\r\n|\r|\n)/g, '');
+    const newIngredientsString = document.getElementById('recipeIngredients').value.replace(/(?:\r\n|\r|\n)/g, '');
+    changesFound += Math.abs(origIngredientsString.localeCompare(newIngredientsString));
+    const origDirectionsString = recipeDetails.recipeDirections[0].replace(/(?:\r\n|\r|\n)/g, '');
+    const newDirectionsString = document.getElementById('recipeDirections').value.replace(/(?:\r\n|\r|\n)/g, '');
+    changesFound += Math.abs(origDirectionsString.localeCompare(newDirectionsString));
+    changesFound += (recipeDetails.recipeServings == document.getElementById('recipeServings').value) ? 0 : 1;
+    changesFound += (recipeDetails.recipeCalories == document.getElementById('recipeCalories').value) ? 0 : 1;
+    changesFound += (recipeDetails.recipeCarbs == document.getElementById('recipeCarbs').value) ? 0 : 1;
+    changesFound += (recipeDetails.recipeFats == document.getElementById('recipeFats').value) ? 0 : 1;
+    changesFound += (recipeDetails.recipeProtein == document.getElementById('recipeProtein').value) ? 0 : 1;
+    changesFound += document.getElementById('userRecipeImage').value;
+    return changesFound;
+}
+
 });
 
 function UserRecipeDetailsView() {
@@ -85,7 +90,6 @@ function UserRecipeDetailsView() {
       console.log("Loading view from user created recipe");
 
       const userRecipeDetails = await this.getUserRecipe(userRecipeName);
-      console.log(userRecipeDetails);
       if (userRecipeDetails) {
         this.buildUserView(userRecipeDetails);
       } else {
@@ -150,8 +154,6 @@ function UserRecipeDetailsView() {
     formRecipeFats.value = recipe.recipeFats;
     let formRecipeProtein = document.getElementById('recipeProtein');
     formRecipeProtein.value = recipe.recipeProtein;
-    let formRecipeImage = document.getElementById('userRecipeImage');
-    formRecipeImage.value = recipe.userRecipeImage;
     document.getElementById('currentImage').src = await utils.getUserRecipeImage(recipe);
     document.getElementById('currentImage').alt = `Image of ${recipe.recipeName}`;
     };

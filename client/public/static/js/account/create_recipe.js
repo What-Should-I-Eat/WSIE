@@ -17,7 +17,14 @@ $(document).ready(function () {
     }
 
     const formData = new FormData(this);
+    var seconds = new Date() / 1000;
+    let hexUserName = 0;
+    for(i = 0; i < username.length; i ++){
+      hexUserName = hexUserName + username.charCodeAt(i).toString(16);
+    }
+    recipeId = hexUserName & seconds;
     formData.append('userCreated', true);
+    formData.append('recipeId', recipeId);
 
     const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/create_recipe`;
     console.log(`Sending request to: ${url}`);

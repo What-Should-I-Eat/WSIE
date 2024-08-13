@@ -1,16 +1,14 @@
-#recipeForm{
+.backgroundColor{
   background: linear-gradient(to bottom, #ff7e5f, #feb47b);
   background-size: cover;
 }
 
-.recipe-container {
+.recipe-container{
   max-width: 800px;
   margin: 20px auto;
   background: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  
 }
-
 .recipe-header {
   background-color: white;
   background-size: cover;
