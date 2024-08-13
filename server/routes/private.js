@@ -581,12 +581,13 @@ privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeIm
         "favorites.$.recipeDirections": req.body.recipeDirections, "favorites.$.recipeServings": req.body.recipeServings,
         "favorites.$.recipeCalories": req.body.recipeCalories, "favorites.$.recipeCarbs": req.body.recipeCarbs,
         "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein, "favorites.$.pubRequested": false,
-        "favorites.$.recipeImage": recipeImage } };
+        "favorites.$.isPublished": false, "favorites.$.recipeImage": recipeImage } };
     }else{
       fieldsToUpdate = {$set: { "favorites.$.recipeName": req.body.recipeName, "favorites.$.recipeIngredients": req.body.recipeIngredients,
         "favorites.$.recipeDirections": req.body.recipeDirections, "favorites.$.recipeServings": req.body.recipeServings,
         "favorites.$.recipeCalories": req.body.recipeCalories, "favorites.$.recipeCarbs": req.body.recipeCarbs,
-        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein, "favorites.$.pubRequested": false } };
+        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein, 
+        "favorites.$.pubRequested": false, "favorites.$.isPublished": false } };
     }
 
     const options = { upsert: true, new: true };
