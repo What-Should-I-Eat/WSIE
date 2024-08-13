@@ -340,16 +340,91 @@ function RecipeDetailsView() {
     noDietaryText.innerHTML = `No user dietary labels.`;
     dietaryContainer.appendChild(noDietaryText);
 
-    const button = document.createElement("button");
-    const recipeName = recipe.recipeName;
-    button.textContent = "Update Recipe";
-    button.classList.add("updateRecipeButton"); // Add a class for styling
-    button.addEventListener("click", function () {
-      document.location.href = "/account/update_recipe?userRecipeName=" + recipeName;
-    });
+    const updateRecipeButton = document.createElement("button");
+    updateRecipeButton.textContent = "Update Recipe";
+    updateRecipeButton.type = "submit";
+    updateRecipeButton.classList.add("updateRecipeButton"); // Add a class for styling
     var container = document.getElementById("updateRecipeContainer");
-    container.appendChild(button);
+    container.appendChild(updateRecipeButton);
+
+    if(!recipe.pubRequested){
+      const publishRecipeButton = document.createElement("button");
+      publishRecipeButton.textContent = "Request to Publish Recipe";
+      publishRecipeButton.classList.add("publishRecipeButton");
+      var container = document.getElementById("publishRecipeContainer");
+      container.appendChild(publishRecipeButton);
+    }else{
+      const publishRecipeButton = document.createElement("button");
+      publishRecipeButton.textContent = "Request to publish recipe under review";
+      publishRecipeButton.disabled = true;
+      publishRecipeButton.style.backgroundColor = "gray";
+      publishRecipeButton.classList.add("publishRecipeButton");
+      var container = document.getElementById("publishRecipeContainer");
+      container.appendChild(publishRecipeButton);
+    }
   };
+
+  $("#updateRecipeForm").on("submit", async function (event) {
+    event.preventDefault();
+    const username = utils.getUserNameFromCookie();
+    if (!username) {
+      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      return;
+    }
+
+    const userId = await utils.getUserIdFromUsername(username);
+    if (!userId) {
+      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      return;
+    }
+
+    const recipeName = document.getElementById('recipe-name').textContent;
+    console.log("Going to update recipe: /account/update_recipe?userRecipeName="+recipeName);
+    window.location = "/account/update_recipe?userRecipeName=" + recipeName;
+  });
+
+  $("#publishRecipeRequestForm").on("submit", async function (event) {
+    event.preventDefault();
+    const recipeName = document.getElementById('recipe-name').textContent;
+    const username = utils.getUserNameFromCookie();
+    const userId = await utils.getUserIdFromUsername(username);
+    const recipeImage = document.getElementById('recipe-image').src;
+    const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
+    const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
+    const recipeNutrition = Array.from(document.getElementById('nutritional-facts-list').children).map(li => li.textContent);
+
+    let request = {
+      recipeName: recipeName,
+      recipeIngredients: recipeIngredients.join(", "),
+      recipeDirections: recipeDirections.join(". "),
+      recipeNutrition: recipeNutrition.join(", "),
+      recipeImage: recipeImage,
+      userCreated: true
+    };
+
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+    try {
+      const response = await fetch(url, {
+        method: POST_ACTION,
+        body: JSON.stringify(request),
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      console.log(data.success);
+      utils.setStorage("publishRequestMessage", data.success);
+      location.reload();
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
+  });
 
   // Handles favorite/unfavorite logic
   $("#recipeForm").on("submit", async function (event) {

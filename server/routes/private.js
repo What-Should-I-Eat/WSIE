@@ -2,6 +2,7 @@ const express = require('express');
 const privateRouter = express.Router();
 const User = require("../src/models/userModel.js");
 const Recipe = require("../src/models/recipeModel.js");
+const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const storage = multer.memoryStorage();
@@ -408,8 +409,10 @@ privateRouter.post('/users/:id/recipe/create_recipe', upload.single('userRecipeI
       recipeCarbs: req.body.recipeCarbs || 0,
       recipeFats: req.body.recipeFats || 0,
       recipeProtein: req.body.recipeProtein || 0,
+      userCreated: true,
       usernameCreator: user.username,
-      userCreated: true
+      isPublished: false,
+      pubRequested: false
     };
 
     if (req.file && req.file.buffer) {
@@ -476,14 +479,14 @@ privateRouter.delete('/users/:id/recipe/delete_recipe', async (req, res) => {
   }
 });
 
-privateRouter.post('/users/:id/recipe/update_recipe', upload.single('userRecipeImage'), async (req, res) => {
+privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeImage'), async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
-    let recipe = await Recipe.findOne({ recipeName: req.body.recipeName, usernameCreator: user.username });
+    let recipe = await Recipe.findOne({ _id: req.body.favoriteId, usernameCreator: user.username });
     if (!recipe) {
       return res.status(404).json({ error: 'Recipe not found' });
     }
@@ -495,6 +498,8 @@ privateRouter.post('/users/:id/recipe/update_recipe', upload.single('userRecipeI
       recipeCarbs: req.body.recipeCarbs || 0,
       recipeFats: req.body.recipeFats || 0,
       recipeProtein: req.body.recipeProtein || 0,
+      isPublished: false,
+      pubRequested: false
     };
 
     if (req.file && req.file.buffer) {
@@ -511,6 +516,55 @@ privateRouter.post('/users/:id/recipe/update_recipe', upload.single('userRecipeI
   } catch (error) {
     console.error(UNABLE_TO_UPDATE_RECIPE_ERROR, error);
     res.status(500).json({ error: UNABLE_TO_UPDATE_RECIPE_ERROR });
+  }
+});
+
+privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
+    }
+    let recipe = await Recipe.findOne({ recipeName: req.body.recipeName, usernameCreator: user.username });
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+
+    const publishRequest = new RecipePubRequest({
+      recipeName: req.body.recipeName,
+      recipeIngredients: req.body.recipeIngredients,
+      recipeDirections: req.body.recipeDirections,
+      recipeNutrition: req.body.recipeNutrition,
+      recipeImage: req.body.recipeImage,
+      userCreated: req.body.userCreated
+    });
+
+    const savedRequest = await publishRequest.save();
+    if (savedRequest) {
+      fieldsToUpdate = { $set: { "pubRequested": true } };
+      const options = { upsert: true, new: true };
+      const updatedPubRequest = await Recipe.updateOne(recipe, fieldsToUpdate, options);
+      if (updatedPubRequest) {
+        res.status(200).json({ success: "Successfully sent a request to publish the recipe. If accepted your recipe will be published." });
+      } else {
+        return res.status(500).json({ error: "Error occurred trying to update pub request" });
+      }
+    } else {
+      res.status(500).json({ error: "Error occurred sending publish request message." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error occurred sending publish request message." });
+  }
+});
+
+privateRouter.get('/users/:id/recipe/get_recipePubRequests', async (_, res) => {
+  try {
+    const messages = await mongoose.model("RecipePubRequest").find({});
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error occurred getting publish recipe requests" });
   }
 });
 
