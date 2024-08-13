@@ -580,13 +580,13 @@ privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeIm
       fieldsToUpdate = {$set: { "favorites.$.recipeName": req.body.recipeName, "favorites.$.recipeIngredients": req.body.recipeIngredients,
         "favorites.$.recipeDirections": req.body.recipeDirections, "favorites.$.recipeServings": req.body.recipeServings,
         "favorites.$.recipeCalories": req.body.recipeCalories, "favorites.$.recipeCarbs": req.body.recipeCarbs,
-        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein, 
+        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein, "favorites.$.pubRequested": false,
         "favorites.$.recipeImage": recipeImage } };
     }else{
       fieldsToUpdate = {$set: { "favorites.$.recipeName": req.body.recipeName, "favorites.$.recipeIngredients": req.body.recipeIngredients,
         "favorites.$.recipeDirections": req.body.recipeDirections, "favorites.$.recipeServings": req.body.recipeServings,
         "favorites.$.recipeCalories": req.body.recipeCalories, "favorites.$.recipeCarbs": req.body.recipeCarbs,
-        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein } };
+        "favorites.$.recipeFats": req.body.recipeFats, "favorites.$.recipeProtein": req.body.recipeProtein, "favorites.$.pubRequested": false } };
     }
 
     const options = { upsert: true, new: true };
@@ -622,7 +622,7 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
 
     const savedRequest = await publishRequest.save();
     if (savedRequest) {
-      fieldsToUpdate = {$set: { "favorites.$.pubRequested": true } };
+        fieldsToUpdate = {$set: { "favorites.$.pubRequested": true } };
         const options = { upsert: true, new: true };
         const updatedPubRequest = await User.updateOne({"favorites.recipeName": req.body.recipeName}, fieldsToUpdate, options);
         if (updatedPubRequest) {
