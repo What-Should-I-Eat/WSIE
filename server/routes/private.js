@@ -1,11 +1,8 @@
 const express = require('express');
 const privateRouter = express.Router();
 const User = require("../src/models/userModel.js");
-<<<<<<< HEAD
 const Recipe = require("../src/models/recipeModel.js");
-=======
 const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
->>>>>>> cd9e5611 (Merged in changes to for recipe publishing)
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const storage = multer.memoryStorage();
@@ -412,8 +409,10 @@ privateRouter.post('/users/:id/recipe/create_recipe', upload.single('userRecipeI
       recipeCarbs: req.body.recipeCarbs || 0,
       recipeFats: req.body.recipeFats || 0,
       recipeProtein: req.body.recipeProtein || 0,
+      userCreated: true,
       usernameCreator: user.username,
-      userCreated: true
+      isPublished: false,
+      pubRequested: false
     };
 
     if (req.file && req.file.buffer) {
