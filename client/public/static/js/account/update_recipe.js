@@ -6,15 +6,15 @@ $(document).ready(function () {
     event.preventDefault();
     const username = utils.getUserNameFromCookie();
     if (!username) {
-      console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
       return;
     }
 
     const userId = await utils.getUserIdFromUsername(username);
     if (!userId) {
-      console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
       return;
     }
 
@@ -38,8 +38,7 @@ $(document).ready(function () {
     let changesFound = compareUpdates(details);
     if(changesFound != 0){
       const formData = new FormData(this);
-      formData.append('favoriteId',details.recipeId);
-  
+      formData.append('favoriteId',details._id);
       url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/update_recipe`;
       console.log(`Sending request to: ${url}`);
       fetch(url, {
@@ -57,8 +56,8 @@ $(document).ready(function () {
         console.log(error);
         utils.showAjaxAlert("Error", error.message);
       });
-    } else {
-      utils.showAjaxAlert("Error", "No changes to the recipe were made.");
+    }else{
+      utils.showAjaxAlert("Warning", "No changes to the recipe were made.");
     }
   });
 
