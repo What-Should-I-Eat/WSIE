@@ -346,6 +346,22 @@ function RecipeDetailsView() {
     updateRecipeButton.classList.add("updateRecipeButton"); // Add a class for styling
     var container = document.getElementById("updateRecipeContainer");
     container.appendChild(updateRecipeButton);
+
+    if(!recipe.pubRequested){
+      const publishRecipeButton = document.createElement("button");
+      publishRecipeButton.textContent = "Request to Publish Recipe";
+      publishRecipeButton.classList.add("publishRecipeButton");
+      var container = document.getElementById("publishRecipeContainer");
+      container.appendChild(publishRecipeButton);
+    }else{
+      const publishRecipeButton = document.createElement("button");
+      publishRecipeButton.textContent = "Request to publish recipe under review";
+      publishRecipeButton.disabled = true;
+      publishRecipeButton.style.backgroundColor = "gray";
+      publishRecipeButton.classList.add("publishRecipeButton");
+      var container = document.getElementById("publishRecipeContainer");
+      container.appendChild(publishRecipeButton);
+    }
   };
 
   $("#updateRecipeForm").on("submit", async function (event) {
@@ -367,6 +383,47 @@ function RecipeDetailsView() {
     const recipeName = document.getElementById('recipe-name').textContent;
     console.log("Going to update recipe: /account/update_recipe?userRecipeName="+recipeName);
     window.location = "/account/update_recipe?userRecipeName=" + recipeName;
+  });
+
+  $("#publishRecipeRequestForm").on("submit", async function (event) {
+    event.preventDefault();
+    const recipeName = document.getElementById('recipe-name').textContent;
+    const username = utils.getUserNameFromCookie();
+    const userId = await utils.getUserIdFromUsername(username);
+    const recipeImage = document.getElementById('recipe-image').src;
+    const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
+    const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
+    const recipeNutrition = Array.from(document.getElementById('nutritional-facts-list').children).map(li => li.textContent);
+
+    let request = {
+      recipeName: recipeName,
+      recipeIngredients: recipeIngredients.join(", "),
+      recipeDirections: recipeDirections.join(". "),
+      recipeNutrition: recipeNutrition.join(", "),
+      recipeImage: recipeImage,
+      userCreated: true
+    };
+
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+    try {
+      const response = await fetch(url, {
+        method: POST_ACTION,
+        body: JSON.stringify(request),
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      console.log(data.success);
+      utils.setStorage("publishRequestMessage", data.success);
+      location.reload();
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
   });
 
   // Handles favorite/unfavorite logic

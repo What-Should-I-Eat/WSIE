@@ -34,6 +34,8 @@ const UserSchema = new Schema({
         recipeProtein: Number,
         recipeProteinUnits: String,
         userCreated: Boolean,
+        isPublished: Boolean,
+        pubRequested: Boolean,
     }],
 });
 

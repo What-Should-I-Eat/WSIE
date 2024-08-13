@@ -25,6 +25,8 @@ $(document).ready(function () {
     recipeId = hexUserName & seconds;
     formData.append('userCreated', true);
     formData.append('recipeId', recipeId);
+    formData.append('isPublished', false);
+    formData.append('pubRequested', false);
 
     const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/create_recipe`;
     console.log(`Sending request to: ${url}`);

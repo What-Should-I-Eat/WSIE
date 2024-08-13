@@ -9,6 +9,7 @@
   background: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .recipe-header {
   background-color: white;
   background-size: cover;
@@ -55,8 +56,30 @@
   background-color: var(--secondary-color);
   border: none;
   color: white;
+  margin-bottom: 30px;
+}
+
+.publishRecipeButton{
+  width: 64%;
+  height: 35px;
+  border-radius: 4px;
+  margin-left: 18%;
+  text-align: center;
+  background-color: var(--secondary-color);
+  border: none;
+  color: white;
 }
 
 .updateRecipeButton:hover {
   background-color: var(--primary-color);
+}
+
+.publishRecipeButton:hover {
+  background-color: var(--primary-color);
+}
+
+.publishRecipeText{
+  padding: 20px;
+  margin: 2%;
+  vertical-align: top;
 }

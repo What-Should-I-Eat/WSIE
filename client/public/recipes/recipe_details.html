@@ -56,6 +56,13 @@
         const uri = decodeURIComponent(params.get('uri'));
         recipeDetails.load(source, sourceUrl, uri);
       }
+
+      // Handles showing publish recipe messages
+      const publishRecipeMessage = utils.getFromStorage("publishRequestMessage");
+      if (publishRecipeMessage) {
+        utils.showAjaxAlert("Success", publishRecipeMessage);
+        utils.removeFromStorage("publishRequestMessage");
+      }
     });
   </script>
 </head>
@@ -442,6 +449,9 @@
       </form>
       <form id="updateRecipeForm">
         <section id="updateRecipeContainer"></section>
+      </form>
+      <form id="publishRecipeRequestForm">
+        <section id="publishRecipeContainer"></section>
       </form>
     </div>
   </div>

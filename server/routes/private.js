@@ -2,6 +2,7 @@ const express = require('express');
 const privateRouter = express.Router();
 const mongoose = require("mongoose");
 const User = require("../src/models/userModel.js");
+const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const storage = multer.memoryStorage();
@@ -565,7 +566,7 @@ privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeIm
   let fieldsToUpdate = {};
   try {
     const userId = req.params.id;
-    const user = await mongoose.model('User').findById(userId);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
@@ -599,6 +600,52 @@ privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeIm
   } catch (error) {
     console.error("Error occurred trying to update recipe", error);
     res.status(500).json({ error: "Internal server error occurred trying to update recipe" });
+  }
+});
+
+privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
+  }
+
+  try {
+    const publishRequest = new RecipePubRequest({
+      recipeName: req.body.recipeName,
+      recipeIngredients: req.body.recipeIngredients,
+      recipeDirections: req.body.recipeDirections,
+      recipeNutrition: req.body.recipeNutrition,
+      recipeImage: req.body.recipeImage,
+      userCreated: req.body.userCreated
+    });
+
+    const savedRequest = await publishRequest.save();
+    if (savedRequest) {
+      fieldsToUpdate = {$set: { "favorites.$.pubRequested": true } };
+        const options = { upsert: true, new: true };
+        const updatedPubRequest = await User.updateOne({"favorites.recipeName": req.body.recipeName}, fieldsToUpdate, options);
+        if (updatedPubRequest) {
+          res.status(200).json({ success: "Successfully sent a request to publish the recipe. If accepted your recipe will be published." });
+        }else{
+          return res.status(500).json({ error: "Error occurred trying to update pub request" });
+        }
+    } else {
+      res.status(500).json({ error: "Error occurred sending publish request message." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error occurred sending publish request message." });
+  }
+});
+
+privateRouter.get('/users/:id/recipe/get_recipePubRequests', async (_, res) => {
+  try {
+    const messages = await mongoose.model("RecipePubRequest").find({});
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error occurred getting publish recipe requests" });
   }
 });
 
