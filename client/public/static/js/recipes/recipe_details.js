@@ -340,16 +340,34 @@ function RecipeDetailsView() {
     noDietaryText.innerHTML = `No user dietary labels.`;
     dietaryContainer.appendChild(noDietaryText);
 
-    const button = document.createElement("button");
-    const recipeName = recipe.recipeName;
-    button.textContent = "Update Recipe";
-    button.classList.add("updateRecipeButton"); // Add a class for styling
-    button.addEventListener("click", function () {
-      document.location.href = "/account/update_recipe?userRecipeName=" + recipeName;
-    });
+    const updateRecipeButton = document.createElement("button");
+    updateRecipeButton.textContent = "Update Recipe";
+    updateRecipeButton.type = "submit";
+    updateRecipeButton.classList.add("updateRecipeButton"); // Add a class for styling
     var container = document.getElementById("updateRecipeContainer");
-    container.appendChild(button);
+    container.appendChild(updateRecipeButton);
   };
+
+  $("#updateRecipeForm").on("submit", async function (event) {
+    event.preventDefault();
+    const username = utils.getUserNameFromCookie();
+    if (!username) {
+      console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      return;
+    }
+
+    const userId = await utils.getUserIdFromUsername(username);
+    if (!userId) {
+      console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      return;
+    }
+
+    const recipeName = document.getElementById('recipe-name').textContent;
+    console.log("Going to update recipe: /account/update_recipe?userRecipeName="+recipeName);
+    window.location = "/account/update_recipe?userRecipeName=" + recipeName;
+  });
 
   // Handles favorite/unfavorite logic
   $("#recipeForm").on("submit", async function (event) {

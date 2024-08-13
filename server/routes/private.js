@@ -476,7 +476,8 @@ privateRouter.delete('/users/:id/recipe/delete_recipe', async (req, res) => {
   }
 });
 
-privateRouter.post('/users/:id/recipe/update_recipe', upload.single('userRecipeImage'), async (req, res) => {
+privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeImage'), async (req, res) => {
+  let fieldsToUpdate = {};
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
