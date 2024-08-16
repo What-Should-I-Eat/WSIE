@@ -131,7 +131,11 @@ const NO_RECIPES_FOUND = "0 recipes found.";
 // Recipe Details
 const ADD_TO_FAVORITES = "Add Recipe to Favorites";
 const REMOVE_FROM_FAVORITES = "Remove Recipe from Favorites";
+const UPDATE_RECIPE = "Update Recipe";
 const DELETE_RECIPE = "Delete Recipe";
+// Publish Recipe
+const REQUEST_TO_PUBLISH_RECIPE = "Request to Publish Recipe";
+const RECIPE_UNDER_REVIEW = "Request to Publish Recipe Under Review";
 
 // Recipe Favorites
 const NO_SAVED_RECIPES = "No saved recipes!";

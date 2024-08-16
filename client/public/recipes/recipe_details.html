@@ -443,20 +443,16 @@
           </ul>
         </section>
 
-        <section class="recipe-info add-to-favorites">
-          <button type="submit" class="btn btn-primary" id="addToFavorites">Add Recipe to Favorites</button>
+        <section class="recipe-info handle-favorites">
+          <button type="submit" class="btn btn-primary" name="action" value="addToFavorites" id="addToFavoritesBtn">Add
+            Recipe to Favorites</button>
+          <button type="submit" class="btn btn-primary" name="action" value="updateRecipe" id="updateRecipeBtn">Update
+            Recipe</button>
+          <button type="submit" class="btn btn-primary" name="action" value="publishRecipe"
+            id="publishRecipeBtn">Request to Publish Recipe</button>
         </section>
       </form>
-      <form id="updateRecipeForm">
-        <section id="updateRecipeContainer"></section>
-      </form>
-      <form id="publishRecipeRequestForm">
-        <section id="publishRecipeContainer"></section>
-      </form>
     </div>
-  </div>
-  <div class="pagination-container" style="text-align: center; margin-top: 20px;">
-    <!-- Pagination buttons will be dynamically created here -->
   </div>
   <!-- END: Recipe Details -->
 

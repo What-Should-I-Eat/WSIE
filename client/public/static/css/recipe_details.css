@@ -1,9 +1,9 @@
-.backgroundColor{
+.backgroundColor {
   background: linear-gradient(to bottom, #ff7e5f, #feb47b);
   background-size: cover;
 }
 
-.recipe-container{
+.recipe-container {
   max-width: 800px;
   margin: 20px auto;
   background: white;
@@ -33,53 +33,18 @@
   width: 45%; /* Sets the width less than 50% to fit side by side */
 }
 
-.add-to-favorites {
+.handle-favorites {
   text-align: center;
+  margin-top: 20px; /* Add some spacing above the buttons */
 }
 
-.add-to-favorites button {
+.handle-favorites button {
   width: 70%;
+  margin: 5px 0; /* Add some vertical spacing between buttons */
 }
 
-.updateRecipeContainer{
-  max-width: 800px;
-  margin: 20px auto;
-  background: white;
-}
-
-.updateRecipeButton{
-  width: 64%;
-  height: 35px;
-  border-radius: 4px;
-  margin-left: 18%;
-  text-align: center;
-  background-color: var(--secondary-color);
-  border: none;
-  color: white;
-  margin-bottom: 30px;
-}
-
-.publishRecipeButton{
-  width: 64%;
-  height: 35px;
-  border-radius: 4px;
-  margin-left: 18%;
-  text-align: center;
-  background-color: var(--secondary-color);
-  border: none;
-  color: white;
-}
-
-.updateRecipeButton:hover {
-  background-color: var(--primary-color);
-}
-
-.publishRecipeButton:hover {
-  background-color: var(--primary-color);
-}
-
-.publishRecipeText{
-  padding: 20px;
-  margin: 2%;
-  vertical-align: top;
+/* Hide the buttons without removing them from the layout flow */
+#updateRecipeBtn,
+#publishRecipeBtn {
+  visibility: hidden;
 }

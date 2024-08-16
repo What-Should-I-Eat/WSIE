@@ -6,7 +6,6 @@ function RecipeDetailsView() {
       try {
         const recipeDetails = await this.getRecipeDetails(recipeUri);
         const recipe = recipeDetails.hits[0].recipe;
-        const recipeName = recipe.label;
         const recipeInstructions = await this.getRecipeInstructions(source, sourceUrl, recipe.label);
 
         if (isValidResult(recipeDetails)) {
@@ -162,7 +161,7 @@ function RecipeDetailsView() {
     // Check if the recipe is a favorite
     const username = utils.getUserNameFromCookie();
     const isFavorite = await checkIfFavorite(username, recipe.label);
-    const addToFavoritesBtn = document.getElementById('addToFavorites');
+    const addToFavoritesBtn = document.getElementById('addToFavoritesBtn');
     addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
 
     // Update header name
@@ -285,7 +284,7 @@ function RecipeDetailsView() {
     hiddenRecipeServingsInput.value = recipe.yield;
 
     // Check if the recipe is a favorite
-    const addToFavoritesBtn = document.getElementById('addToFavorites');
+    const addToFavoritesBtn = document.getElementById('addToFavoritesBtn');
     addToFavoritesBtn.textContent = DELETE_RECIPE;
 
     // Update header name and image
@@ -340,96 +339,190 @@ function RecipeDetailsView() {
     noDietaryText.innerHTML = `No user dietary labels.`;
     dietaryContainer.appendChild(noDietaryText);
 
-    const updateRecipeButton = document.createElement("button");
-    updateRecipeButton.textContent = "Update Recipe";
-    updateRecipeButton.type = "submit";
-    updateRecipeButton.classList.add("updateRecipeButton"); // Add a class for styling
-    var container = document.getElementById("updateRecipeContainer");
-    container.appendChild(updateRecipeButton);
+    // Show update recipe button
+    const updateRecipeButton = document.getElementById("updateRecipeBtn");
+    if (updateRecipeButton) {
+      updateRecipeButton.style.visibility = 'visible';
+    }
 
-    if (!recipe.pubRequested) {
-      const publishRecipeButton = document.createElement("button");
-      publishRecipeButton.textContent = "Request to Publish Recipe";
-      publishRecipeButton.classList.add("publishRecipeButton");
-      var container = document.getElementById("publishRecipeContainer");
-      container.appendChild(publishRecipeButton);
-    } else {
-      const publishRecipeButton = document.createElement("button");
-      publishRecipeButton.textContent = "Request to publish recipe under review";
-      publishRecipeButton.disabled = true;
-      publishRecipeButton.style.backgroundColor = "gray";
-      publishRecipeButton.classList.add("publishRecipeButton");
-      var container = document.getElementById("publishRecipeContainer");
-      container.appendChild(publishRecipeButton);
+    // Show publish recipe button
+    const publishRecipeButton = document.getElementById('publishRecipeBtn');
+    if (publishRecipeButton) {
+      publishRecipeButton.style.visibility = 'visible';
+
+      if (!recipe.pubRequested) {
+        publishRecipeButton.textContent = REQUEST_TO_PUBLISH_RECIPE;
+        publishRecipeButton.disabled = false;
+      } else {
+        publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
+        publishRecipeButton.disabled = true;
+      }
     }
   };
+}
 
-  $("#updateRecipeForm").on("submit", async function (event) {
-    event.preventDefault();
-    const username = utils.getUserNameFromCookie();
-    if (!username) {
-      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      return;
-    }
+function handleUpdateRecipe() {
+  const recipeName = document.getElementById('recipe-name').textContent;
+  console.log("Going to update recipe: /account/update_recipe?userRecipeName=" + recipeName);
+  window.location = `/account/update_recipe?userRecipeName=${recipeName}`;
+};
 
-    const userId = await utils.getUserIdFromUsername(username);
-    if (!userId) {
-      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      return;
-    }
+async function handlePublishUserRecipe(userId) {
+  const recipeName = document.getElementById('recipe-name').textContent;
+  const recipeImage = document.getElementById('recipe-image').src;
+  const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
+  const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
+  const recipeNutrition = Array.from(document.getElementById('nutritional-facts-list').children).map(li => li.textContent);
 
-    const recipeName = document.getElementById('recipe-name').textContent;
-    console.log("Going to update recipe: /account/update_recipe?userRecipeName=" + recipeName);
-    window.location = "/account/update_recipe?userRecipeName=" + recipeName;
-  });
+  let request = {
+    recipeName: recipeName,
+    recipeIngredients: recipeIngredients.join(", "),
+    recipeDirections: recipeDirections.join(". "),
+    recipeNutrition: recipeNutrition.join(", "),
+    recipeImage: recipeImage,
+    userCreated: true
+  };
 
-  $("#publishRecipeRequestForm").on("submit", async function (event) {
-    event.preventDefault();
-    const recipeName = document.getElementById('recipe-name').textContent;
-    const username = utils.getUserNameFromCookie();
-    const userId = await utils.getUserIdFromUsername(username);
-    const recipeImage = document.getElementById('recipe-image').src;
-    const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
-    const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
-    const recipeNutrition = Array.from(document.getElementById('nutritional-facts-list').children).map(li => li.textContent);
-
-    let request = {
-      recipeName: recipeName,
-      recipeIngredients: recipeIngredients.join(", "),
-      recipeDirections: recipeDirections.join(". "),
-      recipeNutrition: recipeNutrition.join(", "),
-      recipeImage: recipeImage,
-      userCreated: true
-    };
-
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
-    try {
-      const response = await fetch(url, {
-        method: POST_ACTION,
-        body: JSON.stringify(request),
-        headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
-        }
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error);
+  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+  try {
+    const response = await fetch(url, {
+      method: POST_ACTION,
+      body: JSON.stringify(request),
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
       }
-      console.log(data.success);
-      utils.setStorage("publishRequestMessage", data.success);
-      location.reload();
-    } catch (error) {
-      console.error(error);
-      utils.showAjaxAlert("Error", error.message);
-    }
-  });
+    });
 
-  // Handles favorite/unfavorite logic
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    console.log(data.success);
+    utils.setStorage("publishRequestMessage", data.success);
+    location.reload();
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+};
+
+async function handleFavoriteUnfavoriteDeleteRecipeLogic(userId, form) {
+  const recipeName = document.getElementById('recipe-name').textContent;
+  const recipeImage = document.getElementById('recipe-image').src;
+  const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
+  const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
+  const recipeUri = document.getElementById('recipe-uri').value;
+  const recipeSource = document.getElementById('recipe-source').value;
+  const recipeSourceUrl = document.getElementById('recipe-source-url').value;
+
+  const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
+  const listItems = nutritionalFactsList.querySelectorAll('li');
+
+  const servingsValue = listItems[0].textContent.split(': ')[1];
+  const [caloriesValue, caloriesUnit] = listItems[1].textContent.split(' ').slice(1);
+  const [fatValue, fatUnit] = listItems[2].textContent.split(' ').slice(1);
+  const [carbsValue, carbsUnit] = listItems[3].textContent.split(' ').slice(1);
+  const [proteinValue, proteinUnit] = listItems[4].textContent.split(' ').slice(1);
+
+  const buttonText = form.find("#addToFavoritesBtn").text();
+
+  let urlAction = "";
+  let request = {};
+  let newButtonText = "";
+  let successMessage = "";
+  let errorMessage = "";
+
+  // Add to favorites
+  if (buttonText.includes("Add")) {
+    urlAction = PUT_ACTION;
+    request = {
+      recipeName: recipeName,
+      recipeIngredients: recipeIngredients,
+      recipeDirections: recipeDirections,
+      recipeImage: recipeImage,
+      recipeUri: recipeUri,
+      recipeSource: recipeSource,
+      recipeSourceUrl: recipeSourceUrl,
+      recipeServings: servingsValue,
+      recipeCalories: caloriesValue,
+      recipeCaloriesUnits: caloriesUnit,
+      recipeCarbs: carbsValue,
+      recipeCarbsUnits: carbsUnit,
+      recipeFats: fatValue,
+      recipeFatsUnits: fatUnit,
+      recipeProtein: proteinValue,
+      recipeProteinUnits: proteinUnit,
+      userCreated: false
+    };
+    newButtonText = REMOVE_FROM_FAVORITES;
+    successMessage = SUCCESSFULLY_FAVORITE_RECIPE;
+    errorMessage = UNABLE_TO_FAVORITE_UNEXPECTED_ERROR;
+  }
+  // Remove from favorites
+  else if (buttonText.includes("Remove")) {
+    urlAction = DELETE_ACTION;
+    request = {
+      recipeName: recipeName
+    }
+    newButtonText = ADD_TO_FAVORITES;
+    successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
+    errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
+  }
+  // Delete recipe
+  else {
+    urlAction = DELETE_ACTION;
+    request = {
+      recipeName: recipeName
+    }
+    newButtonText = "";
+    successMessage = SUCCESSFULLY_DELETED_RECIPE;
+    errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
+  }
+
+  let url = "";
+  if (buttonText.includes("Add") || buttonText.includes("Remove")) {
+    url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+  } else {
+    url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
+  }
+
+  console.log(`Sending [${urlAction}] request to: ${url}`);
+
+  try {
+    const response = await fetch(url, {
+      method: urlAction,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      },
+      body: JSON.stringify({ favorites: request })
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      console.error(responseData.error || errorMessage);
+      throw new Error(responseData.error || errorMessage);
+    } else {
+      console.log(responseData.message || successMessage);
+      if (responseData.message === SUCCESSFULLY_DELETED_RECIPE) {
+        utils.setStorage("deleteRecipeMessage", successMessage);
+        window.location = MY_RECIPES_ROUTE;
+      } else {
+        form.find("#addToFavoritesBtn").text(newButtonText);
+        utils.showAjaxAlert("Success", responseData.message || successMessage);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+};
+
+$(document).ready(function () {
+  // Handles Form Submission Logic
   $("#recipeForm").on("submit", async function (event) {
     event.preventDefault();
-    const form = $(this);
 
     const username = utils.getUserNameFromCookie();
     if (!username) {
@@ -445,117 +538,28 @@ function RecipeDetailsView() {
       return;
     }
 
-    const recipeName = document.getElementById('recipe-name').textContent;
-    const recipeImage = document.getElementById('recipe-image').src;
-    const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
-    const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
-    const recipeUri = document.getElementById('recipe-uri').value;
-    const recipeSource = document.getElementById('recipe-source').value;
-    const recipeSourceUrl = document.getElementById('recipe-source-url').value;
+    const form = $(this);
+    const submitter = event.originalEvent ? event.originalEvent.submitter : null;
+    const action = submitter ? submitter.value : '';
 
-    const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
-    const listItems = nutritionalFactsList.querySelectorAll('li');
-
-    const servingsValue = listItems[0].textContent.split(': ')[1];
-    const [caloriesValue, caloriesUnit] = listItems[1].textContent.split(' ').slice(1);
-    const [fatValue, fatUnit] = listItems[2].textContent.split(' ').slice(1);
-    const [carbsValue, carbsUnit] = listItems[3].textContent.split(' ').slice(1);
-    const [proteinValue, proteinUnit] = listItems[4].textContent.split(' ').slice(1);
-
-    const buttonText = form.find("#addToFavorites").text();
-
-    let urlAction = "";
-    let request = {};
-    let newButtonText = "";
-    let successMessage = "";
-    let errorMessage = "";
-
-    // Add to favorites
-    if (buttonText.includes("Add")) {
-      urlAction = PUT_ACTION;
-      request = {
-        recipeName: recipeName,
-        recipeIngredients: recipeIngredients,
-        recipeDirections: recipeDirections,
-        recipeImage: recipeImage,
-        recipeUri: recipeUri,
-        recipeSource: recipeSource,
-        recipeSourceUrl: recipeSourceUrl,
-        recipeServings: servingsValue,
-        recipeCalories: caloriesValue,
-        recipeCaloriesUnits: caloriesUnit,
-        recipeCarbs: carbsValue,
-        recipeCarbsUnits: carbsUnit,
-        recipeFats: fatValue,
-        recipeFatsUnits: fatUnit,
-        recipeProtein: proteinValue,
-        recipeProteinUnits: proteinUnit,
-        userCreated: false
-      };
-      newButtonText = REMOVE_FROM_FAVORITES;
-      successMessage = SUCCESSFULLY_FAVORITE_RECIPE;
-      errorMessage = UNABLE_TO_FAVORITE_UNEXPECTED_ERROR;
-    }
-    // Remove from favorites
-    else if (buttonText.includes("Remove")) {
-      urlAction = DELETE_ACTION;
-      request = {
-        recipeName: recipeName
-      }
-      newButtonText = ADD_TO_FAVORITES;
-      successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
-      errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
-    }
-    // Delete recipe
-    else {
-      urlAction = DELETE_ACTION;
-      request = {
-        recipeName: recipeName
-      }
-      newButtonText = "";
-      successMessage = SUCCESSFULLY_DELETED_RECIPE;
-      errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
-    }
-
-    let url = "";
-    if (buttonText.includes("Add") || buttonText.includes("Remove")) {
-      url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
-    } else {
-      url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
-    }
-
-    console.log(`Sending [${urlAction}] request to: ${url}`);
-
-    try {
-      const response = await fetch(url, {
-        method: urlAction,
-        headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
-        },
-        body: JSON.stringify({ favorites: request })
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        console.error(responseData.error || errorMessage);
-        throw new Error(responseData.error || errorMessage);
-      } else {
-        console.log(responseData.message || successMessage);
-        if (responseData.message === SUCCESSFULLY_DELETED_RECIPE) {
-          utils.setStorage("deleteRecipeMessage", successMessage);
-          window.location = MY_RECIPES_ROUTE;
-        } else {
-          form.find("#addToFavorites").text(newButtonText);
-          utils.showAjaxAlert("Success", responseData.message || successMessage);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      utils.showAjaxAlert("Error", error.message);
+    switch (action) {
+      case 'addToFavorites':
+        console.log("Submitting form for favorite/unfavorite or delete user recipe");
+        await handleFavoriteUnfavoriteDeleteRecipeLogic(userId, form);
+        break;
+      case 'updateRecipe':
+        console.log("Submitting form for updating user recipe");
+        handleUpdateRecipe();
+        break;
+      case 'publishRecipe':
+        console.log("Submitting form for publishing user recipe");
+        await handlePublishUserRecipe(userId);
+        break;
+      default:
+        console.error(`Unknown action on form submission: [${action}]`);
     }
   });
-}
+});
 
 function hasAllData(source, sourceUrl, recipeUri) {
   return source && sourceUrl && recipeUri

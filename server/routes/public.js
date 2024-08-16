@@ -3,6 +3,7 @@ const publicRouter = express.Router();
 const User = require("../src/models/userModel.js");
 const Recipe = require("../src/models/recipeModel.js");
 const ContactUs = require("../src/models/contactUsModel.js");
+const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
 const bcrypt = require('bcryptjs');
 
 // Success / Error Logs
@@ -14,8 +15,9 @@ publicRouter.get('/clearDatabase', async (_, res) => {
     const userDeleted = await User.deleteMany({});
     const recipeDeleted = await Recipe.deleteMany({});
     const contactDeleted = await ContactUs.deleteMany({});
+    const recipePubRequestDeleted = await RecipePubRequest.deleteMany({});
 
-    res.json({ user: userDeleted, recipe: recipeDeleted, contact: contactDeleted });
+    res.json({ user: userDeleted, recipe: recipeDeleted, contact: contactDeleted, recipePubRequest: recipePubRequestDeleted });
   } catch (error) {
     console.log('Error clearing database: ', error);
     res.status(500).json({ error: 'error clearing database' });
