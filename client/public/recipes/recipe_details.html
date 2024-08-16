@@ -54,7 +54,7 @@
         const source = params.get('source');
         const sourceUrl = decodeURIComponent(params.get('sourceUrl'));
         const uri = decodeURIComponent(params.get('uri'));
-        recipeDetails.load(source, sourceUrl, uri);
+        recipeDetails.loadEdamamRecipe(source, sourceUrl, uri);
       }
 
       // Handles showing publish recipe messages
@@ -442,7 +442,7 @@
             <!-- Dynamically building dietary labels here -->
           </ul>
         </section>
-        
+
         <section class="recipe-info add-to-favorites">
           <button type="submit" class="btn btn-primary" id="addToFavorites">Add Recipe to Favorites</button>
         </section>

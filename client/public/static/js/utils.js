@@ -233,25 +233,22 @@ const utils = (() => {
   /**
    * Handles post-login cookie verification and debugging.
    * 
-   * @param {string} username The username associated with the cookies to check
    */
-  async function cookieWorkaround(username) {
-    fetch(PROFILE_URL, {
+  async function cookieWorkaround() {
+    const response = await fetch(PROFILE_URL, {
       method: GET_ACTION,
       credentials: 'include',
       headers: {
         'Content-Type': DEFAULT_DATA_TYPE,
       },
-    }).then(response => {
-      if (!response.ok) {
-        throw new Error(FAILED_TO_GET_USER_PROFILE);
-      }
-      return response.json();
-    }).then(data => {
-      console.log('Profile Data:', data);
-    }).catch(error => {
-      console.error("Error verifying cookies:", error);
     });
+
+    if (!response.ok) {
+      throw new Error(FAILED_TO_GET_USER_PROFILE);
+    }
+
+    const data = await response.json();
+    console.log('Profile Data:', data);
   }
 
   /**

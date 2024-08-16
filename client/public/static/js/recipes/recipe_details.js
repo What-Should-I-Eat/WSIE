@@ -1,5 +1,5 @@
 function RecipeDetailsView() {
-  this.load = async (source, sourceUrl, recipeUri) => {
+  this.loadEdamamRecipe = async (source, sourceUrl, recipeUri) => {
     if (hasAllData(source, sourceUrl, recipeUri)) {
       console.log("Loading view from Edamam recipe");
 
@@ -347,13 +347,13 @@ function RecipeDetailsView() {
     var container = document.getElementById("updateRecipeContainer");
     container.appendChild(updateRecipeButton);
 
-    if(!recipe.pubRequested){
+    if (!recipe.pubRequested) {
       const publishRecipeButton = document.createElement("button");
       publishRecipeButton.textContent = "Request to Publish Recipe";
       publishRecipeButton.classList.add("publishRecipeButton");
       var container = document.getElementById("publishRecipeContainer");
       container.appendChild(publishRecipeButton);
-    }else{
+    } else {
       const publishRecipeButton = document.createElement("button");
       publishRecipeButton.textContent = "Request to publish recipe under review";
       publishRecipeButton.disabled = true;
@@ -381,7 +381,7 @@ function RecipeDetailsView() {
     }
 
     const recipeName = document.getElementById('recipe-name').textContent;
-    console.log("Going to update recipe: /account/update_recipe?userRecipeName="+recipeName);
+    console.log("Going to update recipe: /account/update_recipe?userRecipeName=" + recipeName);
     window.location = "/account/update_recipe?userRecipeName=" + recipeName;
   });
 
