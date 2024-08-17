@@ -3,6 +3,7 @@ const privateRouter = express.Router();
 const User = require("../src/models/userModel.js");
 const Recipe = require("../src/models/recipeModel.js");
 const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const storage = multer.memoryStorage();
@@ -486,7 +487,9 @@ privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeIm
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
-    let recipe = await Recipe.findOne({ _id: req.body.favoriteId, usernameCreator: user.username });
+    let recipeObjectId = new mongoose.Types.ObjectId(req.body.recipeObjectId);
+
+    let recipe = await Recipe.findOne({ _id: recipeObjectId, usernameCreator: user.username });
     if (!recipe) {
       return res.status(404).json({ error: 'Recipe not found' });
     }

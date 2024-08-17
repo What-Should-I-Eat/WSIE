@@ -157,6 +157,7 @@ const FAILED_TO_DECODE_USER_RECIPE_IMAGE = "Error occurred trying to decode user
 const SUCCESSFULLY_UPDATED_RECIPE = "Successfully updated recipe";
 const UNABLE_TO_UPDATE_RECIPE_ERROR = "Error occurred trying to update recipe";
 const UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN = "User must login or create account to update a recipe";
+const NO_USER_RECIPE_CHANGES_DETECTED = " No user recipe changes detected";
 
 // User Profile Updates
 const SUCCESSFULLY_UPDATED_USER_DETAILS = "Successfully updated user info";
