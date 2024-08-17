@@ -562,10 +562,15 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
   }
 });
 
-privateRouter.get('/users/:id/recipe/get_recipePubRequests', async (_, res) => {
+// TODO: Add an endpoint here that will do the following
+// Get the published recipe from the mode
+// Update the status from the admin approve/deny in the RecipePubRequest
+// If approved, remove from the RecipePubRequest and update the recipe model with isPublished and isRequested both true
+
+privateRouter.get('/recipes/publish_requests', async (_, res) => {
   try {
-    const messages = await mongoose.model("RecipePubRequest").find({});
-    res.status(200).json(messages);
+    const publishRequests = await RecipePubRequest.find({});
+    res.status(200).json(publishRequests);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error occurred getting publish recipe requests" });

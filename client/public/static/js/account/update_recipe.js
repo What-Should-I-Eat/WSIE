@@ -75,17 +75,33 @@ function UserRecipeDetailsView() {
     formRecipeCalories.value = recipe.recipeCalories;
     formRecipeCalories.setAttribute('data-initial-value', recipe.recipeCalories);
 
+    let formRecipeCaloriesUnits = document.getElementById('recipeCaloriesUnits');
+    formRecipeCaloriesUnits.value = recipe.recipeCaloriesUnits;
+    formRecipeCaloriesUnits.setAttribute('data-initial-value', recipe.recipeCaloriesUnits);
+
     let formRecipeCarbs = document.getElementById('recipeCarbs');
     formRecipeCarbs.value = recipe.recipeCarbs;
     formRecipeCarbs.setAttribute('data-initial-value', recipe.recipeCarbs);
+
+    let formRecipeCarbsUnits = document.getElementById('recipeCarbsUnits');
+    formRecipeCarbsUnits.value = recipe.recipeCarbsUnits;
+    formRecipeCarbsUnits.setAttribute('data-initial-value', recipe.recipeCarbsUnits);
 
     let formRecipeFats = document.getElementById('recipeFats');
     formRecipeFats.value = recipe.recipeFats;
     formRecipeFats.setAttribute('data-initial-value', recipe.recipeFats);
 
+    let formRecipeFatsUnits = document.getElementById('recipeFatsUnits');
+    formRecipeFatsUnits.value = recipe.recipeFatsUnits;
+    formRecipeFatsUnits.setAttribute('data-initial-value', recipe.recipeFatsUnits);
+
     let formRecipeProtein = document.getElementById('recipeProtein');
     formRecipeProtein.value = recipe.recipeProtein;
     formRecipeProtein.setAttribute('data-initial-value', recipe.recipeProtein);
+
+    let formRecipeProteinUnits = document.getElementById('recipeProteinUnits');
+    formRecipeProteinUnits.value = recipe.recipeProteinUnits;
+    formRecipeProteinUnits.setAttribute('data-initial-value', recipe.recipeProteinUnits);
 
     document.getElementById('currentImage').src = await utils.getUserRecipeImage(recipe);
     document.getElementById('currentImage').alt = `Image of ${recipe.recipeName}`;
@@ -116,22 +132,26 @@ function UserRecipeDetailsView() {
 
     const formData = new FormData(this);
     const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/update_recipe`;
+
     console.log(`Sending request to: ${url}`);
-    fetch(url, {
-      method: PUT_ACTION,
-      body: formData,
-    }).then(async response => {
-      if (response.ok) {
-        console.log(SUCCESSFULLY_UPDATED_RECIPE);
-        utils.setStorage("createRecipeMessage", SUCCESSFULLY_UPDATED_RECIPE);
-        window.location = MY_RECIPES_ROUTE;
-      } else {
+
+    try {
+      const response = await fetch(url, {
+        method: PUT_ACTION,
+        body: formData,
+      });
+
+      if (!response.ok) {
         throw new Error(UNABLE_TO_UPDATE_RECIPE_ERROR);
       }
-    }).catch(error => {
-      console.log(error);
+
+      console.log(SUCCESSFULLY_UPDATED_RECIPE);
+      utils.setStorage("createUpdateRecipeMessage", SUCCESSFULLY_UPDATED_RECIPE);
+      window.location = MY_RECIPES_ROUTE;
+    } catch (error) {
+      console.error(error);
       utils.showAjaxAlert("Error", error.message);
-    });
+    }
   });
 }
 
@@ -146,31 +166,40 @@ function formHasChanges(form) {
   const inputs = form.querySelectorAll('input');
 
   inputs.forEach(input => {
-    // Skip input if it has an id of 'recipeObjectId'
-    if (input.id === 'recipeObjectId') {
+    // Skip the Mongo ObjectId and the User Recipe Image
+    if (input.id === 'recipeObjectId' || input.id === 'userRecipeImage') {
       return;
     }
 
+    // Check for changes in non-readOnly and non-submit inputs
     if (input.type !== 'submit' && !input.readOnly) {
       const initialValue = input.getAttribute('data-initial-value');
       if (input.value !== initialValue) {
+        console.log(`${input.id} has changes`);
         hasChanges = true;
       }
     }
   });
 
-  if (!isImageSelected()) {
-    hasChanges = false;
+  if (isImageSelected()) {
+    console.log("Image has changes");
+    hasChanges = true;
   }
 
   return hasChanges;
 }
 
+/**
+ * Checks if an image file is selected
+ * 
+ * @returns {boolean} true if an image file is selected, false otherwise
+ */
 function isImageSelected() {
   const fileInput = document.getElementById('userRecipeImage');
 
-  if (fileInput.files.length > 0) {
+  if (fileInput && fileInput.files.length > 0) {
     const file = fileInput.files[0];
+    // Check if the file is an image
     if (file && file.type.startsWith('image/')) {
       return true;
     }
