@@ -53,6 +53,7 @@ const RECIPE_SCRAPE_URL = `${HOST}/${API_VERSION}/scrape-recipe`;
 
 // Public User-Created Recipes API Endpint = 
 const PUBLIC_USER_RECIPES_URL = `${HOST}/${API_VERSION}/recipes`;
+const PUBLIC_USER_RECIPE_URL = `${HOST}/${API_VERSION}/recipes/get_recipe`
 const ERROR_GETTING_PUBLIC_USER_RECIPES = "Error occurred getting public user-created recipes";
 
 // User Favorites API Endpoints
@@ -136,6 +137,12 @@ const DELETE_RECIPE = "Delete Recipe";
 // Publish Recipe
 const REQUEST_TO_PUBLISH_RECIPE = "Request to Publish Recipe";
 const RECIPE_UNDER_REVIEW = "Request to Publish Recipe Under Review";
+const RECIPE_PUBLISHED = "Recipe Published";
+// Recipes / My Recipes Constants
+const PUBLIC_RECIPE_ICON = "fa-users";
+const PUBLIC_RECIPE_OWNER_ICON = "fa-user";
+const PUBLIC_RECIPE_URL_PARAMETER = "publicUserRecipeName";
+const PUBLIC_RECIPE_OWNER_URL_PARAMETER = "userRecipeName";
 
 // Recipe Favorites
 const NO_SAVED_RECIPES = "No saved recipes!";

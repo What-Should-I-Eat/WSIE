@@ -273,18 +273,23 @@ $(document).ready(function () {
             recipeImageType = "SVG";
           }
 
-          const recipeHtml = `
-                      <div class="box box-shadow-custom">
-                          <a href="/recipes/recipe_details?userRecipeName=${encodeURIComponent(recipeName)}">
-                              <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
-                          </a>
-                          <div class="user-icon">
-                              <i class="fas fa-user"></i>
-                          </div>
-                          <h3>${recipeName}</h3>
-                      </div>`;
+          const isOwner = userData.username === recipe.usernameCreator;
+          const icon = isOwner ? PUBLIC_RECIPE_OWNER_ICON : PUBLIC_RECIPE_ICON;
+          const parameter = isOwner ? PUBLIC_RECIPE_OWNER_URL_PARAMETER : PUBLIC_RECIPE_URL_PARAMETER;
+          const recipeType = isOwner ? "user" : "public user";
 
-          console.debug(`Adding user created recipe: [${recipeName}]`);
+          const recipeHtml = `
+            <div class="box box-shadow-custom">
+                <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}">
+                    <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
+                </a>
+                <div class="user-icon">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <h3>${recipeName}</h3>
+            </div>`;
+
+          console.debug(`Adding ${recipeType} created recipe: [${recipeName}]`);
           container.append(recipeHtml);
 
           // Add to array for export

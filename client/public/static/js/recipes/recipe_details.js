@@ -44,6 +44,23 @@ function RecipeDetailsView() {
     }
   }
 
+  this.loadPublicUserRecipe = async (publicUserRecipeName) => {
+    try {
+      console.log("Loading view from public user recipe");
+
+      const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
+      if (userRecipeDetails) {
+        this.buildPublicUserView(userRecipeDetails);
+      } else {
+        console.error("Invalid public user recipe data to build view");
+        utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
+      }
+    } catch (error) {
+      console.error("Error loading public user recipe details", error);
+      utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
+    }
+  }
+
   this.getRecipeDetails = async (recipeUri) => {
     const uri = encodeURIComponent(recipeUri);
     const apiUrl = `${EDAMAM_RECIPE_URI_URL}=${uri}`;
@@ -119,6 +136,26 @@ function RecipeDetailsView() {
       return details;
     } else {
       console.error(`Error occurred getting user recipe for ${recipeName}`);
+      return undefined;
+    }
+  }
+
+  this.getPublicUserRecipe = async (recipeName) => {
+    const url = `${PUBLIC_USER_RECIPE_URL}?recipeName=${recipeName}`;
+    console.log(`Querying Server at: ${url}`);
+
+    const response = await fetch(url, {
+      method: GET_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
+
+    if (response.ok) {
+      const details = await response.json();
+      return details;
+    } else {
+      console.error(`Error occurred getting public user recipe for ${recipeName}`);
       return undefined;
     }
   }
@@ -239,7 +276,7 @@ function RecipeDetailsView() {
     }
   }
 
-  this.buildUserView = async (recipe) => {
+  this.buildPublicUserView = async (recipe) => {
     // Leave this here so its compatible and we can share functionality
     const form = document.getElementById('recipeForm');
 
@@ -273,15 +310,98 @@ function RecipeDetailsView() {
     }
     hiddenRecipeSourceUrlInput.value = "";
 
-    // Hidden Recipe Source URL
-    let hiddenRecipeServingsInput = document.getElementById('recipe-servings');
-    if (!hiddenRecipeServingsInput) {
-      hiddenRecipeServingsInput = document.createElement('input');
-      hiddenRecipeServingsInput.type = 'hidden';
-      hiddenRecipeServingsInput.id = 'recipe-servings';
-      form.appendChild(hiddenRecipeServingsInput);
+    // Check if the recipe is a favorite
+    const username = utils.getUserNameFromCookie();
+    const isFavorite = await checkIfFavorite(username, recipe.recipeName);
+    const addToFavoritesBtn = document.getElementById('addToFavoritesBtn');
+    addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
+
+    // Update header name and image
+    document.getElementById('recipe-name').textContent = recipe.recipeName;
+    document.getElementById('recipe-image').src = await utils.getUserRecipeImage(recipe);
+    document.getElementById('recipe-image').alt = `Image of ${recipe.recipeName}`;
+
+    // Update ingredients list
+    const ingredientsList = document.querySelector('.recipe-info ul');
+    ingredientsList.innerHTML = '';
+    if (recipe.recipeIngredients) {
+      var ingredientsString = recipe.recipeIngredients[0].split(/\r\n/);
+      ingredientsString.forEach(ingredient => {
+        const listItem = document.createElement('li');
+        listItem.textContent = ingredient;
+        ingredientsList.appendChild(listItem);
+      });
     }
-    hiddenRecipeServingsInput.value = recipe.yield;
+
+    // Update preparation
+    const preparationContainer = document.querySelectorAll('.recipe-info')[1];
+    const preparationList = preparationContainer.querySelector('ul');
+    preparationList.innerHTML = '';
+    if (recipe.recipeDirections) {
+      var directionsString = recipe.recipeDirections[0].split(/\r\n/);
+      directionsString.forEach(step => {
+        const listItem = document.createElement('li');
+        listItem.textContent = step;
+        preparationList.appendChild(listItem);
+      });
+    } else {
+      console.log(`No user instructions for: [${recipe.label}]`);
+      const noInstructionsText = document.createElement('p');
+      noInstructionsText.innerHTML = `No user instructions available.`;
+      preparationContainer.appendChild(noInstructionsText);
+    }
+
+    // Update nutritional facts
+    const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
+    nutritionalFactsList.innerHTML = '';
+    nutritionalFactsList.innerHTML += `<li>Servings: ${Math.round(recipe.recipeServings)}</li>`;
+    nutritionalFactsList.innerHTML += `<li>Calories: ${Math.round(recipe.recipeCalories)} ${recipe.recipeCaloriesUnits}</li>`;
+    nutritionalFactsList.innerHTML += `<li>Fats: ${Math.round(recipe.recipeFats)} ${recipe.recipeFatsUnits}</li>`;
+    nutritionalFactsList.innerHTML += `<li>Carbohydrates: ${Math.round(recipe.recipeCarbs)} ${recipe.recipeCarbsUnits}</li>`;
+    nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.recipeProtein)} ${recipe.recipeProteinUnits}</li>`;
+
+    // Update dietary labels
+    const dietaryContainer = document.querySelectorAll('.recipe-info')[3];
+    const dietaryLabelsList = dietaryContainer.querySelector('ul');
+    dietaryLabelsList.innerHTML = '';
+    const noDietaryText = document.createElement('p');
+    noDietaryText.innerHTML = `No user dietary labels.`;
+    dietaryContainer.appendChild(noDietaryText);
+  };
+
+  this.buildUserView = async (recipe) => {
+    // Leave this here so its compatible and we can share functionality
+    const form = document.getElementById('recipeForm');
+
+    // Hidden Recipe URI
+    let hiddenUriInput = document.getElementById('recipe-uri');
+    if (!hiddenUriInput) {
+      hiddenUriInput = document.createElement('input');
+      hiddenUriInput.type = 'hidden';
+      hiddenUriInput.id = 'recipe-uri';
+      form.appendChild(hiddenUriInput);
+    }
+    hiddenUriInput.value = "";
+
+    // Hidden Recipe Source
+    let hiddenRecipeSourceInput = document.getElementById('recipe-source');
+    if (!hiddenRecipeSourceInput) {
+      hiddenRecipeSourceInput = document.createElement('input');
+      hiddenRecipeSourceInput.type = 'hidden';
+      hiddenRecipeSourceInput.id = 'recipe-source';
+      form.appendChild(hiddenRecipeSourceInput);
+    }
+    hiddenRecipeSourceInput.value = "";
+
+    // Hidden Recipe Source URL
+    let hiddenRecipeSourceUrlInput = document.getElementById('recipe-source-url');
+    if (!hiddenRecipeSourceUrlInput) {
+      hiddenRecipeSourceUrlInput = document.createElement('input');
+      hiddenRecipeSourceUrlInput.type = 'hidden';
+      hiddenRecipeSourceUrlInput.id = 'recipe-source-url';
+      form.appendChild(hiddenRecipeSourceUrlInput);
+    }
+    hiddenRecipeSourceUrlInput.value = "";
 
     // Check if the recipe is a favorite
     const addToFavoritesBtn = document.getElementById('addToFavoritesBtn');
@@ -350,12 +470,12 @@ function RecipeDetailsView() {
     if (publishRecipeButton) {
       publishRecipeButton.style.visibility = 'visible';
 
-      if (!recipe.pubRequested) {
+      if (recipe.pubRequested) {
+        publishRecipeButton.textContent = recipe.isPublished ? RECIPE_PUBLISHED : RECIPE_UNDER_REVIEW;
+        publishRecipeButton.disabled = true;
+      } else {
         publishRecipeButton.textContent = REQUEST_TO_PUBLISH_RECIPE;
         publishRecipeButton.disabled = false;
-      } else {
-        publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
-        publishRecipeButton.disabled = true;
       }
     }
   };
@@ -397,8 +517,6 @@ async function handlePublishUserRecipe(userId) {
     if (!response.ok) {
       throw new Error(data.error);
     }
-
-    console.log(data.success);
 
     const publishRecipeButton = document.getElementById('publishRecipeBtn');
     publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;

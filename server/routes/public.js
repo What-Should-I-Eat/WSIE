@@ -106,6 +106,20 @@ publicRouter.get("/recipes", async (_, res) => {
   }
 });
 
+publicRouter.get('/recipes/get_recipe', async (req, res) => {
+  try {
+    const recipe = await Recipe.findOne({ recipeName: req.query.recipeName });
+    if (!recipe) {
+      return res.status(404).json({ error: `[${req.query.recipeName}] not found` });
+    }
+
+    res.json(recipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error trying to get public user recipe' });
+  }
+});
+
 function generateRandomVerificationCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }

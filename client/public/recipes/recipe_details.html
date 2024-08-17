@@ -45,11 +45,14 @@
     $(document).ready(function () {
       const params = new URLSearchParams(window.location.search);
       const userRecipeName = params.get('userRecipeName');
+      const publicUserRecipeName = params.get('publicUserRecipeName');
 
       const recipeDetails = new RecipeDetailsView();
 
       if (userRecipeName) {
         recipeDetails.loadUserRecipe(userRecipeName);
+      } else if (publicUserRecipeName) {
+        recipeDetails.loadPublicUserRecipe(publicUserRecipeName);
       } else {
         const source = params.get('source');
         const sourceUrl = decodeURIComponent(params.get('sourceUrl'));
