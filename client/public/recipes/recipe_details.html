@@ -56,13 +56,6 @@
         const uri = decodeURIComponent(params.get('uri'));
         recipeDetails.loadEdamamRecipe(source, sourceUrl, uri);
       }
-
-      // Handles showing publish recipe messages
-      const publishRecipeMessage = utils.getFromStorage("publishRequestMessage");
-      if (publishRecipeMessage) {
-        utils.showAjaxAlert("Success", publishRecipeMessage);
-        utils.removeFromStorage("publishRequestMessage");
-      }
     });
   </script>
 </head>

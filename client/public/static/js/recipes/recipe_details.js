@@ -399,8 +399,11 @@ async function handlePublishUserRecipe(userId) {
     }
 
     console.log(data.success);
-    utils.setStorage("publishRequestMessage", data.success);
-    location.reload();
+
+    const publishRecipeButton = document.getElementById('publishRecipeBtn');
+    publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
+    publishRecipeButton.disabled = true;
+    utils.showAjaxAlert("Success", data.success);
   } catch (error) {
     console.error(error);
     utils.showAjaxAlert("Error", error.message);
