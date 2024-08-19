@@ -30,7 +30,7 @@ $(document).ready(function () {
 
       if (response.ok) {
         console.log(responseData.message || SUCCESSFULLY_CREATED_RECIPE);
-        utils.setStorage("createRecipeMessage", responseData.message || SUCCESSFULLY_CREATED_RECIPE);
+        utils.setStorage("createUpdateRecipeMessage", responseData.message || SUCCESSFULLY_CREATED_RECIPE);
         window.location = MY_RECIPES_ROUTE;
       } else {
         throw new Error(responseData.error || UNABLE_TO_CREATE_RECIPE_ERROR);

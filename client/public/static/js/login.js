@@ -99,7 +99,7 @@ $(document).ready(function () {
         if (response.ok) {
           const data = await response.json();
           utils.setStorage("username", data.username);
-          utils.cookieWorkaround(data.username);
+          await utils.cookieWorkaround();
           // Update the storage for the banner
           utils.setStorage("loginMessage", SUCCESSFUL_LOGIN);
           // Hide the modal
@@ -127,7 +127,7 @@ $(document).ready(function () {
       })
       .catch(error => {
         console.error(error);
-        form.prepend('<div class="alert alert-danger">' + error.error + "</div>");
+        form.prepend('<div class="alert alert-danger">' + error.message + "</div>");
       });
   });
 

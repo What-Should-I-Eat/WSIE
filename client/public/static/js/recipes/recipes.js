@@ -15,12 +15,11 @@ function RecipesView() {
     try {
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
       const recipes = await this.getRecipes(url);
-      // TODO: Implement logic on separate branch
-      // const publicUserRecipes = await this.getPublicUserRecipes();
+      const publicUserRecipes = await this.getPublicUserRecipes();
 
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
-        this.renderRecipes(recipes, container);
+        this.renderRecipes(recipes, publicUserRecipes, container);
         this.updatePagination(recipes, url, `${recipes.from}-${recipes.to}`, mealTypes, dishTypes, cuisineTypes);
         pagination.show();
       } else {
@@ -158,7 +157,7 @@ function RecipesView() {
     }
   }
 
-  this.renderRecipes = (recipes, container) => {
+  this.renderRecipes = (recipes, publicUserRecipes, container) => {
     container.empty();
     addedRecipesSet.clear();
 
@@ -185,6 +184,33 @@ function RecipesView() {
         console.debug(`Skipping duplicate recipe: [${recipe.label}] from source: [${recipe.source}], sourceUrl: [${recipe.url}]`);
       }
     });
+
+    if (publicUserRecipes) {
+      publicUserRecipes.forEach(async recipe => {
+        const recipeName = recipe.recipeName;
+        const recipeImage = hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
+
+        const username = utils.getUserNameFromCookie();
+        const isOwner = username && username === recipe.usernameCreator;
+        const icon = isOwner ? PUBLIC_RECIPE_OWNER_ICON : PUBLIC_RECIPE_ICON;
+        const parameter = isOwner ? PUBLIC_RECIPE_OWNER_URL_PARAMETER : PUBLIC_RECIPE_URL_PARAMETER;
+        const recipeType = isOwner ? "user" : "public user";
+
+        const recipeHtml = `
+          <div class="box box-shadow-custom">
+              <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}">
+                  <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
+              </a>
+              <div class="user-icon">
+                  <i class="fas ${icon}"></i>
+              </div>
+              <h3>${recipeName}</h3>
+          </div>`;
+
+        console.debug(`Adding ${recipeType} created recipe: [${recipeName}]`);
+        container.append(recipeHtml);
+      });
+    }
   };
 
   this.updatePagination = (recipes, currentUrl, fromTo, mealTypes, dishTypes, cuisineTypes) => {
@@ -246,6 +272,10 @@ function hasRecipeHits(recipes) {
 function hasValidImage(recipe) {
   return recipe.images && ((recipe.images.LARGE && recipe.images.LARGE.url) ||
     (recipe.images.REGULAR && recipe.images.REGULAR.url));
+}
+
+function hasValidUserCreatedImage(recipe) {
+  return recipe.recipeImage && recipe.recipeImage !== "";
 }
 
 function getUserDietString(dietArray) {

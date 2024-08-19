@@ -282,15 +282,20 @@ $(document).ready(function () {
             recipeImageType = "SVG";
           }
 
+          const isOwner = userData.username === recipe.usernameCreator;
+          const icon = isOwner ? PUBLIC_RECIPE_OWNER_ICON : PUBLIC_RECIPE_ICON;
+          const parameter = isOwner ? PUBLIC_RECIPE_OWNER_URL_PARAMETER : PUBLIC_RECIPE_URL_PARAMETER;
+          const recipeType = isOwner ? "user" : "public user";
+
           const recipeHtml = `
-                      <div class="box box-shadow-custom">
-                          <a href="/recipes/recipe_details?userRecipeName=${encodeURIComponent(recipeName)}">
-                              <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
-                          </a>
-                          <div class="user-icon">
-                              <i class="fas fa-user"></i>
-                          </div>
-                          <div class="recipe-dropdown">
+            <div class="box box-shadow-custom">
+                <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}">
+                    <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
+                </a>
+                <div class="user-icon">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <div class="recipe-dropdown">
                               <!-- three dots -->
                               <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
                               </div>
@@ -300,10 +305,10 @@ $(document).ready(function () {
                                   <br><button id="deleteRecipe" onClick="deleteRecipe('${recipeName}')">Delete</button>
                               </div>
                           </div>
-                          <br><h3>${recipeName}</h3>
-                      </div>`;
+                <h3>${recipeName}</h3>
+            </div>`;
 
-          console.debug(`Adding user created recipe: [${recipeName}]`);
+          console.debug(`Adding ${recipeType} created recipe: [${recipeName}]`);
           container.append(recipeHtml);
 
           // Add to array for export

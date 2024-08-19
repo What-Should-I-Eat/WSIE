@@ -1,0 +1,56 @@
+[{
+  "_id": {
+    "$oid": "66b781b7bf49dadd1cd7d910"
+  },
+  "fullName": "admin admin",
+  "username": "admin",
+  "password": "$2a$10$M5WI3PS1THveHyVKuqnvUO2WgrnVqQuaSZfSgbAyaok9xHi.R.GZy",
+  "email": "admin@admin.com",
+  "verified": true,
+  "verificationCode": "$2a$10$OcNSq3Pyh5mLEGlDqMts9.JjvUDIN8UwcnhW83CIXRktCQV8rTQf.",
+  "verificationCodeTimestamp": {
+    "$date": "2024-08-10T15:05:27.926Z"
+  },
+  "incorrectPasswordAttempts": 0,
+  "incorrectPasswordAttemptTime": {
+    "$date": "2024-08-10T15:05:27.926Z"
+  },
+  "diet": [],
+  "health": [],
+  "favorites": [
+    {
+      "$oid": "66b781efbf49dadd1cd7d921"
+    },
+    {
+      "$oid": "66b781f5bf49dadd1cd7d92c"
+    },
+    {
+      "$oid": "66b78205bf49dadd1cd7d93b"
+    },
+    {
+      "$oid": "66b7820fbf49dadd1cd7d94a"
+    },
+    {
+      "$oid": "66b7821bbf49dadd1cd7d959"
+    },
+    {
+      "$oid": "66b78228bf49dadd1cd7d968"
+    },
+    {
+      "$oid": "66b7822dbf49dadd1cd7d973"
+    },
+    {
+      "$oid": "66b78250bf49dadd1cd7d97f"
+    },
+    {
+      "$oid": "66b78260bf49dadd1cd7d98b"
+    },
+    {
+      "$oid": "66b7826cbf49dadd1cd7d999"
+    },
+    {
+      "$oid": "66b78279bf49dadd1cd7d9a7"
+    }
+  ],
+  "__v": 11
+}]

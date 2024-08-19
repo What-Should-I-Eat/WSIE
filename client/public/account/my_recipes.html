@@ -47,10 +47,10 @@
   <script>
     $(document).ready(function () {
       // Handles showing create recipe messages
-      const createRecipeMessage = utils.getFromStorage("createRecipeMessage");
-      if (createRecipeMessage) {
-        utils.showAjaxAlert("Success", createRecipeMessage);
-        utils.removeFromStorage("createRecipeMessage");
+      const createUpdateRecipeMessage = utils.getFromStorage("createUpdateRecipeMessage");
+      if (createUpdateRecipeMessage) {
+        utils.showAjaxAlert("Success", createUpdateRecipeMessage);
+        utils.removeFromStorage("createUpdateRecipeMessage");
       }
 
       // Handles showing delete recipe messages

@@ -53,6 +53,7 @@ const RECIPE_SCRAPE_URL = `${HOST}/${API_VERSION}/scrape-recipe`;
 
 // Public User-Created Recipes API Endpint = 
 const PUBLIC_USER_RECIPES_URL = `${HOST}/${API_VERSION}/recipes`;
+const PUBLIC_USER_RECIPE_URL = `${HOST}/${API_VERSION}/recipes/get_recipe`
 const ERROR_GETTING_PUBLIC_USER_RECIPES = "Error occurred getting public user-created recipes";
 
 // User Favorites API Endpoints
@@ -131,7 +132,17 @@ const NO_RECIPES_FOUND = "0 recipes found.";
 // Recipe Details
 const ADD_TO_FAVORITES = "Add Recipe to Favorites";
 const REMOVE_FROM_FAVORITES = "Remove Recipe from Favorites";
+const UPDATE_RECIPE = "Update Recipe";
 const DELETE_RECIPE = "Delete Recipe";
+// Publish Recipe
+const REQUEST_TO_PUBLISH_RECIPE = "Request to Publish Recipe";
+const RECIPE_UNDER_REVIEW = "Request to Publish Recipe Under Review";
+const RECIPE_PUBLISHED = "Recipe Published";
+// Recipes / My Recipes Constants
+const PUBLIC_RECIPE_ICON = "fa-users";
+const PUBLIC_RECIPE_OWNER_ICON = "fa-user";
+const PUBLIC_RECIPE_URL_PARAMETER = "publicUserRecipeName";
+const PUBLIC_RECIPE_OWNER_URL_PARAMETER = "userRecipeName";
 
 // Recipe Favorites
 const NO_SAVED_RECIPES = "No saved recipes!";
@@ -153,6 +164,7 @@ const FAILED_TO_DECODE_USER_RECIPE_IMAGE = "Error occurred trying to decode user
 const SUCCESSFULLY_UPDATED_RECIPE = "Successfully updated recipe";
 const UNABLE_TO_UPDATE_RECIPE_ERROR = "Error occurred trying to update recipe";
 const UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN = "User must login or create account to update a recipe";
+const NO_USER_RECIPE_CHANGES_DETECTED = " No user recipe changes detected";
 
 // User Profile Updates
 const SUCCESSFULLY_UPDATED_USER_DETAILS = "Successfully updated user info";

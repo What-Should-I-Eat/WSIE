@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const RecipeSchema = new Schema({
-  recipeId: Number,
   recipeName: String,
   recipeIngredients: [String],
   recipeDirections: [String],
