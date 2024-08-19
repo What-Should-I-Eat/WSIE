@@ -189,3 +189,43 @@
 .button-spacing {
   margin-right: 5px;
 }
+
+.dotbutton:after{
+  content: '\2807';
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.btn-left {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.recipe-dropdown {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block; 
+}
+
+.dropdown-content {
+  display: none;
+  margin-top: 50px;
+  overflow: auto;
+}
+
+.dropdown-content button {
+  color: black;
+  width: 100%;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: center;
+  background-color: var(--secondary-color);
+  border: none;
+  color: white;
+}
+
+.recipe-dropdown button:hover {background-color: var(--primary-color);}
+
+.show {display:block;}

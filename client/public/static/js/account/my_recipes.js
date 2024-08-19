@@ -224,7 +224,7 @@ $(document).ready(function () {
 
       // Enable export if there are recipes
       exportButton.disabled = false;
-
+      let dropDownIndex = 0;
       console.log(`About to iterate through: ${favoriteRecipes.length} favorite recipes`);
       favoriteRecipes.forEach(async recipe => {
         if (isValidRecipe(recipe)) {
@@ -246,12 +246,20 @@ $(document).ready(function () {
             recipeImage = NO_IMAGE_AVAILABLE;
             recipeImageType = "SVG";
           }
-
           const recipeHtml = `
                       <div class="box box-shadow-custom">
                           <a href="/recipes/recipe_details?source=${recipeSource}&sourceUrl=${recipeSourceUrl}&uri=${recipeUri}">
                               <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
                           </a>
+                            <div class="recipe-dropdown">
+                              <!-- three dots -->
+                              <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+                              </div>
+                              <!-- menu -->
+                              <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+                                  <button id="removeFavorite" onClick="unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+                              </div>
+                          </div>
                           <h4>${recipeName}</h4>
                       </div>`;
 
@@ -277,7 +285,30 @@ $(document).ready(function () {
           const icon = isOwner ? PUBLIC_RECIPE_OWNER_ICON : PUBLIC_RECIPE_ICON;
           const parameter = isOwner ? PUBLIC_RECIPE_OWNER_URL_PARAMETER : PUBLIC_RECIPE_URL_PARAMETER;
           const recipeType = isOwner ? "user" : "public user";
-
+          
+          const unfavoriteDropdown = `
+                            <div class="recipe-dropdown">
+                              <!-- three dots -->
+                              <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+                              </div>
+                              <!-- menu -->
+                              <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+                                  <button id="removeFavorite" onClick="unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+                              </div>
+                          </div>`;
+          const updateAndDeleteDropdown = `
+              <div class="recipe-dropdown">
+                            <!-- three dots -->
+                            <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+                            </div>
+                            <!-- menu -->
+                            <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+                                <button id="updateRecipe" onClick="updateRecipe('${recipeName}')">Update</button>
+                                <br><button id="deleteRecipe" onClick="deleteRecipe('${recipeName}')">Delete</button>
+                            </div>
+                        </div>`;
+          let setUserDropdown = isOwner ? updateAndDeleteDropdown : unfavoriteDropdown;
+          
           const recipeHtml = `
             <div class="box box-shadow-custom">
                 <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}">
@@ -286,6 +317,7 @@ $(document).ready(function () {
                 <div class="user-icon">
                     <i class="fas ${icon}"></i>
                 </div>
+                ${setUserDropdown}
                 <h3>${recipeName}</h3>
             </div>`;
 
@@ -295,6 +327,7 @@ $(document).ready(function () {
           // Add to array for export
           addToFavoritesArray(recipe, recipeImage, recipeImageType);
         }
+        dropDownIndex++;
       });
     };
 
@@ -344,3 +377,147 @@ $(document).ready(function () {
   const myRecipesView = new MyRecipesView();
   myRecipesView.load();
 });
+
+async function checkUserIdAndUsername(){
+  const username = utils.getUserNameFromCookie();
+  if (!username) {
+    console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+    utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+    return 0;
+  }
+
+  const userId = await utils.getUserIdFromUsername(username);
+  if (!userId) {
+    console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+    utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+    return 0;
+  }
+  return userId;
+}
+
+async function updateRecipe(recipeName) {
+  const userId = await checkUserIdAndUsername();
+  if(userId){
+    window.location = "/account/update_recipe?userRecipeName=" + recipeName;
+  }
+}
+
+async function deleteRecipe(recipeName) {
+  const userId = await checkUserIdAndUsername();
+  if(userId){
+    // Delete recipe
+    let request = {
+        recipeName: recipeName
+      }
+    let successMessage = SUCCESSFULLY_DELETED_RECIPE;
+    let errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
+
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
+
+    try {
+      const response = await fetch(url, {
+        method: DELETE_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error(responseData.error || errorMessage);
+        throw new Error(responseData.error || errorMessage);
+      } else {
+        console.log(responseData.message || successMessage);
+          utils.setStorage("deleteRecipeMessage", successMessage);
+          window.location = MY_RECIPES_ROUTE;
+      }
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
+  }
+}
+
+async function unfavoriteRecipe(recipeName) {
+  const userId = await checkUserIdAndUsername();
+  if(userId){
+    // Remove from favorites
+    let request = {
+      recipeName: recipeName
+    }
+    let successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
+    let errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
+
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+    try {
+      const response = await fetch(url, {
+        method: DELETE_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error(responseData.error || errorMessage);
+        throw new Error(responseData.error || errorMessage);
+      } else {
+        console.log(responseData.message || successMessage);
+          utils.setStorage("deleteRecipeMessage", successMessage);
+          window.location = MY_RECIPES_ROUTE;
+      }
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
+  }
+}
+
+function changeLanguage(language) {
+  var element = document.getElementById("url");
+  element.value = language;
+  element.innerHTML = language;
+}
+
+function showDropdown(dropDownIndex) {
+  document.getElementById("myDropdown"+dropDownIndex).classList.toggle("show");
+}
+
+var currentDotButton;
+var lastDotButton;
+
+window.onclick = function(event) {
+  //click off any dot button, close dropdowns
+  if (!event.target.matches('.dotbutton')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+        }
+    }
+  //click on another dot button, close all but that dropdown
+  }else{
+    currentDotButton = event.target.id;
+    let text = currentDotButton;
+    const myArray = text.split("dotButton");
+    let index = myArray[1];
+    if(currentDotButton != lastDotButton){
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+          }
+      }
+      document.getElementById("myDropdown"+index).classList.toggle("show");
+      lastDotButton = currentDotButton;
+    }
+  }
+}
