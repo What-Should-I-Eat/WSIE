@@ -300,7 +300,7 @@ $(document).ready(function () {
                                   <br><button id="deleteRecipe" onClick="deleteRecipe('${recipeName}')">Delete</button>
                               </div>
                           </div>
-                          <h3>${recipeName}</h3>
+                          <br><h3>${recipeName}</h3>
                       </div>`;
 
           console.debug(`Adding user created recipe: [${recipeName}]`);
@@ -360,122 +360,101 @@ $(document).ready(function () {
   myRecipesView.load();
 });
 
-async function updateRecipe(recipeName) {
+async function checkUserIdAndUsername(){
   const username = utils.getUserNameFromCookie();
   if (!username) {
     console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
     utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    return;
+    return -1;
   }
 
   const userId = await utils.getUserIdFromUsername(username);
   if (!userId) {
     console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
     utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    return;
+    return -2;
   }
+  return 0;
+}
 
-  window.location = "/account/update_recipe?userRecipeName=" + recipeName;
+async function updateRecipe(recipeName) {
+  if(await checkUserIdAndUsername() > -1){
+    window.location = "/account/update_recipe?userRecipeName=" + recipeName;
+  }
 }
 
 async function deleteRecipe(recipeName) {
-  const username = utils.getUserNameFromCookie();
-  if (!username) {
-    console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-    utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-    return;
-  }
+  if(await checkUserIdAndUsername() > -1){
+    // Delete recipe
+    let request = {
+        recipeName: recipeName
+      }
+    let successMessage = SUCCESSFULLY_DELETED_RECIPE;
+    let errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
 
-  const userId = await utils.getUserIdFromUsername(username);
-  if (!userId) {
-    console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-    utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-    return;
-  }
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
+    console.log(`Sending [${urlAction}] request to: ${url}`);
 
-  // Delete recipe
-  let urlAction = DELETE_ACTION;
-  let request = {
-      recipeName: recipeName
+    try {
+      const response = await fetch(url, {
+        method: DELETE_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error(responseData.error || errorMessage);
+        throw new Error(responseData.error || errorMessage);
+      } else {
+        console.log(responseData.message || successMessage);
+          utils.setStorage("deleteRecipeMessage", successMessage);
+          window.location = MY_RECIPES_ROUTE;
+      }
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
     }
-  let successMessage = SUCCESSFULLY_DELETED_RECIPE;
-  let errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
-
-  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
-  console.log(`Sending [${urlAction}] request to: ${url}`);
-
-  try {
-    const response = await fetch(url, {
-      method: urlAction,
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      },
-      body: JSON.stringify({ favorites: request })
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      console.error(responseData.error || errorMessage);
-      throw new Error(responseData.error || errorMessage);
-    } else {
-      console.log(responseData.message || successMessage);
-        utils.setStorage("deleteRecipeMessage", successMessage);
-        window.location = MY_RECIPES_ROUTE;
-    }
-  } catch (error) {
-    console.error(error);
-    utils.showAjaxAlert("Error", error.message);
   }
 }
 
 async function unfavoriteRecipe(recipeName) {
-  const username = utils.getUserNameFromCookie();
-  if (!username) {
-    console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-    utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-    return;
-  }
-
-  const userId = await utils.getUserIdFromUsername(username);
-  if (!userId) {
-    console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-    utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-    return;
-  }
-
-  // Remove from favorites
-  let urlAction = DELETE_ACTION;
-  let request = {
-    recipeName: recipeName
-  }
-  let successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
-  let errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
-
-  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
-  console.log(`Sending [${urlAction}] request to: ${url}`);
-  try {
-    const response = await fetch(url, {
-      method: urlAction,
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      },
-      body: JSON.stringify({ favorites: request })
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      console.error(responseData.error || errorMessage);
-      throw new Error(responseData.error || errorMessage);
-    } else {
-      console.log(responseData.message || successMessage);
-        utils.setStorage("deleteRecipeMessage", successMessage);
-        window.location = MY_RECIPES_ROUTE;
+  if(await checkUserIdAndUsername() > -1){
+    // Remove from favorites
+    let request = {
+      recipeName: recipeName
     }
-  } catch (error) {
-    console.error(error);
-    utils.showAjaxAlert("Error", error.message);
+    let successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
+    let errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
+
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+    console.log(`Sending [${urlAction}] request to: ${url}`);
+    try {
+      const response = await fetch(url, {
+        method: DELETE_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error(responseData.error || errorMessage);
+        throw new Error(responseData.error || errorMessage);
+      } else {
+        console.log(responseData.message || successMessage);
+          utils.setStorage("deleteRecipeMessage", successMessage);
+          window.location = MY_RECIPES_ROUTE;
+      }
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
   }
 }
 
