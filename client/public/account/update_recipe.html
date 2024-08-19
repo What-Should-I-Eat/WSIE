@@ -384,11 +384,13 @@
 
   <!-- START: Update Recipe -->
   <div class="container mt-5">
-    <div class="update-recipe-container ">
+    <div class="update-recipe-container">
       <form id="updateRecipeForm">
         <h2>Update Recipe</h2>
 
         <hr />
+
+        <input type="hidden" id="recipeObjectId" name="recipeObjectId" />
 
         <div class="form-group">
           <label for="recipeName">Recipe Name <span style="color: red;">*</span></label>
@@ -441,7 +443,7 @@
 
         <div class="form-group">
           <h6 for="userCurrentRecipeImage">Current Recipe Image</h6>
-          <image id="currentImage" class="centered-image"></image>
+          <img id="currentImage" class="centered-image" />
         </div>
 
         <button type="submit" class="btn btn-primary" id="updateRecipeButton">Update</button>

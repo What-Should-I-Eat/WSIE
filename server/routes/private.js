@@ -3,6 +3,7 @@ const privateRouter = express.Router();
 const User = require("../src/models/userModel.js");
 const Recipe = require("../src/models/recipeModel.js");
 const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const storage = multer.memoryStorage();
@@ -486,7 +487,9 @@ privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeIm
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
-    let recipe = await Recipe.findOne({ _id: req.body.favoriteId, usernameCreator: user.username });
+    let recipeObjectId = new mongoose.Types.ObjectId(req.body.recipeObjectId);
+
+    let recipe = await Recipe.findOne({ _id: recipeObjectId, usernameCreator: user.username });
     if (!recipe) {
       return res.status(404).json({ error: 'Recipe not found' });
     }
@@ -525,6 +528,7 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
+
     let recipe = await Recipe.findOne({ recipeName: req.body.recipeName, usernameCreator: user.username });
     if (!recipe) {
       return res.status(404).json({ error: 'Recipe not found' });
@@ -541,11 +545,11 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
 
     const savedRequest = await publishRequest.save();
     if (savedRequest) {
-      fieldsToUpdate = { $set: { "pubRequested": true } };
-      const options = { upsert: true, new: true };
-      const updatedPubRequest = await Recipe.updateOne(recipe, fieldsToUpdate, options);
-      if (updatedPubRequest) {
-        res.status(200).json({ success: "Successfully sent a request to publish the recipe. If accepted your recipe will be published." });
+      recipe.pubRequested = true;
+      const updatedRecipe = await recipe.save();
+
+      if (updatedRecipe) {
+        res.status(200).json({ success: "Successfully sent a request to publish the recipe. If accepted, your recipe will be published." });
       } else {
         return res.status(500).json({ error: "Error occurred trying to update pub request" });
       }
@@ -558,10 +562,15 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
   }
 });
 
-privateRouter.get('/users/:id/recipe/get_recipePubRequests', async (_, res) => {
+// TODO: Add an endpoint here that will do the following
+// Get the published recipe from the mode
+// Update the status from the admin approve/deny in the RecipePubRequest
+// If approved, remove from the RecipePubRequest and update the recipe model with isPublished and isRequested both true
+
+privateRouter.get('/recipes/publish_requests', async (_, res) => {
   try {
-    const messages = await mongoose.model("RecipePubRequest").find({});
-    res.status(200).json(messages);
+    const publishRequests = await RecipePubRequest.find({});
+    res.status(200).json(publishRequests);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error occurred getting publish recipe requests" });

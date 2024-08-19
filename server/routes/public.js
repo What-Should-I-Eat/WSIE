@@ -3,6 +3,7 @@ const publicRouter = express.Router();
 const User = require("../src/models/userModel.js");
 const Recipe = require("../src/models/recipeModel.js");
 const ContactUs = require("../src/models/contactUsModel.js");
+const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
 const bcrypt = require('bcryptjs');
 
 // Success / Error Logs
@@ -14,8 +15,9 @@ publicRouter.get('/clearDatabase', async (_, res) => {
     const userDeleted = await User.deleteMany({});
     const recipeDeleted = await Recipe.deleteMany({});
     const contactDeleted = await ContactUs.deleteMany({});
+    const recipePubRequestDeleted = await RecipePubRequest.deleteMany({});
 
-    res.json({ user: userDeleted, recipe: recipeDeleted, contact: contactDeleted });
+    res.json({ user: userDeleted, recipe: recipeDeleted, contact: contactDeleted, recipePubRequest: recipePubRequestDeleted });
   } catch (error) {
     console.log('Error clearing database: ', error);
     res.status(500).json({ error: 'error clearing database' });
@@ -101,6 +103,20 @@ publicRouter.get("/recipes", async (_, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error occurred getting public user-created recipes" });
+  }
+});
+
+publicRouter.get('/recipes/get_recipe', async (req, res) => {
+  try {
+    const recipe = await Recipe.findOne({ recipeName: req.query.recipeName });
+    if (!recipe) {
+      return res.status(404).json({ error: `[${req.query.recipeName}] not found` });
+    }
+
+    res.json(recipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error trying to get public user recipe' });
   }
 });
 
