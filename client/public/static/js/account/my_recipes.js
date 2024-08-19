@@ -246,7 +246,6 @@ $(document).ready(function () {
             recipeImage = NO_IMAGE_AVAILABLE;
             recipeImageType = "SVG";
           }
-
           const recipeHtml = `
                       <div class="box box-shadow-custom">
                           <a href="/recipes/recipe_details?source=${recipeSource}&sourceUrl=${recipeSourceUrl}&uri=${recipeUri}">
@@ -286,7 +285,30 @@ $(document).ready(function () {
           const icon = isOwner ? PUBLIC_RECIPE_OWNER_ICON : PUBLIC_RECIPE_ICON;
           const parameter = isOwner ? PUBLIC_RECIPE_OWNER_URL_PARAMETER : PUBLIC_RECIPE_URL_PARAMETER;
           const recipeType = isOwner ? "user" : "public user";
-
+          
+          const unfavoriteDropdown = `
+                            <div class="recipe-dropdown">
+                              <!-- three dots -->
+                              <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+                              </div>
+                              <!-- menu -->
+                              <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+                                  <button id="removeFavorite" onClick="unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+                              </div>
+                          </div>`;
+          const updateAndDeleteDropdown = `
+              <div class="recipe-dropdown">
+                            <!-- three dots -->
+                            <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+                            </div>
+                            <!-- menu -->
+                            <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+                                <button id="updateRecipe" onClick="updateRecipe('${recipeName}')">Update</button>
+                                <br><button id="deleteRecipe" onClick="deleteRecipe('${recipeName}')">Delete</button>
+                            </div>
+                        </div>`;
+          let setUserDropdown = isOwner ? updateAndDeleteDropdown : unfavoriteDropdown;
+          
           const recipeHtml = `
             <div class="box box-shadow-custom">
                 <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}">
@@ -295,16 +317,7 @@ $(document).ready(function () {
                 <div class="user-icon">
                     <i class="fas ${icon}"></i>
                 </div>
-                <div class="recipe-dropdown">
-                              <!-- three dots -->
-                              <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
-                              </div>
-                              <!-- menu -->
-                              <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-                                  <button id="updateRecipe" onClick="updateRecipe('${recipeName}')">Update</button>
-                                  <br><button id="deleteRecipe" onClick="deleteRecipe('${recipeName}')">Delete</button>
-                              </div>
-                          </div>
+                ${setUserDropdown}
                 <h3>${recipeName}</h3>
             </div>`;
 
@@ -370,26 +383,28 @@ async function checkUserIdAndUsername(){
   if (!username) {
     console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
     utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    return -1;
+    return 0;
   }
 
   const userId = await utils.getUserIdFromUsername(username);
   if (!userId) {
     console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
     utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    return -2;
+    return 0;
   }
-  return 0;
+  return userId;
 }
 
 async function updateRecipe(recipeName) {
-  if(await checkUserIdAndUsername() > -1){
+  const userId = await checkUserIdAndUsername();
+  if(userId){
     window.location = "/account/update_recipe?userRecipeName=" + recipeName;
   }
 }
 
 async function deleteRecipe(recipeName) {
-  if(await checkUserIdAndUsername() > -1){
+  const userId = await checkUserIdAndUsername();
+  if(userId){
     // Delete recipe
     let request = {
         recipeName: recipeName
@@ -398,7 +413,6 @@ async function deleteRecipe(recipeName) {
     let errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
 
     let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
-    console.log(`Sending [${urlAction}] request to: ${url}`);
 
     try {
       const response = await fetch(url, {
@@ -427,7 +441,8 @@ async function deleteRecipe(recipeName) {
 }
 
 async function unfavoriteRecipe(recipeName) {
-  if(await checkUserIdAndUsername() > -1){
+  const userId = await checkUserIdAndUsername();
+  if(userId){
     // Remove from favorites
     let request = {
       recipeName: recipeName
@@ -436,7 +451,6 @@ async function unfavoriteRecipe(recipeName) {
     let errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
 
     let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
-    console.log(`Sending [${urlAction}] request to: ${url}`);
     try {
       const response = await fetch(url, {
         method: DELETE_ACTION,
