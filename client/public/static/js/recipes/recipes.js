@@ -163,7 +163,6 @@ function RecipesView() {
     let dropDownIndex = 0;
     recipes.hits.forEach(async data => {
       const recipe = data.recipe;
-      console.log(recipe);
       const recipeUri = recipe.uri;
       const recipeUrl = recipe.url;
       const recipeSource = recipe.source;
@@ -189,7 +188,7 @@ function RecipesView() {
             </div>
             <!-- menu -->
             <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-              <button id="addFavorite" onClick="favoriteRecipe('${recipeUri} + ${recipeUrl} + ${recipeSource}')">Favorite</button>
+              <button id="addFavorite" onClick="favoriteEdamamRecipe('${recipeUri} + ${recipeUrl} + ${recipeSource}')">Favorite</button>
             </div>
         </div>`;
       let setFavoriteDropdown = isFavorite ? unfavoriteDropdown : favoriteDropdown;
@@ -226,6 +225,43 @@ function RecipesView() {
         const icon = isOwner ? PUBLIC_RECIPE_OWNER_ICON : PUBLIC_RECIPE_ICON;
         const parameter = isOwner ? PUBLIC_RECIPE_OWNER_URL_PARAMETER : PUBLIC_RECIPE_URL_PARAMETER;
         const recipeType = isOwner ? "user" : "public user";
+        const isFavorite = await checkIfFavorite(username, recipeName);
+
+        const unfavoriteDropdown = `
+        <div class="recipe-dropdown">
+          <!-- three dots -->
+          <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+          </div>
+          <!-- menu -->
+          <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+              <button id="removeFavorite" onClick="unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+          </div>
+          </div>`;
+
+        const favoriteDropdown = `
+        <div class="recipe-dropdown">
+              <!-- three dots -->
+              <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+              </div>
+              <!-- menu -->
+              <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+                <button id="addFavorite" onClick="favoriteUserRecipe('${recipeName}')">Favorite</button>
+              </div>
+          </div>`;
+        let setFavoriteDropdown = isFavorite ? unfavoriteDropdown : favoriteDropdown;
+
+        const updateAndDeleteDropdown = `
+        <div class="recipe-dropdown">
+                <!-- three dots -->
+                <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+                </div>
+                <!-- menu -->
+                <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+                    <button id="updateRecipe" onClick="updateRecipe('${recipeName}')">Update</button>
+                    <br><button id="deleteRecipe" onClick="deleteRecipe('${recipeName}')">Delete</button>
+                </div>
+            </div>`;
+        let setUserDropdown = isOwner ? updateAndDeleteDropdown : setFavoriteDropdown;
 
         const recipeHtml = `
           <div class="box box-shadow-custom">
@@ -235,6 +271,7 @@ function RecipesView() {
               <div class="user-icon">
                   <i class="fas ${icon}"></i>
               </div>
+              ${setUserDropdown}
               <h3>${recipeName}</h3>
           </div>`;
 
@@ -432,7 +469,6 @@ async function checkIfFavorite(username, recipeName) {
   };
 
   const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
-  console.log(`Checking if recipe ${recipeName} is a favorite at: ${url} with body: ${JSON.stringify(request, null, 2)}`)
 
   try {
     const response = await fetch(url, {
@@ -511,7 +547,7 @@ async function unfavoriteRecipe(recipeName) {
   }
 }
 
-async function favoriteRecipe(recipeContent){
+async function favoriteEdamamRecipe(recipeContent){
   const userId = await checkUserIdAndUsername();
   if(userId){
     const myArray = recipeContent.split("+");
@@ -580,6 +616,103 @@ async function favoriteRecipe(recipeContent){
     }
   }
 }
+async function favoriteUserRecipe(userRecipeName){
+  const userId = await checkUserIdAndUsername();
+  if(userId){
+    const recipe = await getUserRecipe(userRecipeName);
+    let request = {
+      recipeName: recipe.recipeName,
+      recipeIngredients: recipe.recipeIngredients,
+      recipeDirections: recipe.recipeDirections,
+      recipeImage: recipe.recipeImage,
+      recipeUri: recipe.recipeUri,
+      recipeSource: recipe.recipeSource,
+      recipeSourceUrl: recipe.recipeSourceUrl,
+      recipeServings: Math.round(recipe.recipeServings),
+      recipeCalories: Math.round(recipe.recipeCalories),
+      recipeCaloriesUnits: recipe.recipeCaloriesUnits,
+      recipeCarbs: Math.round(recipe.recipeCarbs),
+      recipeCarbsUnits: recipe.recipeCarbsUnits,
+      recipeFats: Math.round(recipe.recipeFats),
+      recipeFatsUnits: recipe.recipeFatsUnits,
+      recipeProtein: Math.round(recipe.recipeProtein),
+      recipeProteinUnits: recipe.recipeProteinUnits,
+      userCreated: recipe.userCreated
+    };
+
+    let successMessage = SUCCESSFULLY_FAVORITE_RECIPE;
+    let errorMessage = UNABLE_TO_FAVORITE_UNEXPECTED_ERROR;
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+
+    try {
+      const response = await fetch(url, {
+        method: PUT_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+
+      const responseData = await response.json();
+      if (!response.ok) {
+        console.error(responseData.error || errorMessage);
+        throw new Error(responseData.error || errorMessage);
+      } else {
+        console.log(responseData.message || successMessage);
+        utils.setStorage("favoriteRecipeMessage", responseData.message || successMessage);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
+  }
+}
+
+async function updateRecipe(recipeName) {
+  const userId = await checkUserIdAndUsername();
+  if(userId){
+    window.location = "/account/update_recipe?userRecipeName=" + recipeName;
+  }
+}
+
+async function deleteRecipe(recipeName) {
+  const userId = await checkUserIdAndUsername();
+  if(userId){
+    // Delete recipe
+    let request = {
+        recipeName: recipeName
+      }
+    let successMessage = SUCCESSFULLY_DELETED_RECIPE;
+    let errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
+
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
+
+    try {
+      const response = await fetch(url, {
+        method: DELETE_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error(responseData.error || errorMessage);
+        throw new Error(responseData.error || errorMessage);
+      } else {
+        console.log(responseData.message || successMessage);
+          utils.setStorage("deleteRecipeMessage", successMessage);
+          window.location = MY_RECIPES_ROUTE;
+      }
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
+  }
+}
 
 function hasValidImage(recipe) {
   return recipe.images && ((recipe.images.LARGE && recipe.images.LARGE.url) ||
@@ -589,7 +722,6 @@ function hasValidImage(recipe) {
 async function getRecipeDetails(recipeUri) {
   const uri = encodeURIComponent(recipeUri);
   const apiUrl = `${EDAMAM_RECIPE_URI_URL}=${uri}`;
-  console.log("Querying Edamam at:", apiUrl);
 
   const response = await fetch(apiUrl, {
     method: GET_ACTION,
@@ -612,8 +744,6 @@ async function getRecipeInstructions(source, sourceUrl, recipeName) {
   const sourceTrimmed = source.toLowerCase().trim();
   const apiUrl = `${RECIPE_SCRAPE_URL}/?recipeLink=${sourceUrl}&source=${sourceTrimmed}&recipeName=${recipeName}`;
 
-  console.log("Querying Server for:", apiUrl);
-
   const response = await fetch(apiUrl, {
     method: GET_ACTION,
     headers: {
@@ -629,6 +759,25 @@ async function getRecipeInstructions(source, sourceUrl, recipeName) {
     console.error("Error occurred getting recipe instructions");
     return undefined;
   }
+}
+
+async function getUserRecipe(recipeName){
+  const url = `${PUBLIC_USER_RECIPE_URL}?recipeName=${recipeName}`;
+
+    const response = await fetch(url, {
+      method: GET_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
+
+    if (response.ok) {
+      const details = await response.json();
+      return details;
+    } else {
+      console.error(`Error occurred getting public user recipe for ${recipeName}`);
+      return undefined;
+    }
 }
 
 function changeLanguage(language) {

@@ -191,9 +191,12 @@
 }
 
 .dotbutton:after{
-  content: '\2807';
-  font-size: 30px;
+  content: '\2AF6';
+  font-size: 35px;
   cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  padding: 5px;
 }
 
 .btn-left {
@@ -211,7 +214,7 @@
 
 .dropdown-content {
   display: none;
-  margin-top: 50px;
+  margin-top: 60px;
   overflow: auto;
 }
 
