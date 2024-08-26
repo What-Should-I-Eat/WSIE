@@ -454,6 +454,168 @@ const utils = (() => {
     }
   }
 
+    /**
+   * Helper function that is used to check for user being signed in before
+   * allowing for submission of updating recipes (fav/unfav/delete/update).
+   * @returns {userId} - UserId of signed in user
+   */
+  async function checkUserIdAndUsername(){
+    const username = utils.getUserNameFromCookie();
+    if (!username) {
+      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      return 0;
+    }
+  
+    const userId = await utils.getUserIdFromUsername(username);
+    if (!userId) {
+      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      return 0;
+    }
+    return userId;
+  }
+
+    /**
+   * Handles rerouting to user created recipe update page
+   * @param {string} recipeName - User created recipe name
+   */
+  async function updateRecipe(recipeName) {
+    const userId = await checkUserIdAndUsername();
+    if(userId){
+      window.location = "/account/update_recipe?userRecipeName=" + recipeName;
+    }
+  }
+
+  /**
+   * Handles deleting recipe based on provided recipe name and user
+   * signed in.
+   * @param {string} recipeName - Name of user create recipe to delete
+   */
+  async function deleteRecipe(recipeName) {
+    const userId = await checkUserIdAndUsername();
+    if(userId){
+      // Delete recipe
+      let request = {
+          recipeName: recipeName
+        }
+      let successMessage = SUCCESSFULLY_DELETED_RECIPE;
+      let errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
+  
+      let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
+  
+      try {
+        const response = await fetch(url, {
+          method: DELETE_ACTION,
+          headers: {
+            'Content-Type': DEFAULT_DATA_TYPE
+          },
+          body: JSON.stringify({ favorites: request })
+        });
+  
+        const responseData = await response.json();
+  
+        if (!response.ok) {
+          console.error(responseData.error || errorMessage);
+          throw new Error(responseData.error || errorMessage);
+        } else {
+          console.log(responseData.message || successMessage);
+          utils.setStorage("deleteRecipeMessage", successMessage);
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error(error);
+        utils.showAjaxAlert("Error", error.message);
+      }
+    }
+  }
+
+  /**
+   * Handles unfavoriting recipe based on provided recipe name and user
+   * signed in.
+   * @param {string} recipeName - Name of user create recipe to unfavorite
+   */
+  async function unfavoriteRecipe(recipeName) {
+    const userId = await checkUserIdAndUsername();
+    if(userId){
+      // Remove from favorites
+      let request = {
+        recipeName: recipeName
+      }
+      let successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
+      let errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
+  
+      let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+      try {
+        const response = await fetch(url, {
+          method: DELETE_ACTION,
+          headers: {
+            'Content-Type': DEFAULT_DATA_TYPE
+          },
+          body: JSON.stringify({ favorites: request })
+        });
+  
+        const responseData = await response.json();
+  
+        if (!response.ok) {
+          console.error(responseData.error || errorMessage);
+          throw new Error(responseData.error || errorMessage);
+        } else {
+          console.log(responseData.message || successMessage);
+            utils.setStorage("deleteRecipeMessage", successMessage);
+            window.location.reload();
+        }
+      } catch (error) {
+        console.error(error);
+        utils.showAjaxAlert("Error", error.message);
+      }
+    }
+  }
+
+  /**
+   * Handles checking if a recipe is listed as the signed in users favorite 
+   * provided recipe name and user signed in.
+   * @param {string} recipeName - Name of user create recipe to check favorite
+   * status
+   * * @returns {isFavorite or false} - False or true status of recipe fav status
+   */
+  async function checkIfFavorite(username, recipeName) {
+    if (username == null || username == undefined) {
+      console.debug("User not logged in. Not checking if recipe is a favorite");
+      return false;
+    }
+  
+    const userId = await utils.getUserIdFromUsername(username);
+  
+    const request = {
+      recipeName: recipeName
+    };
+  
+    const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+  
+    try {
+      const response = await fetch(url, {
+        method: POST_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+  
+      //if the recipe is not found at all then this immediately throws an error rather than returning false
+      if (!response.ok) {
+        return false;
+        throw new Error(ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE);
+      }
+  
+      const isFavorite = await response.json();
+      console.log(`Recipe: [${recipeName}] is ${isFavorite ? "a favorite" : "not a favorite"}`);
+      return isFavorite
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return {
     setStorage,
     removeFromStorage,
@@ -475,6 +637,11 @@ const utils = (() => {
     getUserRecipeImage,
     getEdamamRecipeImage,
     scrollToTop,
-    clearRecipesFilterStorageWrapper
+    clearRecipesFilterStorageWrapper,
+    updateRecipe,
+    deleteRecipe,
+    unfavoriteRecipe,
+    checkIfFavorite,
+    checkUserIdAndUsername
   };
 })();
