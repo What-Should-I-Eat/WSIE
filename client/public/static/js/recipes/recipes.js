@@ -705,7 +705,7 @@ async function deleteRecipe(recipeName) {
       } else {
         console.log(responseData.message || successMessage);
           utils.setStorage("deleteRecipeMessage", successMessage);
-          window.location = MY_RECIPES_ROUTE;
+          window.location.reload();
       }
     } catch (error) {
       console.error(error);
