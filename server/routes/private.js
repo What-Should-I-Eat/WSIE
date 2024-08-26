@@ -246,13 +246,11 @@ privateRouter.post('/users/:id/favorites', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
-      console.log("user not found");
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
 
     const recipe = await Recipe.findOne({ recipeName: req.body.favorites.recipeName });
     if (!recipe) {
-      console.log("recipe not found");
       return res.status(404).json({ error: 'Recipe not found' });
     }
 
