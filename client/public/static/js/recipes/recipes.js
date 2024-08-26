@@ -169,7 +169,7 @@ function RecipesView() {
       const recipeName = recipe.label;
       const identifier = `${recipe.label}-${recipe.source}`;
       const username = utils.getUserNameFromCookie();
-      const isFavorite = await checkIfFavorite(username, recipeName);
+      const isFavorite = await utils.checkIfFavorite(username, recipeName);
 
       const unfavoriteDropdown = `
       <div class="recipe-dropdown">
@@ -178,7 +178,7 @@ function RecipesView() {
         </div>
         <!-- menu -->
         <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-            <button id="removeFavorite" onClick="unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+            <button id="removeFavorite" onClick="utils.unfavoriteRecipe('${recipeName}')">Unfavorite</button>
         </div>
         </div>`;
       const favoriteDropdown = `
@@ -225,7 +225,7 @@ function RecipesView() {
         const icon = isOwner ? PUBLIC_RECIPE_OWNER_ICON : PUBLIC_RECIPE_ICON;
         const parameter = isOwner ? PUBLIC_RECIPE_OWNER_URL_PARAMETER : PUBLIC_RECIPE_URL_PARAMETER;
         const recipeType = isOwner ? "user" : "public user";
-        const isFavorite = await checkIfFavorite(username, recipeName);
+        const isFavorite = await utils.checkIfFavorite(username, recipeName);
 
         const unfavoriteDropdown = `
         <div class="recipe-dropdown">
@@ -234,7 +234,7 @@ function RecipesView() {
           </div>
           <!-- menu -->
           <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-              <button id="removeFavorite" onClick="unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+              <button id="removeFavorite" onClick="utils.unfavoriteRecipe('${recipeName}')">Unfavorite</button>
           </div>
           </div>`;
 
@@ -257,8 +257,8 @@ function RecipesView() {
                 </div>
                 <!-- menu -->
                 <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-                    <button id="updateRecipe" onClick="updateRecipe('${recipeName}')">Update</button>
-                    <br><button id="deleteRecipe" onClick="deleteRecipe('${recipeName}')">Delete</button>
+                    <button id="updateRecipe" onClick="utils.updateRecipe('${recipeName}')">Update</button>
+                    <br><button id="deleteRecipe" onClick="utils.deleteRecipe('${recipeName}')">Delete</button>
                 </div>
             </div>`;
         let setUserDropdown = isOwner ? updateAndDeleteDropdown : setFavoriteDropdown;
@@ -456,99 +456,8 @@ function loadSelectionsFromStorage() {
   });
 }
 
-async function checkIfFavorite(username, recipeName) {
-  if (username == null || username == undefined) {
-    console.debug("User not logged in. Not checking if recipe is a favorite");
-    return false;
-  }
-
-  const userId = await utils.getUserIdFromUsername(username);
-
-  const request = {
-    recipeName: recipeName
-  };
-
-  const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
-
-  try {
-    const response = await fetch(url, {
-      method: POST_ACTION,
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      },
-      body: JSON.stringify({ favorites: request })
-    });
-
-    //if the recipe is not found at all then this immediately throws an error rather than returning false
-    if (!response.ok) {
-      return false;
-      throw new Error(ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE);
-    }
-
-    const isFavorite = await response.json();
-    console.log(`Recipe: [${recipeName}] is ${isFavorite ? "a favorite" : "not a favorite"}`);
-    return isFavorite
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function checkUserIdAndUsername(){
-  const username = utils.getUserNameFromCookie();
-  if (!username) {
-    console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    return 0;
-  }
-
-  const userId = await utils.getUserIdFromUsername(username);
-  if (!userId) {
-    console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    return 0;
-  }
-  return userId;
-}
-
-async function unfavoriteRecipe(recipeName) {
-  const userId = await checkUserIdAndUsername();
-  if(userId){
-    // Remove from favorites
-    let request = {
-      recipeName: recipeName
-    }
-    let successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
-    let errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
-
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
-    try {
-      const response = await fetch(url, {
-        method: DELETE_ACTION,
-        headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
-        },
-        body: JSON.stringify({ favorites: request })
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        console.error(responseData.error || errorMessage);
-        throw new Error(responseData.error || errorMessage);
-      } else {
-        console.log(responseData.message || successMessage);
-        utils.setStorage("deleteRecipeMessage", successMessage);
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error(error);
-      utils.showAjaxAlert("Error", error.message);
-    }
-  }
-}
-
 async function favoriteEdamamRecipe(recipeContent){
-  const userId = await checkUserIdAndUsername();
+  const userId = await utils.checkUserIdAndUsername();
   if(userId){
     const myArray = recipeContent.split("+");
     let recipeUri = myArray[0].substring(0,myArray[0].length-1);
@@ -616,8 +525,9 @@ async function favoriteEdamamRecipe(recipeContent){
     }
   }
 }
+
 async function favoriteUserRecipe(userRecipeName){
-  const userId = await checkUserIdAndUsername();
+  const userId = await utils.checkUserIdAndUsername();
   if(userId){
     const recipe = await getUserRecipe(userRecipeName);
     let request = {
@@ -661,51 +571,6 @@ async function favoriteUserRecipe(userRecipeName){
         console.log(responseData.message || successMessage);
         utils.setStorage("favoriteRecipeMessage", responseData.message || successMessage);
         window.location.reload();
-      }
-    } catch (error) {
-      console.error(error);
-      utils.showAjaxAlert("Error", error.message);
-    }
-  }
-}
-
-async function updateRecipe(recipeName) {
-  const userId = await checkUserIdAndUsername();
-  if(userId){
-    window.location = "/account/update_recipe?userRecipeName=" + recipeName;
-  }
-}
-
-async function deleteRecipe(recipeName) {
-  const userId = await checkUserIdAndUsername();
-  if(userId){
-    // Delete recipe
-    let request = {
-        recipeName: recipeName
-      }
-    let successMessage = SUCCESSFULLY_DELETED_RECIPE;
-    let errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
-
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
-
-    try {
-      const response = await fetch(url, {
-        method: DELETE_ACTION,
-        headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
-        },
-        body: JSON.stringify({ favorites: request })
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        console.error(responseData.error || errorMessage);
-        throw new Error(responseData.error || errorMessage);
-      } else {
-        console.log(responseData.message || successMessage);
-          utils.setStorage("deleteRecipeMessage", successMessage);
-          window.location.reload();
       }
     } catch (error) {
       console.error(error);

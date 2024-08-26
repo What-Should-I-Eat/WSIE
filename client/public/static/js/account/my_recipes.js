@@ -257,7 +257,7 @@ $(document).ready(function () {
                               </div>
                               <!-- menu -->
                               <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-                                  <button id="removeFavorite" onClick="unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+                                  <button id="removeFavorite" onClick="utils.unfavoriteRecipe('${recipeName}')">Unfavorite</button>
                               </div>
                           </div>
                           <h4>${recipeName}</h4>
@@ -293,7 +293,7 @@ $(document).ready(function () {
                               </div>
                               <!-- menu -->
                               <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-                                  <button id="removeFavorite" onClick="unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+                                  <button id="removeFavorite" onClick="utils.unfavoriteRecipe('${recipeName}')">Unfavorite</button>
                               </div>
                           </div>`;
           const updateAndDeleteDropdown = `
@@ -303,8 +303,8 @@ $(document).ready(function () {
                             </div>
                             <!-- menu -->
                             <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-                                <button id="updateRecipe" onClick="updateRecipe('${recipeName}')">Update</button>
-                                <br><button id="deleteRecipe" onClick="deleteRecipe('${recipeName}')">Delete</button>
+                                <button id="updateRecipe" onClick="utils.updateRecipe('${recipeName}')">Update</button>
+                                <br><button id="deleteRecipe" onClick="utils.deleteRecipe('${recipeName}')">Delete</button>
                             </div>
                         </div>`;
           let setUserDropdown = isOwner ? updateAndDeleteDropdown : unfavoriteDropdown;
@@ -377,105 +377,6 @@ $(document).ready(function () {
   const myRecipesView = new MyRecipesView();
   myRecipesView.load();
 });
-
-async function checkUserIdAndUsername(){
-  const username = utils.getUserNameFromCookie();
-  if (!username) {
-    console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    return 0;
-  }
-
-  const userId = await utils.getUserIdFromUsername(username);
-  if (!userId) {
-    console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-    return 0;
-  }
-  return userId;
-}
-
-async function updateRecipe(recipeName) {
-  const userId = await checkUserIdAndUsername();
-  if(userId){
-    window.location = "/account/update_recipe?userRecipeName=" + recipeName;
-  }
-}
-
-async function deleteRecipe(recipeName) {
-  const userId = await checkUserIdAndUsername();
-  if(userId){
-    // Delete recipe
-    let request = {
-        recipeName: recipeName
-      }
-    let successMessage = SUCCESSFULLY_DELETED_RECIPE;
-    let errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
-
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
-
-    try {
-      const response = await fetch(url, {
-        method: DELETE_ACTION,
-        headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
-        },
-        body: JSON.stringify({ favorites: request })
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        console.error(responseData.error || errorMessage);
-        throw new Error(responseData.error || errorMessage);
-      } else {
-        console.log(responseData.message || successMessage);
-          utils.setStorage("deleteRecipeMessage", successMessage);
-          window.location = MY_RECIPES_ROUTE;
-      }
-    } catch (error) {
-      console.error(error);
-      utils.showAjaxAlert("Error", error.message);
-    }
-  }
-}
-
-async function unfavoriteRecipe(recipeName) {
-  const userId = await checkUserIdAndUsername();
-  if(userId){
-    // Remove from favorites
-    let request = {
-      recipeName: recipeName
-    }
-    let successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
-    let errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
-
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
-    try {
-      const response = await fetch(url, {
-        method: DELETE_ACTION,
-        headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
-        },
-        body: JSON.stringify({ favorites: request })
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        console.error(responseData.error || errorMessage);
-        throw new Error(responseData.error || errorMessage);
-      } else {
-        console.log(responseData.message || successMessage);
-          utils.setStorage("deleteRecipeMessage", successMessage);
-          window.location = MY_RECIPES_ROUTE;
-      }
-    } catch (error) {
-      console.error(error);
-      utils.showAjaxAlert("Error", error.message);
-    }
-  }
-}
 
 function changeLanguage(language) {
   var element = document.getElementById("url");
