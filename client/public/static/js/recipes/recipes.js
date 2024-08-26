@@ -160,10 +160,39 @@ function RecipesView() {
   this.renderRecipes = (recipes, publicUserRecipes, container) => {
     container.empty();
     addedRecipesSet.clear();
-
-    recipes.hits.forEach(data => {
+    let dropDownIndex = 0;
+    recipes.hits.forEach(async data => {
       const recipe = data.recipe;
+      console.log(recipe);
+      const recipeUri = recipe.uri;
+      const recipeUrl = recipe.url;
+      const recipeSource = recipe.source;
+      const recipeName = recipe.label;
       const identifier = `${recipe.label}-${recipe.source}`;
+      const username = utils.getUserNameFromCookie();
+      const isFavorite = await checkIfFavorite(username, recipeName);
+
+      const unfavoriteDropdown = `
+      <div class="recipe-dropdown">
+        <!-- three dots -->
+        <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+        </div>
+        <!-- menu -->
+        <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+            <button id="removeFavorite" onClick="unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+        </div>
+        </div>`;
+      const favoriteDropdown = `
+      <div class="recipe-dropdown">
+            <!-- three dots -->
+            <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
+            </div>
+            <!-- menu -->
+            <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+              <button id="addFavorite" onClick="favoriteRecipe('${recipeUri} + ${recipeUrl} + ${recipeSource}')">Favorite</button>
+            </div>
+        </div>`;
+      let setFavoriteDropdown = isFavorite ? unfavoriteDropdown : favoriteDropdown;
 
       if (!addedRecipesSet.has(identifier)) {
         addedRecipesSet.add(identifier);
@@ -175,6 +204,7 @@ function RecipesView() {
             <a href="/recipes/recipe_details?source=${encodeURIComponent(recipe.source)}&sourceUrl=${encodeURIComponent(recipe.url)}&uri=${encodeURIComponent(recipe.uri)}">
               <img src="${recipeImage}" alt="${recipe.label}" title="View more about ${recipe.label}">
             </a>
+            ${setFavoriteDropdown}
             <h4>${recipe.label}</h4>
           </div>`;
 
@@ -183,6 +213,7 @@ function RecipesView() {
       } else {
         console.debug(`Skipping duplicate recipe: [${recipe.label}] from source: [${recipe.source}], sourceUrl: [${recipe.url}]`);
       }
+      dropDownIndex++;
     });
 
     if (publicUserRecipes) {
@@ -209,6 +240,7 @@ function RecipesView() {
 
         console.debug(`Adding ${recipeType} created recipe: [${recipeName}]`);
         container.append(recipeHtml);
+        dropDownIndex++;
       });
     }
   };
@@ -385,6 +417,263 @@ function loadSelectionsFromStorage() {
       checkbox.checked = true;
     }
   });
+}
+
+async function checkIfFavorite(username, recipeName) {
+  if (username == null || username == undefined) {
+    console.debug("User not logged in. Not checking if recipe is a favorite");
+    return false;
+  }
+
+  const userId = await utils.getUserIdFromUsername(username);
+
+  const request = {
+    recipeName: recipeName
+  };
+
+  const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+  console.log(`Checking if recipe ${recipeName} is a favorite at: ${url} with body: ${JSON.stringify(request, null, 2)}`)
+
+  try {
+    const response = await fetch(url, {
+      method: POST_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      },
+      body: JSON.stringify({ favorites: request })
+    });
+
+    //if the recipe is not found at all then this immediately throws an error rather than returning false
+    if (!response.ok) {
+      return false;
+      throw new Error(ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE);
+    }
+
+    const isFavorite = await response.json();
+    console.log(`Recipe: [${recipeName}] is ${isFavorite ? "a favorite" : "not a favorite"}`);
+    return isFavorite
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function checkUserIdAndUsername(){
+  const username = utils.getUserNameFromCookie();
+  if (!username) {
+    console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+    utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+    return 0;
+  }
+
+  const userId = await utils.getUserIdFromUsername(username);
+  if (!userId) {
+    console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+    utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+    return 0;
+  }
+  return userId;
+}
+
+async function unfavoriteRecipe(recipeName) {
+  const userId = await checkUserIdAndUsername();
+  if(userId){
+    // Remove from favorites
+    let request = {
+      recipeName: recipeName
+    }
+    let successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
+    let errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
+
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+    try {
+      const response = await fetch(url, {
+        method: DELETE_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error(responseData.error || errorMessage);
+        throw new Error(responseData.error || errorMessage);
+      } else {
+        console.log(responseData.message || successMessage);
+        utils.setStorage("deleteRecipeMessage", successMessage);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
+  }
+}
+
+async function favoriteRecipe(recipeContent){
+  const userId = await checkUserIdAndUsername();
+  if(userId){
+    const myArray = recipeContent.split("+");
+    let recipeUri = myArray[0].substring(0,myArray[0].length-1);
+    let sourceUrl = myArray[1];
+    let source = myArray[2];
+    const recipeDetails = await getRecipeDetails(recipeUri);
+    const recipe = recipeDetails.hits[0].recipe;
+    const recipeInstructions = await getRecipeInstructions(source, sourceUrl, recipe.label);
+    let recipeName = recipe.label;
+    let imageSrc = NO_IMAGE_AVAILABLE;
+    if (hasValidImage(recipe)) {
+      // Use the LARGE as default in recipe details
+      if (recipe.images.LARGE && recipe.images.LARGE.url) {
+        imageSrc = await utils.getEdamamRecipeImage(recipe.images.LARGE.url);
+      } else {
+        imageSrc = await utils.getEdamamRecipeImage(recipe.images.REGULAR.url);
+      }
+    }
+    
+    let request = {
+      recipeName: recipeName,
+      recipeIngredients: recipe.ingredientLines,
+      recipeDirections: recipeInstructions,
+      recipeImage: imageSrc,
+      recipeUri: recipeUri,
+      recipeSource: source,
+      recipeSourceUrl: sourceUrl,
+      recipeServings: Math.round(recipe.yield),
+      recipeCalories: Math.round(recipe.totalNutrients.ENERC_KCAL.quantity),
+      recipeCaloriesUnits: recipe.totalNutrients.ENERC_KCAL.unit,
+      recipeCarbs: Math.round(recipe.totalNutrients.CHOCDF.quantity),
+      recipeCarbsUnits: recipe.totalNutrients.CHOCDF.unit,
+      recipeFats: Math.round(recipe.totalNutrients.FAT.quantity),
+      recipeFatsUnits: recipe.totalNutrients.FAT.unit,
+      recipeProtein: Math.round(recipe.totalNutrients.PROCNT.quantity),
+      recipeProteinUnits: recipe.totalNutrients.PROCNT.unit,
+      userCreated: false
+    };
+
+    let successMessage = SUCCESSFULLY_FAVORITE_RECIPE;
+    let errorMessage = UNABLE_TO_FAVORITE_UNEXPECTED_ERROR;
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+
+    try {
+      const response = await fetch(url, {
+        method: PUT_ACTION,
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        },
+        body: JSON.stringify({ favorites: request })
+      });
+
+      const responseData = await response.json();
+      if (!response.ok) {
+        console.error(responseData.error || errorMessage);
+        throw new Error(responseData.error || errorMessage);
+      } else {
+        console.log(responseData.message || successMessage);
+        utils.setStorage("favoriteRecipeMessage", responseData.message || successMessage);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
+  }
+}
+
+function hasValidImage(recipe) {
+  return recipe.images && ((recipe.images.LARGE && recipe.images.LARGE.url) ||
+    (recipe.images.REGULAR && recipe.images.REGULAR.url));
+}
+
+async function getRecipeDetails(recipeUri) {
+  const uri = encodeURIComponent(recipeUri);
+  const apiUrl = `${EDAMAM_RECIPE_URI_URL}=${uri}`;
+  console.log("Querying Edamam at:", apiUrl);
+
+  const response = await fetch(apiUrl, {
+    method: GET_ACTION,
+    headers: {
+      'Accept': DEFAULT_DATA_TYPE,
+      'Content-Type': DEFAULT_DATA_TYPE
+    }
+  });
+
+  if (response.ok) {
+    const recipeDetails = await response.json();
+    return recipeDetails;
+  } else {
+    console.error("Error occurred getting recipe details");
+    return undefined;
+  }
+}
+
+async function getRecipeInstructions(source, sourceUrl, recipeName) {
+  const sourceTrimmed = source.toLowerCase().trim();
+  const apiUrl = `${RECIPE_SCRAPE_URL}/?recipeLink=${sourceUrl}&source=${sourceTrimmed}&recipeName=${recipeName}`;
+
+  console.log("Querying Server for:", apiUrl);
+
+  const response = await fetch(apiUrl, {
+    method: GET_ACTION,
+    headers: {
+      'Accept': DEFAULT_DATA_TYPE,
+      'Content-Type': DEFAULT_DATA_TYPE
+    }
+  });
+
+  if (response.ok) {
+    const details = await response.json();
+    return details;
+  } else {
+    console.error("Error occurred getting recipe instructions");
+    return undefined;
+  }
+}
+
+function changeLanguage(language) {
+  var element = document.getElementById("url");
+  element.value = language;
+  element.innerHTML = language;
+}
+
+function showDropdown(dropDownIndex) {
+  document.getElementById("myDropdown"+dropDownIndex).classList.toggle("show");
+}
+
+var currentDotButton;
+var lastDotButton;
+
+window.onclick = function(event) {
+  //click off any dot button, close dropdowns
+  if (!event.target.matches('.dotbutton')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+        }
+    }
+  //click on another dot button, close all but that dropdown
+  }else{
+    currentDotButton = event.target.id;
+    let text = currentDotButton;
+    const myArray = text.split("dotButton");
+    let index = myArray[1];
+    if(currentDotButton != lastDotButton){
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+          }
+      }
+      document.getElementById("myDropdown"+index).classList.toggle("show");
+      lastDotButton = currentDotButton;
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function () {

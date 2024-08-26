@@ -49,6 +49,23 @@
   gtag('js', new Date());
   gtag('config', 'G-0PLD716PG6');
 </script>
+<script>
+  $(document).ready(function () {
+    // Handles showing create recipe messages
+    const favoriteRecipeMessage = utils.getFromStorage("favoriteRecipeMessage");
+    if (favoriteRecipeMessage) {
+      utils.showAjaxAlert("Success", favoriteRecipeMessage);
+      utils.removeFromStorage("favoriteRecipeMessage");
+    }
+    
+    // Handles showing delete recipe messages
+    const deleteRecipeMessage = utils.getFromStorage("deleteRecipeMessage");
+    if (deleteRecipeMessage) {
+      utils.showAjaxAlert("Success", deleteRecipeMessage);
+      utils.removeFromStorage("deleteRecipeMessage");
+    }
+  });
+</script>
 
 <body>
   <header>
