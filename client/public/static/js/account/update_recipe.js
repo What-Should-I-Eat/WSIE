@@ -164,18 +164,34 @@ function UserRecipeDetailsView() {
 function formHasChanges(form) {
   let hasChanges = false;
   const inputs = form.querySelectorAll('input');
-
+  const textareas = form.querySelectorAll('textarea');
   inputs.forEach(input => {
     // Skip the Mongo ObjectId and the User Recipe Image
     if (input.id === 'recipeObjectId' || input.id === 'userRecipeImage') {
       return;
     }
-
     // Check for changes in non-readOnly and non-submit inputs
     if (input.type !== 'submit' && !input.readOnly) {
       const initialValue = input.getAttribute('data-initial-value');
+      utils.showAjaxAlert(initialValue +" is now " + input.value);
       if (input.value !== initialValue) {
         console.log(`${input.id} has changes`);
+        hasChanges = true;
+      }
+    }
+  });
+
+  textareas.forEach(textarea => {
+    // Skip the Mongo ObjectId and the User Recipe Image
+    if (textarea.id === 'recipeObjectId' || textarea.id === 'userRecipeImage') {
+      return;
+    }
+    // Check for changes in non-readOnly and non-submit inputs
+    if (!textarea.readOnly) {
+      const initialValue = textarea.getAttribute('data-initial-value');
+      utils.showAjaxAlert(initialValue +" is now " + textarea.value);
+      if (textarea.value !== initialValue) {
+        console.log(`${textarea.id} has changes`);
         hasChanges = true;
       }
     }
