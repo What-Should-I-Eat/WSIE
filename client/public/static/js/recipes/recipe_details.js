@@ -489,25 +489,16 @@ function handleUpdateRecipe() {
 
 async function handlePublishUserRecipe(userId) {
   const recipeName = document.getElementById('recipe-name').textContent;
-  const recipeImage = document.getElementById('recipe-image').src;
-  const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
-  const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
-  const recipeNutrition = Array.from(document.getElementById('nutritional-facts-list').children).map(li => li.textContent);
 
-  let request = {
-    recipeName: recipeName,
-    recipeIngredients: recipeIngredients.join(", "),
-    recipeDirections: recipeDirections.join(". "),
-    recipeNutrition: recipeNutrition.join(", "),
-    recipeImage: recipeImage,
-    userCreated: true
-  };
+  request = {
+    recipeName: recipeName
+  }
 
   let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
   try {
     const response = await fetch(url, {
       method: POST_ACTION,
-      body: JSON.stringify(request),
+      body: JSON.stringify({ favorites: request }),
       headers: {
         'Content-Type': DEFAULT_DATA_TYPE
       }

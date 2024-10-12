@@ -3,7 +3,7 @@
 
 <head>
   <title>
-    What Should I Eat - My Dietary
+    What Should I Eat - My Recipes
   </title>
 
   <meta charset="utf-8" />
@@ -23,12 +23,15 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/static/css/base.css" />
   <link rel="stylesheet" href="/static/css/login-modal.css" />
-  <link rel="stylesheet" href="/static/css/dietary.css" />
+  <link rel="stylesheet" href="/static/css/recipes.css" />
 
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+  <!-- PDF Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   <!-- Email Script -->
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <!-- Custom Scripts -->
@@ -39,12 +42,23 @@
   <script src="/static/js/verification.js"></script>
   <script src="/static/js/forgot-password.js"></script>
   <script src="/static/js/login.js"></script>
-  <script src="/static/js/account/my_dietary.js"></script>
+  <script src="/static/js/account/admin.js"></script>
 
   <script>
     $(document).ready(function () {
-      const dietaryView = new MyDietaryView();
-      dietaryView.load();
+      // Handles showing create recipe messages
+      const createUpdateRecipeMessage = utils.getFromStorage("createUpdateRecipeMessage");
+      if (createUpdateRecipeMessage) {
+        utils.showAjaxAlert("Success", createUpdateRecipeMessage);
+        utils.removeFromStorage("createUpdateRecipeMessage");
+      }
+
+      // Handles showing delete recipe messages
+      const deleteRecipeMessage = utils.getFromStorage("deleteRecipeMessage");
+      if (deleteRecipeMessage) {
+        utils.showAjaxAlert("Success", deleteRecipeMessage);
+        utils.removeFromStorage("deleteRecipeMessage");
+      }
     });
   </script>
 </head>
@@ -384,145 +398,30 @@
   </div>
   <!-- END: Sign Up / Sign Modal -->
 
-  <!-- START: My Dietary -->
-  <!-- <div class="container-fluid px-0">
-    <div class="mb-3 container-fluid navbar-decoration px-0 d-flex align-items-center justify-content-center">
-      <h1 class="display-3">My Dietary</h1>
-    </div>
-  </div> -->
-
+  <!-- START: My Recipes View -->
   <div class="container mt-5">
-    <div class="mb-5">
-      <form id="updateDietaryRestrictionsForm">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h2 id="dietaryRestrictionsHeader">Dietary Restrictions</h2>
-          <div class="d-flex flex-column align-items-end">
-            <button type="submit" form="updateDietaryRestrictionsForm" class="mb-3 btn btn-primary btn-block">Update
-              Dietary</button>
-          </div>
-        </div>
-
-        <hr />
-
-        <div id="dietaryRestrictionsContainer" class="dietary-restrictions-container">
-          <!-- First Row -->
-          <button type="button" class="btn toggle-btn"
-            title="Protein/Fat/Carb values in 15/35/50 ratio">Balanced</button>
-          <button type="button" class="btn toggle-btn" title="More than 5g fiber per serving">High Fiber</button>
-          <button type="button" class="btn toggle-btn" title="More than 50% of total calories from proteins">High
-            Protein</button>
-          <!-- Second Row -->
-          <button type="button" class="btn toggle-btn" title="Less than 20% of total calories from carbs">Low
-            Carb</button>
-          <button type="button" class="btn toggle-btn" title="Less than 15% of total calories from fat">Low Fat</button>
-          <button type="button" class="btn toggle-btn" title="Less than 140mg Na per serving">Low Sodium</button>
-        </div>
-      </form>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 id="myRecipesHeader">Publish Requests</h2>
     </div>
-    <!-- END: Dietary Restrictions -->
-
     <hr />
-
-    <!-- START: Health Restrictions -->
-    <div class="container mt-5">
-      <div class="mb-5">
-        <form id="updateHealthRestrictionsForm">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 id="healthRestrictionsHeader">Health Restrictions</h2>
-            <div class="d-flex flex-column align-items-end">
-              <button type="submit" form="updateHealthRestrictionsForm" class="mb-3 btn btn-primary btn-block">Update
-                Health</button>
-            </div>
-          </div>
-
-          <hr />
-
-          <div id="healthRestrictionsContainer" class="health-restrictions-container">
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn" title="No alcohol used or contained">Alcohol Free</button>
-            <button type="button" class="btn toggle-btn" title="Does not contain celery or derivatives">Celery
-              Free</button>
-            <button type="button" class="btn toggle-btn"
-              title="Does not contain crustaceans (shrimp, lobster etc.) or derivatives">Crustacean Free</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn" title="No dairy; no lactose">Dairy Free</button>
-            <button type="button" class="btn toggle-btn" title="No eggs or products containing eggs">Egg Free</button>
-            <button type="button" class="btn toggle-btn" title="No fish or fish derivatives">Fish Free</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn" title="Does not contain FODMAP foods">FODMAP Free</button>
-            <button type="button" class="btn toggle-btn" title="No ingredients containing gluten">Gluten Free</button>
-            <button type="button" class="btn toggle-btn"
-              title="Recipes which fit a science-based approach to eating to strengthen the immune system">Immuno
-              Supportive</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn" title="Maximum 7 grams of net carbs per serving">Keto
-              Friendly</button>
-            <button type="button" class="btn toggle-btn"
-              title="Per serving - phosphorus less than 250 mg AND potassium less than 500 mg AND sodium less than 500 mg">Kidney
-              Friendly</button>
-            <button type="button" class="btn toggle-btn"
-              title="Contains only ingredients allowed by the kosher diet. However it does not guarantee kosher preparation of the ingredients themselves">Kosher</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn" title="Less than 150mg per serving">Low Potassium</button>
-            <button type="button" class="btn toggle-btn"
-              title="No simple sugars - glucose, dextrose, galactose, fructose, sucrose, lactose, maltose">Low
-              Sugar</button>
-            <button type="button" class="btn toggle-btn" title="Does not contain lupine or derivatives">Lupine
-              Free</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn" title="Mediterranean diet">Mediterranean</button>
-            <button type="button" class="btn toggle-btn" title="No mollusks">Mollusk Free</button>
-            <button type="button" class="btn toggle-btn" title="Does not contain mustard or derivatives">Mustard
-              Free</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn"
-              title="No oil added except to what is contained in the basic ingredients">No Oil Added</button>
-            <button type="button" class="btn toggle-btn"
-              title="Excludes what are perceived to be agricultural products; grains, legumes, dairy products, potatoes, refined salt, refined sugar, and processed oils">Paleo</button>
-            <button type="button" class="btn toggle-btn" title="No peanuts or products containing peanuts">Peanut
-              Free</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn"
-              title="Does not contain meat or meat based products, can contain dairy and fish">Pescatarian</button>
-            <button type="button" class="btn toggle-btn" title="Does not contain pork or derivatives">Pork Free</button>
-            <button type="button" class="btn toggle-btn"
-              title="Does not contain beef, lamb, pork, duck, goose, game, horse, and other types of red meat or products containing red meat.">Red
-              Meat Free</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn" title="Does not contain sesame seed or derivatives">Sesame
-              Free</button>
-            <button type="button" class="btn toggle-btn" title="No shellfish or shellfish derivatives">Shellfish
-              Free</button>
-            <button type="button" class="btn toggle-btn" title="No soy or products containing soy">Soy Free</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn" title="Less than 4g of sugar per serving">Sugar
-              Conscious</button>
-            <button type="button" class="btn toggle-btn" title="No Sulfites">Sulfite Free</button>
-            <button type="button" class="btn toggle-btn" title="No tree nuts or products containing tree nuts">Tree Nut
-              Free</button>
-            <!-- New Row -->
-            <button type="button" class="btn toggle-btn"
-              title="No meat, poultry, fish, dairy, eggs or honey">Vegan</button>
-            <button type="button" class="btn toggle-btn" title="No meat, poultry, or fish">Vegetarian</button>
-            <button type="button" class="btn toggle-btn" title="No wheat, can have gluten though">Wheat Free</button>
-          </div>
-        </form>
-      </div>
+    <div class="my-recipes-container">
+      <!-- Dynamically add results in my_recipes.js -->
     </div>
-    <!-- END: Health Restrictions -->
+  </div>
+  <!-- END: My Recipes View -->
 
-    <!-- START: Footer -->
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-      <div class="col-md-4 d-flex align-items-center">
-        <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
-          <svg class="bi" width="30" height="24">
-            <use xlink:href="#bootstrap"></use>
-          </svg>
-        </a>
-        <span class="mb-3 mb-md-0 text-body-secondary">© 2024 What Should I Eat?, Inc</span>
-      </div>
-    </footer>
-    <!-- END: Footer -->
+  <!-- START: Footer -->
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+      <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+        <svg class="bi" width="30" height="24">
+          <use xlink:href="#bootstrap"></use>
+        </svg>
+      </a>
+      <span class="mb-3 mb-md-0 text-body-secondary">© 2024 What Should I Eat?, Inc</span>
+    </div>
+  </footer>
+  <!-- END: Footer -->
 </body>
 
 </html>

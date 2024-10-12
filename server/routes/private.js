@@ -528,19 +528,14 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
-
-    let recipe = await Recipe.findOne({ recipeName: req.body.recipeName, usernameCreator: user.username });
+    const recipe = await Recipe.findOne({ recipeName: req.body.favorites.recipeName, usernameCreator: user.username });
     if (!recipe) {
       return res.status(404).json({ error: 'Recipe not found' });
     }
 
     const publishRequest = new RecipePubRequest({
-      recipeName: req.body.recipeName,
-      recipeIngredients: req.body.recipeIngredients,
-      recipeDirections: req.body.recipeDirections,
-      recipeNutrition: req.body.recipeNutrition,
-      recipeImage: req.body.recipeImage,
-      userCreated: req.body.userCreated
+      recipeId: recipe._id,
+      userEmail: user.email
     });
 
     const savedRequest = await publishRequest.save();
@@ -559,6 +554,23 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error occurred sending publish request message." });
+  }
+});
+
+privateRouter.get('/recipes/get_requested_recipe', async (req, res) => {
+  try {
+    console.log("in get req recipe");
+    let recipeObjectId = new mongoose.Types.ObjectId(req.query.recipeId);
+
+    let recipe = await Recipe.findOne({ _id: recipeObjectId });
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+
+    res.json(recipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error trying to get recipe' });
   }
 });
 
