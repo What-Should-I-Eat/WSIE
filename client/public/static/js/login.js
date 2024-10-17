@@ -42,6 +42,7 @@ $(document).ready(function () {
       password: password,
       email: email,
       verificationCode: verificationCode,
+      isAdmin: false,
       diet: [],
       health: [],
       favorites: []
