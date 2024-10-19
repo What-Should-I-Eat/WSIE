@@ -138,6 +138,9 @@ const DELETE_RECIPE = "Delete Recipe";
 const REQUEST_TO_PUBLISH_RECIPE = "Request to Publish Recipe";
 const RECIPE_UNDER_REVIEW = "Request to Publish Recipe Under Review";
 const RECIPE_PUBLISHED = "Recipe Published";
+const RECIPE_PUBLISHED_APPROVE = "Recipe Has Been Approved";
+const RECIPE_PUBLISHED_DENY = "Recipe Has Been Denied";
+const UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR = "Error occurred trying to update publish status";
 // Recipes / My Recipes Constants
 const PUBLIC_RECIPE_ICON = "fa-users";
 const PUBLIC_RECIPE_OWNER_ICON = "fa-user";

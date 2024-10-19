@@ -78,7 +78,7 @@ $(document).ready(function () {
           
           const recipeHtml = `
             <div class="box box-shadow-custom">
-                <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}">
+                <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}&publishReview=${encodeURIComponent(true)}">
                     <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
                 </a>
                 <h3>${recipeName}</h3>

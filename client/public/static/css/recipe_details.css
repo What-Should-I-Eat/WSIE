@@ -45,6 +45,8 @@
 
 /* Hide the buttons without removing them from the layout flow */
 #updateRecipeBtn,
-#publishRecipeBtn {
+#publishRecipeBtn,
+#approvePubReqBtn,
+#denyPubReqBtn {
   visibility: hidden;
 }

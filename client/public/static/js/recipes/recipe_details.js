@@ -1,3 +1,5 @@
+let recipeId = '';
+
 function RecipeDetailsView() {
   this.loadEdamamRecipe = async (source, sourceUrl, recipeUri) => {
     if (hasAllData(source, sourceUrl, recipeUri)) {
@@ -44,13 +46,13 @@ function RecipeDetailsView() {
     }
   }
 
-  this.loadPublicUserRecipe = async (publicUserRecipeName) => {
+  this.loadPublicUserRecipe = async (publicUserRecipeName, pubReview) => {
     try {
       console.log("Loading view from public user recipe");
-
       const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
+      recipeId = userRecipeDetails._id;
       if (userRecipeDetails) {
-        this.buildPublicUserView(userRecipeDetails);
+        this.buildPublicUserView(userRecipeDetails,pubReview);
       } else {
         console.error("Invalid public user recipe data to build view");
         utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
@@ -276,7 +278,7 @@ function RecipeDetailsView() {
     }
   }
 
-  this.buildPublicUserView = async (recipe) => {
+  this.buildPublicUserView = async (recipe, pubReview) => {
     // Leave this here so its compatible and we can share functionality
     const form = document.getElementById('recipeForm');
 
@@ -309,12 +311,20 @@ function RecipeDetailsView() {
       form.appendChild(hiddenRecipeSourceUrlInput);
     }
     hiddenRecipeSourceUrlInput.value = "";
-
-    // Check if the recipe is a favorite
-    const username = utils.getUserNameFromCookie();
-    const isFavorite = await checkIfFavorite(username, recipe.recipeName);
     const addToFavoritesBtn = document.getElementById('addToFavoritesBtn');
-    addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
+    if(pubReview != 'true'){
+      // Check if the recipe is a favorite
+      const username = utils.getUserNameFromCookie();
+      const isFavorite = await checkIfFavorite(username, recipe.recipeName);
+      addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
+    }else{
+      addToFavoritesBtn.style.visibility = 'hidden';
+      //update buttons to show approve or deny request
+      const approveRequestBtn = document.getElementById('approvePubReqBtn');
+      approveRequestBtn.style.visibility = 'visible';
+      const denyRequestButton = document.getElementById("denyPubReqBtn");
+      denyRequestButton.style.visibility = 'visible';
+    }
 
     // Update header name and image
     document.getElementById('recipe-name').textContent = recipe.recipeName;
@@ -631,6 +641,65 @@ async function handleFavoriteUnfavoriteDeleteRecipeLogic(userId, form) {
   }
 };
 
+async function handlePublishRecipeReview(reviewResult) {
+  const request = {
+    isPublished: reviewResult,
+    pubRequested: reviewResult
+  };
+
+  const url = `${PUBLIC_USER_RECIPES_URL}/publish_review?recipeId=${recipeId}`;
+  try {
+    const response = await fetch(url, {
+      method: PUT_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      },
+      body: JSON.stringify({ favorites: request })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    utils.showAjaxAlert("Success", data.success);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+};
+
+async function updatePublishRequestStatus(reviewResult) {
+  urlAction = DELETE_ACTION;
+    request = {
+      recipeName: recipeName
+    }
+    newButtonText = "";
+    successMessage = SUCCESSFULLY_DELETED_RECIPE;
+    errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
+
+  const url = `${PUBLIC_USER_RECIPES_URL}/publish_review`;
+  try {
+    const response = await fetch(url, {
+      method: POST_ACTION,
+      body: JSON.stringify(request),
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    utils.showAjaxAlert("Success", data.success);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+};
+
 $(document).ready(function () {
   // Handles Form Submission Logic
   $("#recipeForm").on("submit", async function (event) {
@@ -666,6 +735,14 @@ $(document).ready(function () {
       case 'publishRecipe':
         console.log("Submitting form for publishing user recipe");
         await handlePublishUserRecipe(userId);
+        break;
+      case 'approvePub':
+        await handlePublishRecipeReview(true);
+        //await updatePublishRequestStatus();
+        break;
+      case 'denyPub':
+        await handlePublishRecipeReview(false);
+        //await updatePublishRequestStatus();
         break;
       default:
         console.error(`Unknown action on form submission: [${action}]`);

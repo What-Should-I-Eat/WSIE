@@ -23,6 +23,9 @@ const SUCCESSFULLY_UPDATED_RECIPE = "Successfully updated recipe";
 const UNABLE_TO_UPDATE_RECIPE_ERROR = "Error occurred trying to update recipe";
 const SUCCESSFULLY_DELETED_RECIPE = "Successfully deleted recipe";
 const UNABLE_TO_DELETE_RECIPE_ERROR = "Error occurred deleting user created recipe";
+const RECIPE_PUBLISHED_APPROVE = "Recipe Has Been Approved";
+const RECIPE_PUBLISHED_DENY = "Recipe Has Been Denied";
+const UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR = "Error occurred trying to update publish status";
 
 privateRouter.post("/users/register", async (req, res) => {
   try {
@@ -559,7 +562,6 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
 
 privateRouter.get('/recipes/get_requested_recipe', async (req, res) => {
   try {
-    console.log("in get req recipe");
     let recipeObjectId = new mongoose.Types.ObjectId(req.query.recipeId);
 
     let recipe = await Recipe.findOne({ _id: recipeObjectId });
@@ -574,10 +576,31 @@ privateRouter.get('/recipes/get_requested_recipe', async (req, res) => {
   }
 });
 
-// TODO: Add an endpoint here that will do the following
-// Get the published recipe from the mode
-// Update the status from the admin approve/deny in the RecipePubRequest
-// If approved, remove from the RecipePubRequest and update the recipe model with isPublished and isRequested both true
+privateRouter.put('/recipes/publish_review', async (req, res) => {
+  try {
+    let recipeObjectId = new mongoose.Types.ObjectId(req.query.recipeId);
+
+    let recipe = await Recipe.findOne({ _id: recipeObjectId });
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+
+    const updatedIsPub = await Recipe.updateOne(recipe, { $set: { isPublished: req.body.favorites.isPublished, pubRequested: req.body.favorites.pubRequested} }, { upsert: true, new: true });
+    
+    if (!updatedIsPub) {
+      return res.status(400).json({ error: "Error occurred trying to update publish status" });
+    }
+
+    if(req.body.favorites.isPublished){
+      res.status(200).json({ message: RECIPE_PUBLISHED_APPROVE, recipe });
+    }else{
+      res.status(200).json({ message: RECIPE_PUBLISHED_DENY, recipe });
+    }
+  } catch (error) {
+    console.error(UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR });
+  }
+});
 
 privateRouter.get('/recipes/publish_requests', async (_, res) => {
   try {

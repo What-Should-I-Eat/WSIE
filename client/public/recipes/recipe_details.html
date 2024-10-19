@@ -46,13 +46,13 @@
       const params = new URLSearchParams(window.location.search);
       const userRecipeName = params.get('userRecipeName');
       const publicUserRecipeName = params.get('publicUserRecipeName');
-
+      const pubReview = params.get('publishReview');
       const recipeDetails = new RecipeDetailsView();
 
       if (userRecipeName) {
         recipeDetails.loadUserRecipe(userRecipeName);
       } else if (publicUserRecipeName) {
-        recipeDetails.loadPublicUserRecipe(publicUserRecipeName);
+        recipeDetails.loadPublicUserRecipe(publicUserRecipeName, pubReview);
       } else {
         const source = params.get('source');
         const sourceUrl = decodeURIComponent(params.get('sourceUrl'));
@@ -448,6 +448,10 @@
             Recipe</button>
           <button type="submit" class="btn btn-primary" name="action" value="publishRecipe"
             id="publishRecipeBtn">Request to Publish Recipe</button>
+          <button type="submit" class="btn btn-primary" name="action" value="approvePub"
+            id="approvePubReqBtn">Approve Request to Publish Recipe</button>
+          <button type="submit" class="btn btn-primary" name="action" value="denyPub"
+            id="denyPubReqBtn">Deny Request to Publish Recipe</button>
         </section>
       </form>
     </div>
