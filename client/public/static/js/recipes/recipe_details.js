@@ -662,27 +662,19 @@ async function handlePublishRecipeReview(reviewResult) {
       throw new Error(data.error);
     }
 
-    utils.showAjaxAlert("Success", data.success);
+    utils.showAjaxAlert("Success", data.message);
   } catch (error) {
     console.error(error);
     utils.showAjaxAlert("Error", error.message);
   }
 };
 
-async function updatePublishRequestStatus(reviewResult) {
-  urlAction = DELETE_ACTION;
-    request = {
-      recipeName: recipeName
-    }
-    newButtonText = "";
-    successMessage = SUCCESSFULLY_DELETED_RECIPE;
-    errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
-
-  const url = `${PUBLIC_USER_RECIPES_URL}/publish_review`;
+async function updatePublishRequestStatus() {
+  const url = `${PUBLIC_USER_RECIPES_URL}/delete_request?recipeId=${recipeId}`;
   try {
     const response = await fetch(url, {
-      method: POST_ACTION,
-      body: JSON.stringify(request),
+      method: DELETE_ACTION,
+      body: '',
       headers: {
         'Content-Type': DEFAULT_DATA_TYPE
       }
@@ -693,10 +685,9 @@ async function updatePublishRequestStatus(reviewResult) {
       throw new Error(data.error);
     }
 
-    utils.showAjaxAlert("Success", data.success);
+    console.log(data.message);
   } catch (error) {
     console.error(error);
-    utils.showAjaxAlert("Error", error.message);
   }
 };
 
@@ -738,11 +729,11 @@ $(document).ready(function () {
         break;
       case 'approvePub':
         await handlePublishRecipeReview(true);
-        //await updatePublishRequestStatus();
+        await updatePublishRequestStatus();
         break;
       case 'denyPub':
         await handlePublishRecipeReview(false);
-        //await updatePublishRequestStatus();
+        await updatePublishRequestStatus();
         break;
       default:
         console.error(`Unknown action on form submission: [${action}]`);

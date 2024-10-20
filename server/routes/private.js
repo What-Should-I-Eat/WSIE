@@ -25,6 +25,8 @@ const SUCCESSFULLY_DELETED_RECIPE = "Successfully deleted recipe";
 const UNABLE_TO_DELETE_RECIPE_ERROR = "Error occurred deleting user created recipe";
 const RECIPE_PUBLISHED_APPROVE = "Recipe Has Been Approved";
 const RECIPE_PUBLISHED_DENY = "Recipe Has Been Denied";
+const SUCCESSFULLY_DELETED_RECIPE_REQUEST = "Successfully deleted recipe request";
+const UNABLE_TO_DELETE_RECIPE_REQUEST_ERROR = "Error occurred deleting recipe publish request";
 const UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR = "Error occurred trying to update publish status";
 
 privateRouter.post("/users/register", async (req, res) => {
@@ -609,6 +611,23 @@ privateRouter.get('/recipes/publish_requests', async (_, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error occurred getting publish recipe requests" });
+  }
+});
+
+privateRouter.delete('/recipes/delete_request', async (req, res) => {
+  try {
+    let recipeObjectId = req.query.recipeId;
+
+    let recipePub = await RecipePubRequest.findOne({ recipeId: recipeObjectId });
+    if (!recipePub) {
+      return res.status(404).json({ error: 'Recipe publish request not found' });
+    }
+
+    await recipePub.deleteOne();
+    res.status(200).json({ message: SUCCESSFULLY_DELETED_RECIPE_REQUEST });
+  } catch (error) {
+    console.error(UNABLE_TO_DELETE_RECIPE_REQUEST_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_DELETE_RECIPE_REQUEST_ERROR });
   }
 });
 
