@@ -3,11 +3,13 @@ var router = express.Router();
 const fetch = require('node-fetch');
 const fileType = require('file-type');
 var path = require('path');
+const Recipe = require('../models/Recipe'); // Assuming you have a Recipe model for MongoDB
 const BASE_DIR_PATH = "public";
 
 router.get('/', function (_, res) {
   res.sendFile(path.join(__dirname, `../${BASE_DIR_PATH}/recipes/recipes.html`));
 });
+ 
 router.get('/recipe_details', (_, res) => {
   res.sendFile(path.join(__dirname, `../${BASE_DIR_PATH}/recipes/recipe_details.html`));
 });
@@ -54,5 +56,6 @@ router.get('/get_edamam_image', async (req, res) => {
     res.status(500).json({ error: "Error occurred fetching image" });
   }
 });
+
 
 module.exports = router;
