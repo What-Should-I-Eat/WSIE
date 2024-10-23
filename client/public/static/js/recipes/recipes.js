@@ -220,6 +220,7 @@ function RecipesView() {
   };
 }
 
+
 function hasRecipeHits(recipes) {
   return recipes && recipes.hits && recipes.hits.length > 0;
 }
