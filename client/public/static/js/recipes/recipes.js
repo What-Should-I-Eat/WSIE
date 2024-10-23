@@ -2,6 +2,7 @@ const recipesView = new RecipesView();
 
 function RecipesView() {
   const addedRecipesSet = new Set();
+  this.userRecipesLoaded = false; 
   this.initialPageFromTo = "1-20";
   this.currentPageFromTo = this.initialPageFromTo;
   this.historyMap = new Map();
@@ -15,11 +16,19 @@ function RecipesView() {
     try {
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
       const recipes = await this.getRecipes(url);
-      const publicUserRecipes = await this.getPublicUserRecipes();
-
+  
+      // Fetch user-published recipes only on the first page load
+      let publicUserRecipes = [];
+      if (!this.userRecipesLoaded) {
+        publicUserRecipes = await this.getPublicUserRecipes();
+        this.userRecipesLoaded = true; // Mark that user recipes are loaded, so they won't be fetched again
+      }
+  
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
-        this.renderRecipes(recipes, publicUserRecipes, container);
+  
+        // Pass the user-published recipes only if they were fetched (i.e., only on the first page load)
+        this.renderRecipes(recipes, this.userRecipesLoaded ? publicUserRecipes : [], container);
         this.updatePagination(recipes, url, `${recipes.from}-${recipes.to}`, mealTypes, dishTypes, cuisineTypes);
         pagination.show();
       } else {
