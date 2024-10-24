@@ -1,11 +1,12 @@
 function RecipesView() {
   const addedRecipesSet = new Set();
-  this.userRecipesLoaded = false; 
+  this.userRecipesLoaded = false; // Flag to ensure public user recipes are loaded only once
   this.initialPageFromTo = "1-20";
   this.currentPageFromTo = this.initialPageFromTo;
   this.historyMap = new Map();
   this.nextPageUrl = null;
   this.initialPageUrl = null;
+  this.publicUserRecipes = []; // Store public user recipes after fetching
 
   this.load = async (searchParam, apiUrl = null, pageUrl = null, mealTypes = [], dishTypes = [], cuisineTypes = []) => {
     const container = $('.recipes-container');
@@ -14,19 +15,20 @@ function RecipesView() {
     try {
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
       const recipes = await this.getRecipes(url);
-  
+
       // Fetch user-published recipes only on the first page load
-      let publicUserRecipes = [];
       if (!this.userRecipesLoaded) {
-        publicUserRecipes = await this.getPublicUserRecipes();
+        this.publicUserRecipes = await this.getPublicUserRecipes();
         this.userRecipesLoaded = true; // Mark that user recipes are loaded, so they won't be fetched again
       }
-  
+
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
-        
-        // Pass user-published recipes on the first load, otherwise pass an empty array
-        this.renderRecipes(recipes, !this.userRecipesLoaded ? publicUserRecipes : [], container);
+
+        // Pass user-published recipes on the first load only
+        this.renderRecipes(recipes, this.publicUserRecipes, container);
+
+        // Handle pagination
         this.updatePagination(recipes, url, `${recipes.from}-${recipes.to}`, mealTypes, dishTypes, cuisineTypes);
         pagination.show();
       } else {
@@ -42,11 +44,134 @@ function RecipesView() {
     }
   };
 
+  this.buildBaseUrl = (searchParam, mealTypes, dishTypes, cuisineTypes) => {
+    const userSelectedMealTypes = mealTypes
+      .filter(mealType => mealType)
+      .map(mealType => `&mealType=${encodeURIComponent(mealType.toLowerCase())}`)
+      .join('');
+
+    const userSelectedDishTypes = dishTypes
+      .filter(dishType => dishType)
+      .map(dishType => `&dishType=${encodeURIComponent(dishType.toLowerCase())}`)
+      .join('');
+
+    const userSelectedCuisineTypes = cuisineTypes
+      .filter(cuisineType => cuisineType)
+      .map(cuisineType => `&cuisineType=${encodeURIComponent(cuisineType.toLowerCase())}`)
+      .join('');
+
+    console.debug(`searchParam: ${searchParam}`);
+
+    let baseUrl = searchParam ? `${EDAMAM_API_URL}${searchParam}` : EDAMAM_API_EMPTY_SEARCH_URL;
+
+    if (userSelectedMealTypes) {
+      console.debug(`Added [userSelectedMealTypes] to query: ${userSelectedMealTypes}`);
+      baseUrl += userSelectedMealTypes;
+    }
+
+    if (userSelectedDishTypes) {
+      console.debug(`Added [userSelectedDishTypes] to query: ${userSelectedDishTypes}`);
+      baseUrl += userSelectedDishTypes;
+    }
+
+    if (userSelectedCuisineTypes) {
+      console.debug(`Added [userSelectedCuisineTypes] to query: ${userSelectedCuisineTypes}`);
+      baseUrl += userSelectedCuisineTypes;
+    }
+
+    // Default to current meal type if no search parameter or filters
+    if (!searchParam && !userSelectedMealTypes && !userSelectedDishTypes && !userSelectedCuisineTypes) {
+      baseUrl += `${getCurrentTimeMealType()}`;
+    }
+
+    return baseUrl;
+  };
+
+  this.getApiUrl = async (searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes) => {
+    if (pageUrl) return pageUrl;
+
+    let baseUrl = apiUrl || this.initialPageUrl;
+
+    if (!baseUrl) {
+      baseUrl = this.buildBaseUrl(searchParam, mealTypes, dishTypes, cuisineTypes);
+
+      const username = utils.getUserNameFromCookie();
+      if (username) {
+        try {
+          const userData = await utils.getUserFromUsername(username);
+          const userDietString = getUserDietString(userData.diet);
+          const userHealthString = getUserHealthString(userData.health);
+
+          if (userDietString) {
+            console.debug(`Added [userDietString] to query: ${userDietString}`);
+            baseUrl += userDietString;
+          }
+
+          if (userHealthString) {
+            console.debug(`Added [userHealthString] to query: ${userHealthString}`);
+            baseUrl += userHealthString;
+          }
+        } catch (error) {
+          console.error(ERROR_UNABLE_TO_GET_USER, error);
+          utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
+          return;
+        }
+      }
+
+      this.initialPageUrl = baseUrl;
+    }
+
+    return baseUrl;
+  };
+
+  this.getRecipes = async (url) => {
+    console.debug(`Querying Edamam using: ${url}`);
+
+    const response = await fetch(url, {
+      method: GET_ACTION,
+      headers: {
+        'Accept': DEFAULT_DATA_TYPE,
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(EDAMAM_QUERY_ERROR);
+    }
+  };
+
+  this.getPublicUserRecipes = async () => {
+    console.log(`Querying Server for Public User Recipes at: [${PUBLIC_USER_RECIPES_URL}]`);
+
+    try {
+      const response = await fetch(PUBLIC_USER_RECIPES_URL, {
+        method: GET_ACTION,
+        headers: {
+          'Accept': DEFAULT_DATA_TYPE,
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+
+      if (response.ok) {
+        return await response.json();
+      } else {
+        console.error();
+        throw new Error(ERROR_GETTING_PUBLIC_USER_RECIPES);
+      }
+    } catch (error) {
+      console.error(ERROR_GETTING_PUBLIC_USER_RECIPES);
+      return [];
+    }
+  };
+
   this.renderRecipes = (recipes, publicUserRecipes, container) => {
     container.empty();
     addedRecipesSet.clear();
     let dropDownIndex = 0;
-    
+
+    // Render the main set of recipes
     recipes.hits.forEach(async data => {
       const recipe = data.recipe;
       const recipeUri = recipe.uri;
@@ -59,24 +184,20 @@ function RecipesView() {
 
       const unfavoriteDropdown = `
       <div class="recipe-dropdown">
-        <!-- three dots -->
-        <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
-        </div>
-        <!-- menu -->
+        <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})"></div>
         <div id="myDropdown${dropDownIndex}" class="dropdown-content">
             <button id="removeFavorite" onClick="utils.unfavoriteRecipe('${recipeName}')">Unfavorite</button>
         </div>
-        </div>`;
+      </div>`;
+      
       const favoriteDropdown = `
       <div class="recipe-dropdown">
-            <!-- three dots -->
-            <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
-            </div>
-            <!-- menu -->
-            <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-              <button id="addFavorite" onClick="favoriteEdamamRecipe('${recipeUri} + ${recipeUrl} + ${recipeSource}')">Favorite</button>
-            </div>
-        </div>`;
+        <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})"></div>
+        <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+          <button id="addFavorite" onClick="favoriteEdamamRecipe('${recipeUri} + ${recipeUrl} + ${recipeSource}')">Favorite</button>
+        </div>
+      </div>`;
+      
       let setFavoriteDropdown = isFavorite ? unfavoriteDropdown : favoriteDropdown;
 
       if (!addedRecipesSet.has(identifier)) {
@@ -100,12 +221,11 @@ function RecipesView() {
       dropDownIndex++;
     });
 
-    // Render public user recipes only if they are passed (which happens only on the first page)
+    // Render public user recipes only on the first page
     if (publicUserRecipes.length > 0) {
       publicUserRecipes.forEach(async recipe => {
         const recipeName = recipe.recipeName;
         const recipeImage = hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
-
         const username = utils.getUserNameFromCookie();
         const isOwner = username && username === recipe.usernameCreator;
         const icon = isOwner ? PUBLIC_RECIPE_OWNER_ICON : PUBLIC_RECIPE_ICON;
@@ -115,50 +235,42 @@ function RecipesView() {
 
         const unfavoriteDropdown = `
         <div class="recipe-dropdown">
-          <!-- three dots -->
-          <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
-          </div>
-          <!-- menu -->
+          <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})"></div>
           <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-              <button id="removeFavorite" onClick="utils.unfavoriteRecipe('${recipeName}')">Unfavorite</button>
+            <button id="removeFavorite" onClick="utils.unfavoriteRecipe('${recipeName}')">Unfavorite</button>
           </div>
-          </div>`;
-
+        </div>`;
+        
         const favoriteDropdown = `
         <div class="recipe-dropdown">
-              <!-- three dots -->
-              <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
-              </div>
-              <!-- menu -->
-              <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-                <button id="addFavorite" onClick="favoriteUserRecipe('${recipeName}')">Favorite</button>
-              </div>
-          </div>`;
+          <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})"></div>
+          <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+            <button id="addFavorite" onClick="favoriteUserRecipe('${recipeName}')">Favorite</button>
+          </div>
+        </div>`;
+        
         let setFavoriteDropdown = isFavorite ? unfavoriteDropdown : favoriteDropdown;
-
         const updateAndDeleteDropdown = `
         <div class="recipe-dropdown">
-                <!-- three dots -->
-                <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})">
-                </div>
-                <!-- menu -->
-                <div id="myDropdown${dropDownIndex}" class="dropdown-content">
-                    <button id="updateRecipe" onClick="utils.updateRecipe('${recipeName}')">Update</button>
-                    <br><button id="deleteRecipe" onClick="utils.deleteRecipe('${recipeName}')">Delete</button>
-                </div>
-            </div>`;
+          <div class="dotbutton btn-left" id="dotButton${dropDownIndex}" onclick="showDropdown(${dropDownIndex})"></div>
+          <div id="myDropdown${dropDownIndex}" class="dropdown-content">
+            <button id="updateRecipe" onClick="utils.updateRecipe('${recipeName}')">Update</button>
+            <br><button id="deleteRecipe" onClick="utils.deleteRecipe('${recipeName}')">Delete</button>
+          </div>
+        </div>`;
+        
         let setUserDropdown = isOwner ? updateAndDeleteDropdown : setFavoriteDropdown;
 
         const recipeHtml = `
           <div class="box box-shadow-custom">
-              <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}">
-                  <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
-              </a>
-              <div class="user-icon">
-                  <i class="fas ${icon}"></i>
-              </div>
-              ${setUserDropdown}
-              <h3>${recipeName}</h3>
+            <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}">
+              <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
+            </a>
+            <div class="user-icon">
+              <i class="fas ${icon}"></i>
+            </div>
+            ${setUserDropdown}
+            <h3>${recipeName}</h3>
           </div>`;
 
         console.debug(`Adding ${recipeType} created recipe: [${recipeName}]`);
@@ -213,13 +325,9 @@ function RecipesView() {
   };
 
   this.getNoRecipesFound = () => {
-    return `
-      <div>
-        <h2>${NO_RECIPES_FOUND}</h2>
-      </div>`;
+    return `<div><h2>${NO_RECIPES_FOUND}</h2></div>`;
   };
 }
-
 
 function hasRecipeHits(recipes) {
   return recipes && recipes.hits && recipes.hits.length > 0;
@@ -343,11 +451,11 @@ function loadSelectionsFromStorage() {
   });
 }
 
-async function favoriteEdamamRecipe(recipeContent){
+async function favoriteEdamamRecipe(recipeContent) {
   const userId = await utils.checkUserIdAndUsername();
-  if(userId){
+  if (userId) {
     const myArray = recipeContent.split("+");
-    let recipeUri = myArray[0].substring(0,myArray[0].length-1);
+    let recipeUri = myArray[0].substring(0, myArray[0].length - 1);
     let sourceUrl = myArray[1];
     let source = myArray[2];
     const recipeDetails = await getRecipeDetails(recipeUri);
@@ -363,7 +471,7 @@ async function favoriteEdamamRecipe(recipeContent){
         imageSrc = await utils.getEdamamRecipeImage(recipe.images.REGULAR.url);
       }
     }
-    
+
     let request = {
       recipeName: recipeName,
       recipeIngredients: recipe.ingredientLines,
@@ -413,9 +521,9 @@ async function favoriteEdamamRecipe(recipeContent){
   }
 }
 
-async function favoriteUserRecipe(userRecipeName){
+async function favoriteUserRecipe(userRecipeName) {
   const userId = await utils.checkUserIdAndUsername();
-  if(userId){
+  if (userId) {
     const recipe = await getUserRecipe(userRecipeName);
     let request = {
       recipeName: recipe.recipeName,
@@ -513,23 +621,23 @@ async function getRecipeInstructions(source, sourceUrl, recipeName) {
   }
 }
 
-async function getUserRecipe(recipeName){
+async function getUserRecipe(recipeName) {
   const url = `${PUBLIC_USER_RECIPE_URL}?recipeName=${recipeName}`;
 
-    const response = await fetch(url, {
-      method: GET_ACTION,
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      }
-    });
-
-    if (response.ok) {
-      const details = await response.json();
-      return details;
-    } else {
-      console.error(`Error occurred getting public user recipe for ${recipeName}`);
-      return undefined;
+  const response = await fetch(url, {
+    method: GET_ACTION,
+    headers: {
+      'Content-Type': DEFAULT_DATA_TYPE
     }
+  });
+
+  if (response.ok) {
+    const details = await response.json();
+    return details;
+  } else {
+    console.error(`Error occurred getting public user recipe for ${recipeName}`);
+    return undefined;
+  }
 }
 
 function changeLanguage(language) {
@@ -539,39 +647,39 @@ function changeLanguage(language) {
 }
 
 function showDropdown(dropDownIndex) {
-  document.getElementById("myDropdown"+dropDownIndex).classList.toggle("show");
+  document.getElementById("myDropdown" + dropDownIndex).classList.toggle("show");
 }
 
 var currentDotButton;
 var lastDotButton;
 
-window.onclick = function(event) {
+window.onclick = function (event) {
   //click off any dot button, close dropdowns
   if (!event.target.matches('.dotbutton')) {
     var dropdowns = document.getElementsByClassName("dropdown-content");
     var i;
     for (i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
-            openDropdown.classList.remove('show');
-        }
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
     }
-  //click on another dot button, close all but that dropdown
-  }else{
+    //click on another dot button, close all but that dropdown
+  } else {
     currentDotButton = event.target.id;
     let text = currentDotButton;
     const myArray = text.split("dotButton");
     let index = myArray[1];
-    if(currentDotButton != lastDotButton){
+    if (currentDotButton != lastDotButton) {
       var dropdowns = document.getElementsByClassName("dropdown-content");
       var i;
       for (i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
-              openDropdown.classList.remove('show');
-          }
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
       }
-      document.getElementById("myDropdown"+index).classList.toggle("show");
+      document.getElementById("myDropdown" + index).classList.toggle("show");
       lastDotButton = currentDotButton;
     }
   }
