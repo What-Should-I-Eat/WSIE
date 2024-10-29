@@ -75,6 +75,7 @@
   });
 </script>
 
+
 <body>
   <header>
     <div class="container-fluid px-0">
@@ -401,6 +402,10 @@
   </div>
 
   <div class="container mt-5">
+    <!-- Toggle Button for Showing/Hiding User Recipes -->
+    <div class="mb-4 text-center">
+      <button id="toggleRecipesBtn" class="btn btn-primary">Hide My Recipes</button>
+    </div>
     <!-- START: Search Bar -->
     <form class="d-flex mb-5 recipes-search-bar" id="searchRecipesForm">
       <input type="text" class="recipe-search-input form-control d-block py-2 my-0" id="search_recipes"
@@ -415,6 +420,7 @@
 
     <!-- START: Recipes Search Results -->
     <div class="recipes-container">
+      
       <!-- Dynamically add results in recipes.js-->
     </div>
     <!-- END: Recipes Search Results -->
@@ -656,7 +662,32 @@
     <!-- END: Filter Modal -->
   </div>
   <!-- END: Recipes View -->
-
+  <div class="container mt-5">
+    <!-- Toggle Button for Showing/Hiding User Recipes -->
+    <div class="mb-4 text-center">
+      <button id="toggleRecipesBtn" class="btn btn-primary">Hide My Recipes</button>
+    </div>
+  
+    <!-- START: Recipes Search Results -->
+    <div class="recipes-container">
+      <!-- Dynamically add results in recipes.js-->
+      <!-- Example Recipe (User-Published) -->
+      <div class="recipe-card user-recipe"> <!-- Add a class 'user-recipe' to user-published recipes -->
+        <!-- Recipe Content -->
+        <h5>My Recipe</h5>
+        <p>This is a user-published recipe.</p>
+      </div>
+      <!-- Add more recipes here -->
+    </div>
+    <!-- END: Recipes Search Results -->
+  </div>
+   <!-- START: Recipe Pagination -->
+   <nav>
+    <ul id="paginationList" class="pagination justify-content-center"></ul>
+  </nav>
+  <!-- END: Recipe Pagination -->
+</div>
+  
   <!-- START: Footer -->
   <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
     <div class="col-md-4 d-flex align-items-center">
@@ -671,6 +702,22 @@
     <div class="badge" id="edamam-badge" data-color="white"></div>
   </footer>
   <!-- END: Footer -->
-</body>
+   <!-- Toggle Recipes Script -->
+  <script>
+    $(document).ready(function () {
+      let isRecipesVisible = true;
 
+      $('#toggleRecipesBtn').on('click', function () {
+        if (isRecipesVisible) {
+          $('.user-recipe').hide();
+          $(this).text('Show My Recipes');
+        } else {
+          $('.user-recipe').show();
+          $(this).text('Hide My Recipes');
+        }
+        isRecipesVisible = !isRecipesVisible;
+      });
+    });
+  </script>
+</body>
 </html>
