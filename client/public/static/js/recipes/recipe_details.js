@@ -1,4 +1,7 @@
 let recipeId = '';
+let userName = '';
+let userEmail = '';
+let recipeName = '';
 
 function RecipeDetailsView() {
   this.loadEdamamRecipe = async (source, sourceUrl, recipeUri) => {
@@ -34,6 +37,7 @@ function RecipeDetailsView() {
       console.log("Loading view from user created recipe");
 
       const userRecipeDetails = await this.getUserRecipe(userRecipeName);
+      recipeId = userRecipeDetails._id;
       if (userRecipeDetails) {
         this.buildUserView(userRecipeDetails);
       } else {
@@ -51,6 +55,12 @@ function RecipeDetailsView() {
       console.log("Loading view from public user recipe");
       const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
       recipeId = userRecipeDetails._id;
+      recipeName = userRecipeDetails.recipeName;
+      userName = userRecipeDetails.usernameCreator;
+      if(userRecipeDetails.pubRequested){
+        const recipePubRequest = await getRecipeDetails(recipeId);
+        userEmail = recipePubRequest.userEmail;
+      }
       if (userRecipeDetails) {
         this.buildPublicUserView(userRecipeDetails,pubReview);
       } else {
@@ -481,8 +491,13 @@ function RecipeDetailsView() {
       publishRecipeButton.style.visibility = 'visible';
 
       if (recipe.pubRequested) {
-        publishRecipeButton.textContent = recipe.isPublished ? RECIPE_PUBLISHED : RECIPE_UNDER_REVIEW;
-        publishRecipeButton.disabled = true;
+        if(recipe.isPublished){
+          publishRecipeButton.textContent = RECIPE_PUBLISHED;
+          publishRecipeButton.disabled = false;
+        }else{
+          publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
+          publishRecipeButton.disabled = true;
+        }
       } else {
         publishRecipeButton.textContent = REQUEST_TO_PUBLISH_RECIPE;
         publishRecipeButton.disabled = false;
@@ -497,35 +512,38 @@ function handleUpdateRecipe() {
   window.location = `/account/update_recipe?userRecipeName=${recipeName}`;
 };
 
-async function handlePublishUserRecipe(userId) {
+async function handlePublishUserRecipe(userId,form) {
   const recipeName = document.getElementById('recipe-name').textContent;
-
-  request = {
-    recipeName: recipeName
-  }
-
-  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
-  try {
-    const response = await fetch(url, {
-      method: POST_ACTION,
-      body: JSON.stringify({ favorites: request }),
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      }
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error);
+  const buttonText = form.find("#publishRecipeBtn").text();
+  if(buttonText.includes("remove")){
+    await handleUserRemovePublication();
+  }else{
+    request = {
+      recipeName: recipeName
     }
 
-    const publishRecipeButton = document.getElementById('publishRecipeBtn');
-    publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
-    publishRecipeButton.disabled = true;
-    utils.showAjaxAlert("Success", data.success);
-  } catch (error) {
-    console.error(error);
-    utils.showAjaxAlert("Error", error.message);
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+    try {
+      const response = await fetch(url, {
+        method: POST_ACTION,
+        body: JSON.stringify({ favorites: request }),
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      const publishRecipeButton = document.getElementById('publishRecipeBtn');
+      publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
+      publishRecipeButton.disabled = true;
+      utils.showAjaxAlert("Success", data.success);
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
   }
 };
 
@@ -641,12 +659,38 @@ async function handleFavoriteUnfavoriteDeleteRecipeLogic(userId, form) {
   }
 };
 
+async function handleUserRemovePublication() {
+  const request = {
+    isPublished: false,
+    pubRequested: false
+  };
+  const url = `${PUBLIC_USER_RECIPES_URL}/remove_publish?recipeId=${recipeId}`;
+  try {
+    const response = await fetch(url, {
+      method: PUT_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      },
+      body: JSON.stringify({ favorites: request })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    utils.showAjaxAlert("Success", data.message);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+};
+
 async function handlePublishRecipeReview(reviewResult) {
   const request = {
     isPublished: reviewResult,
     pubRequested: reviewResult
   };
-
   const url = `${PUBLIC_USER_RECIPES_URL}/publish_review?recipeId=${recipeId}`;
   try {
     const response = await fetch(url, {
@@ -671,6 +715,7 @@ async function handlePublishRecipeReview(reviewResult) {
 
 async function updatePublishRequestStatus() {
   const url = `${PUBLIC_USER_RECIPES_URL}/delete_request?recipeId=${recipeId}`;
+
   try {
     const response = await fetch(url, {
       method: DELETE_ACTION,
@@ -725,21 +770,86 @@ $(document).ready(function () {
         break;
       case 'publishRecipe':
         console.log("Submitting form for publishing user recipe");
-        await handlePublishUserRecipe(userId);
+        await handlePublishUserRecipe(userId, form);
         break;
       case 'approvePub':
         await handlePublishRecipeReview(true);
         await updatePublishRequestStatus();
+        sendPubEmail(userName, userEmail, recipeName, emailjs, "pubApproved");
         break;
       case 'denyPub':
         await handlePublishRecipeReview(false);
         await updatePublishRequestStatus();
+        sendPubEmail(userName, userEmail, recipeName, emailjs, "pubDenied");
         break;
       default:
         console.error(`Unknown action on form submission: [${action}]`);
     }
   });
 });
+
+async function getRecipeDetails(recipeIdToFind){
+  const url = `${PUBLIC_USER_RECIPES_URL}/get_requested_recipe?recipeId=${recipeIdToFind}`;
+  console.log(`Querying Server at: ${url}`);
+
+  const response = await fetch(url, {
+    method: GET_ACTION,
+    headers: {
+      'Content-Type': DEFAULT_DATA_TYPE
+    }
+  });
+
+  if (response.ok) {
+    const recipeDetails = await response.json();
+    return recipeDetails;
+  } else {
+    console.error(`Error occurred getting pub requests`);
+    return undefined;
+  }
+}
+
+function sendPubEmail(fullName, email, requestedRecipeName, emailjs, template) {
+  // Emailjs Credentials
+  const SERVICE_ID = "service_38la09d";
+  const PUBLIC_KEY = "ywVrx362IPt0-qvnx";
+
+  // Template / Template ID
+  const APPROVE = "pubApproved"
+  const PUB_APPROVE_TEMPLATE_ID = "template_nzetfa7";
+  const DENY = "pubDenied";
+  const PUB_DENIED_TEMPLATE_ID = "template_pjxabm3";
+
+  // Message
+  const SENDING_APPROVAL_MESSAGE = "Sending approval email:";
+  const SENDING_DENIAL_MESSAGE = "Sending denial email:";
+  const SUCCESS_MESSAGE = "Successfully sent email:";
+  const FAILED_MESSAGE = "Failed to send email:";
+  var templateID;
+
+  if (template === APPROVE) {
+    templateID = PUB_APPROVE_TEMPLATE_ID;
+    console.log(SENDING_APPROVAL_MESSAGE, template);
+  } else if (template === DENY) {
+    templateID = PUB_DENIED_TEMPLATE_ID;
+    console.log(SENDING_DENIAL_MESSAGE, template);
+  }
+
+  const params = {
+    to_name: fullName,
+    requested_recipe: requestedRecipeName,
+    user_email: email,
+  }
+
+  emailjs.send(SERVICE_ID, templateID, params, PUBLIC_KEY)
+    .then(function (response) {
+      console.log(SUCCESS_MESSAGE, response.status, response.text);
+      return true;
+    }, function (error) {
+      console.log(FAILED_MESSAGE, error);
+    });
+
+  return false;
+}
 
 function hasAllData(source, sourceUrl, recipeUri) {
   return source && sourceUrl && recipeUri

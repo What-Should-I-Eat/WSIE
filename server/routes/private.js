@@ -25,6 +25,7 @@ const SUCCESSFULLY_DELETED_RECIPE = "Successfully deleted recipe";
 const UNABLE_TO_DELETE_RECIPE_ERROR = "Error occurred deleting user created recipe";
 const RECIPE_PUBLISHED_APPROVE = "Recipe Has Been Approved";
 const RECIPE_PUBLISHED_DENY = "Recipe Has Been Denied";
+const RECIPE_PUBLISHED_USER_REMOVAL = "Recipe Has Been Removed";
 const SUCCESSFULLY_DELETED_RECIPE_REQUEST = "Successfully deleted recipe request";
 const UNABLE_TO_DELETE_RECIPE_REQUEST_ERROR = "Error occurred deleting recipe publish request";
 const UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR = "Error occurred trying to update publish status";
@@ -598,6 +599,29 @@ privateRouter.put('/recipes/publish_review', async (req, res) => {
     }else{
       res.status(200).json({ message: RECIPE_PUBLISHED_DENY, recipe });
     }
+  } catch (error) {
+    console.error(UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR });
+  }
+});
+
+privateRouter.put('/recipes/remove_publish', async (req, res) => {
+  try {
+    let recipeObjectId = new mongoose.Types.ObjectId(req.query.recipeId);
+
+    let recipe = await Recipe.findOne({ _id: recipeObjectId });
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+
+    const updatedIsPub = await Recipe.updateOne(recipe, { $set: { isPublished: req.body.favorites.isPublished, pubRequested: req.body.favorites.pubRequested} }, { upsert: true, new: true });
+    
+    if (!updatedIsPub) {
+      return res.status(400).json({ error: "Error occurred trying to update publish status" });
+    }
+
+    res.status(200).json({ message: RECIPE_PUBLISHED_USER_REMOVAL, recipe });
+
   } catch (error) {
     console.error(UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR, error);
     res.status(500).json({ error: UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR });

@@ -137,7 +137,7 @@ const DELETE_RECIPE = "Delete Recipe";
 // Publish Recipe
 const REQUEST_TO_PUBLISH_RECIPE = "Request to Publish Recipe";
 const RECIPE_UNDER_REVIEW = "Request to Publish Recipe Under Review";
-const RECIPE_PUBLISHED = "Recipe Published";
+const RECIPE_PUBLISHED = "Recipe Published. Click here to remove it from public recipes.";
 const RECIPE_PUBLISHED_APPROVE = "Recipe Has Been Approved";
 const RECIPE_PUBLISHED_DENY = "Recipe Has Been Denied";
 const UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR = "Error occurred trying to update publish status";
