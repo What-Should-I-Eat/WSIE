@@ -628,6 +628,22 @@ privateRouter.put('/recipes/remove_publish', async (req, res) => {
   }
 });
 
+privateRouter.get('/recipes/get_pub_request', async (req, res) => {
+  try {
+    let recipeObjectId = req.query.recipeId;
+
+    let recipePub = await RecipePubRequest.findOne({ recipeId: recipeObjectId });
+    if (!recipePub) {
+      return res.status(404).json({ error: 'Recipe publish request not found' });
+    }
+
+    res.json(recipePub);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error trying to get recipe' });
+  }
+});
+
 privateRouter.get('/recipes/publish_requests', async (_, res) => {
   try {
     const publishRequests = await RecipePubRequest.find({});

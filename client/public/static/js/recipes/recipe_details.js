@@ -54,11 +54,11 @@ function RecipeDetailsView() {
     try {
       console.log("Loading view from public user recipe");
       const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
-      recipeId = userRecipeDetails._id;
-      recipeName = userRecipeDetails.recipeName;
-      userName = userRecipeDetails.usernameCreator;
       if(userRecipeDetails.pubRequested){
-        const recipePubRequest = await getRecipeDetails(recipeId);
+        recipeId = userRecipeDetails._id;
+        recipeName = userRecipeDetails.recipeName;
+        userName = userRecipeDetails.usernameCreator;
+        const recipePubRequest = await getRecipePubRequest(recipeId);
         userEmail = recipePubRequest.userEmail;
       }
       if (userRecipeDetails) {
@@ -689,7 +689,7 @@ async function handleUserRemovePublication() {
 async function handlePublishRecipeReview(reviewResult) {
   const request = {
     isPublished: reviewResult,
-    pubRequested: reviewResult
+    pubRequested: false
   };
   const url = `${PUBLIC_USER_RECIPES_URL}/publish_review?recipeId=${recipeId}`;
   try {
@@ -733,6 +733,26 @@ async function updatePublishRequestStatus() {
     console.log(data.message);
   } catch (error) {
     console.error(error);
+  }
+};
+
+async function getRecipePubRequest(recipeId){
+  const url = `${PUBLIC_USER_RECIPES_URL}/get_pub_request?recipeId=${recipeId}`;
+  console.log(`Querying Server at: ${url}`);
+
+  const response = await fetch(url, {
+    method: GET_ACTION,
+    headers: {
+      'Content-Type': DEFAULT_DATA_TYPE
+    }
+  });
+
+  if (response.ok) {
+    const recipePubRequest = await response.json();
+    return recipePubRequest;
+  } else {
+    console.error(`Error occurred getting pub requests`);
+    return undefined;
   }
 };
 
@@ -787,26 +807,6 @@ $(document).ready(function () {
     }
   });
 });
-
-async function getRecipeDetails(recipeIdToFind){
-  const url = `${PUBLIC_USER_RECIPES_URL}/get_requested_recipe?recipeId=${recipeIdToFind}`;
-  console.log(`Querying Server at: ${url}`);
-
-  const response = await fetch(url, {
-    method: GET_ACTION,
-    headers: {
-      'Content-Type': DEFAULT_DATA_TYPE
-    }
-  });
-
-  if (response.ok) {
-    const recipeDetails = await response.json();
-    return recipeDetails;
-  } else {
-    console.error(`Error occurred getting pub requests`);
-    return undefined;
-  }
-}
 
 function sendPubEmail(fullName, email, requestedRecipeName, emailjs, template) {
   // Emailjs Credentials
