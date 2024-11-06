@@ -490,18 +490,17 @@ function RecipeDetailsView() {
     if (publishRecipeButton) {
       publishRecipeButton.style.visibility = 'visible';
 
-      if (recipe.pubRequested) {
+
         if(recipe.isPublished){
           publishRecipeButton.textContent = RECIPE_PUBLISHED;
           publishRecipeButton.disabled = false;
-        }else{
+        }else if(recipe.pubRequested) {
           publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
           publishRecipeButton.disabled = true;
+        }else {
+          publishRecipeButton.textContent = REQUEST_TO_PUBLISH_RECIPE;
+          publishRecipeButton.disabled = false;
         }
-      } else {
-        publishRecipeButton.textContent = REQUEST_TO_PUBLISH_RECIPE;
-        publishRecipeButton.disabled = false;
-      }
     }
   };
 }
@@ -517,6 +516,7 @@ async function handlePublishUserRecipe(userId,form) {
   const buttonText = form.find("#publishRecipeBtn").text();
   if(buttonText.includes("remove")){
     await handleUserRemovePublication();
+    return;
   }else{
     request = {
       recipeName: recipeName
