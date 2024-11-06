@@ -1,3 +1,8 @@
+let recipeId = '';
+let userName = '';
+let userEmail = '';
+let recipeName = '';
+
 function RecipeDetailsView() {
   this.loadEdamamRecipe = async (source, sourceUrl, recipeUri) => {
     if (hasAllData(source, sourceUrl, recipeUri)) {
@@ -32,6 +37,7 @@ function RecipeDetailsView() {
       console.log("Loading view from user created recipe");
 
       const userRecipeDetails = await this.getUserRecipe(userRecipeName);
+      recipeId = userRecipeDetails._id;
       if (userRecipeDetails) {
         this.buildUserView(userRecipeDetails);
       } else {
@@ -44,13 +50,19 @@ function RecipeDetailsView() {
     }
   }
 
-  this.loadPublicUserRecipe = async (publicUserRecipeName) => {
+  this.loadPublicUserRecipe = async (publicUserRecipeName, pubReview) => {
     try {
       console.log("Loading view from public user recipe");
-
       const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
+      if(userRecipeDetails.pubRequested){
+        recipeId = userRecipeDetails._id;
+        recipeName = userRecipeDetails.recipeName;
+        userName = userRecipeDetails.usernameCreator;
+        const recipePubRequest = await getRecipePubRequest(recipeId);
+        userEmail = recipePubRequest.userEmail;
+      }
       if (userRecipeDetails) {
-        this.buildPublicUserView(userRecipeDetails);
+        this.buildPublicUserView(userRecipeDetails,pubReview);
       } else {
         console.error("Invalid public user recipe data to build view");
         utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
@@ -276,7 +288,7 @@ function RecipeDetailsView() {
     }
   }
 
-  this.buildPublicUserView = async (recipe) => {
+  this.buildPublicUserView = async (recipe, pubReview) => {
     // Leave this here so its compatible and we can share functionality
     const form = document.getElementById('recipeForm');
 
@@ -309,12 +321,20 @@ function RecipeDetailsView() {
       form.appendChild(hiddenRecipeSourceUrlInput);
     }
     hiddenRecipeSourceUrlInput.value = "";
-
-    // Check if the recipe is a favorite
-    const username = utils.getUserNameFromCookie();
-    const isFavorite = await checkIfFavorite(username, recipe.recipeName);
     const addToFavoritesBtn = document.getElementById('addToFavoritesBtn');
-    addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
+    if(pubReview != 'true'){
+      // Check if the recipe is a favorite
+      const username = utils.getUserNameFromCookie();
+      const isFavorite = await checkIfFavorite(username, recipe.recipeName);
+      addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
+    }else{
+      addToFavoritesBtn.style.visibility = 'hidden';
+      //update buttons to show approve or deny request
+      const approveRequestBtn = document.getElementById('approvePubReqBtn');
+      approveRequestBtn.style.visibility = 'visible';
+      const denyRequestButton = document.getElementById("denyPubReqBtn");
+      denyRequestButton.style.visibility = 'visible';
+    }
 
     // Update header name and image
     document.getElementById('recipe-name').textContent = recipe.recipeName;
@@ -470,13 +490,17 @@ function RecipeDetailsView() {
     if (publishRecipeButton) {
       publishRecipeButton.style.visibility = 'visible';
 
-      if (recipe.pubRequested) {
-        publishRecipeButton.textContent = recipe.isPublished ? RECIPE_PUBLISHED : RECIPE_UNDER_REVIEW;
-        publishRecipeButton.disabled = true;
-      } else {
-        publishRecipeButton.textContent = REQUEST_TO_PUBLISH_RECIPE;
-        publishRecipeButton.disabled = false;
-      }
+
+        if(recipe.isPublished){
+          publishRecipeButton.textContent = RECIPE_PUBLISHED;
+          publishRecipeButton.disabled = false;
+        }else if(recipe.pubRequested) {
+          publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
+          publishRecipeButton.disabled = true;
+        }else {
+          publishRecipeButton.textContent = REQUEST_TO_PUBLISH_RECIPE;
+          publishRecipeButton.disabled = false;
+        }
     }
   };
 }
@@ -487,44 +511,39 @@ function handleUpdateRecipe() {
   window.location = `/account/update_recipe?userRecipeName=${recipeName}`;
 };
 
-async function handlePublishUserRecipe(userId) {
+async function handlePublishUserRecipe(userId,form) {
   const recipeName = document.getElementById('recipe-name').textContent;
-  const recipeImage = document.getElementById('recipe-image').src;
-  const recipeIngredients = Array.from(document.getElementById('ingredients-list').children).map(li => li.textContent);
-  const recipeDirections = Array.from(document.getElementById('preparation-list').children).map(li => li.textContent);
-  const recipeNutrition = Array.from(document.getElementById('nutritional-facts-list').children).map(li => li.textContent);
-
-  let request = {
-    recipeName: recipeName,
-    recipeIngredients: recipeIngredients.join(", "),
-    recipeDirections: recipeDirections.join(". "),
-    recipeNutrition: recipeNutrition.join(", "),
-    recipeImage: recipeImage,
-    userCreated: true
-  };
-
-  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
-  try {
-    const response = await fetch(url, {
-      method: POST_ACTION,
-      body: JSON.stringify(request),
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      }
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error);
+  const buttonText = form.find("#publishRecipeBtn").text();
+  if(buttonText.includes("remove")){
+    await handleUserRemovePublication();
+    return;
+  }else{
+    request = {
+      recipeName: recipeName
     }
 
-    const publishRecipeButton = document.getElementById('publishRecipeBtn');
-    publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
-    publishRecipeButton.disabled = true;
-    utils.showAjaxAlert("Success", data.success);
-  } catch (error) {
-    console.error(error);
-    utils.showAjaxAlert("Error", error.message);
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+    try {
+      const response = await fetch(url, {
+        method: POST_ACTION,
+        body: JSON.stringify({ favorites: request }),
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      const publishRecipeButton = document.getElementById('publishRecipeBtn');
+      publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
+      publishRecipeButton.disabled = true;
+      utils.showAjaxAlert("Success", data.success);
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
   }
 };
 
@@ -640,6 +659,103 @@ async function handleFavoriteUnfavoriteDeleteRecipeLogic(userId, form) {
   }
 };
 
+async function handleUserRemovePublication() {
+  const request = {
+    isPublished: false,
+    pubRequested: false
+  };
+  const url = `${PUBLIC_USER_RECIPES_URL}/remove_publish?recipeId=${recipeId}`;
+  try {
+    const response = await fetch(url, {
+      method: PUT_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      },
+      body: JSON.stringify({ favorites: request })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    utils.showAjaxAlert("Success", data.message);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+};
+
+async function handlePublishRecipeReview(reviewResult) {
+  const request = {
+    isPublished: reviewResult,
+    pubRequested: false
+  };
+  const url = `${PUBLIC_USER_RECIPES_URL}/publish_review?recipeId=${recipeId}`;
+  try {
+    const response = await fetch(url, {
+      method: PUT_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      },
+      body: JSON.stringify({ favorites: request })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    utils.showAjaxAlert("Success", data.message);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+};
+
+async function updatePublishRequestStatus() {
+  const url = `${PUBLIC_USER_RECIPES_URL}/delete_request?recipeId=${recipeId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: DELETE_ACTION,
+      body: '',
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    console.log(data.message);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+async function getRecipePubRequest(recipeId){
+  const url = `${PUBLIC_USER_RECIPES_URL}/get_pub_request?recipeId=${recipeId}`;
+  console.log(`Querying Server at: ${url}`);
+
+  const response = await fetch(url, {
+    method: GET_ACTION,
+    headers: {
+      'Content-Type': DEFAULT_DATA_TYPE
+    }
+  });
+
+  if (response.ok) {
+    const recipePubRequest = await response.json();
+    return recipePubRequest;
+  } else {
+    console.error(`Error occurred getting pub requests`);
+    return undefined;
+  }
+};
+
 $(document).ready(function () {
   // Handles Form Submission Logic
   $("#recipeForm").on("submit", async function (event) {
@@ -674,13 +790,66 @@ $(document).ready(function () {
         break;
       case 'publishRecipe':
         console.log("Submitting form for publishing user recipe");
-        await handlePublishUserRecipe(userId);
+        await handlePublishUserRecipe(userId, form);
+        break;
+      case 'approvePub':
+        await handlePublishRecipeReview(true);
+        await updatePublishRequestStatus();
+        sendPubEmail(userName, userEmail, recipeName, emailjs, "pubApproved");
+        break;
+      case 'denyPub':
+        await handlePublishRecipeReview(false);
+        await updatePublishRequestStatus();
+        sendPubEmail(userName, userEmail, recipeName, emailjs, "pubDenied");
         break;
       default:
         console.error(`Unknown action on form submission: [${action}]`);
     }
   });
 });
+
+function sendPubEmail(fullName, email, requestedRecipeName, emailjs, template) {
+  // Emailjs Credentials
+  const SERVICE_ID = "service_38la09d";
+  const PUBLIC_KEY = "ywVrx362IPt0-qvnx";
+
+  // Template / Template ID
+  const APPROVE = "pubApproved"
+  const PUB_APPROVE_TEMPLATE_ID = "template_nzetfa7";
+  const DENY = "pubDenied";
+  const PUB_DENIED_TEMPLATE_ID = "template_pjxabm3";
+
+  // Message
+  const SENDING_APPROVAL_MESSAGE = "Sending approval email:";
+  const SENDING_DENIAL_MESSAGE = "Sending denial email:";
+  const SUCCESS_MESSAGE = "Successfully sent email:";
+  const FAILED_MESSAGE = "Failed to send email:";
+  var templateID;
+
+  if (template === APPROVE) {
+    templateID = PUB_APPROVE_TEMPLATE_ID;
+    console.log(SENDING_APPROVAL_MESSAGE, template);
+  } else if (template === DENY) {
+    templateID = PUB_DENIED_TEMPLATE_ID;
+    console.log(SENDING_DENIAL_MESSAGE, template);
+  }
+
+  const params = {
+    to_name: fullName,
+    requested_recipe: requestedRecipeName,
+    user_email: email,
+  }
+
+  emailjs.send(SERVICE_ID, templateID, params, PUBLIC_KEY)
+    .then(function (response) {
+      console.log(SUCCESS_MESSAGE, response.status, response.text);
+      return true;
+    }, function (error) {
+      console.log(FAILED_MESSAGE, error);
+    });
+
+  return false;
+}
 
 function hasAllData(source, sourceUrl, recipeUri) {
   return source && sourceUrl && recipeUri

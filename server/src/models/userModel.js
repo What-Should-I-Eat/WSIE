@@ -13,6 +13,7 @@ const UserSchema = new Schema({
     verificationCodeTimestamp: Date,
     incorrectPasswordAttempts: Number,
     incorrectPasswordAttemptTime: Date,
+    isAdmin: Boolean,
     diet: [String],
     health: [String],
     // Reference by Id

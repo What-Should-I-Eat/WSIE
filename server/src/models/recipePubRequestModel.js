@@ -2,12 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const recipePubRequestSchema = new Schema({
-  recipeName: String,
-  recipeIngredients: String,
-  recipeDirections: String,
-  recipeNutrition: String,
-  recipeImage: String,
-  userCreated: Boolean
+  recipeId: String,
+  userEmail: String
   // TODO: Add the username of who created
   // TODO: Add the status of the request
 });

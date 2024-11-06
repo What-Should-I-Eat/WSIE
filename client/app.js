@@ -9,6 +9,7 @@ var recipesRouter = require("./routes/recipe");
 var accountRouter = require("./routes/account");
 var aboutRouter = require("./routes/about");
 var contactRouter = require("./routes/contact");
+var adminRouter = require("./routes/admin");
 
 var app = express();
 
@@ -30,6 +31,7 @@ app.use("/recipes", recipesRouter);
 app.use("/account", accountRouter);
 app.use("/about", aboutRouter);
 app.use("/contact", contactRouter);
+app.use("/admin", adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (_, _, next) {

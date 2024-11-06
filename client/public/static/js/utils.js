@@ -79,6 +79,7 @@ const utils = (() => {
    */
   async function renderNavbar() {
     const navBar = $('#navBarMyAccountSignInSignUp');
+    const adminTab = $('#enable-admin-tab');
     navBar.empty();
 
     const username = getUserNameFromCookie();
@@ -105,6 +106,9 @@ const utils = (() => {
         myAccountDropdown.append(dropdownToggle);
         myAccountDropdown.append(dropdownMenu);
         navBar.append(myAccountDropdown);
+        if(user.isAdmin){
+          adminTab.append('<a class="nav-link" href="/admin">Admin</a>');
+        }
       } else {
         setNotLoggedInNavBar(navBar);
       }

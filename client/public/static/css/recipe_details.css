@@ -45,6 +45,16 @@
 
 /* Hide the buttons without removing them from the layout flow */
 #updateRecipeBtn,
-#publishRecipeBtn {
+#publishRecipeBtn,
+#approvePubReqBtn,
+#denyPubReqBtn {
   visibility: hidden;
+}
+
+#approvePubReqBtn{
+  background-color: #0A8E36;
+}
+
+#denyPubReqBtn {
+  background-color: #801A18;
 }
