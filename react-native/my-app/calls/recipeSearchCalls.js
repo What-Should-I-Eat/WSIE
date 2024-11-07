@@ -208,20 +208,6 @@ const getRecipeDirections = async (source, sourceURL) => {
   return(directionString);
 }
 
-function showHideRecipes() {
-  const recipesContainer = document.getElementById('recipesContainer');
-  const toggleButton = document.getElementById('toggleButton');
-
-  // Toggle the hide class
-  recipesContainer.classList.toggle('hide');
-
-  // Change button text
-  if (recipesContainer.classList.contains('hide')) {
-      toggleButton.textContent = 'Show Recipes';
-  } else {
-      toggleButton.textContent = 'Hide Recipes';
-  }
-}
-export { searchForRecipes, getUserData, getRecipeDirections,showHideRecipes };
+export { searchForRecipes, getUserData, getRecipeDirections };
 
 

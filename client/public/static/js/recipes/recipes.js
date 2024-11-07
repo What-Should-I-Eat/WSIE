@@ -655,6 +655,21 @@ function showDropdown(dropDownIndex) {
   document.getElementById("myDropdown"+dropDownIndex).classList.toggle("show");
 }
 
+function showHideRecipes() {
+  const recipesContainer = document.getElementById('recipesContainer');
+  const toggleButton = document.getElementById('toggleButton');
+
+  // Toggle the hide class
+  recipesContainer.classList.toggle('hide');
+
+  // Change button text
+  if (recipesContainer.classList.contains('hide')) {
+      toggleButton.textContent = 'Show Recipes';
+  } else {
+      toggleButton.textContent = 'Hide Recipes';
+  }
+}
+
 var currentDotButton;
 var lastDotButton;
 
