@@ -400,6 +400,8 @@
       <input type="text" class="recipe-search-input form-control d-block py-2 my-0" id="search_recipes"
         name="search_recipes" placeholder="Search by Recipe Name, Ingredients..." />
       <div class="d-flex flex-row justify-content-between">
+         <!-- Toggle Button to Hide/Show Recipes -->
+         <button onclick="showHideRecipes()" id="toggleButton" type="button" class="btn btn-primary">Hide Recipes</button>
         <button id="bn" name="bn" type="button" class="recipes-filter-btn btn btn-primary" data-toggle="modal"
           data-target="#recipe-filter-modal">Filter</button>
         <button type="submit" class="recipe-search-btn btn btn-primary">Search</button>

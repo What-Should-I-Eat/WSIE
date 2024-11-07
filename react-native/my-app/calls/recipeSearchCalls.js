@@ -182,7 +182,7 @@ const getRecipeDirections = async (source, sourceURL) => {
           'Content-Type': 'application/json'
       }
   });
-  
+
   if (!resp.ok) {
       throw new Error('Failed to fetch recipe directions');
   }
@@ -208,4 +208,20 @@ const getRecipeDirections = async (source, sourceURL) => {
   return(directionString);
 }
 
-export { searchForRecipes, getUserData, getRecipeDirections };
+function showHideRecipes() {
+  const recipesContainer = document.getElementById('recipesContainer');
+  const toggleButton = document.getElementById('toggleButton');
+
+  // Toggle the hide class
+  recipesContainer.classList.toggle('hide');
+
+  // Change button text
+  if (recipesContainer.classList.contains('hide')) {
+      toggleButton.textContent = 'Show Recipes';
+  } else {
+      toggleButton.textContent = 'Hide Recipes';
+  }
+}
+export { searchForRecipes, getUserData, getRecipeDirections,showHideRecipes };
+
+
