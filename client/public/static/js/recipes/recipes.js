@@ -223,7 +223,7 @@ function RecipesView() {
       dropDownIndex++;
     });
  // Only render publicUserRecipes if showPublicRecipes is true
- if (showPublicRecipes && publicUserRecipes) {  // <-- Modified
+ if (showPublicRecipes && publicUserRecipes) {
       publicUserRecipes.forEach(async recipe => {
         const recipeName = recipe.recipeName;
         const recipeImage = hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
