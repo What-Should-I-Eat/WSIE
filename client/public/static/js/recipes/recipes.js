@@ -1,4 +1,5 @@
 const recipesView = new RecipesView();
+let showPublicRecipes = true; // Global toggle variable for showing/hiding public recipes
 
 function RecipesView() {
   const addedRecipesSet = new Set();
@@ -13,9 +14,16 @@ function RecipesView() {
     const pagination = $("#paginationList");
 
     try {
+      // Show publish recipe button
+      const hidePublicRecipeButton = document.getElementById('togglePublicRecipeShownButton');
+      if(showPublicRecipes){
+        hidePublicRecipeButton.textContent = HIDE_PUBLIC_RECIPES;
+      }else{
+        hidePublicRecipeButton.textContent = SHOW_PUBLIC_RECIPES;
+      }
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
       const recipes = await this.getRecipes(url);
-      const publicUserRecipes = await this.getPublicUserRecipes();
+      const publicUserRecipes = showPublicRecipes ? await this.getPublicUserRecipes() : []; // Only fetch if flag is true
 
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
@@ -214,8 +222,8 @@ function RecipesView() {
       }
       dropDownIndex++;
     });
-
-    if (publicUserRecipes) {
+ // Only render publicUserRecipes if showPublicRecipes is true
+ if (showPublicRecipes && publicUserRecipes) {
       publicUserRecipes.forEach(async recipe => {
         const recipeName = recipe.recipeName;
         const recipeImage = hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
@@ -655,6 +663,13 @@ function showDropdown(dropDownIndex) {
   document.getElementById("myDropdown"+dropDownIndex).classList.toggle("show");
 }
 
+// Toggles the global variable for showing/hiding public recipes and reloads the page
+function showHideRecipes() {
+  showPublicRecipes = !showPublicRecipes;
+  utils.setStorage('showPublicRecipes', showPublicRecipes);
+  window.location.reload(); // Reload the page to apply the toggle
+}
+
 var currentDotButton;
 var lastDotButton;
 
@@ -691,6 +706,9 @@ window.onclick = function(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+
+   // Load the preference from local storage if available
+  showPublicRecipes = utils.getFromStorage('showPublicRecipes'); 
   loadSelectionsFromStorage();
 
   document.querySelectorAll('.form-check-input').forEach(checkbox => {
