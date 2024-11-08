@@ -128,6 +128,8 @@ const EDAMAM_QUERY_ERROR = "Error occurred getting recipes. Verify dietary restr
 // This is a generic no image available
 const NO_IMAGE_AVAILABLE = "/static/img/no_image_available.svg";
 const NO_RECIPES_FOUND = "0 recipes found.";
+const HIDE_PUBLIC_RECIPES = "Hide User Recipes";
+const SHOW_PUBLIC_RECIPES = "Show User Recipes";
 
 // Recipe Details
 const ADD_TO_FAVORITES = "Add Recipe to Favorites";

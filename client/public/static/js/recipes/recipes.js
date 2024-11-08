@@ -14,6 +14,13 @@ function RecipesView() {
     const pagination = $("#paginationList");
 
     try {
+      // Show publish recipe button
+      const hidePublicRecipeButton = document.getElementById('togglePublicRecipeShownButton');
+      if(showPublicRecipes){
+        hidePublicRecipeButton.textContent = HIDE_PUBLIC_RECIPES;
+      }else{
+        hidePublicRecipeButton.textContent = SHOW_PUBLIC_RECIPES;
+      }
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
       const recipes = await this.getRecipes(url);
       const publicUserRecipes = showPublicRecipes ? await this.getPublicUserRecipes() : []; // Only fetch if flag is true
@@ -658,10 +665,11 @@ function showDropdown(dropDownIndex) {
 
 // Toggles the global variable for showing/hiding public recipes and reloads the page
 function showHideRecipes() {
-  showPublicRecipes = !showPublicRecipes; // <-- Added
-  utils.setStorage('showPublicRecipes', showPublicRecipes); // <-- Added for persistence
-  window.location = "/my_recipes"; // Reload the page to apply the toggle
+  showPublicRecipes = !showPublicRecipes;
+  utils.setStorage('showPublicRecipes', showPublicRecipes);
+  window.location.reload(); // Reload the page to apply the toggle
 }
+
 var currentDotButton;
 var lastDotButton;
 
@@ -698,12 +706,9 @@ window.onclick = function(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  if (!showPublicRecipes) {
-    showHideRecipes(); // This will reload the page and apply the stored state
-}
 
    // Load the preference from local storage if available
-  showPublicRecipes = utils.getFromStorage('showPublicRecipes') !== 'false'; // <-- Added to set initial value based on storage
+  showPublicRecipes = utils.getFromStorage('showPublicRecipes'); 
   loadSelectionsFromStorage();
 
   document.querySelectorAll('.form-check-input').forEach(checkbox => {
