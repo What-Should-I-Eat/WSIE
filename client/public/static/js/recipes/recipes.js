@@ -1,4 +1,5 @@
 const recipesView = new RecipesView();
+let showPublicRecipes = true; // Global toggle variable for showing/hiding public recipes
 
 function RecipesView() {
   const addedRecipesSet = new Set();
@@ -15,7 +16,7 @@ function RecipesView() {
     try {
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
       const recipes = await this.getRecipes(url);
-      const publicUserRecipes = await this.getPublicUserRecipes();
+      const publicUserRecipes = showPublicRecipes ? await this.getPublicUserRecipes() : []; // Only fetch if flag is true
 
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
@@ -214,8 +215,8 @@ function RecipesView() {
       }
       dropDownIndex++;
     });
-
-    if (publicUserRecipes) {
+ // Only render publicUserRecipes if showPublicRecipes is true
+ if (showPublicRecipes && publicUserRecipes) {  // <-- Modified
       publicUserRecipes.forEach(async recipe => {
         const recipeName = recipe.recipeName;
         const recipeImage = hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
@@ -655,21 +656,12 @@ function showDropdown(dropDownIndex) {
   document.getElementById("myDropdown"+dropDownIndex).classList.toggle("show");
 }
 
+// Toggles the global variable for showing/hiding public recipes and reloads the page
 function showHideRecipes() {
-  const recipesContainer = document.getElementById('recipesContainer');
-  const toggleButton = document.getElementById('toggleButton');
-
-  // Toggle the hide class
-  recipesContainer.classList.toggle('hide');
-
-  // Change button text
-  if (recipesContainer.classList.contains('hide')) {
-      toggleButton.textContent = 'Show Recipes';
-  } else {
-      toggleButton.textContent = 'Hide Recipes';
-  }
+  showPublicRecipes = !showPublicRecipes; // <-- Added
+  utils.setStorage('showPublicRecipes', showPublicRecipes); // <-- Added for persistence
+  window.location = "/my_recipes"; // Reload the page to apply the toggle
 }
-
 var currentDotButton;
 var lastDotButton;
 
@@ -706,6 +698,12 @@ window.onclick = function(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  if (!showPublicRecipes) {
+    showHideRecipes(); // This will reload the page and apply the stored state
+}
+
+   // Load the preference from local storage if available
+  showPublicRecipes = utils.getFromStorage('showPublicRecipes') !== 'false'; // <-- Added to set initial value based on storage
   loadSelectionsFromStorage();
 
   document.querySelectorAll('.form-check-input').forEach(checkbox => {
