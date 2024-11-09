@@ -1,5 +1,6 @@
 const recipesView = new RecipesView();
 let showPublicRecipes = true; // Global toggle variable for showing/hiding public recipes
+let isFirstPage = true; // Flag to indicate if it's the first page load
 
 function RecipesView() {
   const addedRecipesSet = new Set();
@@ -16,6 +17,7 @@ function RecipesView() {
     try {
       // Show publish recipe button
       const hidePublicRecipeButton = document.getElementById('togglePublicRecipeShownButton');
+      hidePublicRecipeButton.textContent = showPublicRecipes ? HIDE_PUBLIC_RECIPES : SHOW_PUBLIC_RECIPES;
       if(showPublicRecipes){
         hidePublicRecipeButton.textContent = HIDE_PUBLIC_RECIPES;
       }else{
@@ -23,7 +25,8 @@ function RecipesView() {
       }
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
       const recipes = await this.getRecipes(url);
-      const publicUserRecipes = showPublicRecipes ? await this.getPublicUserRecipes() : []; // Only fetch if flag is true
+      // Only fetch public user recipes on the first page or if explicitly toggled
+      const publicUserRecipes = (isFirstPage && showPublicRecipes) ? await this.getPublicUserRecipes() : [];
 
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
@@ -35,6 +38,10 @@ function RecipesView() {
         container.append(this.getNoRecipesFound());
         pagination.empty().hide();
       }
+
+      // Set `isFirstPage` to false after the first page load
+      isFirstPage = false;
+
     } catch (error) {
       console.error(error);
       utils.showAjaxAlert("Error", error.message);
@@ -223,7 +230,8 @@ function RecipesView() {
       dropDownIndex++;
     });
  // Only render publicUserRecipes if showPublicRecipes is true
- if (showPublicRecipes && publicUserRecipes) {
+ 
+ if (isFirstPage && showPublicRecipes && publicUserRecipes) {
       publicUserRecipes.forEach(async recipe => {
         const recipeName = recipe.recipeName;
         const recipeImage = hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
