@@ -460,9 +460,19 @@
         </section>
 
         <section class="recipe-info inline-div">
+          <h3>Add your own review</h3>
+            <label for="recipeReviewInput">Review</label>
+            <input id="recipeReviewInput"/>
+            <button type="submit" class="btn btn-primary" name="action" value="postReview"
+            id="postReviewBtn">Post Review</button>
           <h3>Community Reviews</h3>
-          
+            <section class="recipe-info inline-div" id="reviewSection">
+              <ul id="user-reviews-list">
+                <!-- Dynamically building user reviews here -->
+              </ul>
+          </section>
         </section>
+
         <section class="recipe-info handle-favorites">
           <button type="submit" class="btn btn-primary" name="action" value="addToFavorites" id="addToFavoritesBtn">Add
             Recipe to Favorites</button>

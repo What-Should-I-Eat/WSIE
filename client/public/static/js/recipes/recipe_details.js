@@ -547,6 +547,34 @@ async function handlePublishUserRecipe(userId,form) {
   }
 };
 
+async function handleUserReview(userId){
+  request = {
+    reviewedRecipeId: recipeId,
+    writtenReview: recipeReviewInput,
+  }
+
+  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
+  try {
+    const response = await fetch(url, {
+      method: POST_ACTION,
+      body: JSON.stringify({ reviews: request }),
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+    
+    utils.showAjaxAlert("Success", data.success);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+};
+
 async function handleFavoriteUnfavoriteDeleteRecipeLogic(userId, form) {
   const recipeName = document.getElementById('recipe-name').textContent;
   const recipeImage = document.getElementById('recipe-image').src;
@@ -801,6 +829,9 @@ $(document).ready(function () {
         await handlePublishRecipeReview(false);
         await updatePublishRequestStatus();
         sendPubEmail(userName, userEmail, recipeName, emailjs, "pubDenied");
+        break;
+      case 'postReview':
+        await handleUserReview(userId);
         break;
       default:
         console.error(`Unknown action on form submission: [${action}]`);

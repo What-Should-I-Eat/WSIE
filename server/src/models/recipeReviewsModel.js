@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const recipeReviewSchema = new Schema({
-  recipeId: String,
-  reviewerUSername: String,
+  reviewedRecipeId: String,
+  reviewerUsername: String,
   writtenReview: String
 });
 

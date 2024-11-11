@@ -3,6 +3,7 @@ const privateRouter = express.Router();
 const User = require("../src/models/userModel.js");
 const Recipe = require("../src/models/recipeModel.js");
 const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
+const RecipeReview = require("../src/models/recipeReviewsModel.js");
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
@@ -668,6 +669,31 @@ privateRouter.delete('/recipes/delete_request', async (req, res) => {
   } catch (error) {
     console.error(UNABLE_TO_DELETE_RECIPE_REQUEST_ERROR, error);
     res.status(500).json({ error: UNABLE_TO_DELETE_RECIPE_REQUEST_ERROR });
+  }
+});
+
+privateRouter.post('/users/:id/recipe/post_review', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
+    }
+
+    const userReview = new RecipeReview({
+      reviewedRecipeId: req.body.reviews.reviewedRecipeId,
+      reviewerUsername: user,
+      writtenReview: req.body.reviews.writtenReview
+    });
+
+    const savedReview = await userReview.save();
+    if (savedReview) {
+      res.status(200).json({ success: "Posted your review!" });
+    } else {
+      res.status(500).json({ error: "Error occurred posting your review!" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error occurred sending post review message." });
   }
 });
 
