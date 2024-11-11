@@ -182,7 +182,7 @@ const getRecipeDirections = async (source, sourceURL) => {
           'Content-Type': 'application/json'
       }
   });
-  
+
   if (!resp.ok) {
       throw new Error('Failed to fetch recipe directions');
   }
@@ -209,3 +209,5 @@ const getRecipeDirections = async (source, sourceURL) => {
 }
 
 export { searchForRecipes, getUserData, getRecipeDirections };
+
+
