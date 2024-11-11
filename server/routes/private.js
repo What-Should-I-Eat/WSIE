@@ -678,14 +678,13 @@ privateRouter.post('/users/:id/recipe/post_review', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
     }
-
     const userReview = new RecipeReview({
       reviewedRecipeId: req.body.reviews.reviewedRecipeId,
-      reviewerUsername: user,
+      reviewerUsername: user.username,
       writtenReview: req.body.reviews.writtenReview
     });
-
     const savedReview = await userReview.save();
+    console.log("saving");
     if (savedReview) {
       res.status(200).json({ success: "Posted your review!" });
     } else {
@@ -694,6 +693,22 @@ privateRouter.post('/users/:id/recipe/post_review', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error occurred sending post review message." });
+  }
+});
+
+privateRouter.get('/recipes/get_reviews', async (req, res) => {
+  try {
+    let recipeObjectId = req.query.recipeId;
+
+    let recipePub = await RecipeReview.find({ reviewedRecipeId: recipeObjectId });
+    if (!recipePub) {
+      return res.status(404).json({ error: 'No reviews found' });
+    }
+
+    res.json(recipePub);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error trying to get reviews' });
   }
 });
 

@@ -387,6 +387,10 @@ function RecipeDetailsView() {
     const noDietaryText = document.createElement('p');
     noDietaryText.innerHTML = `No user dietary labels.`;
     dietaryContainer.appendChild(noDietaryText);
+
+    // Update reviews
+    const userReviews = await getRecipePubReviews();
+    console.log(userReviews);
   };
 
   this.buildUserView = async (recipe) => {
@@ -502,6 +506,10 @@ function RecipeDetailsView() {
           publishRecipeButton.disabled = false;
         }
     }
+
+    // Update reviews
+    const userReviews = await getRecipePubReviews();
+    console.log(userReviews);
   };
 }
 
@@ -550,7 +558,7 @@ async function handlePublishUserRecipe(userId,form) {
 async function handleUserReview(userId){
   request = {
     reviewedRecipeId: recipeId,
-    writtenReview: recipeReviewInput,
+    writtenReview: recipeReviewInput.value,
   }
 
   let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
@@ -572,6 +580,26 @@ async function handleUserReview(userId){
   } catch (error) {
     console.error(error);
     utils.showAjaxAlert("Error", error.message);
+  }
+};
+
+async function getRecipePubReviews(){
+  const url = `${PUBLIC_USER_RECIPES_URL}/get_reviews?recipeId=${recipeId}`;
+  console.log(`Querying Server at: ${url}`);
+
+  const response = await fetch(url, {
+    method: GET_ACTION,
+    headers: {
+      'Content-Type': DEFAULT_DATA_TYPE
+    }
+  });
+
+  if (response.ok) {
+    const recipePubRequest = await response.json();
+    return recipePubRequest;
+  } else {
+    console.error(`Error occurred getting pub requests`);
+    return undefined;
   }
 };
 
