@@ -1,5 +1,9 @@
 const recipesView = new RecipesView();
+const publicUserRecipesPerPage = 5; // Number of public recipes per page
 let showPublicRecipes = true; // Global toggle variable for showing/hiding public recipes
+let isFirstPage = true; // Flag to indicate if it's the first page load
+let publicUserRecipes = []; // Store all public recipes
+let currentPublicRecipePage = 1; // Track the current page of public recipes
 
 function RecipesView() {
   const addedRecipesSet = new Set();
@@ -16,6 +20,7 @@ function RecipesView() {
     try {
       // Show publish recipe button
       const hidePublicRecipeButton = document.getElementById('togglePublicRecipeShownButton');
+      hidePublicRecipeButton.textContent = showPublicRecipes ? HIDE_PUBLIC_RECIPES : SHOW_PUBLIC_RECIPES;
       if(showPublicRecipes){
         hidePublicRecipeButton.textContent = HIDE_PUBLIC_RECIPES;
       }else{
@@ -23,7 +28,14 @@ function RecipesView() {
       }
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
       const recipes = await this.getRecipes(url);
-      const publicUserRecipes = showPublicRecipes ? await this.getPublicUserRecipes() : []; // Only fetch if flag is true
+
+       // Fetch all public user recipes only once and store them
+       if (isFirstPage && showPublicRecipes) {
+        publicUserRecipes = await this.getPublicUserRecipes() || [];
+      }
+
+      const paginatedPublicUserRecipes = this.getPaginatedPublicUserRecipes();
+
 
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
@@ -35,6 +47,10 @@ function RecipesView() {
         container.append(this.getNoRecipesFound());
         pagination.empty().hide();
       }
+
+      // Set `isFirstPage` to false after the first page load
+      isFirstPage = false;
+
     } catch (error) {
       console.error(error);
       utils.showAjaxAlert("Error", error.message);
@@ -140,6 +156,12 @@ function RecipesView() {
       throw new Error(EDAMAM_QUERY_ERROR);
     }
   };
+  this.getPaginatedPublicUserRecipes = () => {
+    // Calculate the start and end indices for the current page
+    const startIdx = (currentPublicRecipePage - 1) * publicUserRecipesPerPage;
+    const endIdx = startIdx + publicUserRecipesPerPage;
+    return publicUserRecipes.slice(startIdx, endIdx);
+  };
 
   this.getPublicUserRecipes = async () => {
     console.log(`Querying Server for Public User Recipes at: [${PUBLIC_USER_RECIPES_URL}]`)
@@ -178,7 +200,7 @@ function RecipesView() {
       const identifier = `${recipe.label}-${recipe.source}`;
       const username = utils.getUserNameFromCookie();
       const isFavorite = await utils.checkIfFavorite(username, recipeName);
-
+      const paginatedPublicUserRecipes = this.getPaginatedPublicUserRecipes();
       const unfavoriteDropdown = `
       <div class="recipe-dropdown">
         <!-- three dots -->
@@ -199,7 +221,7 @@ function RecipesView() {
               <button id="addFavorite" onClick="favoriteEdamamRecipe('${recipeUri} + ${recipeUrl} + ${recipeSource}')">Favorite</button>
             </div>
         </div>`;
-      let setFavoriteDropdown = isFavorite ? unfavoriteDropdown : favoriteDropdown;
+        const setFavoriteDropdown = this.getFavoriteDropdown(isFavorite, recipeUri, recipeUrl, recipeSource, recipeName, dropDownIndex);
 
       if (!addedRecipesSet.has(identifier)) {
         addedRecipesSet.add(identifier);
@@ -223,7 +245,8 @@ function RecipesView() {
       dropDownIndex++;
     });
  // Only render publicUserRecipes if showPublicRecipes is true
- if (showPublicRecipes && publicUserRecipes) {
+ 
+ if (isFirstPage && showPublicRecipes && publicUserRecipes) {
       publicUserRecipes.forEach(async recipe => {
         const recipeName = recipe.recipeName;
         const recipeImage = hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
@@ -289,6 +312,20 @@ function RecipesView() {
       });
     }
   };
+ 
+paginatedPublicUserRecipes.forEach(recipe => {
+    const recipeHtml = this.renderPublicUserRecipe(recipe, dropDownIndex);
+    container.append(recipeHtml);
+    dropDownIndex++;
+});
+this.updatePublicRecipePagination = (direction) => {
+  if (direction === 'next') {
+      currentPublicRecipePage++;
+  } else if (direction === 'previous' && currentPublicRecipePage > 1) {
+      currentPublicRecipePage--;
+  }
+  this.renderRecipes();
+};
 
   this.updatePagination = (recipes, currentUrl, fromTo, mealTypes, dishTypes, cuisineTypes) => {
     const $pagination = $("#paginationList").empty();
@@ -749,6 +786,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('clearSelections').addEventListener('click', function () {
     clearAllSelections();
   });
+  document.getElementById('nextPublicRecipePage').addEventListener('click', () => {
+    recipesView.updatePublicRecipePagination('next');
+});
+document.getElementById('previousPublicRecipePage').addEventListener('click', () => {
+  recipesView.updatePublicRecipePagination('previous');
+});
 
   $('#recipe-filter-modal').on('hidden.bs.modal', function () {
     clearAllSelections();
