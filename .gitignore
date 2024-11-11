@@ -5,3 +5,5 @@ client/node_modules
 node_modules
 coverage/
 .DS_Store
+/etc/letsencrypt/live/whatshouldieat.org/
+
