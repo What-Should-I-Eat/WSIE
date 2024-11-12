@@ -508,8 +508,21 @@ function RecipeDetailsView() {
     }
 
     // Update reviews
+    const userReviewsBodyElement = document.getElementById("reviewScrollable");
     const userReviews = await getRecipePubReviews();
-    console.log(userReviews);
+    if(userReviews.length>0){
+      userReviews.forEach(review => {
+        const listItem = document.createElement('li');
+        listItem.textContent = review.reviewerUsername + " : " + review.writtenReview +"\n";
+        userReviewsBodyElement.appendChild(listItem);
+      });
+    }else{
+      const noReviewsText = document.createElement('p');
+      noReviewsText.innerHTML = `No community reviews yet! You could be the first!`;
+      userReviewsBodyElement.appendChild(noReviewsText);
+    }
+    const reviewBoxHeight = userReviewsBodyElement.scrollHeight;
+    userReviewsBodyElement.style.height = Math.min(reviewBoxHeight, 200) + 'px';
   };
 }
 

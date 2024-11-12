@@ -459,18 +459,13 @@
           </ul>
         </section>
 
-        <section class="recipe-info inline-div">
-          <h3>Add your own review</h3>
-            <label for="recipeReviewInput">Review</label>
-            <input id="recipeReviewInput"/>
-            <button type="submit" class="btn btn-primary" name="action" value="postReview"
-            id="postReviewBtn">Post Review</button>
-          <h3>Community Reviews</h3>
-            <section class="recipe-info inline-div" id="reviewSection">
-              <ul id="user-reviews-list">
-                <!-- Dynamically building user reviews here -->
-              </ul>
-          </section>
+        <section class="recipe-info review-space">
+          <h3>Loved it or have suggestions? Add your own review!</h3>
+          <textarea id="recipeReviewInput"></textarea>
+          <button type="submit" class="btn btn-primary" name="action" value="postReview" id="postReviewBtn">
+            Post Review</button>
+          <h3>Reviews from community members</h3>
+          <div id="reviewScrollable"></div>
         </section>
 
         <section class="recipe-info handle-favorites">
