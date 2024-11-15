@@ -59,7 +59,7 @@
   background-color: #801A18;
 }
 
-#reviewScrollable{
+.reviewScrollable{
   width: 100%;
   max-height: 200px;
   overflow-y: auto;
@@ -78,4 +78,8 @@
   margin-top: 20px; /* Add some spacing above the buttons */
   width: 70%;
   margin: 5px 15%; /* Add some vertical spacing between buttons */
+}
+
+#boldUserName{
+  font-weight: bold;
 }

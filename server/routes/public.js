@@ -2,6 +2,7 @@ const express = require('express');
 const publicRouter = express.Router();
 const User = require("../src/models/userModel.js");
 const Recipe = require("../src/models/recipeModel.js");
+const RecipeReview = require("../src/models/recipeReviewsModel.js");
 const ContactUs = require("../src/models/contactUsModel.js");
 const RecipePubRequest = require("../src/models/recipePubRequestModel.js");
 const bcrypt = require('bcryptjs');
@@ -117,6 +118,22 @@ publicRouter.get('/recipes/get_recipe', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error trying to get public user recipe' });
+  }
+});
+
+publicRouter.get('/recipes/get_reviews', async (req, res) => {
+  try {
+    let recipeObjectId = req.query.recipeId;
+
+    let recipePub = await RecipeReview.find({ reviewedRecipeId: recipeObjectId });
+    if (!recipePub) {
+      return res.status(404).json({ error: 'No reviews found' });
+    }
+
+    res.json(recipePub);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error trying to get reviews' });
   }
 });
 

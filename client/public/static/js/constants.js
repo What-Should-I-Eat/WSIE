@@ -160,6 +160,9 @@ const UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR = "Error occurred trying to un-favor
 const UNABLE_TO_DELETE_RECIPE_ERROR = "Error occurred deleting user created recipe";
 const ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE = "Error occurred checking to see if recipe is a favorite";
 
+// Recipe Actions
+const UNABLE_TO_PERFORM_ACTION_USER_NOT_LOGGED_IN = "User must login or create account to perform that action";
+
 // Create Recipe
 const UNABLE_TO_CREATE_USER_NOT_LOGGED_IN = "User must login or create account to create a recipe";
 const SUCCESSFULLY_CREATED_RECIPE = "Successfully created recipe";

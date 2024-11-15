@@ -696,22 +696,6 @@ privateRouter.post('/users/:id/recipe/post_review', async (req, res) => {
   }
 });
 
-privateRouter.get('/recipes/get_reviews', async (req, res) => {
-  try {
-    let recipeObjectId = req.query.recipeId;
-
-    let recipePub = await RecipeReview.find({ reviewedRecipeId: recipeObjectId });
-    if (!recipePub) {
-      return res.status(404).json({ error: 'No reviews found' });
-    }
-
-    res.json(recipePub);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error trying to get reviews' });
-  }
-});
-
 async function validatePassword(user, inputtedPassword) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(inputtedPassword, user.password, (err, passwordsMatch) => {
