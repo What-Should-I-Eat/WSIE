@@ -1,5 +1,8 @@
 const recipesView = new RecipesView();
+const publicUserRecipesPerPage = 5; // Number of public recipes per page
 let showPublicRecipes = true; // Global toggle variable for showing/hiding public recipes
+let publicUserRecipes = []; // Store all public recipes
+let currentPublicRecipePage = 1; // Track the current page of public recipes
 
 function RecipesView() {
   const addedRecipesSet = new Set();
@@ -12,6 +15,8 @@ function RecipesView() {
   this.load = async (searchParam, apiUrl = null, pageUrl = null, mealTypes = [], dishTypes = [], cuisineTypes = []) => {
     const container = $('.recipes-container');
     const pagination = $("#paginationList");
+    const paginatedPublicUserRecipes = this.getPaginatedPublicUserRecipes();
+
 
     try {
       // Show publish recipe button
@@ -765,4 +770,16 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('search_recipes').value = search;
   }
   recipesView.load(search, null, null, mealTypeSelections, dishTypeSelections, cuisineTypeSelections);
+});
+document.getElementById('nextPublicRecipePage').addEventListener('click', () => {
+  if (currentPublicRecipePage * publicUserRecipesPerPage < publicUserRecipes.length) {
+    currentPublicRecipePage++;
+    this.load();
+  }
+});
+document.getElementById('previousPublicRecipePage').addEventListener('click', () => {
+  if (currentPublicRecipePage > 1) {
+    currentPublicRecipePage--;
+    this.load();
+  }
 });
