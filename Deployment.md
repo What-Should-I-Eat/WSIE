@@ -146,6 +146,6 @@ In order to fully verify that our application is successfully deployed and the c
 
 ## Update GoDaddy DNS Server
 
-In previous quarters, Torie Hacker had purchased the [whatshouldieat.org](http://whatshouldieat.org) DNS name. When this URL is selected or entered into a search bar and the user selects enter (or go), when the site is loaded, it redirects to the Google Cloud VM.
+In previous quarters, Torie Thacker had purchased the [whatshouldieat.org](http://whatshouldieat.org) DNS name. When this URL is selected or entered into a search bar and the user selects enter (or go), when the site is loaded, it redirects to the Google Cloud VM.
 
 For any issues with updating the GoDaddy IP for subsequent quarters worked, please reach out to Torie at her email [here](victoriamthacker@gmail.com).
