@@ -92,7 +92,7 @@ $(document).ready(function () {
     this.getNoSavedRecipes = () => {
       return `
               <div>
-                  <h2>${NO_SAVED_RECIPES}</h2>
+                  <h2>${NO_PUBLISH_REQUESTS}</h2>
               </div>`;
     }
   }
@@ -127,7 +127,69 @@ $(document).ready(function () {
 
   const myRecipesView = new MyRecipesView();
   myRecipesView.load();
+
+  // Handles Form Submission Logic
+  $("#addNewAdminForm").on("submit", async function (event) {
+    event.preventDefault();
+    const username = utils.getUserNameFromCookie();
+    if (!username) {
+      console.error(UNABLE_TO_CHANGE_ADMIN_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_CHANGE_ADMIN_USER_NOT_LOGGED_IN);
+      return;
+    }
+
+    const userId = await utils.getUserIdFromUsername(username);
+    if (!userId) {
+      console.error(UNABLE_TO_CHANGE_ADMIN_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_CHANGE_ADMIN_USER_NOT_LOGGED_IN);
+      return;
+    }
+
+    const submitter = event.originalEvent ? event.originalEvent.submitter : null;
+    const action = submitter ? submitter.value : '';
+
+    switch (action) {
+      case 'makeAdmin':
+        await handleChangeAdmin(userId, true);
+        break;
+      case 'removeAdmin':
+        await handleChangeAdmin(userId, false);
+        break;
+      default:
+        console.error(`Unknown action on form submission: [${action}]`);
+    }
+  });
+
 });
+
+async function handleChangeAdmin(userId, modification) {
+    let newAdminUserName = document.getElementById("addAdminUsernameInput").value;
+    const request = {
+      username: newAdminUserName,
+      isAdmin: modification
+    }
+
+    let url = `${GENERIC_USER_URL}${userId}/change_admin_state`;
+    try {
+      const response = await fetch(url, {
+        method: PUT_ACTION,
+        body: JSON.stringify(request),
+        headers: {
+          'Content-Type': DEFAULT_DATA_TYPE
+        }
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      utils.showAjaxAlert("Success", data.message);
+    } catch (error) {
+      console.error(error);
+      utils.showAjaxAlert("Error", error.message);
+    }
+};
 
 function changeLanguage(language) {
   var element = document.getElementById("url");

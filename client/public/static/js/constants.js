@@ -32,6 +32,7 @@ const REGISTER_URL = `${HOST}/${API_VERSION}/users/register`;
 const LOGIN_URL = `${HOST}/${API_VERSION}/users/find-username`;
 const PROFILE_URL = `${HOST}/${API_VERSION}/users/profile`;
 const CHANGE_PASSWORD_URL = `${HOST}/${API_VERSION}/users/changePassword`;
+const GENERIC_USER_URL = `${HOST}/${API_VERSION}/users/`;
 
 // Verification API Endpoints
 const GET_VERIFICATION_CODE_URL = `${HOST}/${API_VERSION}/users/getVerificationCode`;
@@ -136,6 +137,7 @@ const ADD_TO_FAVORITES = "Add Recipe to Favorites";
 const REMOVE_FROM_FAVORITES = "Remove Recipe from Favorites";
 const UPDATE_RECIPE = "Update Recipe";
 const DELETE_RECIPE = "Delete Recipe";
+
 // Publish Recipe
 const REQUEST_TO_PUBLISH_RECIPE = "Request to Publish Recipe";
 const RECIPE_UNDER_REVIEW = "Request to Publish Recipe Under Review";
@@ -143,6 +145,8 @@ const RECIPE_PUBLISHED = "Recipe Published. Click here to remove it from public 
 const RECIPE_PUBLISHED_APPROVE = "Recipe Has Been Approved";
 const RECIPE_PUBLISHED_DENY = "Recipe Has Been Denied";
 const UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR = "Error occurred trying to update publish status";
+const NO_PUBLISH_REQUESTS = "No publish requests!";
+
 // Recipes / My Recipes Constants
 const PUBLIC_RECIPE_ICON = "fa-users";
 const PUBLIC_RECIPE_OWNER_ICON = "fa-user";
@@ -181,3 +185,5 @@ const NO_USER_EMAIL_CHANGES = "No user email address changes detected";
 const SUCCESSFULLY_UPDATED_USER_PASSWORD = "Successfully updated user password";
 const FAILED_TO_UPDATE_USER_PASSWORD = "Failed to update user password";
 const NO_USER_PASSWORD_CHANGES = "No user password changes detected";
+const SUCCESSFULLY_UPDATED_ADMIN_STATE = "Successfully updated user admin capabilities";
+const UNABLE_TO_CHANGE_ADMIN_USER_NOT_LOGGED_IN = "User must login to change admin status";
