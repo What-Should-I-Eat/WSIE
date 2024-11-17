@@ -8,7 +8,7 @@ html {
 }
 
 body {
-  font-family: "Tinos", serif;
+  font-family: "Avenir", sans-serif;
   font-size: 1rem;
   background: #ffffff;
 }
@@ -34,7 +34,7 @@ header {
 
 .navbar-brand h1 {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 600;
   padding: 0;
   margin: 0;
 }
@@ -59,14 +59,15 @@ header {
 .hero-section {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: left;
+  padding-left: 4vw;
   align-items: center;
   width: 100%;
   height: 80vh;
 }
 
 .hero-info {
-  width: 50%;
+  width: 40%;
 }
 
 .hero-info.mr-4.text-center {
@@ -136,8 +137,7 @@ header {
 
 .navbar-decoration,
 .cover-img {
-  background-image: url("../img/FoodBackground.svg");
-  /* background-image: url("../img/FoodBackground-NoDots.svg"); */
+  background-image: url("../img/apple.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
