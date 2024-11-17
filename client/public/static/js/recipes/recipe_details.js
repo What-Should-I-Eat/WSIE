@@ -259,7 +259,7 @@ function RecipeDetailsView() {
     const url = recipe.url;
 
     const urlLinkToInstructionsText = document.createElement('p');
-    urlLinkToInstructionsText.innerHTML = `View full instructions and more at <a href="${url}" target="_blank">${source}</a>`;
+    urlLinkToInstructionsText.innerHTML = `View full instructions and more at <strong><a href="${url}" target="_blank">${source}</a></strong>`;
     preparationContainer.appendChild(urlLinkToInstructionsText);
 
     // Update nutritional facts
