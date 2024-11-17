@@ -1,8 +1,5 @@
 const recipesView = new RecipesView();
-const publicUserRecipesPerPage = 5; // Number of public recipes per page
 let showPublicRecipes = true; // Global toggle variable for showing/hiding public recipes
-let publicUserRecipes = []; // Store all public recipes
-let currentPublicRecipePage = 1; // Track the current page of public recipes
 
 function RecipesView() {
   const addedRecipesSet = new Set();
@@ -15,8 +12,6 @@ function RecipesView() {
   this.load = async (searchParam, apiUrl = null, pageUrl = null, mealTypes = [], dishTypes = [], cuisineTypes = []) => {
     const container = $('.recipes-container');
     const pagination = $("#paginationList");
-    const paginatedPublicUserRecipes = this.getPaginatedPublicUserRecipes();
-
 
     try {
       // Show publish recipe button
@@ -171,9 +166,11 @@ function RecipesView() {
   }
 
   this.renderRecipes = (recipes, publicUserRecipes, container) => {
-    container.empty();
-    addedRecipesSet.clear();
+    container.empty(); // Clear container
+    addedRecipesSet.clear(); // Clear the added recipes set
+    const displayedUserRecipes = new Set(); // Track already displayed user recipes
     let dropDownIndex = 0;
+     // Render API recipes
     recipes.hits.forEach(async data => {
       const recipe = data.recipe;
       const recipeUri = recipe.uri;
@@ -208,25 +205,17 @@ function RecipesView() {
 
       if (!addedRecipesSet.has(identifier)) {
         addedRecipesSet.add(identifier);
-        const recipeImage = hasValidImage(recipe) ? recipe.images.REGULAR.url : NO_IMAGE_AVAILABLE;
-
-        // Note: The `box-shadow-custom` adds the pop of the mouse going over the box
         const recipeHtml = `
-          <div class="box box-shadow-custom">
-            <a href="/recipes/recipe_details?source=${encodeURIComponent(recipe.source)}&sourceUrl=${encodeURIComponent(recipe.url)}&uri=${encodeURIComponent(recipe.uri)}">
-              <img src="${recipeImage}" alt="${recipe.label}" title="View more about ${recipe.label}">
-            </a>
-            ${setFavoriteDropdown}
-            <h4>${recipe.label}</h4>
-          </div>`;
-
-        console.debug(`Adding [${recipe.label}] from source: [${recipe.source}], sourceUrl: [${recipe.url}]`);
+            <div class="box box-shadow-custom">
+                <a href="/recipes/recipe_details?source=${encodeURIComponent(recipe.source)}&sourceUrl=${encodeURIComponent(recipe.url)}&uri=${encodeURIComponent(recipe.uri)}">
+                    <img src="${hasValidImage(recipe) ? recipe.images.REGULAR.url : NO_IMAGE_AVAILABLE}" alt="${recipe.label}" title="View more about ${recipe.label}">
+                </a>
+                <h4>${recipe.label}</h4>
+            </div>`;
         container.append(recipeHtml);
-      } else {
-        console.debug(`Skipping duplicate recipe: [${recipe.label}] from source: [${recipe.source}], sourceUrl: [${recipe.url}]`);
-      }
-      dropDownIndex++;
-    });
+    }
+    dropDownIndex++;
+});
  // Only render publicUserRecipes if showPublicRecipes is true
  if (showPublicRecipes && publicUserRecipes) {
       publicUserRecipes.forEach(async recipe => {
@@ -276,24 +265,21 @@ function RecipesView() {
             </div>`;
         let setUserDropdown = isOwner ? updateAndDeleteDropdown : setFavoriteDropdown;
 
-        const recipeHtml = `
-          <div class="box box-shadow-custom">
-              <a href="/recipes/recipe_details?${parameter}=${encodeURIComponent(recipeName)}">
-                  <img src="${recipeImage}" alt="${recipeName}" title="View more about ${recipeName}">
-              </a>
-              <div class="user-icon">
-                  <i class="fas ${icon}"></i>
-              </div>
-              ${setUserDropdown}
-              <h3>${recipeName}</h3>
-          </div>`;
-
-        console.debug(`Adding ${recipeType} created recipe: [${recipeName}]`);
-        container.append(recipeHtml);
-        dropDownIndex++;
-      });
-    }
-  };
+           // **(NEW)** Skip if already displayed
+           if (!displayedUserRecipes.has(recipeName)) {
+            displayedUserRecipes.add(recipeName); // **(NEW)** Mark as displayed
+            const recipeHtml = `
+                <div class="box box-shadow-custom">
+                    <a href="/recipes/recipe_details?public=${encodeURIComponent(recipeName)}">
+                        <img src="${hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE}" alt="${recipeName}" title="View more about ${recipeName}">
+                    </a>
+                    <h3>${recipeName}</h3>
+                </div>`;
+            container.append(recipeHtml);
+        }
+    });
+}
+};
 
   this.updatePagination = (recipes, currentUrl, fromTo, mealTypes, dishTypes, cuisineTypes) => {
     const $pagination = $("#paginationList").empty();
@@ -770,16 +756,4 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('search_recipes').value = search;
   }
   recipesView.load(search, null, null, mealTypeSelections, dishTypeSelections, cuisineTypeSelections);
-});
-document.getElementById('nextPublicRecipePage').addEventListener('click', () => {
-  if (currentPublicRecipePage * publicUserRecipesPerPage < publicUserRecipes.length) {
-    currentPublicRecipePage++;
-    this.load();
-  }
-});
-document.getElementById('previousPublicRecipePage').addEventListener('click', () => {
-  if (currentPublicRecipePage > 1) {
-    currentPublicRecipePage--;
-    this.load();
-  }
 });
