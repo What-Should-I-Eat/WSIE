@@ -5,7 +5,7 @@
   "main": "./client/public/index.html",
   "scripts": {
     "install-all": "./install-all.sh",
-    "start": "docker compose down && docker compose build && docker compose up",
+    "start": "docker-compose down && docker-compose build && docker-compose up",
     "deploy": "sudo docker-compose down && sudo docker-compose build && sudo docker-compose up",
     "test": "jest --coverage",
     "server": "cd server; npm start",
