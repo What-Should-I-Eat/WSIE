@@ -502,6 +502,7 @@ privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeIm
 
     let updatedRecipeData = {
       ...req.body,
+      usernameCreator:req.body.usernameCreator ||"Anonymous",
       recipeServings: req.body.recipeServings || 1,
       recipeCalories: req.body.recipeCalories || 0,
       recipeCarbs: req.body.recipeCarbs || 0,

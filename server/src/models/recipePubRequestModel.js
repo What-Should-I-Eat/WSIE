@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const recipePubRequestSchema = new Schema({
   recipeId: String,
-  userEmail: String
-  // TODO: Add the username of who created
+  userEmail: String,
+  usernameCreator:{type: String,default:"Anonymous"}
   // TODO: Add the status of the request
 });
 

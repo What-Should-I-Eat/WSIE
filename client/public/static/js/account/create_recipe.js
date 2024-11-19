@@ -17,6 +17,10 @@ $(document).ready(function () {
     }
 
     const formData = new FormData(this);
+    
+    const usernameCreator = $("#usernameInput").val() || "Anonymous";
+    formData.append("usernameCreator", usernameCreator);
+
     const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/create_recipe`;
     console.log(`Sending request to: ${url}`);
 
