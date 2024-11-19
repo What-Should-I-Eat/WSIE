@@ -46,4 +46,35 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+// Route for account verification and auto-login
+app.put("/verify-account", async function (req, res) {
+  const { username, verificationCode } = req.body;
+
+  if (!username || !verificationCode) {
+    return res.status(400).json({ error: "Username and verification code are required." });
+  }
+
+  try {
+    // Mock verification logic (replace with actual logic)
+    const isValid = await verifyAccount(username, verificationCode);
+    if (!isValid) {
+      return res.status(401).json({ error: "Invalid verification code." });
+    }
+
+    // Generate a mock authentication token (replace with secure token logic like JWT)
+    const authToken = generateAuthToken(username);
+
+    // Set an HTTP-only cookie to maintain the session
+    res.cookie("authToken", authToken, { httpOnly: true, secure: true });
+
+    return res.status(200).json({
+      message: "Account verified and logged in successfully.",
+      authToken,
+    });
+  } catch (error) {
+    console.error("Error during account verification:", error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+});
+
 module.exports = app;
