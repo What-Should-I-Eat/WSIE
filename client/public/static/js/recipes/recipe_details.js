@@ -502,6 +502,15 @@ function RecipeDetailsView() {
           publishRecipeButton.disabled = false;
         }
     }
+    const creatorText = document.getElementById("recipeCreator");
+    if (creatorText) {
+      creatorText.setAttribute("data-username", recipe.usernameCreator || "Anonymous");
+      console.log("Data-username set to:", creatorText.getAttribute("data-username"));
+        creatorText.textContent = "Created by: Anonymous";
+    } else {
+      console.error("Element with ID 'recipeCreator' not found.");
+  }
+    
   };
 }
 
@@ -897,5 +906,18 @@ async function checkIfFavorite(username, recipeName) {
     return isFavorite
   } catch (error) {
     console.error(error);
+  }
+}
+function toggleUsernameVisibility() {
+  const checkbox = document.getElementById("showUsernameToggle");
+  const creatorText = document.getElementById("recipeCreator");
+  if(!creatorText){
+    console.error("Element with ID 'recipeCreator' not found.");
+  }
+  if (checkbox.checked) {
+    const username = creatorText.getAttribute("data-username");
+    creatorText.textContent = `Created by: ${username || "Anonymous"}`;
+  } else {
+    creatorText.textContent = "Created by: Anonymous";
   }
 }

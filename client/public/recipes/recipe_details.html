@@ -458,7 +458,13 @@
             <!-- Dynamically building dietary labels here -->
           </ul>
         </section>
-
+        <div>
+          <label for="'showUsernameToggle">Show Username</label>
+          <input type ="checkbox" id="showUsernameToggle" onchange="toggleUsernameVisibility()">
+        </div>
+        <div>
+          <p id="recipeCreator">Created by: Anonymous</p>
+        </div>
         <section class="recipe-info handle-favorites">
           <button type="submit" class="btn btn-primary" name="action" value="addToFavorites" id="addToFavoritesBtn">Add
             Recipe to Favorites</button>
