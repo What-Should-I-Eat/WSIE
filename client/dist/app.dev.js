@@ -1,18 +1,27 @@
+
 "use strict";
+
 
 var createError = require('http-errors');
 
+
 var express = require('express');
+
 
 var path = require('path');
 
+
 var cookieParser = require('cookie-parser');
+
 
 var logger = require('morgan');
 
+
 var indexRouter = require('./routes/index');
 
+
 var app = express(); // view engine setup
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -30,23 +39,26 @@ app.get('/login', function (req, res) {
   });
 }); // Route to serve login.html
 
+
 app.get('/login-html', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 }); // catch 404 and forward to error handler
 
+
 app.use(function (req, res, next) {
   next(createError(404));
 }); // error handler
+
 
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {}; // render the error page
 
+
   res.status(err.status || 500);
   res.render('error');
 });
-// Route for account verification and auto-login
 app.put("/verify-account", async function (req, res) {
   const { username, verificationCode } = req.body;
 
@@ -55,26 +67,22 @@ app.put("/verify-account", async function (req, res) {
   }
 
   try {
-    // Mock verification logic (replace with actual logic)
+    // Mock verification logic (replace with actual verification logic)
     const isValid = await verifyAccount(username, verificationCode);
     if (!isValid) {
       return res.status(401).json({ error: "Invalid verification code." });
     }
 
-    // Generate a mock authentication token (replace with secure token logic like JWT)
-    const authToken = generateAuthToken(username);
-
-    // Set an HTTP-only cookie to maintain the session
-    res.cookie("authToken", authToken, { httpOnly: true, secure: true });
+    // Auto-login logic (set session or cookie)
+    req.session.user = { username }; // Assuming session middleware is set up
+    res.cookie("username", username, { httpOnly: true, secure: true });
 
     return res.status(200).json({
-      message: "Account verified and logged in successfully.",
-      authToken,
+      message: "Account verified and logged in successfully."
     });
   } catch (error) {
     console.error("Error during account verification:", error);
     return res.status(500).json({ error: "Internal server error." });
   }
 });
-
 module.exports = app;
