@@ -620,6 +620,29 @@ const utils = (() => {
     }
   }
 
+  /**
+   * This function utilizes Greip's profanity filter. 
+   * @param {string} text - String of text that is to be checked in the profanity filter
+   * * @returns {data} - data object that contains profanity status and other currently
+   * unused elements.
+   * See full terms and conditions at https://greip.io/terms
+   */
+  async function checkForProfanity(text) {
+    const options = {
+      method: 'GET',
+      headers: {Authorization: 'Bearer b30c3a2dbb27b1f84c31fc3e1123df73'}
+    };
+
+    const response = await fetch('https://greipapi.com/scoring/profanity?text='+text, options);
+    const data = await response.json();
+
+    if(data.data.isSafe){
+      return false;
+    }else{
+      return true;
+    }
+  }  
+
   return {
     setStorage,
     removeFromStorage,
@@ -646,6 +669,7 @@ const utils = (() => {
     deleteRecipe,
     unfavoriteRecipe,
     checkIfFavorite,
-    checkUserIdAndUsername
+    checkUserIdAndUsername,
+    checkForProfanity
   };
 })();

@@ -586,21 +586,80 @@ function handleUpdateRecipe() {
 };
 
 async function handlePublishUserRecipe(userId,form) {
-  const recipeName = document.getElementById('recipe-name').textContent;
-  const buttonText = form.find("#publishRecipeBtn").text();
-  if(buttonText.includes("remove")){
-    await handleUserRemovePublication();
-    return;
+  fullString = await getRecipeText();
+  profanityVal = await utils.checkForProfanity(fullString);
+  if(!profanityVal){
+    const recipeName = document.getElementById('recipe-name').textContent;
+    const buttonText = form.find("#publishRecipeBtn").text();
+    if(buttonText.includes("remove")){
+      await handleUserRemovePublication();
+      return;
+    }else{
+      request = {
+        recipeName: recipeName
+      }
+
+      let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+      try {
+        const response = await fetch(url, {
+          method: POST_ACTION,
+          body: JSON.stringify({ favorites: request }),
+          headers: {
+            'Content-Type': DEFAULT_DATA_TYPE
+          }
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error);
+        }
+        const publishRecipeButton = document.getElementById('publishRecipeBtn');
+        publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
+        publishRecipeButton.disabled = true;
+        utils.showAjaxAlert("Success", data.success);
+      } catch (error) {
+        console.error(error);
+        utils.showAjaxAlert("Error", error.message);
+      }
+    }
   }else{
+    utils.showAjaxAlert("Error", "Recipe content goes against community protocols and cannot be posted.");
+  }
+};
+
+async function getRecipeText(){
+  let fullRecipeText = "";
+  fullRecipeText = document.getElementById('recipe-name').textContent;
+  const ingredientsList = document.querySelectorAll('#ingredients-list li');
+  ingredientsList.forEach(item => {
+    const text = item.textContent.trim();
+    fullRecipeText = fullRecipeText + " " + text;
+  });
+
+  const preparationList = document.querySelectorAll('#preparation-list li');
+  preparationList.forEach(item => {
+    const text = item.textContent.trim();
+    fullRecipeText = fullRecipeText + " " + text;
+  });
+
+  return(fullRecipeText);
+}
+
+async function handleUserReview(userId){
+
+  stringToCheck = document.getElementById("recipeReviewInput").value;
+  profanityVal = await utils.checkForProfanity(stringToCheck);
+  if(!profanityVal){
     request = {
-      recipeName: recipeName
+      reviewedRecipeId: recipeId,
+      writtenReview: recipeReviewInput.value,
     }
 
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
     try {
       const response = await fetch(url, {
         method: POST_ACTION,
-        body: JSON.stringify({ favorites: request }),
+        body: JSON.stringify({ reviews: request }),
         headers: {
           'Content-Type': DEFAULT_DATA_TYPE
         }
@@ -610,42 +669,14 @@ async function handlePublishUserRecipe(userId,form) {
       if (!response.ok) {
         throw new Error(data.error);
       }
-      const publishRecipeButton = document.getElementById('publishRecipeBtn');
-      publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
-      publishRecipeButton.disabled = true;
+      
       utils.showAjaxAlert("Success", data.success);
     } catch (error) {
       console.error(error);
       utils.showAjaxAlert("Error", error.message);
     }
-  }
-};
-
-async function handleUserReview(userId){
-  request = {
-    reviewedRecipeId: recipeId,
-    writtenReview: recipeReviewInput.value,
-  }
-
-  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
-  try {
-    const response = await fetch(url, {
-      method: POST_ACTION,
-      body: JSON.stringify({ reviews: request }),
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      }
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error);
-    }
-    
-    utils.showAjaxAlert("Success", data.success);
-  } catch (error) {
-    console.error(error);
-    utils.showAjaxAlert("Error", error.message);
+  }else{
+    utils.showAjaxAlert("Error", "Review content goes against community protocols and cannot be posted.");
   }
 };
 
