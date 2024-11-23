@@ -169,6 +169,7 @@ function RecipesView() {
     container.empty();
     addedRecipesSet.clear();
     let dropDownIndex = 0;
+    const fromTo = `${recipes.from}-${recipes.to}`;
     recipes.hits.forEach(async data => {
       const recipe = data.recipe;
       const recipeUri = recipe.uri;
@@ -224,7 +225,10 @@ function RecipesView() {
     });
  // Only render publicUserRecipes if showPublicRecipes is true
  if (showPublicRecipes && publicUserRecipes) {
-      publicUserRecipes.forEach(async recipe => {
+      pubRecipesTo = (recipes.to/5);
+      pubRecipesFrom = pubRecipesTo-4;
+      userRecipesToShow = publicUserRecipes.slice(pubRecipesFrom,pubRecipesTo);
+      userRecipesToShow.forEach(async recipe => {
         const recipeName = recipe.recipeName;
         const recipeImage = hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
 
