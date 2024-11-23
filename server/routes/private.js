@@ -30,6 +30,7 @@ const RECIPE_PUBLISHED_USER_REMOVAL = "Recipe Has Been Removed";
 const SUCCESSFULLY_DELETED_RECIPE_REQUEST = "Successfully deleted recipe request";
 const UNABLE_TO_DELETE_RECIPE_REQUEST_ERROR = "Error occurred deleting recipe publish request";
 const UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR = "Error occurred trying to update publish status";
+const SUCCESSFULLY_UPDATED_ADMIN_STATE = "Successfully updated user admin capabilities";
 
 privateRouter.post("/users/register", async (req, res) => {
   try {
@@ -319,6 +320,22 @@ privateRouter.delete('/users/:id/favorites', async (req, res) => {
   } catch (error) {
     console.error(UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR, error);
     res.status(500).json({ error: UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR });
+  }
+});
+
+privateRouter.put('/users/:id/change_admin_state', async (req, res) => {
+  try {
+    const modification = req.body.isAdmin;
+    const user = await User.findOne({ username: req.body.username.toLowerCase() });
+    if (!user) {
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
+    }
+
+    await User.updateOne(user, { $set: { isAdmin: modification } });
+    res.status(200).json({ message: SUCCESSFULLY_UPDATED_ADMIN_STATE });
+  } catch (error) {
+    console.error('Error updating user admin status: ', error);
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
   }
 });
 

@@ -1,0 +1,9 @@
+#addAdminUsernameInput{
+    width: 30%;
+}
+
+#makeAdminBtn,#removeAdminBtn{
+    margin: 5px 0; /* Add some vertical spacing between buttons */
+    text-align: center;
+    margin-top: 20px; /* Add some spacing above the buttons */
+}
