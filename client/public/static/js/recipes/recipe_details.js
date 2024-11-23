@@ -12,7 +12,7 @@ function RecipeDetailsView() {
         const recipeDetails = await this.getRecipeDetails(recipeUri);
         const recipe = recipeDetails.hits[0].recipe;
         const recipeInstructions = await this.getRecipeInstructions(source, sourceUrl, recipe.label);
-
+        recipeId = recipe.uri.substring(recipe.uri.indexOf("_") + 1);
         if (isValidResult(recipeDetails)) {
           this.buildView(recipeDetails, recipeInstructions);
         } else {
@@ -54,12 +54,14 @@ function RecipeDetailsView() {
     try {
       console.log("Loading view from public user recipe");
       const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
-      if(userRecipeDetails.pubRequested){
+      if(userRecipeDetails.pubRequested || userRecipeDetails.isPublished){
         recipeId = userRecipeDetails._id;
         recipeName = userRecipeDetails.recipeName;
         userName = userRecipeDetails.usernameCreator;
-        const recipePubRequest = await getRecipePubRequest(recipeId);
-        userEmail = recipePubRequest.userEmail;
+        if(userRecipeDetails.pubRequested){
+          const recipePubRequest = await getRecipePubRequest(recipeId);
+          userEmail = recipePubRequest.userEmail;
+        }
       }
       if (userRecipeDetails) {
         this.buildPublicUserView(userRecipeDetails,pubReview);
@@ -286,6 +288,30 @@ function RecipeDetailsView() {
       noDietaryText.innerHTML = `No dietary labels.`;
       dietaryContainer.appendChild(noDietaryText);
     }
+
+    // Update reviews
+    const container = $('.reviewScrollable');
+    container.empty();
+    const userReviews = await getRecipePubReviews();
+    if(userReviews.length>0){
+      userReviews.forEach(review => {
+        const reviewItem = `
+          <li>
+              <span id="boldUserName">
+                ${review.reviewerUsername}
+              </span>
+                ${review.writtenReview}
+          </li>`;
+          container.append(reviewItem);
+      });
+    }else{
+      const noReviewsText = document.createElement('p');
+      noReviewsText.innerHTML = `No community reviews yet! You could be the first!`;
+      container.append(noReviewsText);
+    }
+    const reviewBox = document.getElementsByClassName("reviewScrollable");
+    const reviewBoxHeight = reviewBox[0].scrollHeight;
+    reviewBox[0].style.height = Math.min(reviewBoxHeight, 200) + 'px';
   }
 
   this.buildPublicUserView = async (recipe, pubReview) => {
@@ -387,6 +413,30 @@ function RecipeDetailsView() {
     const noDietaryText = document.createElement('p');
     noDietaryText.innerHTML = `No user dietary labels.`;
     dietaryContainer.appendChild(noDietaryText);
+
+    // Update reviews
+    const container = $('.reviewScrollable');
+    container.empty();
+    const userReviews = await getRecipePubReviews();
+    if(userReviews.length>0){
+      userReviews.forEach(review => {
+        const reviewItem = `
+          <li>
+              <span id="boldUserName">
+                ${review.reviewerUsername}
+              </span>
+                ${review.writtenReview}
+          </li>`;
+          container.append(reviewItem);
+      });
+    }else{
+      const noReviewsText = document.createElement('p');
+      noReviewsText.innerHTML = `No community reviews yet! You could be the first!`;
+      container.append(noReviewsText);
+    }
+    const reviewBox = document.getElementsByClassName("reviewScrollable");
+    const reviewBoxHeight = reviewBox[0].scrollHeight;
+    reviewBox[0].style.height = Math.min(reviewBoxHeight, 200) + 'px';
   };
 
   this.buildUserView = async (recipe) => {
@@ -502,6 +552,30 @@ function RecipeDetailsView() {
           publishRecipeButton.disabled = false;
         }
     }
+
+    // Update reviews
+    const container = $('.reviewScrollable');
+    container.empty();
+    const userReviews = await getRecipePubReviews();
+    if(userReviews.length>0){
+      userReviews.forEach(review => {
+        const reviewItem = `
+          <li>
+              <span id="boldUserName">
+                ${review.reviewerUsername}
+              </span>
+                ${review.writtenReview}
+          </li>`;
+          container.append(reviewItem);
+      });
+    }else{
+      const noReviewsText = document.createElement('p');
+      noReviewsText.innerHTML = `No community reviews yet! You could be the first!`;
+      container.append(noReviewsText);
+    }
+    const reviewBox = document.getElementsByClassName("reviewScrollable");
+    const reviewBoxHeight = reviewBox[0].scrollHeight;
+    reviewBox[0].style.height = Math.min(reviewBoxHeight, 200) + 'px';
   };
 }
 
@@ -544,6 +618,54 @@ async function handlePublishUserRecipe(userId,form) {
       console.error(error);
       utils.showAjaxAlert("Error", error.message);
     }
+  }
+};
+
+async function handleUserReview(userId){
+  request = {
+    reviewedRecipeId: recipeId,
+    writtenReview: recipeReviewInput.value,
+  }
+
+  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
+  try {
+    const response = await fetch(url, {
+      method: POST_ACTION,
+      body: JSON.stringify({ reviews: request }),
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+    
+    utils.showAjaxAlert("Success", data.success);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+};
+
+async function getRecipePubReviews(){
+  const url = `${PUBLIC_USER_RECIPES_URL}/get_reviews?recipeId=${recipeId}`;
+  console.log(`Querying Server at: ${url}`);
+
+  const response = await fetch(url, {
+    method: GET_ACTION,
+    headers: {
+      'Content-Type': DEFAULT_DATA_TYPE
+    }
+  });
+
+  if (response.ok) {
+    const recipePubRequest = await response.json();
+    return recipePubRequest;
+  } else {
+    console.error(`Error occurred getting pub requests`);
+    return undefined;
   }
 };
 
@@ -763,15 +885,15 @@ $(document).ready(function () {
 
     const username = utils.getUserNameFromCookie();
     if (!username) {
-      console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      console.error(UNABLE_TO_PERFORM_ACTION_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_PERFORM_ACTION_USER_NOT_LOGGED_IN);
       return;
     }
 
     const userId = await utils.getUserIdFromUsername(username);
     if (!userId) {
-      console.error(UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_FAVORITE_USER_NOT_LOGGED_IN);
+      console.error(UNABLE_TO_PERFORM_ACTION_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_PERFORM_ACTION_USER_NOT_LOGGED_IN);
       return;
     }
 
@@ -801,6 +923,9 @@ $(document).ready(function () {
         await handlePublishRecipeReview(false);
         await updatePublishRequestStatus();
         sendPubEmail(userName, userEmail, recipeName, emailjs, "pubDenied");
+        break;
+      case 'postReview':
+        await handleUserReview(userId);
         break;
       default:
         console.error(`Unknown action on form submission: [${action}]`);
