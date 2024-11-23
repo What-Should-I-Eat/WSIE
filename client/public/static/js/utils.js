@@ -629,7 +629,7 @@ const utils = (() => {
    */
   async function checkForProfanity(text) {
     const options = {
-      method: 'GET',
+      method: GET_ACTION,
       headers: {Authorization: 'Bearer b30c3a2dbb27b1f84c31fc3e1123df73'}
     };
 
