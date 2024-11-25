@@ -47,7 +47,8 @@
 #updateRecipeBtn,
 #publishRecipeBtn,
 #approvePubReqBtn,
-#denyPubReqBtn {
+#denyPubReqBtn,
+#reportRecipeBtn {
   visibility: hidden;
 }
 

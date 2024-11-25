@@ -5,7 +5,8 @@
 }
 
 .recipes-container,
-.my-recipes-container {
+.my-recipes-container,
+.reported-recipes-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center; /* Center the boxes */

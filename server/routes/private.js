@@ -26,10 +26,12 @@ const SUCCESSFULLY_DELETED_RECIPE = "Successfully deleted recipe";
 const UNABLE_TO_DELETE_RECIPE_ERROR = "Error occurred deleting user created recipe";
 const RECIPE_PUBLISHED_APPROVE = "Recipe Has Been Approved";
 const RECIPE_PUBLISHED_DENY = "Recipe Has Been Denied";
+const RECIPE_REPORTED = "Recipe Has Been Reported";
 const RECIPE_PUBLISHED_USER_REMOVAL = "Recipe Has Been Removed";
 const SUCCESSFULLY_DELETED_RECIPE_REQUEST = "Successfully deleted recipe request";
 const UNABLE_TO_DELETE_RECIPE_REQUEST_ERROR = "Error occurred deleting recipe publish request";
 const UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR = "Error occurred trying to update publish status";
+const UNABLE_TO_REPORT_RECIPE_ERROR = "Error occurred trying to report recipe";
 const SUCCESSFULLY_UPDATED_ADMIN_STATE = "Successfully updated user admin capabilities";
 
 privateRouter.post("/users/register", async (req, res) => {
@@ -437,7 +439,8 @@ privateRouter.post('/users/:id/recipe/create_recipe', upload.single('userRecipeI
       userCreated: true,
       usernameCreator: user.username,
       isPublished: false,
-      pubRequested: false
+      pubRequested: false,
+      reported: false
     };
 
     if (req.file && req.file.buffer) {
@@ -526,7 +529,8 @@ privateRouter.put('/users/:id/recipe/update_recipe', upload.single('userRecipeIm
       recipeFats: req.body.recipeFats || 0,
       recipeProtein: req.body.recipeProtein || 0,
       isPublished: false,
-      pubRequested: false
+      pubRequested: false,
+      reported: false
     };
 
     if (req.file && req.file.buffer) {
@@ -711,6 +715,39 @@ privateRouter.post('/users/:id/recipe/post_review', async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Error occurred sending post review message." });
   }
+});
+
+privateRouter.get('/recipes/reported_content', async (_, res) => {
+  try {
+    const reportedRecipes = await Recipe.find({ reported: true});
+    res.status(200).json(reportedRecipes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error occurred getting reported recipes" });
+  }
+});
+
+privateRouter.put('/recipes/report_recipe', async (req, res) => {
+  try {
+    let recipeObjectId = new mongoose.Types.ObjectId(req.query.recipeId);
+
+    let recipe = await Recipe.findOne({ _id: recipeObjectId });
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+
+    const updated = await Recipe.updateOne(recipe, { $set: { isPublished: false, pubRequested: false, reported: true} }, { upsert: true, new: true });
+    if (!updated) {
+      return res.status(400).json({ error: "Error occurred trying to update publish status" });
+    }
+
+
+    res.status(200).json({ message: RECIPE_REPORTED, recipe });
+  } catch (error) {
+    console.error(UNABLE_TO_REPORT_RECIPE_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_REPORT_RECIPE_ERROR });
+  }
+
 });
 
 async function validatePassword(user, inputtedPassword) {

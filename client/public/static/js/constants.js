@@ -152,6 +152,7 @@ const PUBLIC_RECIPE_ICON = "fa-users";
 const PUBLIC_RECIPE_OWNER_ICON = "fa-user";
 const PUBLIC_RECIPE_URL_PARAMETER = "publicUserRecipeName";
 const PUBLIC_RECIPE_OWNER_URL_PARAMETER = "userRecipeName";
+const NO_REPORTED_RECIPES = "No reported recipes!";
 
 // Recipe Favorites
 const NO_SAVED_RECIPES = "No saved recipes!";
