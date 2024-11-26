@@ -2,6 +2,7 @@ let recipeId = '';
 let userName = '';
 let userEmail = '';
 let recipeName = '';
+let reported_review = false;
 
 function RecipeDetailsView() {
   this.loadEdamamRecipe = async (source, sourceUrl, recipeUri) => {
@@ -51,10 +52,12 @@ function RecipeDetailsView() {
   }
 
   this.loadPublicUserRecipe = async (publicUserRecipeName, pubReview, reportedReview) => {
+    reported_review = reportedReview
     try {
       console.log("Loading view from public user recipe");
       const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
-      if(userRecipeDetails.pubRequested || userRecipeDetails.isPublished){
+      console.log(userRecipeDetails);
+      if(userRecipeDetails.pubRequested || userRecipeDetails.isPublished || userRecipeDetails.reported){
         recipeId = userRecipeDetails._id;
         recipeName = userRecipeDetails.recipeName;
         userName = userRecipeDetails.usernameCreator;
@@ -355,16 +358,13 @@ function RecipeDetailsView() {
       addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
       const reportRecipeBtn = document.getElementById('reportRecipeBtn');
       reportRecipeBtn.style.visibility = 'visible';
-    }else if(pubReview == 'true'){
+    }else{
       addToFavoritesBtn.style.visibility = 'hidden';
       //update buttons to show approve or deny request
       const approveRequestBtn = document.getElementById('approvePubReqBtn');
       approveRequestBtn.style.visibility = 'visible';
       const denyRequestButton = document.getElementById("denyPubReqBtn");
       denyRequestButton.style.visibility = 'visible';
-    }else{
-      //TODO currently not doing anything for reported content
-      //implement way to reapprove for viewing
     }
 
     // Update header name and image
@@ -944,13 +944,17 @@ $(document).ready(function () {
         break;
       case 'approvePub':
         await handlePublishRecipeReview(true);
-        await updatePublishRequestStatus();
-        sendPubEmail(userName, userEmail, recipeName, emailjs, "pubApproved");
+        if(!reported_review){
+          await updatePublishRequestStatus();
+          sendPubEmail(userName, userEmail, recipeName, emailjs, "pubApproved");
+        }
         break;
       case 'denyPub':
         await handlePublishRecipeReview(false);
-        await updatePublishRequestStatus();
-        sendPubEmail(userName, userEmail, recipeName, emailjs, "pubDenied");
+        if(!reported_review){
+          await updatePublishRequestStatus();
+          sendPubEmail(userName, userEmail, recipeName, emailjs, "pubDenied");
+        }
         break;
       case 'postReview':
         await handleUserReview(userId);

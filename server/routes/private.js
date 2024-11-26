@@ -610,7 +610,7 @@ privateRouter.put('/recipes/publish_review', async (req, res) => {
       return res.status(404).json({ error: 'Recipe not found' });
     }
 
-    const updatedIsPub = await Recipe.updateOne(recipe, { $set: { isPublished: req.body.favorites.isPublished, pubRequested: req.body.favorites.pubRequested} }, { upsert: true, new: true });
+    const updatedIsPub = await Recipe.updateOne(recipe, { $set: { isPublished: req.body.favorites.isPublished, pubRequested: req.body.favorites.pubRequested, reported: false} }, { upsert: true, new: true });
     
     if (!updatedIsPub) {
       return res.status(400).json({ error: "Error occurred trying to update publish status" });
