@@ -3,25 +3,20 @@ $(document).ready(function () {
     console.log("Username from SessionStorage:", utils.getFromStorage("username"));
   }
 
-
   if (utils.getFromStorage("verificationCode")) {
     console.log("Verification Code from SessionStorage:", utils.getFromStorage("verificationCode"));
   }
-
 
   // Handles verification form submission logic
   $("#verifyAccountForm").on("submit", function (event) {
     event.preventDefault();
     utils.clearMessageFromAuthModal(authClassesToRemove);
 
-
     const form = $(this);
     const formArray = form.serializeArray();
 
-
     const [verificationCode] = formArray.map(({ value }) => value);
     const username = utils.getFromStorage("username");
-
 
     if (!validationHandler.isVerificationCodeValid(verificationCode)) {
       form.prepend('<div class="alert alert-danger">' + FAILED_TO_VERIFY_USER_INVALID_VERIFICATION_CODE + "</div>");
@@ -31,12 +26,10 @@ $(document).ready(function () {
       return;
     }
 
-
     const request = {
       username: username,
       verificationCode: verificationCode
     };
-
 
     fetch(VERIFICATION_URL, {
       method: PUT_ACTION,
@@ -57,6 +50,11 @@ $(document).ready(function () {
       }
     })
     .then(data => {
+      console.log("Account verified:", data);
+
+      // Store username in localStorage
+      utils.setStorage("username", username);
+
       // Store login success message and redirect to homepage
       utils.setStorage("loginMessage", "Account verified and logged in successfully.");
       window.location.href = "/"; // Redirect to homepage
@@ -65,8 +63,23 @@ $(document).ready(function () {
       console.error(error);
       form.prepend('<div class="alert alert-danger">' + error + "</div>");
     });
-});
+  });
 
+  // Update Navbar to reflect logged-in state
+  const username = utils.getFromStorage("username");
+  if (username) {
+    $("#navBarMyAccountSignInSignUp").html(`
+      <a href="/my-account" class="nav-link">My Account</a>
+    `);
+  } else {
+    // Show Sign In / Sign Up options
+    $("#navBarMyAccountSignInSignUp").html(`
+      <a href="/login" class="nav-link">Sign In</a>
+      <a href="/signup" class="nav-link">Sign Up</a>
+    `);
+  }
+
+ 
 
   // Handles re-sending the verification code to the user
   $("#resendVerificationCodeBtn").on("click", async function (event) {
