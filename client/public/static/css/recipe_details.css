@@ -74,6 +74,11 @@
   word-break: break-all;
 }
 
+#reviewItem{
+  border: 1px solid black;
+  padding:10px
+}
+
 #postReviewBtn {
   text-align: center;
   margin-top: 20px; /* Add some spacing above the buttons */
@@ -83,4 +88,12 @@
 
 #boldUserName{
   font-weight: bold;
+}
+
+#reportRecipeSection{
+  float: right;
+}
+
+#report-post{
+  float: right;
 }

@@ -299,11 +299,14 @@ function RecipeDetailsView() {
     if(userReviews.length>0){
       userReviews.forEach(review => {
         const reviewItem = `
-          <li>
-              <span id="boldUserName">
-                ${review.reviewerUsername}
-              </span>
-                ${review.writtenReview}
+          <li id="reviewItem">
+            <span id="boldUserName">
+              ${review.reviewerUsername}
+            </span>
+              ${review.writtenReview}
+              <button id="report-post" value="${review._id}" title="Report Post">
+                <i class="fas fa-flag" style="color: #df163e;"></i>
+              </button>
           </li>`;
           container.append(reviewItem);
       });
@@ -426,11 +429,14 @@ function RecipeDetailsView() {
     if(userReviews.length>0){
       userReviews.forEach(review => {
         const reviewItem = `
-          <li>
-              <span id="boldUserName">
-                ${review.reviewerUsername}
-              </span>
-                ${review.writtenReview}
+          <li id="reviewItem">
+            <span id="boldUserName">
+              ${review.reviewerUsername}
+            </span>
+              ${review.writtenReview}
+              <button id="report-post" value="${review._id}" title="Report Post">
+                <i class="fas fa-flag" style="color: #df163e;"></i>
+              </button>
           </li>`;
           container.append(reviewItem);
       });
@@ -565,11 +571,14 @@ function RecipeDetailsView() {
     if(userReviews.length>0){
       userReviews.forEach(review => {
         const reviewItem = `
-          <li>
-              <span id="boldUserName">
-                ${review.reviewerUsername}
-              </span>
-                ${review.writtenReview}
+          <li id="reviewItem">
+            <span id="boldUserName">
+              ${review.reviewerUsername}
+            </span>
+              ${review.writtenReview}
+              <button id="report-post" value="${review._id}" title="Report Post">
+                <i class="fas fa-flag" style="color: #df163e;"></i>
+              </button>
           </li>`;
           container.append(reviewItem);
       });
@@ -656,6 +665,29 @@ async function handleUserReview(userId){
 
 async function handleReportRecipe(){
   const url = `${PUBLIC_USER_RECIPES_URL}/report_recipe?recipeId=${recipeId}`;
+  try {
+    const response = await fetch(url, {
+      method: PUT_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      },
+      body: JSON.stringify()
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    utils.showAjaxAlert("Success", data.message);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+}
+
+async function handleReportPost(reviewId){
+  const url = `${PUBLIC_USER_RECIPES_URL}/report_review?reviewId=${reviewId}`;
   try {
     const response = await fetch(url, {
       method: PUT_ACTION,
@@ -962,8 +994,8 @@ $(document).ready(function () {
       case 'reportRecipe':
         await handleReportRecipe();
         break;
-      default:
-        console.error(`Unknown action on form submission: [${action}]`);
+      default: //for now this handles reporting of community reviews
+        await handleReportPost(action);
     }
   });
 });

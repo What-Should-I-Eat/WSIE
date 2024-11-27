@@ -125,12 +125,12 @@ publicRouter.get('/recipes/get_reviews', async (req, res) => {
   try {
     let recipeObjectId = req.query.recipeId;
 
-    let recipePub = await RecipeReview.find({ reviewedRecipeId: recipeObjectId });
-    if (!recipePub) {
+    let recipeReviews = await RecipeReview.find({ reviewedRecipeId: recipeObjectId, reviewReported: false });
+    if (!recipeReviews) {
       return res.status(404).json({ error: 'No reviews found' });
     }
 
-    res.json(recipePub);
+    res.json(recipeReviews);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error trying to get reviews' });

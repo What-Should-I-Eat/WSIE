@@ -22,6 +22,37 @@ $(document).ready(function () {
 
         const reportedRecipes = await this.getReportedRecipes();
         this.renderMyRecipes(reportedRecipes);
+
+        // Show Reported reviews
+        const container = $('.reviewScrollable');
+        container.empty();
+        const userReviews = await getReportedReviews();
+        if(userReviews.length>0){
+          userReviews.forEach(review => {
+            const reviewItem = `
+              <li id="reviewItem">
+                <span id="boldUserName">
+                  ${review.reviewerUsername}
+                </span>
+                  ${review.writtenReview}
+                  <button id="approve-post" value="Y${review._id}" title="Approve Post">
+                    <i class="fas fa-check" style="color: #0A8E36;"></i>
+                  </button>
+                  <button id="deny-post" value="X${review._id}" title="Deny Post">
+                    <i class="fas fa-trash" style="color: #801A18;"></i>
+                  </button>
+              </li>`;
+              container.append(reviewItem);
+          });
+        }else{
+          const noReviewsText = document.createElement('p');
+          noReviewsText.innerHTML = `No reported community reviews!`;
+          container.append(noReviewsText);
+        }
+        const reviewBox = document.getElementsByClassName("reviewScrollable");
+        const reviewBoxHeight = reviewBox[0].scrollHeight;
+        reviewBox[0].style.height = Math.min(reviewBoxHeight, 200) + 'px';
+
       } catch (error) {
         console.error(INTERNAL_SERVER_ERROR_OCCURRED);
         utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
@@ -117,6 +148,26 @@ $(document).ready(function () {
     }
   }
 
+  async function getReportedReviews(){
+    const url = `${PUBLIC_USER_RECIPES_URL}/get_reported_reviews`;
+    console.log(`Querying Server at: ${url}`);
+  
+    const response = await fetch(url, {
+      method: GET_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
+  
+    if (response.ok) {
+      const reportedReviews = await response.json();
+      return reportedReviews;
+    } else {
+      console.error(`Error occurred getting pub reviews`);
+      return undefined;
+    }
+  };
+
   function hasValidImage(recipe) {
     return recipe.recipeImage && recipe.recipeImage !== "";
   }
@@ -134,3 +185,61 @@ function changeLanguage(language) {
   element.value = language;
   element.innerHTML = language;
 }
+
+async function handleReportedPost(denyOrApprove, reviewId){
+  let url = `${PUBLIC_USER_RECIPES_URL}/deny_reported_review?reviewId=${reviewId}`;
+
+  if(denyOrApprove == 'Y'){
+    url = `${PUBLIC_USER_RECIPES_URL}/approve_reported_review?reviewId=${reviewId}`;
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: PUT_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      },
+      body: JSON.stringify()
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    utils.showAjaxAlert("Success", data.message);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+}
+
+$(document).ready(function () {
+  // Handles Form Submission Logic
+  $("#reviewForm").on("submit", async function (event) {
+    event.preventDefault();
+
+    const username = utils.getUserNameFromCookie();
+    if (!username) {
+      console.error(UNABLE_TO_PERFORM_ACTION_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_PERFORM_ACTION_USER_NOT_LOGGED_IN);
+      return;
+    }
+
+    const userId = await utils.getUserIdFromUsername(username);
+    if (!userId) {
+      console.error(UNABLE_TO_PERFORM_ACTION_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", UNABLE_TO_PERFORM_ACTION_USER_NOT_LOGGED_IN);
+      return;
+    }
+
+    const submitter = event.originalEvent ? event.originalEvent.submitter : null;
+    const action = submitter ? submitter.value : '';
+
+    denyOrApprove = action.substring(0,1);
+    reviewId = action.substring(1,action.length);
+
+    await handleReportedPost(denyOrApprove, reviewId);
+
+  });
+});

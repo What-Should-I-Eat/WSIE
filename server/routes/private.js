@@ -27,12 +27,17 @@ const UNABLE_TO_DELETE_RECIPE_ERROR = "Error occurred deleting user created reci
 const RECIPE_PUBLISHED_APPROVE = "Recipe Has Been Approved";
 const RECIPE_PUBLISHED_DENY = "Recipe Has Been Denied";
 const RECIPE_REPORTED = "Recipe Has Been Reported";
+const REVIEW_REPORTED = "Review Has Been Reported";
+const REVIEW_UN_REPORTED = "Review Has Been Republished";
+const REVIEW_DELETED = "Review Has Been Deleted";
 const RECIPE_PUBLISHED_USER_REMOVAL = "Recipe Has Been Removed";
 const SUCCESSFULLY_DELETED_RECIPE_REQUEST = "Successfully deleted recipe request";
 const UNABLE_TO_DELETE_RECIPE_REQUEST_ERROR = "Error occurred deleting recipe publish request";
 const UNABLE_TO_UPDATE_PUBLISH_RECIPE_ERROR = "Error occurred trying to update publish status";
 const UNABLE_TO_REPORT_RECIPE_ERROR = "Error occurred trying to report recipe";
+const UNABLE_TO_REPORT_REVIEW_ERROR = "Error occurred trying to report review";
 const SUCCESSFULLY_UPDATED_ADMIN_STATE = "Successfully updated user admin capabilities";
+const UNABLE_TO_UPDATE_REVIEW_STATUS_ERROR = "Error occurred trying to update review status";
 
 privateRouter.post("/users/register", async (req, res) => {
   try {
@@ -738,7 +743,7 @@ privateRouter.put('/recipes/report_recipe', async (req, res) => {
 
     const updated = await Recipe.updateOne(recipe, { $set: { isPublished: false, pubRequested: false, reported: true} }, { upsert: true, new: true });
     if (!updated) {
-      return res.status(400).json({ error: "Error occurred trying to update publish status" });
+      return res.status(400).json({ error: "Error occurred trying to report recipe" });
     }
 
 
@@ -748,6 +753,80 @@ privateRouter.put('/recipes/report_recipe', async (req, res) => {
     res.status(500).json({ error: UNABLE_TO_REPORT_RECIPE_ERROR });
   }
 
+});
+
+privateRouter.put('/recipes/report_review', async (req, res) => {
+  try {
+    let reviewObjectId = new mongoose.Types.ObjectId(req.query.reviewId);
+
+    let recipeReview = await RecipeReview.findOne({ _id: reviewObjectId});
+    if (!recipeReview) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+
+    const updated = await RecipeReview.updateOne(recipeReview, { $set: { reviewReported: true } }, { upsert: true, new: true });
+    if (!updated) {
+      return res.status(400).json({ error: "Error occurred trying to report review" });
+    }
+
+    res.status(200).json({ message: REVIEW_REPORTED, recipeReview });
+  } catch (error) {
+    console.error(UNABLE_TO_REPORT_REVIEW_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_REPORT_REVIEW_ERROR });
+  }
+});
+
+privateRouter.put('/recipes/approve_reported_review', async (req, res) => {
+  try {
+    let reviewObjectId = new mongoose.Types.ObjectId(req.query.reviewId);
+
+    let recipeReview = await RecipeReview.findOne({ _id: reviewObjectId});
+    if (!recipeReview) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+
+    const updated = await RecipeReview.updateOne(recipeReview, { $set: { reviewReported: false } }, { upsert: true, new: true });
+    if (!updated) {
+      return res.status(400).json({ error: "Error occurred trying to report review" });
+    }
+
+    res.status(200).json({ message: REVIEW_UN_REPORTED, recipeReview });
+  } catch (error) {
+    console.error(UNABLE_TO_UPDATE_REVIEW_STATUS_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_UPDATE_REVIEW_STATUS_ERROR });
+  }
+});
+
+privateRouter.put('/recipes/deny_reported_review', async (req, res) => {
+  try {
+    let reviewObjectId = new mongoose.Types.ObjectId(req.query.reviewId);
+
+    let recipeReview = await RecipeReview.findOne({ _id: reviewObjectId});
+    if (!recipeReview) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+
+    await recipeReview.deleteOne();
+
+    res.status(200).json({ message: REVIEW_DELETED, recipeReview });
+  } catch (error) {
+    console.error(UNABLE_TO_UPDATE_REVIEW_STATUS_ERROR, error);
+    res.status(500).json({ error: UNABLE_TO_UPDATE_REVIEW_STATUS_ERROR });
+  }
+});
+
+privateRouter.get('/recipes/get_reported_reviews', async (_, res) => {
+  try {
+    let reportedReviews = await RecipeReview.find({ reviewReported: true });
+    if (!reportedReviews) {
+      return res.status(404).json({ error: 'No reviews found' });
+    }
+
+    res.json(reportedReviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error trying to get reviews' });
+  }
 });
 
 async function validatePassword(user, inputtedPassword) {
