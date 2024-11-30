@@ -77,46 +77,85 @@ const utils = (() => {
    * Renders the navigation bar dynamically based on user's login status.
    * Uses session information to decide which options to display.
    */
-  async function renderNavbar() {
-    const navBar = $('#navBarMyAccountSignInSignUp');
-    const adminTab = $('#enable-admin-tab');
-    navBar.empty();
+  /**
 
-    const username = getUserNameFromCookie();
+* Dynamically renders the navigation bar based on the user's session.
 
-    if (username) {
-      const user = await getUserFromUsername(username);
-      if (user) {
-        const myAccountDropdown = $('<div id="myAccountDropdown" class="dropdown"></div>');
-        const dropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>');
-        const dropdownMenu = $('<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink"></div>');
+* Called after login or verification to reflect the authenticated state.
 
-        dropdownMenu.append('<h6 class="dropdown-header">Welcome back!</h6>');
-        dropdownMenu.append(`<h6 class="dropdown-header">${user.fullName}</h6>`);
-        dropdownMenu.append('<div class="dropdown-divider"></div>');
-        dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary">My Dietary</a>');
-        dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes">My Recipes</a>');
-        dropdownMenu.append('<a class="dropdown-item" href="/account/my_profile">My Profile</a>');
-        const signOutLink = $('<a class="dropdown-item" href="#">Sign Out</a>').on('click', function (e) {
-          e.preventDefault();
-          signOutUser();
-        });
-        dropdownMenu.append(signOutLink);
+*/
 
-        myAccountDropdown.append(dropdownToggle);
-        myAccountDropdown.append(dropdownMenu);
-        navBar.append(myAccountDropdown);
-        if(user.isAdmin){
-          adminTab.append('<a class="nav-link" href="/admin">Admin</a>');
-        }
-      } else {
-        setNotLoggedInNavBar(navBar);
+async function renderNavbar() {
+
+  const navBar = $('#navBarMyAccountSignInSignUp');
+
+  const adminTab = $('#enable-admin-tab');
+
+  navBar.empty();
+ 
+  const username = utils.getUserNameFromCookie(); // Fetch username from cookies
+ 
+  if (username) {
+
+    const user = await utils.getUserFromUsername(username); // Fetch user data
+
+    if (user) {
+
+      const myAccountDropdown = $('<div id="myAccountDropdown" class="dropdown"></div>');
+
+      const dropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>');
+
+      const dropdownMenu = $('<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink"></div>');
+ 
+      dropdownMenu.append('<h6 class="dropdown-header">Welcome back!</h6>');
+
+      dropdownMenu.append(`<h6 class="dropdown-header">${user.fullName}</h6>`);
+
+      dropdownMenu.append('<div class="dropdown-divider"></div>');
+
+      dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary">My Dietary</a>');
+
+      dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes">My Recipes</a>');
+
+      dropdownMenu.append('<a class="dropdown-item" href="/account/my_profile">My Profile</a>');
+
+      const signOutLink = $('<a class="dropdown-item" href="#">Sign Out</a>').on('click', function (e) {
+
+        e.preventDefault();
+
+        utils.signOutUser(); // Handle sign-out logic
+
+      });
+
+      dropdownMenu.append(signOutLink);
+ 
+      myAccountDropdown.append(dropdownToggle);
+
+      myAccountDropdown.append(dropdownMenu);
+
+      navBar.append(myAccountDropdown);
+ 
+      if (user.isAdmin) {
+
+        adminTab.append('<a class="nav-link" href="/admin">Admin</a>');
+
       }
+
     } else {
-      setNotLoggedInNavBar(navBar);
+
+      utils.setNotLoggedInNavBar(navBar); // Display "Sign In" and "Sign Up"
+
     }
+
+  } else {
+
+    utils.setNotLoggedInNavBar(navBar);
+
   }
 
+}
+
+ 
   /**
    * Initiates the user sign-out process by sending a request to the sign-out route.
    * Upon successful sign-out, stores a success message in the session storage
@@ -238,23 +277,67 @@ const utils = (() => {
    * Handles post-login cookie verification and debugging.
    * 
    */
-  async function cookieWorkaround() {
+  /**
+
+* Handles post-login and post-verification cookie handling.
+
+* Verifies the session and fetches the user's profile to render UI dynamically.
+
+*/
+
+async function cookieWorkaround() {
+
+  try {
+
     const response = await fetch(PROFILE_URL, {
-      method: GET_ACTION,
-      credentials: 'include',
+
+      method: 'GET',
+
+      credentials: 'include', // Ensures cookies are sent with the request
+
       headers: {
-        'Content-Type': DEFAULT_DATA_TYPE,
+
+        'Content-Type': 'application/json',
+
       },
+
     });
-
+ 
     if (!response.ok) {
-      throw new Error(FAILED_TO_GET_USER_PROFILE);
-    }
 
+      throw new Error('Failed to fetch user profile. Please log in again.');
+
+    }
+ 
     const data = await response.json();
+
     console.log('Profile Data:', data);
+ 
+    // Update session storage for easy access
+
+    utils.setStorage('username', data.user.username);
+
+    utils.setStorage('userId', data.user._id);
+
+    utils.setStorage('fullName', data.user.fullName);
+ 
+    // Render the navigation bar for the logged-in user
+
+    await utils.renderNavbar();
+
+  } catch (error) {
+
+    console.error('Error in cookieWorkaround:', error.message);
+
+    utils.cleanupSignOut(); // Clear storage and cookies if something goes wrong
+
+    window.location.href = '/login'; // Redirect to login if session is invalid
+
   }
 
+}
+
+ 
   /**
    * Retrieves the username from the browser cookies.
    * 
@@ -646,6 +729,8 @@ const utils = (() => {
     deleteRecipe,
     unfavoriteRecipe,
     checkIfFavorite,
-    checkUserIdAndUsername
+    checkUserIdAndUsername,
+    signOutUser,
+    setNotLoggedInNavBar
   };
 })();

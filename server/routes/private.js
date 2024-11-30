@@ -81,8 +81,17 @@ privateRouter.put("/users/verify", async (req, res) => {
     if (hasTenMinutesPassed(user.verificationCodeTimestamp)) {
       return res.status(437).json({ error: 'Code has expired' });
     }
-
     const verifiedUser = await User.updateOne(user, { $set: { verified: true } }, { upsert: true, new: true });
+ 
+    // Create session and set cookies
+    req.session.isLoggedIn = true;
+    req.session.userId = user._id;
+    req.session.username = user.username;
+     
+    res.cookie('sessionId', req.session.id, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('username', req.session.username, { maxAge: 24 * 60 * 60 * 1000 });
+     
+    
     res.json(verifiedUser);
   } catch (error) {
     console.error('Error fetching unique user: ', error);
