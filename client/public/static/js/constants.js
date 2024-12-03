@@ -88,6 +88,8 @@ const SUCCESSFUL_SIGNOUT = "You were successfully signed out";
 const ACCOUNT_CREATION = "Account successfully created!";
 const ACCOUNT_NOT_VERIFIED = "User account is not verified";
 
+const FAILED_TO_FETCH_USER_PROFILE = "Failed to fetch user profile. Please log in again.";
+
 // Verification Messages
 const SUCCESSFULLY_RESET_ACCOUNT = "Successfully reset account - please sign-in!";
 const CHECK_EMAIL_FOR_VERIFICATION_CODE = "Please check your email and enter the 6 digit code below. Code expires in 10 minutes";

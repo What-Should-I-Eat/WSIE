@@ -291,7 +291,7 @@ async function cookieWorkaround() {
 
     const response = await fetch(PROFILE_URL, {
 
-      method: 'GET',
+      method: 'GET_ACTION',
 
       credentials: 'include', // Ensures cookies are sent with the request
 
