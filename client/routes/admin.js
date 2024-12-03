@@ -7,4 +7,8 @@ router.get('/', function (_, res) {
   res.sendFile(path.join(__dirname, `../${BASE_DIR_PATH}/admin.html`));
 });
 
+router.get('/reported_content', function (_, res) {
+  res.sendFile(path.join(__dirname, `../${BASE_DIR_PATH}/reported_content.html`));
+});
+
 module.exports = router;

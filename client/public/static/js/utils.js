@@ -107,7 +107,16 @@ const utils = (() => {
         myAccountDropdown.append(dropdownMenu);
         navBar.append(myAccountDropdown);
         if(user.isAdmin){
-          adminTab.append('<a class="nav-link" href="/admin">Admin</a>');
+          const adminDropdown = $('<div id="adminDropdown" class="dropdown"></div>');
+          const adminDropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownAdminButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</button>');
+          const adminDropdownMenu = $('<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink"></div>');
+  
+          adminDropdownMenu.append('<a class="nav-link" href="/admin">Publish Requests</a>');
+          adminDropdownMenu.append('<a class="nav-link" href="/admin/reported_content">Reported Content</a>');
+  
+          adminDropdown.append(adminDropdownToggle);
+          adminDropdown.append(adminDropdownMenu);
+          adminTab.append(adminDropdown);
         }
       } else {
         setNotLoggedInNavBar(navBar);
