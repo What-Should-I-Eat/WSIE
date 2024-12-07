@@ -2,6 +2,7 @@ let recipeId = '';
 let userName = '';
 let userEmail = '';
 let recipeName = '';
+let reported_review = false;
 
 function RecipeDetailsView() {
   this.loadEdamamRecipe = async (source, sourceUrl, recipeUri) => {
@@ -50,11 +51,13 @@ function RecipeDetailsView() {
     }
   }
 
-  this.loadPublicUserRecipe = async (publicUserRecipeName, pubReview) => {
+  this.loadPublicUserRecipe = async (publicUserRecipeName, pubReview, reportedReview) => {
+    reported_review = reportedReview
     try {
       console.log("Loading view from public user recipe");
       const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
-      if(userRecipeDetails.pubRequested || userRecipeDetails.isPublished){
+      console.log(userRecipeDetails);
+      if(userRecipeDetails.pubRequested || userRecipeDetails.isPublished || userRecipeDetails.reported){
         recipeId = userRecipeDetails._id;
         recipeName = userRecipeDetails.recipeName;
         userName = userRecipeDetails.usernameCreator;
@@ -64,7 +67,7 @@ function RecipeDetailsView() {
         }
       }
       if (userRecipeDetails) {
-        this.buildPublicUserView(userRecipeDetails,pubReview);
+        this.buildPublicUserView(userRecipeDetails,pubReview,reportedReview);
       } else {
         console.error("Invalid public user recipe data to build view");
         utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
@@ -296,11 +299,14 @@ function RecipeDetailsView() {
     if(userReviews.length>0){
       userReviews.forEach(review => {
         const reviewItem = `
-          <li>
-              <span id="boldUserName">
-                ${review.reviewerUsername}
-              </span>
-                ${review.writtenReview}
+          <li id="reviewItem">
+            <span id="boldUserName">
+              ${review.reviewerUsername}
+            </span>
+              ${review.writtenReview}
+              <button id="report-post" value="${review._id}" title="Report Post">
+                <i class="fas fa-flag" style="color: #df163e;"></i>
+              </button>
           </li>`;
           container.append(reviewItem);
       });
@@ -314,7 +320,7 @@ function RecipeDetailsView() {
     reviewBox[0].style.height = Math.min(reviewBoxHeight, 200) + 'px';
   }
 
-  this.buildPublicUserView = async (recipe, pubReview) => {
+  this.buildPublicUserView = async (recipe, pubReview, reportedReview) => {
     // Leave this here so its compatible and we can share functionality
     const form = document.getElementById('recipeForm');
 
@@ -348,11 +354,13 @@ function RecipeDetailsView() {
     }
     hiddenRecipeSourceUrlInput.value = "";
     const addToFavoritesBtn = document.getElementById('addToFavoritesBtn');
-    if(pubReview != 'true'){
+    if(pubReview != 'true' && reportedReview != 'true'){
       // Check if the recipe is a favorite
       const username = utils.getUserNameFromCookie();
       const isFavorite = await checkIfFavorite(username, recipe.recipeName);
       addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
+      const reportRecipeBtn = document.getElementById('reportRecipeBtn');
+      reportRecipeBtn.style.visibility = 'visible';
     }else{
       addToFavoritesBtn.style.visibility = 'hidden';
       //update buttons to show approve or deny request
@@ -421,11 +429,14 @@ function RecipeDetailsView() {
     if(userReviews.length>0){
       userReviews.forEach(review => {
         const reviewItem = `
-          <li>
-              <span id="boldUserName">
-                ${review.reviewerUsername}
-              </span>
-                ${review.writtenReview}
+          <li id="reviewItem">
+            <span id="boldUserName">
+              ${review.reviewerUsername}
+            </span>
+              ${review.writtenReview}
+              <button id="report-post" value="${review._id}" title="Report Post">
+                <i class="fas fa-flag" style="color: #df163e;"></i>
+              </button>
           </li>`;
           container.append(reviewItem);
       });
@@ -560,11 +571,14 @@ function RecipeDetailsView() {
     if(userReviews.length>0){
       userReviews.forEach(review => {
         const reviewItem = `
-          <li>
-              <span id="boldUserName">
-                ${review.reviewerUsername}
-              </span>
-                ${review.writtenReview}
+          <li id="reviewItem">
+            <span id="boldUserName">
+              ${review.reviewerUsername}
+            </span>
+              ${review.writtenReview}
+              <button id="report-post" value="${review._id}" title="Report Post">
+                <i class="fas fa-flag" style="color: #df163e;"></i>
+              </button>
           </li>`;
           container.append(reviewItem);
       });
@@ -586,21 +600,80 @@ function handleUpdateRecipe() {
 };
 
 async function handlePublishUserRecipe(userId,form) {
-  const recipeName = document.getElementById('recipe-name').textContent;
-  const buttonText = form.find("#publishRecipeBtn").text();
-  if(buttonText.includes("remove")){
-    await handleUserRemovePublication();
-    return;
+  fullString = await getRecipeText();
+  profanityVal = await utils.checkForProfanity(fullString);
+  if(!profanityVal){
+    const recipeName = document.getElementById('recipe-name').textContent;
+    const buttonText = form.find("#publishRecipeBtn").text();
+    if(buttonText.includes("remove")){
+      await handleUserRemovePublication();
+      return;
+    }else{
+      request = {
+        recipeName: recipeName
+      }
+
+      let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+      try {
+        const response = await fetch(url, {
+          method: POST_ACTION,
+          body: JSON.stringify({ favorites: request }),
+          headers: {
+            'Content-Type': DEFAULT_DATA_TYPE
+          }
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error);
+        }
+        const publishRecipeButton = document.getElementById('publishRecipeBtn');
+        publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
+        publishRecipeButton.disabled = true;
+        utils.showAjaxAlert("Success", data.success);
+      } catch (error) {
+        console.error(error);
+        utils.showAjaxAlert("Error", error.message);
+      }
+    }
   }else{
+    utils.showAjaxAlert("Error", "Recipe content goes against community protocols and cannot be posted.");
+  }
+};
+
+async function getRecipeText(){
+  let fullRecipeText = "";
+  fullRecipeText = document.getElementById('recipe-name').textContent;
+  const ingredientsList = document.querySelectorAll('#ingredients-list li');
+  ingredientsList.forEach(item => {
+    const text = item.textContent.trim();
+    fullRecipeText = fullRecipeText + " " + text;
+  });
+
+  const preparationList = document.querySelectorAll('#preparation-list li');
+  preparationList.forEach(item => {
+    const text = item.textContent.trim();
+    fullRecipeText = fullRecipeText + " " + text;
+  });
+
+  return(fullRecipeText);
+}
+
+async function handleUserReview(userId){
+
+  stringToCheck = document.getElementById("recipeReviewInput").value;
+  profanityVal = await utils.checkForProfanity(stringToCheck);
+  if(!profanityVal){
     request = {
-      recipeName: recipeName
+      reviewedRecipeId: recipeId,
+      writtenReview: recipeReviewInput.value,
     }
 
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
     try {
       const response = await fetch(url, {
         method: POST_ACTION,
-        body: JSON.stringify({ favorites: request }),
+        body: JSON.stringify({ reviews: request }),
         headers: {
           'Content-Type': DEFAULT_DATA_TYPE
         }
@@ -610,44 +683,62 @@ async function handlePublishUserRecipe(userId,form) {
       if (!response.ok) {
         throw new Error(data.error);
       }
-      const publishRecipeButton = document.getElementById('publishRecipeBtn');
-      publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
-      publishRecipeButton.disabled = true;
+      
       utils.showAjaxAlert("Success", data.success);
     } catch (error) {
       console.error(error);
       utils.showAjaxAlert("Error", error.message);
     }
+  }else{
+    utils.showAjaxAlert("Error", "Review content goes against community protocols and cannot be posted.");
   }
 };
 
-async function handleUserReview(userId){
-  request = {
-    reviewedRecipeId: recipeId,
-    writtenReview: recipeReviewInput.value,
-  }
-
-  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
+async function handleReportRecipe(){
+  const url = `${PUBLIC_USER_RECIPES_URL}/report_recipe?recipeId=${recipeId}`;
   try {
     const response = await fetch(url, {
-      method: POST_ACTION,
-      body: JSON.stringify({ reviews: request }),
+      method: PUT_ACTION,
       headers: {
         'Content-Type': DEFAULT_DATA_TYPE
-      }
+      },
+      body: JSON.stringify()
     });
 
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.error);
     }
-    
-    utils.showAjaxAlert("Success", data.success);
+
+    utils.showAjaxAlert("Success", data.message);
   } catch (error) {
     console.error(error);
     utils.showAjaxAlert("Error", error.message);
   }
-};
+}
+
+async function handleReportPost(reviewId){
+  const url = `${PUBLIC_USER_RECIPES_URL}/report_review?reviewId=${reviewId}`;
+  try {
+    const response = await fetch(url, {
+      method: PUT_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      },
+      body: JSON.stringify()
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+
+    utils.showAjaxAlert("Success", data.message);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+}
 
 async function getRecipePubReviews(){
   const url = `${PUBLIC_USER_RECIPES_URL}/get_reviews?recipeId=${recipeId}`;
@@ -661,10 +752,10 @@ async function getRecipePubReviews(){
   });
 
   if (response.ok) {
-    const recipePubRequest = await response.json();
-    return recipePubRequest;
+    const recipePubreviews = await response.json();
+    return recipePubreviews;
   } else {
-    console.error(`Error occurred getting pub requests`);
+    console.error(`Error occurred getting pub reviews`);
     return undefined;
   }
 };
@@ -916,19 +1007,26 @@ $(document).ready(function () {
         break;
       case 'approvePub':
         await handlePublishRecipeReview(true);
-        await updatePublishRequestStatus();
-        sendPubEmail(userName, userEmail, recipeName, emailjs, "pubApproved");
+        if(!reported_review){
+          await updatePublishRequestStatus();
+          sendPubEmail(userName, userEmail, recipeName, emailjs, "pubApproved");
+        }
         break;
       case 'denyPub':
         await handlePublishRecipeReview(false);
-        await updatePublishRequestStatus();
-        sendPubEmail(userName, userEmail, recipeName, emailjs, "pubDenied");
+        if(!reported_review){
+          await updatePublishRequestStatus();
+          sendPubEmail(userName, userEmail, recipeName, emailjs, "pubDenied");
+        }
         break;
       case 'postReview':
         await handleUserReview(userId);
         break;
-      default:
-        console.error(`Unknown action on form submission: [${action}]`);
+      case 'reportRecipe':
+        await handleReportRecipe();
+        break;
+      default: //for now this handles reporting of community reviews
+        await handleReportPost(action);
     }
   });
 });

@@ -88,71 +88,53 @@ const utils = (() => {
 async function renderNavbar() {
 
   const navBar = $('#navBarMyAccountSignInSignUp');
-
   const adminTab = $('#enable-admin-tab');
-
   navBar.empty();
- 
   const username = utils.getUserNameFromCookie(); // Fetch username from cookies
  
   if (username) {
-
     const user = await utils.getUserFromUsername(username); // Fetch user data
 
     if (user) {
 
       const myAccountDropdown = $('<div id="myAccountDropdown" class="dropdown"></div>');
-
       const dropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Account</button>');
-
       const dropdownMenu = $('<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink"></div>');
- 
       dropdownMenu.append('<h6 class="dropdown-header">Welcome back!</h6>');
-
       dropdownMenu.append(`<h6 class="dropdown-header">${user.fullName}</h6>`);
-
       dropdownMenu.append('<div class="dropdown-divider"></div>');
-
       dropdownMenu.append('<a class="dropdown-item" href="/account/my_dietary">My Dietary</a>');
-
       dropdownMenu.append('<a class="dropdown-item" href="/account/my_recipes">My Recipes</a>');
-
       dropdownMenu.append('<a class="dropdown-item" href="/account/my_profile">My Profile</a>');
-
       const signOutLink = $('<a class="dropdown-item" href="#">Sign Out</a>').on('click', function (e) {
-
         e.preventDefault();
-
         utils.signOutUser(); // Handle sign-out logic
-
       });
 
       dropdownMenu.append(signOutLink);
- 
       myAccountDropdown.append(dropdownToggle);
-
       myAccountDropdown.append(dropdownMenu);
-
       navBar.append(myAccountDropdown);
- 
-      if (user.isAdmin) {
 
-        adminTab.append('<a class="nav-link" href="/admin">Admin</a>');
 
-      }
-
+        if(user.isAdmin){
+          const adminDropdown = $('<div id="adminDropdown" class="dropdown"></div>');
+          const adminDropdownToggle = $('<button class="btn btn-link account-link dropdown-toggle" type="button" id="dropdownAdminButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</button>');
+          const adminDropdownMenu = $('<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navLink"></div>');
+  
+          adminDropdownMenu.append('<a class="nav-link" href="/admin">Publish Requests</a>');
+          adminDropdownMenu.append('<a class="nav-link" href="/admin/reported_content">Reported Content</a>');
+  
+          adminDropdown.append(adminDropdownToggle);
+          adminDropdown.append(adminDropdownMenu);
+          adminTab.append(adminDropdown);
+        }
     } else {
-
       utils.setNotLoggedInNavBar(navBar); // Display "Sign In" and "Sign Up"
-
     }
-
   } else {
-
     utils.setNotLoggedInNavBar(navBar);
-
   }
-
 }
 
  
@@ -286,55 +268,35 @@ async function renderNavbar() {
 */
 
 async function cookieWorkaround() {
-
   try {
-
     const response = await fetch(PROFILE_URL, {
-
       method: 'GET_ACTION',
-
       credentials: 'include', // Ensures cookies are sent with the request
-
       headers: {
-
         'Content-Type': 'application/json',
-
       },
-
     });
  
     if (!response.ok) {
-
       throw new Error('Failed to fetch user profile. Please log in again.');
-
     }
  
     const data = await response.json();
-
     console.log('Profile Data:', data);
- 
+    
     // Update session storage for easy access
-
     utils.setStorage('username', data.user.username);
-
     utils.setStorage('userId', data.user._id);
-
     utils.setStorage('fullName', data.user.fullName);
- 
+    
     // Render the navigation bar for the logged-in user
-
     await utils.renderNavbar();
 
   } catch (error) {
-
     console.error('Error in cookieWorkaround:', error.message);
-
     utils.cleanupSignOut(); // Clear storage and cookies if something goes wrong
-
     window.location.href = '/login'; // Redirect to login if session is invalid
-
   }
-
 }
 
  
@@ -703,6 +665,29 @@ async function cookieWorkaround() {
     }
   }
 
+  /**
+   * This function utilizes Greip's profanity filter. 
+   * @param {string} text - String of text that is to be checked in the profanity filter
+   * * @returns {data} - data object that contains profanity status and other currently
+   * unused elements.
+   * See full terms and conditions at https://greip.io/terms
+   */
+  async function checkForProfanity(text) {
+    const options = {
+      method: GET_ACTION,
+      headers: {Authorization: 'Bearer b30c3a2dbb27b1f84c31fc3e1123df73'}
+    };
+
+    const response = await fetch('https://greipapi.com/scoring/profanity?text='+text, options);
+    const data = await response.json();
+
+    if(data.data.isSafe){
+      return false;
+    }else{
+      return true;
+    }
+  }  
+
   return {
     setStorage,
     removeFromStorage,
@@ -731,6 +716,7 @@ async function cookieWorkaround() {
     checkIfFavorite,
     checkUserIdAndUsername,
     signOutUser,
-    setNotLoggedInNavBar
+    setNotLoggedInNavBar,
+    checkForProfanity
   };
 })();
