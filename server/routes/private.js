@@ -548,6 +548,7 @@ privateRouter.post('/users/:id/recipe/request_publish', async (req, res) => {
     const savedRequest = await publishRequest.save();
     if (savedRequest) {
       recipe.pubRequested = true;
+      recipe.showUsername =req.body.showUsername;
       const updatedRecipe = await recipe.save();
 
       if (updatedRecipe) {

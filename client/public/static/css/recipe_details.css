@@ -47,7 +47,8 @@
 #updateRecipeBtn,
 #publishRecipeBtn,
 #approvePubReqBtn,
-#denyPubReqBtn {
+#denyPubReqBtn ,
+#showusertag{
   visibility: hidden;
 }
 
@@ -57,4 +58,54 @@
 
 #denyPubReqBtn {
   background-color: #801A18;
+}
+.modal-overlay {
+  position: fixed; /* Fixed position to cover the entire screen */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  max-width: 90%;
+  box-sizing: border-box;
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-content .btn-primary {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.modal-content .btn-primary:hover {
+  background-color: #45a049;
+}
+
+.modal-content .btn-secondary {
+  background-color: #f44336;
+  color: white;
+}
+
+.modal-content .btn-secondary:hover {
+  background-color: #d32f2f;
 }

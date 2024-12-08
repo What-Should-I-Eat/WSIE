@@ -430,7 +430,15 @@
           <img id="recipe-image" src="/static/img/loading-spinner.svg" alt="Loading recipe image"
             style="max-width: 100%; height: auto;" />
         </header>
-
+              
+<!-- Recipe Header with "Created by" functionality -->
+<section class="recipe-info">
+  <div>
+    <h3 id="createdByTag">
+      <span id="createdBy">Created by: Anonymous</span> <!-- Default is Anonymous -->
+    </h3>
+  </div>
+</section>
         <section class="recipe-info">
           <h3>Ingredients</h3>
           <ul id="ingredients-list">
@@ -458,14 +466,7 @@
             <!-- Dynamically building dietary labels here -->
           </ul>
         </section>
-        <div>
-          <label for="'showUsernameToggle">Show Username</label>
-          <input type ="checkbox" id="showUsernameToggle" onchange="toggleUsernameVisibility()">
-        </div>
-        <div>
-          <p id="recipeCreator">Created by: Anonymous</p>
-        </div>
-        <section class="recipe-info handle-favorites">
+        <section class="recipe-info handle-favorites">    
           <button type="submit" class="btn btn-primary" name="action" value="addToFavorites" id="addToFavoritesBtn">Add
             Recipe to Favorites</button>
           <button type="submit" class="btn btn-primary" name="action" value="updateRecipe" id="updateRecipeBtn">Update

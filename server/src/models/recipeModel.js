@@ -21,7 +21,8 @@ const RecipeSchema = new Schema({
   userCreated: { type: Boolean, default: false },
   usernameCreator: { type: String, default: "" },
   isPublished: { type: Boolean, default: false },
-  pubRequested: { type: Boolean, default: false }
+  pubRequested: { type: Boolean, default: false },
+  showUsername:{type: Boolean, default:false}
 });
 
 module.exports = mongoose.model('Recipe', RecipeSchema);

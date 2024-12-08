@@ -54,15 +54,36 @@ function RecipeDetailsView() {
     try {
       console.log("Loading view from public user recipe");
       const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
-      if(userRecipeDetails.pubRequested){
-        recipeId = userRecipeDetails._id;
-        recipeName = userRecipeDetails.recipeName;
-        userName = userRecipeDetails.usernameCreator;
-        const recipePubRequest = await getRecipePubRequest(recipeId);
-        userEmail = recipePubRequest.userEmail;
+      console.log(userRecipeDetails);
+  
+      // Get the createdBy elements
+      const createdByTag = document.getElementById('createdByTag');
+      const createdBy = document.getElementById('createdBy');
+  
+      // Check if showUsername is true and set visibility accordingly
+      if (userRecipeDetails.showUsername) {
+        createdByTag.style.visibility = 'visible';
+        createdBy.textContent = `Created by: ${userRecipeDetails.usernameCreator}`;
+      } else {
+        createdByTag.style.visibility = 'hidden';
+        createdBy.textContent = "Created by: Anonymous";
       }
+  
+      // Existing logic for checking publication status
+      if (userRecipeDetails.pubRequested || userRecipeDetails.isPublished || userRecipeDetails.reported) {
+        const recipeId = userRecipeDetails._id;
+        const recipeName = userRecipeDetails.recipeName;
+        const userName = userRecipeDetails.usernameCreator;
+  
+        if (userRecipeDetails.pubRequested) {
+          // If the recipe has been requested for publishing, get the publish request details
+          const recipePubRequest = await getRecipePubRequest(recipeId);
+          const userEmail = recipePubRequest.userEmail;
+        }
+      }
+  
       if (userRecipeDetails) {
-        this.buildPublicUserView(userRecipeDetails,pubReview);
+        this.buildPublicUserView(userRecipeDetails, pubReview);
       } else {
         console.error("Invalid public user recipe data to build view");
         utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
@@ -72,6 +93,7 @@ function RecipeDetailsView() {
       utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
     }
   }
+  
 
   this.getRecipeDetails = async (recipeUri) => {
     const uri = encodeURIComponent(recipeUri);
@@ -502,15 +524,6 @@ function RecipeDetailsView() {
           publishRecipeButton.disabled = false;
         }
     }
-    const creatorText = document.getElementById("recipeCreator");
-    if (creatorText) {
-      creatorText.setAttribute("data-username", recipe.usernameCreator || "Anonymous");
-      console.log("Data-username set to:", creatorText.getAttribute("data-username"));
-        creatorText.textContent = "Created by: Anonymous";
-    } else {
-      console.error("Element with ID 'recipeCreator' not found.");
-  }
-    
   };
 }
 
@@ -520,41 +533,103 @@ function handleUpdateRecipe() {
   window.location = `/account/update_recipe?userRecipeName=${recipeName}`;
 };
 
-async function handlePublishUserRecipe(userId,form) {
+async function handlePublishUserRecipe(userId, form, showUsername) {
   const recipeName = document.getElementById('recipe-name').textContent;
-  const buttonText = form.find("#publishRecipeBtn").text();
-  if(buttonText.includes("remove")){
-    await handleUserRemovePublication();
-    return;
-  }else{
-    request = {
-      recipeName: recipeName
-    }
 
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
-    try {
-      const response = await fetch(url, {
-        method: POST_ACTION,
-        body: JSON.stringify({ favorites: request }),
-        headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
-        }
-      });
+  // Show the popup box to ask for username visibility
+  const modal = document.createElement('div');
+  modal.classList.add('modal-overlay');
+  modal.innerHTML = `
+    <div class="modal-content">
+      <p>Do you want to show your username with this recipe?</p>
+      <button type="submit" class="btn btn-primary" name="action" value="showUsernameYes" id="yesShowUsername">Yes</button>
+      <button type="submit" class="btn btn-secondary" name="action" value="showUsernameNo" id="noShowUsername">No</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error);
+  // Get username from cookie
+  const username = utils.getUserNameFromCookie();
+
+  // Event listener for "Yes" button
+  document.getElementById('yesShowUsername').addEventListener('click', async (e) => {
+    e.preventDefault();
+    showUserTag(username); // Show the username when "Yes" is selected
+    modal.remove(); // Remove the modal
+    await callPublishRequest(true, userId, username); // Send the request with showUsername = true
+  });
+
+  // Event listener for "No" button
+  document.getElementById('noShowUsername').addEventListener('click', async (e) => {
+    e.preventDefault();
+    hideUserTag(); // Hide the username when "No" is selected
+    modal.remove(); // Remove the modal
+    await callPublishRequest(false, userId, "Anonymous"); // Send the request with showUsername = false
+  });
+}
+
+async function callPublishRequest(showUsername, userId, username) {
+  const recipeName = document.getElementById('recipe-name').textContent;
+
+  const request = {
+    recipeName: recipeName,
+    showUsername: showUsername,
+    username: showUsername ? username : "Anonymous" // Pass the flag to show the username or not
+  };
+
+  let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/request_publish`;
+
+  try {
+    const response = await fetch(url, {
+      method: POST_ACTION,
+      body: JSON.stringify({ favorites: request }),
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
       }
-      const publishRecipeButton = document.getElementById('publishRecipeBtn');
-      publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
-      publishRecipeButton.disabled = true;
-      utils.showAjaxAlert("Success", data.success);
-    } catch (error) {
-      console.error(error);
-      utils.showAjaxAlert("Error", error.message);
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
     }
+    
+    // Disable the button and update the text
+    const publishRecipeButton = document.getElementById('publishRecipeBtn');
+    publishRecipeButton.textContent = RECIPE_UNDER_REVIEW; // Assuming this is a constant
+    publishRecipeButton.disabled = true;
+    
+    // Show success message
+    utils.showAjaxAlert("Success", data.success);
+  } catch (error) {
+    console.error(error);
+    utils.showAjaxAlert("Error", error.message);
   }
-};
+}
+
+function showUserTag(username) {
+  const createdByTag = document.getElementById('createdByTag');
+  const createdBy = document.getElementById('createdBy');
+
+  createdByTag.style.visibility = 'visible';
+
+  createdBy.textContent = `Created by: ${username || 'Anonymous'}`;  
+}
+
+function hideUserTag() {
+  const createdByTag = document.getElementById('createdByTag');
+  const createdBy = document.getElementById('createdBy');
+
+  createdByTag.style.visibility = 'visible';
+
+  createdBy.textContent = "Created by: Anonymous";
+}
+
+// Function to update the "Created by" label dynamically
+function updateCreatedByLabel(username) {
+  const createdByTag = document.getElementById('createdBy');
+  createdByTag.textContent = `Created by: ${username}`;
+}
+
 
 async function handleFavoriteUnfavoriteDeleteRecipeLogic(userId, form) {
   const recipeName = document.getElementById('recipe-name').textContent;
@@ -801,6 +876,14 @@ $(document).ready(function () {
         console.log("Submitting form for publishing user recipe");
         await handlePublishUserRecipe(userId, form);
         break;
+        case 'showUsernameYes':
+          console.log("Submitting form with username visibility set to YES");
+          await handlePublishUserRecipe(userId, form, true); // Passing true for "Yes"
+          break;
+        case 'showUsernameNo':
+          console.log("Submitting form with username visibility set to NO");
+          await handlePublishUserRecipe(userId, form, false); // Passing false for "No"
+          break;
       case 'approvePub':
         await handlePublishRecipeReview(true);
         await updatePublishRequestStatus();
@@ -906,18 +989,5 @@ async function checkIfFavorite(username, recipeName) {
     return isFavorite
   } catch (error) {
     console.error(error);
-  }
-}
-function toggleUsernameVisibility() {
-  const checkbox = document.getElementById("showUsernameToggle");
-  const creatorText = document.getElementById("recipeCreator");
-  if(!creatorText){
-    console.error("Element with ID 'recipeCreator' not found.");
-  }
-  if (checkbox.checked) {
-    const username = creatorText.getAttribute("data-username");
-    creatorText.textContent = `Created by: ${username || "Anonymous"}`;
-  } else {
-    creatorText.textContent = "Created by: Anonymous";
   }
 }
