@@ -149,7 +149,7 @@ $(document).ready(function () {
       } else {
         currentY = addTextWithWrap(doc, 'No instructions were able to be migrated.', 20, currentY, 170, 6);
         currentY += 10;
-        const sourceWithUrl = `View full instructions and more at: ${item.source}`;
+        const sourceWithUrl = `View full instructions and more at: <strong>${item.source}</strong>`;
         doc.textWithLink(sourceWithUrl, 20, currentY, { url: item.url });
       }
 
