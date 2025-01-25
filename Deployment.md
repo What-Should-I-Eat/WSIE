@@ -115,7 +115,7 @@ vim constants.js
 ### Start the Application
 
 ```bash
-npm run deploy
+npm start
 ```
 
 ## Deployment Verification
