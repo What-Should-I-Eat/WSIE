@@ -86,7 +86,7 @@ cat id_rsa.pub
 
 ```bash
 cd ~/
-git clone [git@github.com:torieee/WSIE.git](https://github.com/What-Should-I-Eat/WSIE.git)
+git clone https://github.com/What-Should-I-Eat/WSIE.git
 ```
 
 ## Deploy the Application
