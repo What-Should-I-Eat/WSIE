@@ -700,22 +700,42 @@ privateRouter.delete('/recipes/delete_request', async (req, res) => {
 
 privateRouter.post('/users/:id/recipe/post_review', async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const userId = req.params.id;
+    console.log("🔹 Received User ID:", userId);
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid User ID format" });
+    }
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
+      console.error("User not found:", userId);
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (!req.body.reviews) {
+      return res.status(400).json({ error: "Missing 'reviews' object in request body" });
+    }
+    const { reviewedRecipeId, writtenReview, parentReviewId, reviewerUsername } = req.body.reviews;
+    if (!reviewedRecipeId || !writtenReview || !reviewerUsername) {
+      console.error("Missing required fields:", { reviewedRecipeId, writtenReview, reviewerUsername });
+      return res.status(400).json({ error: "Missing required fields: reviewedRecipeId, writtenReview, or reviewerUsername" });
+    }
+    let parentId = null;
+    if (parentReviewId) {
+      console.log("🔹 Validating parentReviewId:", parentReviewId);
+      if (!mongoose.Types.ObjectId.isValid(parentReviewId)) {
+        return res.status(400).json({ error: "Invalid parentReviewId format" });
+      }
+      parentId = new mongoose.Types.ObjectId(parentReviewId);
     }
     const userReview = new RecipeReview({
-      reviewedRecipeId: req.body.reviews.reviewedRecipeId,
-      reviewerUsername: user.username,
-      writtenReview: req.body.reviews.writtenReview
+      reviewedRecipeId,
+      reviewerUsername,
+      writtenReview,
+      parentReviewId: parentId,
     });
-    const savedReview = await userReview.save();
-    console.log("saving");
-    if (savedReview) {
-      res.status(200).json({ success: "Posted your review!" });
-    } else {
-      res.status(500).json({ error: "Error occurred posting your review!" });
-    }
+
+    await userReview.save();
+    res.status(201).json({ success: "Posted your review!", review: userReview });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error occurred sending post review message." });
