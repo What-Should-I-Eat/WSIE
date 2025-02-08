@@ -93,6 +93,7 @@ function RecipeDetailsView() {
 
     if (response.ok) {
       const recipeDetails = await response.json();
+      console.log(recipeDetails)
       return recipeDetails;
     } else {
       console.error("Error occurred getting recipe details");
@@ -235,9 +236,14 @@ function RecipeDetailsView() {
     document.getElementById('recipe-image').src = imageSrc;
     document.getElementById('recipe-image').alt = `Image of ${recipe.label}`;
 
+    console.log(document)
     // Update ingredients list
-    const ingredientsList = document.querySelector('.recipe-info ul');
+    const ingredientsContainer = document.querySelector('.recipe-info-ingredients-list');
+    console.log(document.querySelector('.recipe-info-ingredients-list'))
+    const ingredientsList = ingredientsContainer.querySelector('ul')
     ingredientsList.innerHTML = '';
+    console.log(recipe.ingredientLines)
+    console.log(document.querySelector('.recipe-info-ingredients-list').querySelector('ul'))
     recipe.ingredientLines.forEach(ingredient => {
       const listItem = document.createElement('li');
       listItem.textContent = ingredient;
@@ -245,9 +251,13 @@ function RecipeDetailsView() {
     });
 
     // Update preparation
-    const preparationContainer = document.querySelectorAll('.recipe-info')[1];
-    const preparationList = preparationContainer.querySelector('ul');
+    // const preparationContainer = document.querySelectorAll('.recipe-info-preparation');
+    // const preparationList = preparationContainer.querySelector('ul');
+    const preparationContainer = document.querySelector('.recipe-info-preparation-list');
+    const preparationList = preparationContainer.querySelector('ul');    
     preparationList.innerHTML = '';
+    console.log(recipeInstructions)
+    console.log(document.querySelector('.recipe-info-preparation-list'))
     if (recipeInstructions && recipeInstructions.length > 0) {
       recipeInstructions.forEach(step => {
         const listItem = document.createElement('li');
@@ -258,17 +268,18 @@ function RecipeDetailsView() {
       console.log(`No scraped instructions for: [${recipe.label}]`);
       const noInstructionsText = document.createElement('p');
       noInstructionsText.innerHTML = `No instructions were able to be migrated.`;
-      preparationContainer.appendChild(noInstructionsText);
-    }
+      preparationList.appendChild(noInstructionsText);
+    }    
     const source = recipe.source;
     const url = recipe.url;
 
     const urlLinkToInstructionsText = document.createElement('p');
-    urlLinkToInstructionsText.innerHTML = `View full instructions and more at <strong><a href="${url}" target="_blank">${source}</a></strong>`;
-    preparationContainer.appendChild(urlLinkToInstructionsText);
+    urlLinkToInstructionsText.innerHTML = `<br>View full instructions and more at <strong><a href="${url}" target="_blank">${source}</a></strong>`;
+    preparationList.appendChild(urlLinkToInstructionsText);
 
     // Update nutritional facts
-    const nutritionalFactsList = document.querySelectorAll('.recipe-info')[2].querySelector('ul');
+    const nutritionalFactsContainer = document.querySelector('.recipe-info-nutritional-facts-list');
+    const nutritionalFactsList = nutritionalFactsContainer.querySelector('ul');
     nutritionalFactsList.innerHTML = '';
     nutritionalFactsList.innerHTML += `<li>Servings: ${Math.round(recipe.yield)}</li>`;
     nutritionalFactsList.innerHTML += `<li>Calories: ${Math.round(recipe.totalNutrients.ENERC_KCAL.quantity)} ${recipe.totalNutrients.ENERC_KCAL.unit}</li>`;
@@ -277,9 +288,10 @@ function RecipeDetailsView() {
     nutritionalFactsList.innerHTML += `<li>Protein: ${Math.round(recipe.totalNutrients.PROCNT.quantity)} ${recipe.totalNutrients.PROCNT.unit}</li>`;
 
     // Update dietary labels
-    const dietaryContainer = document.querySelectorAll('.recipe-info')[3];
+    const dietaryContainer = document.querySelector('.recipe-info-dietary-labels-list');
     const dietaryLabelsList = dietaryContainer.querySelector('ul');
     dietaryLabelsList.innerHTML = '';
+    // console.log(document.querySelectorAll('.recipe-info'))
     if (recipe.dietLabels && recipe.dietLabels.length > 0) {
       recipe.dietLabels.forEach(label => {
         const listItem = document.createElement('li');
@@ -291,6 +303,16 @@ function RecipeDetailsView() {
       noDietaryText.innerHTML = `No dietary labels.`;
       dietaryContainer.appendChild(noDietaryText);
     }
+    
+    // Update cuisine type
+    const cuisineTypeContainer = document.querySelector('.recipe-info-cusine-type-list');
+    const cuisineTypeList = cuisineTypeContainer.querySelector('ul')
+    cuisineTypeList.innerHTML = '';
+    recipe.cuisineType.forEach(cuisine => {
+      const listItem = document.createElement('li');
+      listItem.textContent = cuisine;
+      cuisineTypeList.appendChild(listItem);
+    });
 
     // Update reviews
     const container = $('.reviewScrollable');

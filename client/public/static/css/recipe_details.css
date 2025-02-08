@@ -20,18 +20,34 @@
 
 .recipe-info {
   padding: 20px;
+  width: 100%; /* Sets the width less than 50% to fit side by side */
+  vertical-align: top;
+}
+
+.recipe-info-header{
+  display: inline-block; /* Makes the divs appear in line */
+  width: 45%; /* Sets the width less than 50% to fit side by side */
+  padding: 20px 10px 20px 50px;
+  vertical-align: top;
+  /* margin: 2%;
+  vertical-align: top; */
+}
+
+.recipe-info-container{
+  transform: translateX(-20px);
+}
+
+.recipe-info-header-full{
+  padding: 20px 50px 20px 50px;
+  vertical-align: top;
+}
+
+.recipe-info-container-full{
+  transform: translateX(-20px);
   margin: 2%;
   vertical-align: top;
 }
 
-.recipe-info h3 {
-  margin-top: 0;
-}
-
-.inline-div {
-  display: inline-block; /* Makes the divs appear in line */
-  width: 45%; /* Sets the width less than 50% to fit side by side */
-}
 
 .handle-favorites {
   text-align: center;
