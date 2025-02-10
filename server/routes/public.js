@@ -140,5 +140,55 @@ publicRouter.get('/recipes/get_reviews', async (req, res) => {
 function generateRandomVerificationCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
+publicRouter.post('/recipes/:id/like', async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+
+    const userId = req.body.userId;
+
+    if (userId !== 'guest' && recipe.likedBy?.includes(userId)) {
+      return res.status(400).json({ message: 'You have already liked this recipe.' });
+    }
+
+    recipe.likes += 1;
+    if (userId !== 'guest') {
+      recipe.likedBy = recipe.likedBy || [];
+      recipe.likedBy.push(userId);
+    }
+    await recipe.save();
+
+    res.json({ likes: recipe.likes });
+  } catch (error) {
+    console.error('Error liking recipe:', error);
+    res.status(500).json({ error: 'Failed to like recipe' });
+  }
+});
+
+publicRouter.post('/recipes/:id/dislike', async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+
+    const userId = req.body.userId;
+
+    if (userId !== 'guest' && recipe.dislikedBy?.includes(userId)) {
+      return res.status(400).json({ message: 'You have already disliked this recipe.' });
+    }
+
+    recipe.dislikes += 1;
+    if (userId !== 'guest') {
+      recipe.dislikedBy = recipe.dislikedBy || [];
+      recipe.dislikedBy.push(userId);
+    }
+    await recipe.save();
+
+    res.json({ dislikes: recipe.dislikes });
+  } catch (error) {
+    console.error('Error disliking recipe:', error);
+    res.status(500).json({ error: 'Failed to dislike recipe' });
+  }
+});
+
 
 module.exports = publicRouter;
