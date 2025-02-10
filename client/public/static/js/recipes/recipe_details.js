@@ -633,6 +633,7 @@ async function handleUserReview(userId) {
     const data = await response.json();
 
     utils.showAjaxAlert("Success", data.success);
+    document.getElementById("recipeReviewInput").value = "";
     getRecipePubReviews().then(reviews => {
       displayReviews(reviews, document.querySelector(".reviewScrollable"));
     });
