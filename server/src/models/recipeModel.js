@@ -24,7 +24,10 @@ const RecipeSchema = new Schema({
   pubRequested: { type: Boolean, default: false },
   reported: {type: Boolean, default: false},
   likes: { type: Number, default: 0 },
-  dislikes: { type: Number, default: 0 },
+ dislikes: { type: Number, default: 0 },
+ likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+ dislikedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+
 });
 
 module.exports = mongoose.model('Recipe', RecipeSchema);

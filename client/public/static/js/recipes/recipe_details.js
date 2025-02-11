@@ -1167,7 +1167,48 @@ async function handleLikeDislike(action) {
   }
 }
 
+
+document.addEventListener("DOMContentLoaded", function () {
+  const likeButtons = document.querySelectorAll('.btn-like');
+  const dislikeButtons = document.querySelectorAll('.btn-dislike');
+
+  likeButtons.forEach(button => {
+    button.addEventListener('click', () => handleLikeDislike('like', button.dataset.recipeId));
+  });
+
+  dislikeButtons.forEach(button => {
+    button.addEventListener('click', () => handleLikeDislike('dislike', button.dataset.recipeId));
+  });
+});
+
+async function handleLikeDislike(action, recipeId) {
+  try {
+    const username = utils.getUserNameFromCookie();
+    const userId = username ? await utils.getUserIdFromUsername(username) : 'guest';
+
+    const url = `/recipes/${recipeId}/${action}`; // Corrected API URL
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      const container = document.querySelector(`[data-recipe-id="${recipeId}"]`).closest('.recipe-container');
+      if (action === 'like') {
+        container.querySelector('.like-counter').textContent = data.likes;
+      } else {
+        container.querySelector('.dislike-counter').textContent = data.dislikes;
+      }
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.error(`Error with ${action}:`, error);
+  }
+}
+
 function getRecipeId() {
-  // Assuming the recipe ID is stored in a hidden input or data attribute
   return document.querySelector('[data-recipe-id]')?.getAttribute('data-recipe-id') || '';
 }
