@@ -140,5 +140,76 @@ publicRouter.get('/recipes/get_reviews', async (req, res) => {
 function generateRandomVerificationCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
+publicRouter.post('/recipes/:id/like', async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+
+    const userId = req.body.userId;
+
+    // Initialize arrays if undefined
+    recipe.likedBy = recipe.likedBy || [];
+    recipe.dislikedBy = recipe.dislikedBy || [];
+
+    if (userId !== 'guest') {
+      if (recipe.likedBy.includes(userId)) {
+        return res.status(400).json({ message: 'You have already liked this recipe.' });
+      }
+
+      // If user had disliked previously, remove the dislike
+      if (recipe.dislikedBy.includes(userId)) {
+        recipe.dislikes -= 1;
+        recipe.dislikedBy = recipe.dislikedBy.filter(id => id !== userId);
+      }
+
+      recipe.likedBy.push(userId);
+    }
+
+    recipe.likes += 1;
+    await recipe.save();
+
+    res.json({ likes: recipe.likes, dislikes: recipe.dislikes });
+  } catch (error) {
+    console.error('Error liking recipe:', error);
+    res.status(500).json({ error: 'Failed to like recipe' });
+  }
+});
+
+publicRouter.post('/recipes/:id/dislike', async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+
+    const userId = req.body.userId;
+
+    // Initialize arrays if undefined
+    recipe.likedBy = recipe.likedBy || [];
+    recipe.dislikedBy = recipe.dislikedBy || [];
+
+    if (userId !== 'guest') {
+      if (recipe.dislikedBy.includes(userId)) {
+        return res.status(400).json({ message: 'You have already disliked this recipe.' });
+      }
+
+      // If user had liked previously, remove the like
+      if (recipe.likedBy.includes(userId)) {
+        recipe.likes -= 1;
+        recipe.likedBy = recipe.likedBy.filter(id => id !== userId);
+      }
+
+      recipe.dislikedBy.push(userId);
+    }
+
+    recipe.dislikes += 1;
+    await recipe.save();
+
+    res.json({ likes: recipe.likes, dislikes: recipe.dislikes });
+  } catch (error) {
+    console.error('Error disliking recipe:', error);
+    res.status(500).json({ error: 'Failed to dislike recipe' });
+  }
+});
+
+
 
 module.exports = publicRouter;
