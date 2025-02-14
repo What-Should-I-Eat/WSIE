@@ -86,7 +86,7 @@ cat id_rsa.pub
 
 ```bash
 cd ~/
-git clone git@github.com:torieee/WSIE.git
+git clone https://github.com/What-Should-I-Eat/WSIE.git
 ```
 
 ## Deploy the Application
@@ -115,7 +115,7 @@ vim constants.js
 ### Start the Application
 
 ```bash
-npm run deploy
+npm start
 ```
 
 ## Deployment Verification

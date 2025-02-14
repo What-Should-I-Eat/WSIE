@@ -32,29 +32,51 @@ $(document).ready(function () {
     };
 
     fetch(VERIFICATION_URL, {
+
       method: PUT_ACTION,
+    
       headers: {
+    
         'Content-Type': DEFAULT_DATA_TYPE
+    
       },
-      body: JSON.stringify(request)
+    
+      body: JSON.stringify(request),
+    
+      credentials: 'include', // Ensures cookies are sent and stored
+    
     })
+    
       .then(response => {
-        if (!response.ok) {
-          if (response.status == 437) {
-            throw new Error(ERROR_CODE_EXPIRED);
-          } else {
-            throw new Error(ERROR_UNABLE_TO_GET_USER);
-          }
+    
+        if (response.ok) {
+    
+          return response.json();
+    
         } else {
-          return response.json().then(_ => {
-            form.prepend('<div class="alert alert-success">' + VERIFIED_SUCCESSFULLY + "</div>");
-          });
+    
+          throw new Error('Verification failed');
+    
         }
+    
       })
+    
+      .then(data => {
+    
+        utils.setStorage("loginMessage", "Account verified and logged in!");
+    
+        window.location.href = "/"; // Redirect to the homepage
+    
+      })
+    
       .catch(error => {
+    
         console.error(error);
-        form.prepend('<div class="alert alert-danger">' + error + "</div>");
+    
+        form.prepend('<div class="alert alert-danger">' + error.message + "</div>");
+    
       });
+        
   });
 
   // Handles re-sending the verification code to the user

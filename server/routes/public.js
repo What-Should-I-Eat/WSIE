@@ -121,19 +121,43 @@ publicRouter.get('/recipes/get_recipe', async (req, res) => {
   }
 });
 
-publicRouter.get('/recipes/get_reviews', async (req, res) => {
+publicRouter.get("/recipes/get_reviews", async (req, res) => {
   try {
-    let recipeObjectId = req.query.recipeId;
+    const recipeId = req.query.recipeId;
 
-    let recipeReviews = await RecipeReview.find({ reviewedRecipeId: recipeObjectId, reviewReported: false });
-    if (!recipeReviews) {
-      return res.status(404).json({ error: 'No reviews found' });
+    if (!recipeId) {
+      return res.status(400).json({ error: "Missing recipeId parameter" });
     }
 
-    res.json(recipeReviews);
+    const rootReviews = await RecipeReview.find({
+      reviewedRecipeId: recipeId,
+      parentReviewId: null,
+      reviewReported: false,
+    }).lean();
+
+    const allReplies = await RecipeReview.find({
+      reviewedRecipeId: recipeId,
+      parentReviewId: { $exists: true, $ne: null },
+      reviewReported: false,
+    }).lean();
+    const repliesMap = {};
+    allReplies.forEach((reply) => {
+      const parentId = reply.parentReviewId.toString();
+      if (!repliesMap[parentId]) {
+        repliesMap[parentId] = [];
+      }
+      repliesMap[parentId].push(reply);
+    });
+
+    const structuredReviews = rootReviews.map((review) => ({
+      ...review,
+      replies: repliesMap[review._id.toString()] || [],
+    }));
+
+    res.status(200).json(structuredReviews);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error trying to get reviews' });
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ error: "Internal server error trying to get reviews" });
   }
 });
 

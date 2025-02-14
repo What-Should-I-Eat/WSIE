@@ -29,21 +29,20 @@
 }
 
 .inline-div {
-  display: inline-block; /* Makes the divs appear in line */
-  width: 45%; /* Sets the width less than 50% to fit side by side */
+  display: inline-block;
+  width: 45%;
 }
 
 .handle-favorites {
   text-align: center;
-  margin-top: 20px; /* Add some spacing above the buttons */
+  margin-top: 20px;
 }
 
 .handle-favorites button {
   width: 70%;
-  margin: 5px 0; /* Add some vertical spacing between buttons */
+  margin: 5px 0;
 }
 
-/* Hide the buttons without removing them from the layout flow */
 #updateRecipeBtn,
 #publishRecipeBtn,
 #approvePubReqBtn,
@@ -52,7 +51,7 @@
   visibility: hidden;
 }
 
-#approvePubReqBtn{
+#approvePubReqBtn {
   background-color: #0A8E36;
 }
 
@@ -60,40 +59,129 @@
   background-color: #801A18;
 }
 
-.reviewScrollable{
+.reviewScrollable {
   width: 100%;
   max-height: 200px;
   overflow-y: auto;
   word-break: break-all;
 }
 
-#recipeReviewInput{
+#recipeReviewInput {
   width: 100%;
   height: 5%;
   overflow-y: scroll;
   word-break: break-all;
 }
 
-#reviewItem{
+#reviewItem {
   border: 1px solid black;
-  padding:10px
+  padding: 10px;
 }
 
 #postReviewBtn {
   text-align: center;
-  margin-top: 20px; /* Add some spacing above the buttons */
+  margin-top: 20px;
   width: 70%;
-  margin: 5px 15%; /* Add some vertical spacing between buttons */
+  margin: 5px 15%;
 }
 
-#boldUserName{
+#boldUserName {
   font-weight: bold;
 }
 
-#reportRecipeSection{
+#reportRecipeSection {
   float: right;
 }
 
-#report-post{
+#report-post {
   float: right;
+}
+
+.report-button {
+  background: none;
+  border: none;
+  color: #df163e;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.report-button:hover {
+  text-decoration: underline;
+  color: #b3122d;
+}
+
+.report-button i {
+  font-size: 1em;
+  color: #df163e; 
+}
+
+.report-button:hover i {
+  color: #b3122d; 
+}
+.review-item {
+  border: 1px solid #b0b0b0; 
+  padding: 12px;
+  margin: 12px 0;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
+
+.replies {
+  margin-left: 25px;
+  border-left: 2px solid #a0a0a0; 
+  padding-left: 12px;
+  margin-top: 12px;
+}
+
+.reply-button {
+  background: none;
+  border: none;
+  color: #606060; 
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.reply-button:hover {
+  text-decoration: underline;
+  color: #404040; 
+}
+
+.reply-form textarea {
+  width: 100%;
+  height: 60px;
+  margin-top: 6px;
+  resize: vertical;
+  padding: 8px;
+  border: 1px solid #a0a0a0; 
+  border-radius: 6px;
+  background: #ebebeb; 
+}
+
+.reply-form textarea:focus {
+  border-color: #707070; 
+  outline: none;
+  background: #dcdcdc; 
+}
+
+.reply-form button {
+  margin-top: 6px;
+  background: #707070;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.reply-form button:hover {
+  background: #505050;
+}
+
+.reply-form button:focus {
+  outline: 2px solid #505050;
 }

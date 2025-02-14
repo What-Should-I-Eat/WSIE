@@ -57,17 +57,17 @@ function RecipeDetailsView() {
       console.log("Loading view from public user recipe");
       const userRecipeDetails = await this.getPublicUserRecipe(publicUserRecipeName);
       console.log(userRecipeDetails);
-      if(userRecipeDetails.pubRequested || userRecipeDetails.isPublished || userRecipeDetails.reported){
+      if (userRecipeDetails.pubRequested || userRecipeDetails.isPublished || userRecipeDetails.reported) {
         recipeId = userRecipeDetails._id;
         recipeName = userRecipeDetails.recipeName;
         userName = userRecipeDetails.usernameCreator;
-        if(userRecipeDetails.pubRequested){
+        if (userRecipeDetails.pubRequested) {
           const recipePubRequest = await getRecipePubRequest(recipeId);
           userEmail = recipePubRequest.userEmail;
         }
       }
       if (userRecipeDetails) {
-        this.buildPublicUserView(userRecipeDetails,pubReview,reportedReview);
+        this.buildPublicUserView(userRecipeDetails, pubReview, reportedReview);
       } else {
         console.error("Invalid public user recipe data to build view");
         utils.showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
@@ -292,33 +292,12 @@ function RecipeDetailsView() {
       dietaryContainer.appendChild(noDietaryText);
     }
 
-    // Update reviews
-    const container = $('.reviewScrollable');
-    container.empty();
+    // Fetch and display nested reviews
+    const container = document.querySelector(".reviewScrollable");
+    container.innerHTML = "";
     const userReviews = await getRecipePubReviews();
-    if(userReviews.length>0){
-      userReviews.forEach(review => {
-        const reviewItem = `
-          <li id="reviewItem">
-            <span id="boldUserName">
-              ${review.reviewerUsername}
-            </span>
-              ${review.writtenReview}
-              <button id="report-post" value="${review._id}" title="Report Post">
-                <i class="fas fa-flag" style="color: #df163e;"></i>
-              </button>
-          </li>`;
-          container.append(reviewItem);
-      });
-    }else{
-      const noReviewsText = document.createElement('p');
-      noReviewsText.innerHTML = `No community reviews yet! You could be the first!`;
-      container.append(noReviewsText);
-    }
-    const reviewBox = document.getElementsByClassName("reviewScrollable");
-    const reviewBoxHeight = reviewBox[0].scrollHeight;
-    reviewBox[0].style.height = Math.min(reviewBoxHeight, 200) + 'px';
-  }
+    displayReviews(userReviews, container);
+  };
 
   this.buildPublicUserView = async (recipe, pubReview, reportedReview) => {
     // Leave this here so its compatible and we can share functionality
@@ -354,14 +333,14 @@ function RecipeDetailsView() {
     }
     hiddenRecipeSourceUrlInput.value = "";
     const addToFavoritesBtn = document.getElementById('addToFavoritesBtn');
-    if(pubReview != 'true' && reportedReview != 'true'){
+    if (pubReview != 'true' && reportedReview != 'true') {
       // Check if the recipe is a favorite
       const username = utils.getUserNameFromCookie();
       const isFavorite = await checkIfFavorite(username, recipe.recipeName);
       addToFavoritesBtn.textContent = isFavorite ? REMOVE_FROM_FAVORITES : ADD_TO_FAVORITES;
       const reportRecipeBtn = document.getElementById('reportRecipeBtn');
       reportRecipeBtn.style.visibility = 'visible';
-    }else{
+    } else {
       addToFavoritesBtn.style.visibility = 'hidden';
       //update buttons to show approve or deny request
       const approveRequestBtn = document.getElementById('approvePubReqBtn');
@@ -421,33 +400,11 @@ function RecipeDetailsView() {
     const noDietaryText = document.createElement('p');
     noDietaryText.innerHTML = `No user dietary labels.`;
     dietaryContainer.appendChild(noDietaryText);
-
-    // Update reviews
-    const container = $('.reviewScrollable');
-    container.empty();
+    // Fetch and display nested reviews
+    const container = document.querySelector(".reviewScrollable");
+    container.innerHTML = "";
     const userReviews = await getRecipePubReviews();
-    if(userReviews.length>0){
-      userReviews.forEach(review => {
-        const reviewItem = `
-          <li id="reviewItem">
-            <span id="boldUserName">
-              ${review.reviewerUsername}
-            </span>
-              ${review.writtenReview}
-              <button id="report-post" value="${review._id}" title="Report Post">
-                <i class="fas fa-flag" style="color: #df163e;"></i>
-              </button>
-          </li>`;
-          container.append(reviewItem);
-      });
-    }else{
-      const noReviewsText = document.createElement('p');
-      noReviewsText.innerHTML = `No community reviews yet! You could be the first!`;
-      container.append(noReviewsText);
-    }
-    const reviewBox = document.getElementsByClassName("reviewScrollable");
-    const reviewBoxHeight = reviewBox[0].scrollHeight;
-    reviewBox[0].style.height = Math.min(reviewBoxHeight, 200) + 'px';
+    displayReviews(userReviews, container);
   };
 
   this.buildUserView = async (recipe) => {
@@ -550,46 +507,22 @@ function RecipeDetailsView() {
     const publishRecipeButton = document.getElementById('publishRecipeBtn');
     if (publishRecipeButton) {
       publishRecipeButton.style.visibility = 'visible';
-
-
-        if(recipe.isPublished){
-          publishRecipeButton.textContent = RECIPE_PUBLISHED;
-          publishRecipeButton.disabled = false;
-        }else if(recipe.pubRequested) {
-          publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
-          publishRecipeButton.disabled = true;
-        }else {
-          publishRecipeButton.textContent = REQUEST_TO_PUBLISH_RECIPE;
-          publishRecipeButton.disabled = false;
-        }
+      if (recipe.isPublished) {
+        publishRecipeButton.textContent = RECIPE_PUBLISHED;
+        publishRecipeButton.disabled = false;
+      } else if (recipe.pubRequested) {
+        publishRecipeButton.textContent = RECIPE_UNDER_REVIEW;
+        publishRecipeButton.disabled = true;
+      } else {
+        publishRecipeButton.textContent = REQUEST_TO_PUBLISH_RECIPE;
+        publishRecipeButton.disabled = false;
+      }
     }
-
-    // Update reviews
-    const container = $('.reviewScrollable');
-    container.empty();
+    // Fetch and display nested reviews
+    const container = document.querySelector(".reviewScrollable");
+    container.innerHTML = "";
     const userReviews = await getRecipePubReviews();
-    if(userReviews.length>0){
-      userReviews.forEach(review => {
-        const reviewItem = `
-          <li id="reviewItem">
-            <span id="boldUserName">
-              ${review.reviewerUsername}
-            </span>
-              ${review.writtenReview}
-              <button id="report-post" value="${review._id}" title="Report Post">
-                <i class="fas fa-flag" style="color: #df163e;"></i>
-              </button>
-          </li>`;
-          container.append(reviewItem);
-      });
-    }else{
-      const noReviewsText = document.createElement('p');
-      noReviewsText.innerHTML = `No community reviews yet! You could be the first!`;
-      container.append(noReviewsText);
-    }
-    const reviewBox = document.getElementsByClassName("reviewScrollable");
-    const reviewBoxHeight = reviewBox[0].scrollHeight;
-    reviewBox[0].style.height = Math.min(reviewBoxHeight, 200) + 'px';
+    displayReviews(userReviews, container);
   };
 }
 
@@ -599,16 +532,16 @@ function handleUpdateRecipe() {
   window.location = `/account/update_recipe?userRecipeName=${recipeName}`;
 };
 
-async function handlePublishUserRecipe(userId,form) {
+async function handlePublishUserRecipe(userId, form) {
   fullString = await getRecipeText();
   profanityVal = await utils.checkForProfanity(fullString);
-  if(!profanityVal){
+  if (!profanityVal) {
     const recipeName = document.getElementById('recipe-name').textContent;
     const buttonText = form.find("#publishRecipeBtn").text();
-    if(buttonText.includes("remove")){
+    if (buttonText.includes("remove")) {
       await handleUserRemovePublication();
       return;
-    }else{
+    } else {
       request = {
         recipeName: recipeName
       }
@@ -636,12 +569,12 @@ async function handlePublishUserRecipe(userId,form) {
         utils.showAjaxAlert("Error", error.message);
       }
     }
-  }else{
+  } else {
     utils.showAjaxAlert("Error", "Recipe content goes against community protocols and cannot be posted.");
   }
 };
 
-async function getRecipeText(){
+async function getRecipeText() {
   let fullRecipeText = "";
   fullRecipeText = document.getElementById('recipe-name').textContent;
   const ingredientsList = document.querySelectorAll('#ingredients-list li');
@@ -656,45 +589,237 @@ async function getRecipeText(){
     fullRecipeText = fullRecipeText + " " + text;
   });
 
-  return(fullRecipeText);
+  return (fullRecipeText);
 }
 
-async function handleUserReview(userId){
 
-  stringToCheck = document.getElementById("recipeReviewInput").value;
-  profanityVal = await utils.checkForProfanity(stringToCheck);
-  if(!profanityVal){
-    request = {
-      reviewedRecipeId: recipeId,
-      writtenReview: recipeReviewInput.value,
-    }
+async function handleUserReview(userId) {
+  const stringToCheck = document.getElementById("recipeReviewInput").value.trim();
 
-    let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
-    try {
-      const response = await fetch(url, {
-        method: POST_ACTION,
-        body: JSON.stringify({ reviews: request }),
-        headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
-        }
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error);
-      }
-      
-      utils.showAjaxAlert("Success", data.success);
-    } catch (error) {
-      console.error(error);
-      utils.showAjaxAlert("Error", error.message);
-    }
-  }else{
-    utils.showAjaxAlert("Error", "Review content goes against community protocols and cannot be posted.");
+  if (!stringToCheck) {
+    utils.showAjaxAlert("Error", "Review cannot be empty!");
+    return;
   }
-};
 
-async function handleReportRecipe(){
+  const profanityVal = await utils.checkForProfanity(stringToCheck);
+  if (profanityVal) {
+    utils.showAjaxAlert("Error", "Review content goes against community protocols and cannot be posted.");
+    return;
+  }
+
+  const request = {
+    reviewedRecipeId: recipeId,
+    writtenReview: stringToCheck,
+    reviewerUsername: utils.getUserNameFromCookie()
+  };
+
+  const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({ reviews: request }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Backend Error Response:", errorData);
+      throw new Error(errorData.error);
+    }
+
+    const data = await response.json();
+
+    utils.showAjaxAlert("Success", data.success);
+    document.getElementById("recipeReviewInput").value = "";
+    getRecipePubReviews().then(reviews => {
+      displayReviews(reviews, document.querySelector(".reviewScrollable"));
+    });
+
+  } catch (error) {
+    utils.showAjaxAlert("Error", error.message);
+  }
+}
+
+
+function displayReviews(reviews, parentElement) {
+  parentElement.innerHTML = "";
+
+  if (reviews.length === 0) {
+    parentElement.innerHTML = `<p>No community reviews yet! You could be the first!</p>`;
+    return;
+  }
+
+  reviews.forEach((review) => {
+    const reviewItem = document.createElement("div");
+    reviewItem.classList.add("review-item");
+    reviewItem.innerHTML = `
+      <div class="review-content">
+        <strong>${review.reviewerUsername}</strong>: ${review.writtenReview}
+        <span class="reply-toggle" data-id="${review._id}" style="cursor: pointer; color: blue; text-decoration: underline;">Reply</span>
+        <button class="report-button" data-review-id="${review._id}">Report
+        </button>
+      </div>
+      <div class="replies" id="replies-${review._id}"></div>
+    `;
+    parentElement.appendChild(reviewItem);
+
+    // Display nested replies if they exist
+    if (review.replies && review.replies.length > 0) {
+      const repliesContainer = reviewItem.querySelector(`#replies-${review._id}`);
+      review.replies.forEach((reply) => {
+        const replyItem = document.createElement("div");
+        replyItem.classList.add("reply-item");
+        replyItem.innerHTML = `
+          <div class="reply-content">
+            <strong>${reply.reviewerUsername}</strong>: ${reply.writtenReview}
+            <span class="reply-toggle" data-id="${reply._id}" style="cursor: pointer; color: blue; text-decoration: underline;">Reply</span>
+            <button class="report-button" data-review-id="${reply._id}">Report</button>
+          </div>
+          <div class="replies" id="replies-${reply._id}"></div>
+        `;
+        repliesContainer.appendChild(replyItem);
+      });
+    }
+  });
+
+  // Attach event listeners for reply toggle and report buttons
+  document.querySelectorAll(".reply-toggle").forEach((toggle) => {
+    toggle.addEventListener("click", handleReplyClick);
+  });
+
+  document.querySelectorAll(".report-button").forEach((button) => {
+    button.addEventListener("click", handleReportClick);
+  });
+}
+
+
+function showReplyForm(parentReviewId) {
+  const replyContainer = document.getElementById(`replies-${parentReviewId}`);
+
+  if (!replyContainer) {
+    console.error(`Reply container not found for: replies-${parentReviewId}`);
+    return;
+  }
+
+  // If a reply form already exists, remove it (to prevent duplicates)
+  const existingForm = document.getElementById(`reply-form-${parentReviewId}`);
+  if (existingForm) {
+    existingForm.remove();
+    return;
+  }
+
+  // Create the reply form dynamically
+  const replyForm = document.createElement("form");
+  replyForm.id = `reply-form-${parentReviewId}`;
+  replyForm.classList.add("reply-form");
+
+  replyForm.innerHTML = `
+    <textarea class="reply-textarea" placeholder="Write a reply..." style="width: 100%; height: 50px; margin-top: 5px;"></textarea>
+    <button type="button" class="btn btn-sm btn-primary submit-reply-btn" data-id="${parentReviewId}">
+      Submit Reply
+    </button>
+    <button type="button" class="btn btn-sm btn-secondary cancel-reply-btn">
+      Cancel
+    </button>
+  `;
+
+  replyContainer.appendChild(replyForm);
+
+  // Attach event listeners for Submit and Cancel buttons here
+  replyForm.querySelector(".submit-reply-btn").addEventListener("click", async function () {
+    const buttonParentReviewId = this.getAttribute("data-id");
+    let userId = await utils.getUserIdFromUsername(utils.getUserNameFromCookie());
+    if (!userId) {
+      utils.showAjaxAlert("Error", "User ID is missing.");
+      return;
+    }
+    handleSubmitReply(userId, buttonParentReviewId);
+  });
+  replyForm.querySelector(".cancel-reply-btn").addEventListener("click", () => cancelReply(parentReviewId));
+}
+
+function handleReplyClick(event) {
+  const parentReviewId = event.target.getAttribute("data-id");
+  if (document.getElementById(`reply-form-${parentReviewId}`)) {
+    cancelReply(parentReviewId);
+  } else {
+    showReplyForm(parentReviewId);
+  }
+}
+
+function handleReportClick(event) {
+  const reviewId = event.target.getAttribute("data-review-id");
+  handleReportPost(reviewId);
+}
+async function handleSubmitReply(userId, parentReviewId) {
+  const replyText = document.querySelector(`#reply-form-${parentReviewId} .reply-textarea`).value.trim();
+  if (!replyText) {
+    console.error("Reply text is empty.");
+    utils.showAjaxAlert("Error", "Reply cannot be empty!");
+    return;
+  }
+  const allReviews = await getRecipePubReviews();
+  const parentReview = allReviews.find(review => review._id === parentReviewId);
+  if (!parentReview) {
+    console.error("Parent review not found.");
+    utils.showAjaxAlert("Error", "Error finding parent review.");
+    return;
+  }
+
+  const currentUsername = utils.getUserNameFromCookie();
+
+  if (parentReview.reviewerUsername === currentUsername) {
+    console.error("User cannot reply to their own review.");
+    utils.showAjaxAlert("Error", "You cannot reply to your own review.");
+    return;
+  }
+  const request = {
+    reviewedRecipeId: recipeId,
+    writtenReview: replyText,
+    parentReviewId: parentReviewId || null,
+    reviewerUsername: currentUsername
+  };
+
+  const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({ reviews: request }),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Backend Error Response:", errorData);
+      throw new Error(errorData.error || "Failed to post reply.");
+    }
+
+    const data = await response.json();
+    console.log("Reply successfully submitted:", data);
+
+    cancelReply(parentReviewId);
+    getRecipePubReviews().then(reviews => {
+      displayReviews(reviews, document.querySelector(".reviewScrollable"));
+    });
+
+  } catch (error) {
+    console.error(" Error submitting reply:", error);
+    utils.showAjaxAlert("Error", error.message);
+  }
+}
+
+function cancelReply(parentReviewId) {
+  const replyForm = document.getElementById(`reply-form-${parentReviewId}`);
+  if (replyForm) {
+    replyForm.remove();
+  }
+}
+
+async function handleReportRecipe() {
   const url = `${PUBLIC_USER_RECIPES_URL}/report_recipe?recipeId=${recipeId}`;
   try {
     const response = await fetch(url, {
@@ -717,7 +842,7 @@ async function handleReportRecipe(){
   }
 }
 
-async function handleReportPost(reviewId){
+async function handleReportPost(reviewId) {
   const url = `${PUBLIC_USER_RECIPES_URL}/report_review?reviewId=${reviewId}`;
   try {
     const response = await fetch(url, {
@@ -740,23 +865,27 @@ async function handleReportPost(reviewId){
   }
 }
 
-async function getRecipePubReviews(){
+async function getRecipePubReviews() {
   const url = `${PUBLIC_USER_RECIPES_URL}/get_reviews?recipeId=${recipeId}`;
   console.log(`Querying Server at: ${url}`);
+  try {
+    const response = await fetch(url, {
+      method: GET_ACTION,
+      headers: {
+        'Content-Type': DEFAULT_DATA_TYPE
+      }
+    });
 
-  const response = await fetch(url, {
-    method: GET_ACTION,
-    headers: {
-      'Content-Type': DEFAULT_DATA_TYPE
+    if (response.ok) {
+      const recipePubreviews = await response.json();
+      return recipePubreviews;
+    } else {
+      console.error(`Error occurred getting pub reviews`);
+      return undefined;
     }
-  });
-
-  if (response.ok) {
-    const recipePubreviews = await response.json();
-    return recipePubreviews;
-  } else {
-    console.error(`Error occurred getting pub reviews`);
-    return undefined;
+  } catch (error) {
+    console.log("Error fetching nested reviews:", error);
+    return [];
   }
 };
 
@@ -949,7 +1078,7 @@ async function updatePublishRequestStatus() {
   }
 };
 
-async function getRecipePubRequest(recipeId){
+async function getRecipePubRequest(recipeId) {
   const url = `${PUBLIC_USER_RECIPES_URL}/get_pub_request?recipeId=${recipeId}`;
   console.log(`Querying Server at: ${url}`);
 
@@ -1007,14 +1136,14 @@ $(document).ready(function () {
         break;
       case 'approvePub':
         await handlePublishRecipeReview(true);
-        if(!reported_review){
+        if (!reported_review) {
           await updatePublishRequestStatus();
           sendPubEmail(userName, userEmail, recipeName, emailjs, "pubApproved");
         }
         break;
       case 'denyPub':
         await handlePublishRecipeReview(false);
-        if(!reported_review){
+        if (!reported_review) {
           await updatePublishRequestStatus();
           sendPubEmail(userName, userEmail, recipeName, emailjs, "pubDenied");
         }
@@ -1025,8 +1154,12 @@ $(document).ready(function () {
       case 'reportRecipe':
         await handleReportRecipe();
         break;
-      default: //for now this handles reporting of community reviews
+      case 'reportReview':
         await handleReportPost(action);
+        break;
+      default:
+        console.error("Unknown action:", action, form);
+        utils.showAjaxAlert("Error", `Unknown action submitted: ${action}`);
     }
   });
 });
