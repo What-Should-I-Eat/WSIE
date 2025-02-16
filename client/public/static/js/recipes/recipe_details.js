@@ -1122,3 +1122,93 @@ async function checkIfFavorite(username, recipeName) {
     console.error(error);
   }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const likeBtn = document.getElementById('like-btn');
+  const dislikeBtn = document.getElementById('dislike-btn');
+
+  if (likeBtn && dislikeBtn) {
+    likeBtn.addEventListener('click', async () => {
+      await handleLikeDislike('like');
+    });
+
+    dislikeBtn.addEventListener('click', async () => {
+      await handleLikeDislike('dislike');
+    });
+  } else {
+    console.error('Like or Dislike button not found in the DOM.');
+  }
+});
+
+async function handleLikeDislike(action) {
+  try {
+    const recipeId = getRecipeId(); // Function to fetch the recipe ID dynamically
+    const username = utils.getUserNameFromCookie();
+    const userId = username ? await utils.getUserIdFromUsername(username) : null;
+
+    const url = `/api/recipes/${recipeId}/${action}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: userId || 'guest' })  // Allow guests to like/dislike
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      if (action === 'like') {
+        document.getElementById('like-counter').textContent = data.likes;
+      } else {
+        document.getElementById('dislike-counter').textContent = data.dislikes;
+      }
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.error(`Error with ${action}:`, error);
+  }
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const likeButtons = document.querySelectorAll('.btn-like');
+  const dislikeButtons = document.querySelectorAll('.btn-dislike');
+
+  likeButtons.forEach(button => {
+    button.addEventListener('click', () => handleLikeDislike('like', button.dataset.recipeId));
+  });
+
+  dislikeButtons.forEach(button => {
+    button.addEventListener('click', () => handleLikeDislike('dislike', button.dataset.recipeId));
+  });
+});
+
+async function handleLikeDislike(action, recipeId) {
+  try {
+    const username = utils.getUserNameFromCookie();
+    const userId = username ? await utils.getUserIdFromUsername(username) : 'guest';
+
+    const url = `/recipes/${recipeId}/${action}`; // Corrected API URL
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      const container = document.querySelector(`[data-recipe-id="${recipeId}"]`).closest('.recipe-container');
+      if (action === 'like') {
+        container.querySelector('.like-counter').textContent = data.likes;
+      } else {
+        container.querySelector('.dislike-counter').textContent = data.dislikes;
+      }
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.error(`Error with ${action}:`, error);
+  }
+}
+
+function getRecipeId() {
+  return document.querySelector('[data-recipe-id]')?.getAttribute('data-recipe-id') || '';
+}
