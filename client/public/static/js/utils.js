@@ -35,7 +35,8 @@ const utils = (() => {
         }
 
         try {
-            return JSON.parse(value);
+            return value;
+            //return JSON.parse(value);
         } catch (error) {
             console.error("Error parsing JSON:", error);
             return null;
