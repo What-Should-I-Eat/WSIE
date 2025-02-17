@@ -3,7 +3,7 @@
 
 <head>
   <title>
-    What Should I Eat - Home
+    What Should I Eat - About Us
   </title>
 
   <meta charset="utf-8" />
@@ -17,13 +17,13 @@
   <meta name="msapplication-TileColor" content="#2d89ef">
   <meta name="theme-color" content="#ffffff">
 
-
   <!-- Stylesheets -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/static/css/base.css" />
   <link rel="stylesheet" href="/static/css/login-modal.css" />
+  <link rel="stylesheet" href="/static/css/about.css" />
 
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -87,7 +87,7 @@
               </li>
               <li id="publicProfileNavItem" class="nav-item" style="display: none;">
                 <a class="nav-link" href="/public_user_profile">Public Profile</a>
-              </li>
+              </li>           
             </ul>
 
             <div id="navBarMyAccountSignInSignUp" class="mr-2 d-flex flex-column flex-md-row">
@@ -378,45 +378,28 @@
   </div>
   <!-- END: Sign Up / Sign Modal -->
 
-  <!-- START: Image / Search -->
-  <div class="d-flex flex-column bg-transparent">
-    <div class="jumbotron jumbotron-fluid px-3 py-0 cover-img">
-      <div class="container-fluid">
-        <div class="hero-section d-flex">
 
-          <div class="hero-info mr-4 text-center">
-            <h1 class="jumbotron-heading">Welcome to <strong>What Should I Eat</strong></h1>
-            <h2>
-              Find recipes to fit you...</h2>
-              <p>...regardless of your dietary restrictions. Whether you have food allergies, observe religious restrictions, or 
-                you're managing a health condition, you'll find something to enjoy with <strong>What Should I Eat</strong>. 
-                Create an account, make a dietary profile, and start exploring!
-              </p>
-              
-            <form class="d-flex" id="searchRecipesForm" action="/recipes" method="GET">
-              <input type="text" class="recipe-search-input d-flex py-2 my-0" id="search_recipes" name="search_recipes"
-                placeholder="Search by Recipe Name, Ingredients..." />
-              <button type="submit" class="recipe-search-btn btn btn-primary">Search Recipes</button>
-            </form>
-          </div>
-        </div>
+   <!-- START: Public Profile Section -->
+   <div class="container mt-5">
+    <div class="card mx-auto text-center" style="max-width: 600px;">
+      <div class="card-body">
+        <h2 id="username" class="mt-3">Username</h2>
+        <h5 id="fullName" class="text-muted">Full Name</h5>
       </div>
     </div>
   </div>
-  <!-- END: Image / Search -->
+  <!-- END: Public Profile Section -->
 
   <!-- START: Footer -->
   <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
     <div class="col-md-4 d-flex align-items-center">
-      <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
-        <svg class="bi" width="30" height="24">
-          <use xlink:href="#bootstrap"></use>
-        </svg>
-      </a>
       <span class="mb-3 mb-md-0 text-body-secondary">© 2024 What Should I Eat?, Inc</span>
     </div>
   </footer>
   <!-- END: Footer -->
+
+  <!-- Profile Script -->
+  <script src="/static/js/profile.js"></script>
 </body>
 
 </html>
