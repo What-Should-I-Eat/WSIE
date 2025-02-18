@@ -22,7 +22,8 @@ $(document).ready(function () {
     // Get logged-in username
     const username = utils.getFromStorage("username");
     if (username) {
-        $("#publicProfileNavItem").show();
+        $("#publicProfileNavItem").show(); 
+        $("#publicProfileNavItem a").attr("href", `/public_user_profile?username=${username}`);
     }
 
     // Handles sign-up form submission logic
@@ -111,7 +112,9 @@ $(document).ready(function () {
                     utils.setStorage("username", data.username);
 
                     if (data.username) {
+                        utils.setStorage("username", data.username);
                         $("#publicProfileNavItem").show();
+                        $("#publicProfileNavItem a").attr("href", `/public_user_profile?username=${data.username}`);
                     }
 
                     setTimeout(async function () {
@@ -195,7 +198,8 @@ $(document).ready(function () {
     // Handles logout functionality
     $("#logoutButton").on("click", function () {
         utils.removeFromStorage("username");
-        $("#publicProfileNavItem").remove();
+        $("#publicProfileNavItem").hide();
+        $("#publicProfileNavItem a").attr("href", "#"); 
         window.location.href = "/";
     });
 });

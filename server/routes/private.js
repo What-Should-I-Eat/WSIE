@@ -183,14 +183,24 @@ privateRouter.get('/users/profile', (req, res) => {
 
 privateRouter.get('/users/findUserData', async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.query.username.toLowerCase() }).populate('favorites');
-    if (!user) {
-      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
+    const { username } = req.query;
+    if (!username) {
+      console.warn("⚠ Username is missing in request.");
+      return res.status(400).json({ error: "Username is required" });
     }
-    res.json(user);
+    const user = await User.findOne({ username: username.toLowerCase() }).populate('favorites');
+    if (!user) {
+      console.warn("User not found.");
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({
+      username: user.username,
+      fullName: user.fullName || "No Name Provided",
+      favorites: user.favorites 
+    });
   } catch (error) {
-    console.error('Error finding this username: ', error);
-    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
