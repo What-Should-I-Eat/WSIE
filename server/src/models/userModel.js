@@ -18,7 +18,8 @@ const UserSchema = new Schema({
     health: [String],
     // Reference by Id
     favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recipe' }],
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RecipeReview' }]
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RecipeReview' }],
+    bio: [{ type: String, maxlength: 500, default: "" }]
 });
 
 UserSchema.methods.validPassword = function (password) {

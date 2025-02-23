@@ -183,24 +183,43 @@ privateRouter.get('/users/profile', (req, res) => {
 
 privateRouter.get('/users/findUserData', async (req, res) => {
   try {
-    const { username } = req.query;
-    if (!username) {
-      console.warn("⚠ Username is missing in request.");
-      return res.status(400).json({ error: "Username is required" });
-    }
-    const user = await User.findOne({ username: username.toLowerCase() }).populate('favorites');
+    const user = await User.findOne({ username: req.query.username.toLowerCase() }).populate('favorites');
     if (!user) {
-      console.warn("User not found.");
+      return res.status(404).json({ error: USER_NOT_FOUND_ERROR });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error('Error finding this username: ', error);
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+  }
+});
+
+privateRouter.post('/users/updateBio', async (req, res) => {
+  try {
+    const { username, bio } = req.body;
+
+    if (!username || !bio) {
+      return res.status(400).json({ error: "Username and bio are required" });
+    }
+
+    if (bio.length > 500) {
+      return res.status(400).json({ error: "Bio exceeds character limit of 500" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { username: username.toLowerCase() },
+      { $set: { bio } },  
+      { new: true, upsert: true }  
+    );
+
+    if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json({
-      username: user.username,
-      fullName: user.fullName || "No Name Provided",
-      favorites: user.favorites 
-    });
+
+    res.json({ success: true, bio: user.bio });
   } catch (error) {
-    console.error("Error fetching user data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error updating bio:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

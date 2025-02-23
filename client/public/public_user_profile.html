@@ -3,7 +3,7 @@
 
 <head>
   <title>
-    What Should I Eat - About Us
+    Public Profile
   </title>
 
   <meta charset="utf-8" />
@@ -23,7 +23,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/static/css/base.css" />
   <link rel="stylesheet" href="/static/css/login-modal.css" />
-  <link rel="stylesheet" href="/static/css/about.css" />
+  <link rel="stylesheet" href="/static/css/public_user_profile.css" />
 
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -379,25 +379,48 @@
   <!-- END: Sign Up / Sign Modal -->
 
 
-      <!-- START: Public Profile Section -->
-      <div class="container mt-5">
-        <div class="card mx-auto text-center" style="max-width: 600px;">
-          <div class="card-body">
-            <h2 id="username">Loading...</h2>
-            <h5 id="fullName" class="text-muted">Loading...</h5>
+  <!-- START: Public Profile Section -->
+  <div class="container mt-5">
+    <div class="card mx-auto text-center profile-card">
+      <div class="card-body">
+        <div class="profile-content">
+          <div class="profile-image">
+            <img id="profileImage" src="/static/images/default-avatar.png" alt="Profile Picture">
           </div>
+          <div class="profile-info">
+            <h2><strong>Username:</strong> <span id="username">Loading...</span></h2>
+            <h5 class="text-muted"><strong>Full Name:</strong> <span id="fullName">Loading...</span></h5>
+          </div>
+
         </div>
       </div>
-      <script src="/static/js/public_user_profile.js"></script>
-      <!-- END: Public Profile Section -->
+    </div>
 
-      <!-- START: Footer -->
-      <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-        <div class="col-md-4 d-flex align-items-center">
-          <span class="mb-3 mb-md-0 text-body-secondary">© 2024 What Should I Eat?, Inc</span>
-        </div>
-      </footer>
-      <!-- END: Footer -->
+    <!-- Bio Section -->
+    <div class="bio-container">
+      <p><strong>Bio:</strong></p>
+
+      <p id="savedBio" class="bio-text"></p>
+      <textarea id="bioInput" class="bio-box" placeholder="Write your bio (max 500 characters)..."></textarea>
+
+      <div class="button-container">
+        <button id="saveBioBtn">Save</button>
+        <button id="editBioBtn" style="display: none;">Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/public_user_profile.js"></script>
+  <!-- END: Public Profile Section -->
+
+
+  <!-- START: Footer -->
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+      <span class="mb-3 mb-md-0 text-body-secondary">© 2024 What Should I Eat?, Inc</span>
+    </div>
+  </footer>
+  <!-- END: Footer -->
 </body>
 
 </html>
