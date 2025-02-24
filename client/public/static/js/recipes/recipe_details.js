@@ -93,7 +93,6 @@ function RecipeDetailsView() {
 
     if (response.ok) {
       const recipeDetails = await response.json();
-      console.log(recipeDetails)
       return recipeDetails;
     } else {
       console.error("Error occurred getting recipe details");
@@ -236,14 +235,10 @@ function RecipeDetailsView() {
     document.getElementById('recipe-image').src = imageSrc;
     document.getElementById('recipe-image').alt = `Image of ${recipe.label}`;
 
-    console.log(document)
     // Update ingredients list
     const ingredientsContainer = document.querySelector('.recipe-info-ingredients-list');
-    console.log(document.querySelector('.recipe-info-ingredients-list'))
-    const ingredientsList = ingredientsContainer.querySelector('ul')
+    const ingredientsList = ingredientsContainer.querySelector('ul');
     ingredientsList.innerHTML = '';
-    console.log(recipe.ingredientLines)
-    console.log(document.querySelector('.recipe-info-ingredients-list').querySelector('ul'))
     recipe.ingredientLines.forEach(ingredient => {
       const listItem = document.createElement('li');
       listItem.textContent = ingredient;
@@ -256,8 +251,6 @@ function RecipeDetailsView() {
     const preparationContainer = document.querySelector('.recipe-info-preparation-list');
     const preparationList = preparationContainer.querySelector('ul');    
     preparationList.innerHTML = '';
-    console.log(recipeInstructions)
-    console.log(document.querySelector('.recipe-info-preparation-list'))
     if (recipeInstructions && recipeInstructions.length > 0) {
       recipeInstructions.forEach(step => {
         const listItem = document.createElement('li');
@@ -306,7 +299,7 @@ function RecipeDetailsView() {
     
     // Update cuisine type
     const cuisineTypeContainer = document.querySelector('.recipe-info-cusine-type-list');
-    const cuisineTypeList = cuisineTypeContainer.querySelector('ul')
+    const cuisineTypeList = cuisineTypeContainer.querySelector('ul');
     cuisineTypeList.innerHTML = '';
     recipe.cuisineType.forEach(cuisine => {
       const listItem = document.createElement('li');

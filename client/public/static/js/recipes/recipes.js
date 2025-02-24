@@ -12,7 +12,6 @@ function RecipesView() {
   this.load = async (searchParam, apiUrl = null, pageUrl = null, mealTypes = [], dishTypes = [], cuisineTypes = []) => {
     const container = $('.recipes-container');
     const pagination = $("#paginationList");
-
     try {
       // Show publish recipe button
       const hidePublicRecipeButton = document.getElementById('togglePublicRecipeShownButton');
@@ -41,6 +40,9 @@ function RecipesView() {
       container.append(this.getNoRecipesFound());
       pagination.empty().hide();
     }
+    //Building Filter
+    this.buildFilter();
+
   };
 
   this.buildBaseUrl = (searchParam, mealTypes, dishTypes, cuisineTypes) => {
@@ -86,6 +88,7 @@ function RecipesView() {
     return baseUrl;
   };
 
+  // Getting User Profile Data
   this.getApiUrl = async (searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes) => {
     if (pageUrl) return pageUrl;
 
@@ -163,6 +166,45 @@ function RecipesView() {
       // Log the error here but don't flash user with error
       console.error(ERROR_GETTING_PUBLIC_USER_RECIPES);
     }
+  }
+
+    // Building Filter Modal
+  this.buildFilter = () => 
+  {
+    filterModal = document.querySelector('.recipe-filter-modal').querySelector('.modal-body')
+    Object.keys(preferenceFilters).forEach(Filters => 
+    {
+      var filter = preferenceFilters[Filters]
+      var filterId = filter['tag']
+      var filterOptions = filter['options']
+      var div = document.createElement('div')
+      // Creating Modal Column for each filter
+      var modalColumn = document.createElement('div'); modalColumn.className = "recipe-filter-modal-column"; modalColumn.id = filterId;
+      // Creating Header Column
+      var header = document.createElement('h4'); header.innerHTML = Filters;
+      //Adding Colmun to Modal
+      filterModal.appendChild(modalColumn);
+      //Adding Header to Column
+      modalColumn.appendChild(header);
+      //
+      // Creating checkmarks for each filter
+      Object.keys(filterOptions).forEach(Option =>
+      {
+        // Creating format Checkmark
+        var formCheck = document.createElement('div'); formCheck.className = "form-check";
+        // Creating Checkbox Input
+        var checkbox = document.createElement('input'); checkbox.type = "checkbox"; checkbox.className = "form-check-input"; 
+        checkbox.id = filterOptions[Option]; checkbox.value = filterId;
+        // Creating Checkbox Label 
+        var checkboxLabel = document.createElement('label'); checkboxLabel.className = "form-check-label"; checkboxLabel.htmlFor = filterOptions[Option];
+        checkboxLabel.innerHTML = Option;
+        // Appending checkboxes
+        formCheck.appendChild(checkbox);
+        formCheck.appendChild(checkboxLabel);
+        // Adding checkbox to modalColumn
+        modalColumn.appendChild(formCheck);  
+      })
+    });
   }
 
   this.renderRecipes = (recipes, publicUserRecipes, container) => {
@@ -387,50 +429,9 @@ function getDefaultDishTypes() {
   return defaultDishTypes.map(dishType => `&dishType=${encodeURIComponent(dishType)}`).join('');
 }
 
-const defaultDishTypes = [
-  "bread",
-  "cereals",
-  "egg",
-  "main course",
-  "pancake",
-  "pasta",
-  "pizza",
-  "preps",
-  "preserve",
-  "salad",
-  "sandwiches",
-  "seafood",
-  "soup",
-  "special occasions"
-];
-
 function getDefaultCuisineTypes() {
   return defaultCuisineTypes.map(cuisineType => `&cuisineType=${encodeURIComponent(cuisineType)}`).join('');
 }
-
-const defaultCuisineTypes = [
-  "american",
-  "asian",
-  "british",
-  "caribbean",
-  "central europe",
-  "chinese",
-  "eastern europe",
-  "french",
-  "greek",
-  "indian",
-  "italian",
-  "japanese",
-  "korean",
-  "kosher",
-  "mediterranean",
-  "mexican",
-  "middle eastern",
-  "nordic",
-  "south american",
-  "south east asian",
-  "world"
-];
 
 const mealTypeSelections = [];
 const dishTypeSelections = [];
@@ -457,7 +458,7 @@ function loadSelectionsFromStorage() {
   if (storedCuisineTypes) cuisineTypeSelections.push(...storedCuisineTypes);
 
   document.querySelectorAll('.form-check-input').forEach(checkbox => {
-    const category = checkbox.getAttribute('data-category');
+    const category = checkbox.getAttribute('value');
     const checkboxLabel = checkbox.nextElementSibling.innerText.toLowerCase();
 
     if ((category === 'mealType' && mealTypeSelections.includes(checkboxLabel)) ||
@@ -717,7 +718,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.querySelectorAll('.form-check-input').forEach(checkbox => {
     checkbox.addEventListener('change', function () {
-      const category = this.getAttribute('data-category');
+      const category = this.getAttribute('value');
       const checkboxLabel = this.nextElementSibling.innerText.toLowerCase();
       let selectionArray;
 
