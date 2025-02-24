@@ -5,6 +5,14 @@ body {
     padding: 0;
 }
 
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+}
+
+
 .profile-card {
     width: 100%;
     max-width: 500px;
@@ -13,12 +21,27 @@ body {
     border-radius: 10px;
     background-color: white;
     text-align: center; 
+    margin: 20px auto;
 }
 
 .profile-content {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
 .profile-image {
@@ -27,6 +50,25 @@ body {
     border-radius: 50%;
     overflow: hidden;
     margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ddd;
+    margin-bottom: 15px;
+}
+
+#changeImageBtn {
+    margin-top: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#changeImageBtn:hover {
+    background-color: #0056b3;
 }
 
 .profile-image img {
@@ -35,13 +77,26 @@ body {
     object-fit: cover;
 }
 
-.bio-text {
-    font-size: 16px;
-    color: #333;
-    font-weight: 500;
-    text-align: center;
-    margin-bottom: 10px; 
+.selected {
+    border: 3px solid #007bff;
 }
+
+#saveImageBtn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+    margin-top: 10px;
+}
+
+#saveImageBtn:hover {
+    opacity: 0.9;
+}
+
 .bio-container {
     width: 100%;
     max-width: 500px;
@@ -57,6 +112,47 @@ body {
     font-size: 16px;
     color: #333;
     font-weight: bold;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: red;
+}
+
+#stockImageContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.stock-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, border 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.stock-image:hover {
+    transform: scale(1.1);
+}
+
+.selected {
+    border: 3px solid #007bff;
 }
 
 .bio-text {
@@ -94,6 +190,7 @@ button {
     font-size: 14px;
     cursor: pointer;
     min-width: 100px; 
+    transition: opacity 0.2s ease, transform 0.1s ease;
 }
 
 #saveBioBtn {
@@ -107,4 +204,15 @@ button {
 
 button:hover {
     opacity: 0.9;
+    transform: scale(1.05);
+}
+
+@media screen and (max-width: 600px) {
+    .profile-content {
+        flex-direction: column;
+    }
+
+    .profile-image {
+        margin-right: 0;
+    }
 }

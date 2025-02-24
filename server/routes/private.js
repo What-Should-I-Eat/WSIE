@@ -223,6 +223,31 @@ privateRouter.post('/users/updateBio', async (req, res) => {
   }
 });
 
+privateRouter.post('/users/updateProfileImage', async (req, res) => {
+  try {
+    const { username, profileImage } = req.body;
+
+    if (!username || !profileImage) {
+      return res.status(400).json({ error: "Username and profile image are required" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { username: username.toLowerCase() },
+      { $set: { profileImage } },  
+      { new: true, upsert: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ success: true, profileImage: user.profileImage });
+  } catch (error) {
+    console.error("Error updating profile image:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // NOTE: Endpoints about this line are not necessarily 'private' in the sense you need //
 // a session and a session userId. It is more so that this file in general stores      //

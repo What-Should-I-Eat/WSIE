@@ -9,14 +9,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     try {
+        console.log(`Fetching user data for: ${username}`);
         const response = await fetch(`/api/v1/users/findUserData?username=${username}`);
+        
         if (!response.ok) throw new Error("User not found");
 
         const userData = await response.json();
         document.getElementById("username").innerText = userData.username || "Unknown User";
         document.getElementById("fullName").innerText = userData.fullName || "No Name Provided";
-        document.getElementById("profileImage").src = userData.profileImage || "/static/images/default-avatar.png";
+            if (userData.profileImage) {
+            document.getElementById("selectedProfileImage").src = userData.profileImage;
+        }
 
+        setupModal(userData.profileImage);
         const bioInput = document.getElementById("bioInput");
         const savedBio = document.getElementById("savedBio");
         const saveBioBtn = document.getElementById("saveBioBtn");
@@ -26,15 +31,15 @@ document.addEventListener("DOMContentLoaded", async function () {
             bioInput.style.display = "none";
             savedBio.innerText = userData.bio;
             savedBio.style.display = "block";
-            editBioBtn.style.display = "block"; 
-            saveBioBtn.style.display = "none";  
+            editBioBtn.style.display = "block";
+            saveBioBtn.style.display = "none";
         } else {
             savedBio.style.display = "none";
-            saveBioBtn.style.display = "block"; 
+            saveBioBtn.style.display = "block";
         }
 
         bioInput.addEventListener("input", () => {
-            saveBioBtn.style.display = "block"; 
+            saveBioBtn.style.display = "block";
         });
 
         saveBioBtn.addEventListener("click", async () => {
@@ -57,8 +62,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                     savedBio.innerText = bio;
                     bioInput.style.display = "none";
                     savedBio.style.display = "block";
-                    saveBioBtn.style.display = "none"; 
-                    editBioBtn.style.display = "block"; 
+                    saveBioBtn.style.display = "none";
+                    editBioBtn.style.display = "block";
                 } else {
                     alert("Error saving bio: " + saveData.error);
                 }
@@ -77,3 +82,74 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("Error fetching user data:", error);
     }
 });
+
+
+function setupModal(selectedImageFromDB) {
+    const modal = document.getElementById("stockImageModal");
+    const closeButton = document.querySelector(".close");
+    const stockImageContainer = document.getElementById("stockImageContainer");
+    const changeImageButton = document.getElementById("changeImageBtn");
+
+    changeImageButton.addEventListener("click", () => {
+        modal.style.display = "flex"; 
+        loadStockImages(selectedImageFromDB);
+    });
+
+    closeButton.addEventListener("click", () => {
+        modal.style.display = "none"; 
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none"; 
+        }
+    });
+}
+
+function loadStockImages(selectedImageFromDB) {
+    const stockImageContainer = document.getElementById("stockImageContainer");
+    stockImageContainer.innerHTML = ""; 
+
+    const stockImages = [
+        "/static/img/stock/stock1.jpg",
+        "/static/img/stock/stock2.jpg",
+        "/static/img/stock/stock3.jpg",
+        "/static/img/stock/stock4.jpg"
+    ];
+
+    stockImages.forEach(imageSrc => {
+        const imgElement = document.createElement("img");
+        imgElement.src = imageSrc;
+        imgElement.classList.add("stock-image");
+
+        imgElement.style.maxWidth = "120px";
+        imgElement.style.maxHeight = "120px";
+
+        if (selectedImageFromDB === imageSrc) {
+            imgElement.classList.add("selected");
+        }
+
+        imgElement.addEventListener("click", async () => {
+            document.querySelectorAll(".stock-image").forEach(img => img.classList.remove("selected"));
+            imgElement.classList.add("selected");
+
+            await updateProfileImage(imageSrc);
+            document.getElementById("selectedProfileImage").src = imageSrc;
+            document.getElementById("stockImageModal").style.display = "none"; 
+        });
+
+        stockImageContainer.appendChild(imgElement);
+    });
+}
+
+
+async function updateProfileImage(newImageUrl) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get("username");
+
+    await fetch("/api/v1/users/updateProfileImage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, profileImage: newImageUrl })
+    });
+}

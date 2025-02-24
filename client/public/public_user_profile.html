@@ -380,36 +380,39 @@
 
 
   <!-- START: Public Profile Section -->
-  <div class="container mt-5">
-    <div class="card mx-auto text-center profile-card">
-      <div class="card-body">
-        <div class="profile-content">
-          <div class="profile-image">
-            <img id="profileImage" src="/static/images/default-avatar.png" alt="Profile Picture">
-          </div>
-          <div class="profile-info">
-            <h2><strong>Username:</strong> <span id="username">Loading...</span></h2>
-            <h5 class="text-muted"><strong>Full Name:</strong> <span id="fullName">Loading...</span></h5>
-          </div>
+  <div class="container mt-5 ">
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profile-image-container">
+          <img id="selectedProfileImage" class="profile-image" src="" alt="Profile Image">
+          <button id="changeImageBtn">Change</button>
+        </div>
+        <div class="profile-info">
+          <h2><strong>Username:</strong> <span id="username">Loading...</span></h2>
+          <h5 class="text-muted"><strong>Full Name:</strong> <span id="fullName">Loading...</span></h5>
+        </div>
+      </div>
 
+      <!-- Bio Section -->
+      <div class="bio-container">
+        <p><strong>Bio:</strong></p>
+        <p id="savedBio" class="bio-text"></p>
+        <textarea id="bioInput" class="bio-box" placeholder="Write your bio (max 500 characters)..."></textarea>
+        <div class="button-container">
+          <button id="saveBioBtn">Save</button>
+          <button id="editBioBtn" style="display: none;">Edit</button>
         </div>
       </div>
     </div>
-
-    <!-- Bio Section -->
-    <div class="bio-container">
-      <p><strong>Bio:</strong></p>
-
-      <p id="savedBio" class="bio-text"></p>
-      <textarea id="bioInput" class="bio-box" placeholder="Write your bio (max 500 characters)..."></textarea>
-
-      <div class="button-container">
-        <button id="saveBioBtn">Save</button>
-        <button id="editBioBtn" style="display: none;">Edit</button>
-      </div>
+  </div>
+  <!-- Modal for Stock Image Selection -->
+  <div id="stockImageModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Select a Stock Image</h3>
+      <div id="stockImageContainer"></div>
     </div>
   </div>
-
   <script src="/static/js/public_user_profile.js"></script>
   <!-- END: Public Profile Section -->
 
