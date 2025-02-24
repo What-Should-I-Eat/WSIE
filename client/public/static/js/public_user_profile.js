@@ -1,23 +1,50 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get("username");
-
-    if (!username) {
-        document.getElementById("username").innerText = "Username not found";
-        document.getElementById("fullName").innerText = "";
-        return;
-    }
-
     try {
-        console.log(`Fetching user data for: ${username}`);
-        const response = await fetch(`/api/v1/users/findUserData?username=${username}`);
-        
-        if (!response.ok) throw new Error("User not found");
+        const response = await fetch("/api/v1/check-auth", {
+            method: "GET",
+            credentials: "include"
+        });
 
-        const userData = await response.json();
+        const data = await response.json();
+        const profilePageContainer = document.querySelector(".profile-container");
+        const publicProfileNavItem = document.getElementById("publicProfileNavItem");
+
+        if (!data.isLoggedIn) {
+            if (profilePageContainer) {
+                profilePageContainer.style.display = "none";
+            }
+            if (publicProfileNavItem) {
+                publicProfileNavItem.style.display = "none"; 
+            }
+            return; 
+        } else {
+            if (profilePageContainer) {
+                profilePageContainer.style.display = "block";
+            }
+            if (publicProfileNavItem) {
+                publicProfileNavItem.style.display = "block"; 
+            }
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get("username");
+
+        if (!username) {
+            document.getElementById("username").innerText = "Username not found";
+            document.getElementById("fullName").innerText = "";
+            return;
+        }
+
+        console.log(`Fetching user data for: ${username}`);
+        const userResponse = await fetch(`/api/v1/users/findUserData?username=${username}`);
+
+        if (!userResponse.ok) throw new Error("User not found");
+
+        const userData = await userResponse.json();
         document.getElementById("username").innerText = userData.username || "Unknown User";
         document.getElementById("fullName").innerText = userData.fullName || "No Name Provided";
-            if (userData.profileImage) {
+
+        if (userData.profileImage) {
             document.getElementById("selectedProfileImage").src = userData.profileImage;
         }
 
@@ -83,7 +110,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
-
 function setupModal(selectedImageFromDB) {
     const modal = document.getElementById("stockImageModal");
     const closeButton = document.querySelector(".close");
@@ -141,7 +167,6 @@ function loadStockImages(selectedImageFromDB) {
         stockImageContainer.appendChild(imgElement);
     });
 }
-
 
 async function updateProfileImage(newImageUrl) {
     const urlParams = new URLSearchParams(window.location.search);

@@ -181,6 +181,15 @@ privateRouter.get('/users/profile', (req, res) => {
     });
 });
 
+privateRouter.get("/check-auth", (req, res) => {
+  if (req.session && req.session.isLoggedIn) {
+      return res.json({ isLoggedIn: true, username: req.session.username });
+  } else {
+      return res.json({ isLoggedIn: false });
+  }
+});
+
+
 privateRouter.get('/users/findUserData', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.query.username.toLowerCase() }).populate('favorites');
