@@ -246,18 +246,33 @@ publicRouter.get('/recipes/favorites-count', async (req, res) => {
     try {
         const {recipeName} = req.query;
 
+        console.log("Querying favorite count for:", recipeName);
+
         if (!recipeName) {
             return res.status(400).json({error: 'Recipe name is required'});
         }
 
         const usersWithFavorites = await User.find({favorites: {$exists: true, $ne: []}})
-            .populate('favorites', 'name')
-            .select('favorites'); // We only need the favorites field
+            .populate({
+                path: 'favorites',
+                model: 'Recipe',
+                select: 'recipeName'
+            })
+            .lean();
 
         const allFavorites = usersWithFavorites.flatMap(user =>
-            user.favorites.map(recipe => recipe.name)
+            user.favorites.map(recipe => {
+                console.log("Populated Recipe Object:", recipe);
+                return recipe.recipeName;
+            })
         );
 
+        const recipe = await Recipe.findOne({recipeName}).select('_id').lean();
+        if (!recipe) {
+            return res.status(404).json({error: 'Recipe not found'});
+        }
+
+        console.log(`Recipe ID for ${recipeName}:`, recipe._id);
         const favoritesCount = allFavorites.filter(name => name === recipeName).length;
 
         res.json({recipeName, favoritesCount});
@@ -266,9 +281,6 @@ publicRouter.get('/recipes/favorites-count', async (req, res) => {
         res.status(500).json({error: "Internal server error"});
     }
 });
-
-
-module.exports = publicRouter;
 
 
 module.exports = publicRouter;
