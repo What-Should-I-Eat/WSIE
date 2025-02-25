@@ -700,15 +700,18 @@ async function getRecipeText(){
   return(fullRecipeText);
 }
 
-async function handleUserReview(userId){
-
-  stringToCheck = document.getElementById("recipeReviewInput").value;
-  profanityVal = await utils.checkForProfanity(stringToCheck);
-  if(!profanityVal){
-    request = {
-      reviewedRecipeId: recipeId,
-      writtenReview: recipeReviewInput.value,
-    }
+async function handleUserReview(userId) {
+  const reviewText = document.getElementById("recipeReviewInput").value;
+  
+  const profanityVal = await utils.checkForProfanity(reviewText);
+  if (!profanityVal) {
+    const username = utils.getUserNameFromCookie();
+    
+    const request = {
+      reviewedRecipeId: recipeId,       
+      writtenReview: reviewText,          
+      reviewerUsername: username            
+    };
 
     let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/post_review`;
     try {
@@ -730,33 +733,11 @@ async function handleUserReview(userId){
       console.error(error);
       utils.showAjaxAlert("Error", error.message);
     }
-  }else{
+  } else {
     utils.showAjaxAlert("Error", "Review content goes against community protocols and cannot be posted.");
   }
-};
-
-async function handleReportRecipe(){
-  const url = `${PUBLIC_USER_RECIPES_URL}/report_recipe?recipeId=${recipeId}`;
-  try {
-    const response = await fetch(url, {
-      method: PUT_ACTION,
-      headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
-      },
-      body: JSON.stringify()
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error);
-    }
-
-    utils.showAjaxAlert("Success", data.message);
-  } catch (error) {
-    console.error(error);
-    utils.showAjaxAlert("Error", error.message);
-  }
 }
+
 
 async function handleReportPost(reviewId){
   const url = `${PUBLIC_USER_RECIPES_URL}/report_review?reviewId=${reviewId}`;
