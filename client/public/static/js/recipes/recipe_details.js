@@ -297,7 +297,9 @@ function RecipeDetailsView() {
         container.innerHTML = "";
         const userReviews = await getRecipePubReviews();
         displayReviews(userReviews, container);
+        fetchFavoriteCount(recipe.label);
     };
+
 
     this.buildPublicUserView = async (recipe, pubReview, reportedReview) => {
         // Leave this here so its compatible and we can share functionality
@@ -1257,6 +1259,26 @@ async function checkIfFavorite(username, recipeName) {
     }
 }
 
+async function fetchFavoriteCount(recipeName) {
+    const favoriteCounterElement = document.getElementById("favorite-counter");
+    console.log('recipeName', recipeName);
+    try {
+        // Construct the URL with the query parameter
+        const url = new URL('http://localhost:8080/api/v1/recipes/favorites-count', window.location.origin);
+        url.searchParams.append('recipeName', recipeName);
+        console.log("api url: " , url);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch favorite count");
+
+        const data = await response.json();
+        favoriteCounterElement.textContent = `❤️ Favorite ${data.favoritesCount || 0}`;
+    } catch (error) {
+        console.error("Error fetching favorite count:", error);
+    }
+}
+
+
 function getRecipeId() {
     return document.querySelector('[data-recipe-id]')?.getAttribute('data-recipe-id') || '';
+    
 }
