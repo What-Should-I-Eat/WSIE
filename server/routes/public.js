@@ -121,24 +121,119 @@ publicRouter.get('/recipes/get_recipe', async (req, res) => {
   }
 });
 
-publicRouter.get('/recipes/get_reviews', async (req, res) => {
+publicRouter.get("/recipes/get_reviews", async (req, res) => {
   try {
-    let recipeObjectId = req.query.recipeId;
+    const recipeId = req.query.recipeId;
 
-    let recipeReviews = await RecipeReview.find({ reviewedRecipeId: recipeObjectId, reviewReported: false });
-    if (!recipeReviews) {
-      return res.status(404).json({ error: 'No reviews found' });
+    if (!recipeId) {
+      return res.status(400).json({ error: "Missing recipeId parameter" });
     }
 
-    res.json(recipeReviews);
+    const rootReviews = await RecipeReview.find({
+      reviewedRecipeId: recipeId,
+      parentReviewId: null,
+      reviewReported: false,
+    }).lean();
+
+    const allReplies = await RecipeReview.find({
+      reviewedRecipeId: recipeId,
+      parentReviewId: { $exists: true, $ne: null },
+      reviewReported: false,
+    }).lean();
+    const repliesMap = {};
+    allReplies.forEach((reply) => {
+      const parentId = reply.parentReviewId.toString();
+      if (!repliesMap[parentId]) {
+        repliesMap[parentId] = [];
+      }
+      repliesMap[parentId].push(reply);
+    });
+
+    const structuredReviews = rootReviews.map((review) => ({
+      ...review,
+      replies: repliesMap[review._id.toString()] || [],
+    }));
+
+    res.status(200).json(structuredReviews);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error trying to get reviews' });
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ error: "Internal server error trying to get reviews" });
   }
 });
 
 function generateRandomVerificationCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
+publicRouter.post('/recipes/:id/like', async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+
+    const userId = req.body.userId;
+
+    // Initialize arrays if undefined
+    recipe.likedBy = recipe.likedBy || [];
+    recipe.dislikedBy = recipe.dislikedBy || [];
+
+    if (userId !== 'guest') {
+      if (recipe.likedBy.includes(userId)) {
+        return res.status(400).json({ message: 'You have already liked this recipe.' });
+      }
+
+      // If user had disliked previously, remove the dislike
+      if (recipe.dislikedBy.includes(userId)) {
+        recipe.dislikes -= 1;
+        recipe.dislikedBy = recipe.dislikedBy.filter(id => id !== userId);
+      }
+
+      recipe.likedBy.push(userId);
+    }
+
+    recipe.likes += 1;
+    await recipe.save();
+
+    res.json({ likes: recipe.likes, dislikes: recipe.dislikes });
+  } catch (error) {
+    console.error('Error liking recipe:', error);
+    res.status(500).json({ error: 'Failed to like recipe' });
+  }
+});
+
+publicRouter.post('/recipes/:id/dislike', async (req, res) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+
+    const userId = req.body.userId;
+
+    // Initialize arrays if undefined
+    recipe.likedBy = recipe.likedBy || [];
+    recipe.dislikedBy = recipe.dislikedBy || [];
+
+    if (userId !== 'guest') {
+      if (recipe.dislikedBy.includes(userId)) {
+        return res.status(400).json({ message: 'You have already disliked this recipe.' });
+      }
+
+      // If user had liked previously, remove the like
+      if (recipe.likedBy.includes(userId)) {
+        recipe.likes -= 1;
+        recipe.likedBy = recipe.likedBy.filter(id => id !== userId);
+      }
+
+      recipe.dislikedBy.push(userId);
+    }
+
+    recipe.dislikes += 1;
+    await recipe.save();
+
+    res.json({ likes: recipe.likes, dislikes: recipe.dislikes });
+  } catch (error) {
+    console.error('Error disliking recipe:', error);
+    res.status(500).json({ error: 'Failed to dislike recipe' });
+  }
+});
+
+
 
 module.exports = publicRouter;
