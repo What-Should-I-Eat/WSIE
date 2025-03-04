@@ -3,14 +3,14 @@
 
 <head>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2160359245330530"
-     crossorigin="anonymous"></script>
-     
+        crossorigin="anonymous"></script>
+
     <title>
         What Should I Eat - Recipe Details
     </title>
 
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" />
 
     <!-- Favicon -->
     <link href="/static/img/icon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
@@ -26,16 +26,16 @@
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-          rel="stylesheet">
+        rel="stylesheet">
 
 
     <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
     <!-- Custom CSS -->
-    <link href="/static/css/base.css" rel="stylesheet"/>
-    <link href="/static/css/login-modal.css" rel="stylesheet"/>
-    <link href="/static/css/recipe_details.css" rel="stylesheet"/>
+    <link href="/static/css/base.css" rel="stylesheet" />
+    <link href="/static/css/login-modal.css" rel="stylesheet" />
+    <link href="/static/css/recipe_details.css" rel="stylesheet" />
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -43,8 +43,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
     <!-- Email Script -->
     <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
-            type="text/javascript">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" type="text/javascript">
     </script>
     <script type="text/javascript">
         (function () {
@@ -105,461 +104,466 @@
 </script>
 
 <body>
-<header>
-    <div class="container-fluid px-0">
-        <!-- START: Nav Bar Div -->
-        <div class="row navbar-row px-3">
-            <nav class="navbar navbar-expand-md navbar-light">
-                <a class="navbar-brand" href="/">
-                    <img src="/static/img/recipe-logo.svg" style="max-height: 100px"/>
-                    <h1>What Should I Eat?</h1>
-                </a>
-                <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
-                        class="navbar-toggler"
-                        data-target="#navbarSupportedContent" data-toggle="collapse"
-                        type="button"><span
-                        class="navbar-toggler-icon"></span></button>
+    <header>
+        <div class="container-fluid px-0">
+            <!-- START: Nav Bar Div -->
+            <div class="row navbar-row px-3">
+                <nav class="navbar navbar-expand-md navbar-light">
+                    <a class="navbar-brand" href="/">
+                        <img src="/static/img/recipe-logo.svg" style="max-height: 100px" />
+                        <h1>What Should I Eat?</h1>
+                    </a>
+                    <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                        class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse"
+                        type="button"><span class="navbar-toggler-icon"></span></button>
 
-                <div id="navbarSupportedContent" class="collapse navbar-collapse">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/about">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/recipes">Find Recipes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/contact">Contact Us</a>
-                        </li>
-                        <li id="enable-admin-tab" class="nav-item">
-                        </li>
-                    </ul>
+                    <div id="navbarSupportedContent" class="collapse navbar-collapse">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/about">About Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/recipes">Find Recipes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/contact">Contact Us</a>
+                            </li>
+                            <li id="enable-admin-tab" class="nav-item">
+                            </li>
+                        </ul>
 
-                    <div id="navBarMyAccountSignInSignUp" class="mr-2 d-flex flex-column flex-md-row">
-                        <!-- Dynamically populate via login.js -->
-                    </div>
-                </div>
-            </nav>
-        </div>
-        <!-- END: Nav Bar Div -->
-
-        <!-- START: Flash Alerts to User -->
-        <div class="row">
-            <div id="ajaxAlertSuccess"
-                 class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show" role="alert"
-                 style="display: none;">
-                <span id="ajaxSuccessMessage"></span>
-                <button aria-label="Close" class="close" data-hide="alert" type="button"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
-            <div id="ajaxAlertError"
-                 class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show" role="alert"
-                 style="display: none;">
-                <span id="ajaxErrorMessage"></span>
-                <button aria-label="Close" class="close" data-hide="alert" type="button"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
-            <div id="ajaxAlertWarning"
-                 class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show" role="alert"
-                 style="display: none;">
-                <span id="ajaxWarningMessage"></span>
-                <button aria-label="Close" class="close" data-hide="alert" type="button"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
-        </div>
-        <!-- END: Flash Alerts to User -->
-    </div>
-</header>
-
-<!-- START: Sign Up / Sign Modal -->
-<div id="authModal" aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" role="dialog"
-     tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <!-- START: Sign In Modal -->
-        <div id="signInModalContent" class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Sign In</h5>
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
-
-            <div class="modal-body">
-                <form id="signInForm">
-                    <div class="form-group">
-                        <label for="signInUsernameInput">Username</label>
-                        <input id="signInUsernameInput" class="form-control" name="username" required type="username"/>
-                    </div>
-                    <div class="form-group mb-1">
-                        <label for="signInPasswordInput">Password</label>
-                        <div id="signinPasswordToggle" class="input-group">
-                            <input id="signInPasswordInput" class="form-control" name="password" required
-                                   type="password"/>
-                            <div class="input-group-append">
-                  <span class="input-group-text">
-                    <a class="toggle-password" href="#"><i aria-hidden="true" class="fa fa-eye-slash"></i></a>
-                  </span>
-                            </div>
+                        <div id="navBarMyAccountSignInSignUp" class="mr-2 d-flex flex-column flex-md-row">
+                            <!-- Dynamically populate via login.js -->
                         </div>
                     </div>
-                </form>
+                </nav>
             </div>
+            <!-- END: Nav Bar Div -->
 
-            <div class="modal-footer">
-                <div class="w-100 d-flex flex-column">
-                    <button class="mb-3 btn btn-primary btn-block" form="signInForm" type="submit">Sign In</button>
-                    <button id="signUpSwitch" class="mb-3 btn btn-link btn-block" type="button">Don't have an
-                        account? Sign
-                        up
-                    </button>
-                    <button id="signInForgotUsernamePasswordBtn" class="mb-3 btn btn-link btn-block" type="button">
-                        Forgot
-                        username or password? Click here
-                    </button>
+            <!-- START: Flash Alerts to User -->
+            <div class="row">
+                <div id="ajaxAlertSuccess"
+                    class="position-sticky w-100 text-center alert alert-success alert-dismissible fade show"
+                    role="alert" style="display: none;">
+                    <span id="ajaxSuccessMessage"></span>
+                    <button aria-label="Close" class="close" data-hide="alert" type="button"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div id="ajaxAlertError"
+                    class="position-sticky w-100 text-center alert alert-danger alert-dismissible fade show"
+                    role="alert" style="display: none;">
+                    <span id="ajaxErrorMessage"></span>
+                    <button aria-label="Close" class="close" data-hide="alert" type="button"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div id="ajaxAlertWarning"
+                    class="position-sticky w-100 text-center alert alert-warning alert-dismissible fade show"
+                    role="alert" style="display: none;">
+                    <span id="ajaxWarningMessage"></span>
+                    <button aria-label="Close" class="close" data-hide="alert" type="button"><span
+                            aria-hidden="true">&times;</span></button>
                 </div>
             </div>
+            <!-- END: Flash Alerts to User -->
         </div>
-        <!-- END: Sign In Modal -->
+    </header>
 
-        <!-- START: Sign Up Modal -->
-        <div id="signUpModalContent" class="modal-content" style="display: none;">
-            <div class="modal-header">
-                <h5 id="exampleModalLongTitle" class="modal-title">Sign Up</h5>
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
+    <!-- START: Sign Up / Sign Modal -->
+    <div id="authModal" aria-hidden="true" aria-labelledby="exampleModalCenterTitle" class="modal fade" role="dialog"
+        tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <!-- START: Sign In Modal -->
+            <div id="signInModalContent" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sign In</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
 
-            <div class="modal-body">
-                <form id="signUpForm">
-                    <div class="form-group">
-                        <label for="signUpFirstNameInput">First Name</label>
-                        <input id="signUpFirstNameInput" class="form-control" name="firstName" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="signUpLastNameInput">Last Name</label>
-                        <input id="signUpLastNameInput" class="form-control" name="lastName" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="signUpEmailInput">Email</label>
-                        <input id="signUpEmailInput" class="form-control" name="email" required type="email"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="signUpUsernameInput">Username</label>
-                        <input id="signUpUsernameInput" class="form-control" name="username" required type="username"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="signUpPasswordInput">Password</label>
-                        <div id="signupPasswordOneToggle" class="input-group">
-                            <input id="signUpPasswordInput" class="form-control" name="password" required
-                                   type="password"/>
-                            <div class="input-group-append">
-                  <span class="input-group-text">
-                    <a class="toggle-password" href="#"><i aria-hidden="true" class="fa fa-eye-slash"></i></a>
-                  </span>
+                <div class="modal-body">
+                    <form id="signInForm">
+                        <div class="form-group">
+                            <label for="signInUsernameInput">Username</label>
+                            <input id="signInUsernameInput" class="form-control" name="username" required
+                                type="username" />
+                        </div>
+                        <div class="form-group mb-1">
+                            <label for="signInPasswordInput">Password</label>
+                            <div id="signinPasswordToggle" class="input-group">
+                                <input id="signInPasswordInput" class="form-control" name="password" required
+                                    type="password" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <a class="toggle-password" href="#"><i aria-hidden="true"
+                                                class="fa fa-eye-slash"></i></a>
+                                    </span>
+                                </div>
                             </div>
                         </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="w-100 d-flex flex-column">
+                        <button class="mb-3 btn btn-primary btn-block" form="signInForm" type="submit">Sign In</button>
+                        <button id="signUpSwitch" class="mb-3 btn btn-link btn-block" type="button">Don't have an
+                            account? Sign
+                            up
+                        </button>
+                        <button id="signInForgotUsernamePasswordBtn" class="mb-3 btn btn-link btn-block" type="button">
+                            Forgot
+                            username or password? Click here
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <label for="signUpRetypedPasswordInput">Re-type Password</label>
-                        <div id="signupPasswordTwoToggle" class="input-group">
-                            <input id="signUpRetypedPasswordInput" class="form-control" name="password" required
-                                   type="password"/>
-                            <div class="input-group-append">
-                  <span class="input-group-text">
-                    <a class="toggle-password" href="#"><i aria-hidden="true" class="fa fa-eye-slash"></i></a>
-                  </span>
+                </div>
+            </div>
+            <!-- END: Sign In Modal -->
+
+            <!-- START: Sign Up Modal -->
+            <div id="signUpModalContent" class="modal-content" style="display: none;">
+                <div class="modal-header">
+                    <h5 id="exampleModalLongTitle" class="modal-title">Sign Up</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="signUpForm">
+                        <div class="form-group">
+                            <label for="signUpFirstNameInput">First Name</label>
+                            <input id="signUpFirstNameInput" class="form-control" name="firstName" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpLastNameInput">Last Name</label>
+                            <input id="signUpLastNameInput" class="form-control" name="lastName" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpEmailInput">Email</label>
+                            <input id="signUpEmailInput" class="form-control" name="email" required type="email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpUsernameInput">Username</label>
+                            <input id="signUpUsernameInput" class="form-control" name="username" required
+                                type="username" />
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpPasswordInput">Password</label>
+                            <div id="signupPasswordOneToggle" class="input-group">
+                                <input id="signUpPasswordInput" class="form-control" name="password" required
+                                    type="password" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <a class="toggle-password" href="#"><i aria-hidden="true"
+                                                class="fa fa-eye-slash"></i></a>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
+                        <div class="form-group">
+                            <label for="signUpRetypedPasswordInput">Re-type Password</label>
+                            <div id="signupPasswordTwoToggle" class="input-group">
+                                <input id="signUpRetypedPasswordInput" class="form-control" name="password" required
+                                    type="password" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <a class="toggle-password" href="#"><i aria-hidden="true"
+                                                class="fa fa-eye-slash"></i></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
 
-            <div class="modal-footer">
-                <div class="w-100 d-flex flex-column">
-                    <button class="mb-3 btn btn-primary btn-block" form="signUpForm" type="submit">Sign Up</button>
-                    <button id="signInSwitch" class="mb-3 btn btn-link btn-block" type="button">Already have an
-                        account? Sign
-                        in
-                    </button>
-                    <button id="signUpForgotUsernamePasswordBtn" class="mb-3 btn btn-link btn-block" type="button">
-                        Forgot
-                        username or password? Click here
-                    </button>
+                <div class="modal-footer">
+                    <div class="w-100 d-flex flex-column">
+                        <button class="mb-3 btn btn-primary btn-block" form="signUpForm" type="submit">Sign Up</button>
+                        <button id="signInSwitch" class="mb-3 btn btn-link btn-block" type="button">Already have an
+                            account? Sign
+                            in
+                        </button>
+                        <button id="signUpForgotUsernamePasswordBtn" class="mb-3 btn btn-link btn-block" type="button">
+                            Forgot
+                            username or password? Click here
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- END: Sign Up Modal -->
+            <!-- END: Sign Up Modal -->
 
-        <!-- START: Verify Account Modal -->
-        <div id="verifyAccountModalContent" class="modal-content" style="display: none;">
-            <div class="modal-header">
-                <h5 class="modal-title">Verify Account</h5>
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body">
-                <form id="verifyAccountForm">
-                    <div class="form-group">
-                        <label class="form-label" for="verificationCodeInput">Enter Your Verification Code</label>
-                        <input id="verificationCodeInput" class="form-control" name="verificationCodeInput"
-                               required
-                               type="number"/>
-                    </div>
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <div class="w-100 d-flex flex-column">
-                    <button class="mb-3 btn btn-primary btn-block" form="verifyAccountForm" type="submit">Verify
-                    </button>
-                    <button id="signInSwitchVerification" class="mb-3 btn btn-link btn-block" type="button">Already
-                        verified?
-                        Sign in
-                    </button>
-                    <button id="resendVerificationCodeBtn" class="mb-3 btn btn-link btn-block" type="button">Click
-                        here to
-                        re-send code
+            <!-- START: Verify Account Modal -->
+            <div id="verifyAccountModalContent" class="modal-content" style="display: none;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Verify Account</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            </div>
-        </div>
-        <!-- END: Verify Account Modal -->
 
-        <!-- START: Forgot Username/Password Modal -->
-        <div id="forgotUsernamePasswordModalContent" class="modal-content" style="display: none;">
-            <div class="modal-header">
-                <h5 class="modal-title">Forgot Username or Password</h5>
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+                <div class="modal-body">
+                    <form id="verifyAccountForm">
+                        <div class="form-group">
+                            <label class="form-label" for="verificationCodeInput">Enter Your Verification Code</label>
+                            <input id="verificationCodeInput" class="form-control" name="verificationCodeInput" required
+                                type="number" />
+                        </div>
+                    </form>
+                </div>
 
-            <div class="modal-body">
-                <form id="forgotUsernamePasswordForm">
-                    <div class="form-group">
-                        <label class="form-label" for="forgotUsernamePasswordEmailInput">Enter your email</label>
-                        <input id="forgotUsernamePasswordEmailInput" class="form-control" name="forgotUsernamePasswordEmailInput"
-                               required type="email"/>
+                <div class="modal-footer">
+                    <div class="w-100 d-flex flex-column">
+                        <button class="mb-3 btn btn-primary btn-block" form="verifyAccountForm" type="submit">Verify
+                        </button>
+                        <button id="signInSwitchVerification" class="mb-3 btn btn-link btn-block" type="button">Already
+                            verified?
+                            Sign in
+                        </button>
+                        <button id="resendVerificationCodeBtn" class="mb-3 btn btn-link btn-block" type="button">Click
+                            here to
+                            re-send code
+                        </button>
                     </div>
-                </form>
-            </div>
-
-            <div class="modal-footer">
-                <div class="w-100 d-flex flex-column">
-                    <button class="mb-3 btn btn-primary btn-block" form="forgotUsernamePasswordForm" type="submit">Send
-                        Code
-                    </button>
                 </div>
             </div>
-        </div>
-        <!-- END: Forgot Username/Password Modal -->
+            <!-- END: Verify Account Modal -->
 
-        <!-- START: Forgot Username/Password Verify Account Modal -->
-        <div id="forgotUsernamePasswordVerifyAccountModalContent" class="modal-content" style="display: none;">
-            <div class="modal-header">
-                <h5 class="modal-title">Verify Account</h5>
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            <!-- START: Forgot Username/Password Modal -->
+            <div id="forgotUsernamePasswordModalContent" class="modal-content" style="display: none;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Forgot Username or Password</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
-            <div class="modal-body">
-                <form id="forgotUsernamePasswordVerifyAccountForm">
-                    <div class="form-group">
-                        <label class="form-label" for="forgotUsernamePasswordVerificationCodeInput">Enter Your
-                            Verification
-                            Code</label>
-                        <input id="forgotUsernamePasswordVerificationCodeInput" class="form-control" name="forgotUsernamePasswordVerificationCodeInput"
-                               required type="number"/>
+                <div class="modal-body">
+                    <form id="forgotUsernamePasswordForm">
+                        <div class="form-group">
+                            <label class="form-label" for="forgotUsernamePasswordEmailInput">Enter your email</label>
+                            <input id="forgotUsernamePasswordEmailInput" class="form-control"
+                                name="forgotUsernamePasswordEmailInput" required type="email" />
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="w-100 d-flex flex-column">
+                        <button class="mb-3 btn btn-primary btn-block" form="forgotUsernamePasswordForm"
+                            type="submit">Send
+                            Code
+                        </button>
                     </div>
-                </form>
+                </div>
             </div>
+            <!-- END: Forgot Username/Password Modal -->
 
-            <div class="modal-footer">
-                <div class="w-100 d-flex flex-column">
-                    <button class="mb-3 btn btn-primary btn-block" form="forgotUsernamePasswordVerifyAccountForm"
+            <!-- START: Forgot Username/Password Verify Account Modal -->
+            <div id="forgotUsernamePasswordVerifyAccountModalContent" class="modal-content" style="display: none;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Verify Account</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="forgotUsernamePasswordVerifyAccountForm">
+                        <div class="form-group">
+                            <label class="form-label" for="forgotUsernamePasswordVerificationCodeInput">Enter Your
+                                Verification
+                                Code</label>
+                            <input id="forgotUsernamePasswordVerificationCodeInput" class="form-control"
+                                name="forgotUsernamePasswordVerificationCodeInput" required type="number" />
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="w-100 d-flex flex-column">
+                        <button class="mb-3 btn btn-primary btn-block" form="forgotUsernamePasswordVerifyAccountForm"
                             type="submit">Verify
-                    </button>
-                    <button id="forgotUsernamePasswordResendVerificationCodeBtn" class="mb-3 btn btn-link btn-block"
+                        </button>
+                        <button id="forgotUsernamePasswordResendVerificationCodeBtn" class="mb-3 btn btn-link btn-block"
                             type="button">Click here to
-                        re-send code
-                    </button>
+                            re-send code
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- END: Forgot Username/Password Verify Account Modal -->
+            <!-- END: Forgot Username/Password Verify Account Modal -->
 
-        <!-- START: Reset Account Modal -->
-        <div id="resetAccountModalContent" class="modal-content" style="display: none;">
-            <div class="modal-header">
-                <h5 id="exampleModalLongTitle" class="modal-title">Reset Account</h5>
-                <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
+            <!-- START: Reset Account Modal -->
+            <div id="resetAccountModalContent" class="modal-content" style="display: none;">
+                <div class="modal-header">
+                    <h5 id="exampleModalLongTitle" class="modal-title">Reset Account</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
 
-            <div class="modal-body">
-                <form id="resetAccountForm">
-                    <div class="form-group">
-                        <label for="resetAccountUsernameInput">Username</label>
-                        <input id="resetAccountUsernameInput" class="form-control" name="resetAccountUsernameInput"
-                               readonly required type="username"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="resetAccountPasswordInput">Password</label>
-                        <div id="signupPasswordOneToggle" class="input-group">
-                            <input id="resetAccountPasswordInput" class="form-control" name="resetAccountPasswordInput"
-                                   required type="password"/>
-                            <div class="input-group-append">
-                  <span class="input-group-text">
-                    <a class="toggle-password" href="#"><i aria-hidden="true" class="fa fa-eye-slash"></i></a>
-                  </span>
+                <div class="modal-body">
+                    <form id="resetAccountForm">
+                        <div class="form-group">
+                            <label for="resetAccountUsernameInput">Username</label>
+                            <input id="resetAccountUsernameInput" class="form-control" name="resetAccountUsernameInput"
+                                readonly required type="username" />
+                        </div>
+                        <div class="form-group">
+                            <label for="resetAccountPasswordInput">Password</label>
+                            <div id="signupPasswordOneToggle" class="input-group">
+                                <input id="resetAccountPasswordInput" class="form-control"
+                                    name="resetAccountPasswordInput" required type="password" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <a class="toggle-password" href="#"><i aria-hidden="true"
+                                                class="fa fa-eye-slash"></i></a>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="resetAccountRetypedPasswordInput">Re-type Password</label>
-                        <div id="signupPasswordTwoToggle" class="input-group">
-                            <input id="resetAccountRetypedPasswordInput" class="form-control" name="resetAccountRetypedPasswordInput"
-                                   required type="password"/>
-                            <div class="input-group-append">
-                  <span class="input-group-text">
-                    <a class="toggle-password" href="#"><i aria-hidden="true" class="fa fa-eye-slash"></i></a>
-                  </span>
+                        <div class="form-group">
+                            <label for="resetAccountRetypedPasswordInput">Re-type Password</label>
+                            <div id="signupPasswordTwoToggle" class="input-group">
+                                <input id="resetAccountRetypedPasswordInput" class="form-control"
+                                    name="resetAccountRetypedPasswordInput" required type="password" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <a class="toggle-password" href="#"><i aria-hidden="true"
+                                                class="fa fa-eye-slash"></i></a>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
 
-            <div class="modal-footer">
-                <div class="w-100 d-flex flex-column">
-                    <button class="mb-3 btn btn-primary btn-block" form="resetAccountForm" type="submit">Reset</button>
-                    <button id="signInSwitch" class="mb-3 btn btn-link btn-block" type="button">Back to Sign
-                        in
-                    </button>
+                <div class="modal-footer">
+                    <div class="w-100 d-flex flex-column">
+                        <button class="mb-3 btn btn-primary btn-block" form="resetAccountForm"
+                            type="submit">Reset</button>
+                        <button id="signInSwitch" class="mb-3 btn btn-link btn-block" type="button">Back to Sign
+                            in
+                        </button>
+                    </div>
                 </div>
             </div>
+            <!-- END: Reset Account Modal -->
         </div>
-        <!-- END: Reset Account Modal -->
     </div>
-</div>
-<!-- END: Sign Up / Sign Modal -->
+    <!-- END: Sign Up / Sign Modal -->
 
-<!-- START: Recipe Details -->
-<div class="backgroundColor">
-    <div class="recipe-container">
-        <form id="recipeForm">
-            <header id="recipe-header" class="recipe-header">
-                <h1 id="recipe-name">Loading...</h1>
-                <img id="recipe-image" alt="Loading recipe image" src="/static/img/loading-spinner.svg"
-                     style="max-width: 40%; height: auto;"/>
-                <!--            <div class="like-dislike-container">-->
-                <!--              <button class="btn-like" data-recipe-id="12345">👍</button>-->
-                <!--                <span class="like-counter">0</span>-->
-                <!--               <button class="btn-dislike" data-recipe-id="12345">👎</button>-->
-                <!--               <span class="dislike-counter">0</span>-->
+    <!-- START: Recipe Details -->
+    <div class="backgroundColor">
+        <div class="recipe-container">
+            <form id="recipeForm">
+                <header id="recipe-header" class="recipe-header">
+                    <h1 id="recipe-name">Loading...</h1>
+                    <img id="recipe-image" alt="Loading recipe image" src="/static/img/loading-spinner.svg"
+                        style="max-width: 40%; height: auto;" />
+                    <!--            <div class="like-dislike-container">-->
+                    <!--              <button class="btn-like" data-recipe-id="12345">👍</button>-->
+                    <!--                <span class="like-counter">0</span>-->
+                    <!--               <button class="btn-dislike" data-recipe-id="12345">👎</button>-->
+                    <!--               <span class="dislike-counter">0</span>-->
 
-                <!--          </div>              -->
-            </header>
+                    <!--          </div>              -->
+                </header>
 
-            <section id="reportRecipeSection" class="recipe-info inline-div">
-                <button id="reportRecipeBtn" class="btn btn-primary" name="action" type="submit" value="reportRecipe">
-                    Report Recipe
-                </button>
-            </section>
+                <section id="reportRecipeSection" class="recipe-info inline-div">
+                    <button id="reportRecipeBtn" class="btn btn-primary" name="action" type="submit"
+                        value="reportRecipe">
+                        Report Recipe
+                    </button>
+                </section>
 
-            <section class="recipe-info">
-                <h3>Ingredients</h3>
-                <ul id="ingredients-list">
-                    <!-- Dynamically building ingredients here -->
-                </ul>
-            </section>
+                <section class="recipe-info">
+                    <h3>Ingredients</h3>
+                    <ul id="ingredients-list">
+                        <!-- Dynamically building ingredients here -->
+                    </ul>
+                </section>
 
-            <section id="preparation-container" class="recipe-info">
-                <h3>Preparation</h3>
-                <ul id="preparation-list">
-                    <!-- Dynamically building preparation here -->
-                </ul>
-            </section>
+                <section id="preparation-container" class="recipe-info">
+                    <h3>Preparation</h3>
+                    <ul id="preparation-list">
+                        <!-- Dynamically building preparation here -->
+                    </ul>
+                </section>
 
-            <section class="recipe-info inline-div">
-                <h3>Nutritional Facts</h3>
-                <ul id="nutritional-facts-list">
-                    <!-- Dynamically building nutritional facts here -->
-                </ul>
-            </section>
+                <section class="recipe-info inline-div">
+                    <h3>Nutritional Facts</h3>
+                    <ul id="nutritional-facts-list">
+                        <!-- Dynamically building nutritional facts here -->
+                    </ul>
+                </section>
 
-            <section id="dietary-labels-section" class="recipe-info inline-div">
-                <h3>Dietary Labels</h3>
-                <ul id="dietary-labels-list">
-                    <!-- Dynamically building dietary labels here -->
-                </ul>
-            </section>
+                <section id="dietary-labels-section" class="recipe-info inline-div">
+                    <h3>Dietary Labels</h3>
+                    <ul id="dietary-labels-list">
+                        <!-- Dynamically building dietary labels here -->
+                    </ul>
+                </section>
 
-            <div class="container text-center my-4">
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2160359245330530"
-                    crossorigin="anonymous"></script>
-                <ins class="adsbygoogle"
-                    style="display:block"
-                    data-ad-client="ca-pub-2160359245330530"
-                    data-ad-slot="9600334097"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
+                <div class="container text-center my-4">
+                    <script async
+                        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2160359245330530"
+                        crossorigin="anonymous"></script>
+                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2160359245330530"
+                        data-ad-slot="9600334097" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
 
-            <section class="recipe-info review-space">
-                <h3>Loved it or have suggestions? Add your own review!</h3>
-                <textarea id="recipeReviewInput"></textarea>
-                <button id="postReviewBtn" class="btn btn-primary" name="action" type="submit" value="postReview">
-                    Post Review
-                </button>
-                <h3>Reviews from community members</h3>
-                <div id="review-list" class="reviewScrollable"></div>
-            </section>
+                <section class="recipe-info review-space">
+                    <h3>Loved it or have suggestions? Add your own review!</h3>
+                    <textarea id="recipeReviewInput"></textarea>
+                    <button id="postReviewBtn" class="btn btn-primary" name="action" type="submit" value="postReview">
+                        Post Review
+                    </button>
+                    <h3>Reviews from community members</h3>
+                    <div id="review-list" class="reviewScrollable"></div>
+                </section>
 
-            <section class="recipe-info handle-favorites">
-                <button id="addToFavoritesBtn" class="btn btn-primary" name="action" type="submit"
+                <section class="recipe-info handle-favorites">
+                    <button id="addToFavoritesBtn" class="btn btn-primary" name="action" type="submit"
                         value="addToFavorites">Add
-                    Recipe to Favorites
-                </button>
-                <button id="updateRecipeBtn" class="btn btn-primary" name="action" type="submit" value="updateRecipe">
-                    Update
-                    Recipe
-                </button>
-                <button id="publishRecipeBtn" class="btn btn-primary" name="action" type="submit"
+                        Recipe to Favorites
+                    </button>
+                    <button id="updateRecipeBtn" class="btn btn-primary" name="action" type="submit"
+                        value="updateRecipe">
+                        Update
+                        Recipe
+                    </button>
+                    <button id="publishRecipeBtn" class="btn btn-primary" name="action" type="submit"
                         value="publishRecipe">Request to Publish Recipe
-                </button>
-                <button id="approvePubReqBtn" class="btn btn-primary" name="action" type="submit"
+                    </button>
+                    <button id="approvePubReqBtn" class="btn btn-primary" name="action" type="submit"
                         value="approvePub">Approve Recipe to be public
-                </button>
-                <button id="denyPubReqBtn" class="btn btn-primary" name="action" type="submit"
-                        value="denyPub">Deny Recipe from being public
-                </button>
-            </section>
-        </form>
+                    </button>
+                    <button id="denyPubReqBtn" class="btn btn-primary" name="action" type="submit" value="denyPub">Deny
+                        Recipe from being public
+                    </button>
+                </section>
+            </form>
+        </div>
     </div>
-</div>
-<!-- END: Recipe Details -->
+    <!-- END: Recipe Details -->
 
-<!-- START: Footer -->
-<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-    <div class="col-md-4 d-flex align-items-center">
-        <a class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1" href="/">
-            <svg class="bi" height="24" width="30">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-        </a>
-        <span class="mb-3 mb-md-0 text-body-secondary">© 2024 What Should I Eat?, Inc</span>
-    </div>
-</footer>
-<!-- END: Footer -->
+    <!-- START: Footer -->
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <div class="col-md-4 d-flex align-items-center">
+            <a class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1" href="/">
+                <svg class="bi" height="24" width="30">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+            </a>
+            <span class="mb-3 mb-md-0 text-body-secondary">© 2024 What Should I Eat?, Inc</span>
+        </div>
+    </footer>
+    <!-- END: Footer -->
 </body>
 
 </html>
