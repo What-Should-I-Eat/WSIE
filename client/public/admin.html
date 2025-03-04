@@ -107,6 +107,9 @@
               </li>
               <li id="enable-admin-tab" class="nav-item">
               </li>
+              <li id="publicProfileNavItem" class="nav-item" style="display: none;">
+                <a class="nav-link" href="/public_user_profile">Public Profile</a>
+              </li>
             </ul>
 
             <div id="navBarMyAccountSignInSignUp" class="mr-2 d-flex flex-column flex-md-row">
@@ -404,11 +407,11 @@
         <h2 id="addNewAdminHeader">Change Admin Status</h2>
       </div>
       <label for="addAdminUsernameInput">Username of Admin to change</label>
-          <input id="addAdminUsernameInput" type="username" class="form-control" name="username" />
-          <button type="submit" class="btn btn-primary" name="action" value="makeAdmin" id="makeAdminBtn">Add admin
-          access</button>
-          <button type="submit" class="btn btn-primary" name="action" value="removeAdmin" id="removeAdminBtn">Revoke admin 
-          access</button>
+      <input id="addAdminUsernameInput" type="username" class="form-control" name="username" />
+      <button type="submit" class="btn btn-primary" name="action" value="makeAdmin" id="makeAdminBtn">Add admin
+        access</button>
+      <button type="submit" class="btn btn-primary" name="action" value="removeAdmin" id="removeAdminBtn">Revoke admin
+        access</button>
     </form>
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 id="myRecipesHeader">Publish Requests</h2>
@@ -432,6 +435,36 @@
     </div>
   </footer>
   <!-- END: Footer -->
+  <!-- To Hide the Public User Profile -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      try {
+        console.log("Checking authentication status for navbar...");
+
+        const response = await fetch("/api/v1/check-auth", {
+          method: "GET",
+          credentials: "include"
+        });
+
+        const data = await response.json();
+
+        const publicProfileNavItem = document.getElementById("publicProfileNavItem");
+
+        if (data.isLoggedIn) {
+          publicProfileNavItem.style.display = "block";
+        } else {
+          publicProfileNavItem.style.display = "none";
+        }
+
+        document.addEventListener("userLoggedOut", () => {
+          publicProfileNavItem.style.display = "none";
+        });
+
+      } catch (error) {
+        console.error("Error checking authentication in navbar:", error);
+      }
+    });
+  </script>
 </body>
 
 </html>

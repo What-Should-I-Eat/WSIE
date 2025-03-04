@@ -181,6 +181,15 @@ privateRouter.get('/users/profile', (req, res) => {
     });
 });
 
+privateRouter.get("/check-auth", (req, res) => {
+  if (req.session && req.session.isLoggedIn) {
+      return res.json({ isLoggedIn: true, username: req.session.username });
+  } else {
+      return res.json({ isLoggedIn: false });
+  }
+});
+
+
 privateRouter.get('/users/findUserData', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.query.username.toLowerCase() }).populate('favorites');
@@ -191,6 +200,60 @@ privateRouter.get('/users/findUserData', async (req, res) => {
   } catch (error) {
     console.error('Error finding this username: ', error);
     res.status(500).json({ error: INTERNAL_SERVER_ERROR });
+  }
+});
+
+privateRouter.post('/users/updateBio', async (req, res) => {
+  try {
+    const { username, bio } = req.body;
+
+    if (!username || !bio) {
+      return res.status(400).json({ error: "Username and bio are required" });
+    }
+
+    if (bio.length > 500) {
+      return res.status(400).json({ error: "Bio exceeds character limit of 500" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { username: username.toLowerCase() },
+      { $set: { bio } },  
+      { new: true, upsert: true }  
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ success: true, bio: user.bio });
+  } catch (error) {
+    console.error("Error updating bio:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+privateRouter.post('/users/updateProfileImage', async (req, res) => {
+  try {
+    const { username, profileImage } = req.body;
+
+    if (!username || !profileImage) {
+      return res.status(400).json({ error: "Username and profile image are required" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { username: username.toLowerCase() },
+      { $set: { profileImage } },  
+      { new: true, upsert: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ success: true, profileImage: user.profileImage });
+  } catch (error) {
+    console.error("Error updating profile image:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
