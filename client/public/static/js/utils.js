@@ -493,7 +493,7 @@ async function cookieWorkaround() {
   function clearRecipesFilterStorageWrapper() {
     const urlPart = "/recipes/";
     const currentUrl = window.location.href;
-    const itemsToRemove = ["mealTypeSelections", "dishTypeSelections", "cuisineTypeSelections"];
+    const itemsToRemove = ["mealTypeSelections", "dishTypeSelections", "cuisineTypeSelections","dietLabelsSelections","healthLabelsSelections"];
 
     if (!currentUrl.includes(urlPart)) {
       itemsToRemove.forEach(item => {

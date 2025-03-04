@@ -9,7 +9,7 @@ function RecipesView() {
   this.nextPageUrl = null;
   this.initialPageUrl = null;
 
-  this.load = async (searchParam, apiUrl = null, pageUrl = null, mealTypes = [], dishTypes = [], cuisineTypes = []) => {
+  this.load = async (searchParam, apiUrl = null, pageUrl = null, mealTypes = [], dishTypes = [], cuisineTypes = [], dietLabels = [],healthLabels = []) => {
     const container = $('.recipes-container');
     const pagination = $("#paginationList");
     try {
@@ -20,14 +20,14 @@ function RecipesView() {
       }else{
         hidePublicRecipeButton.textContent = SHOW_PUBLIC_RECIPES;
       }
-      const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes);
+      const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
       const recipes = await this.getRecipes(url);
       const publicUserRecipes = showPublicRecipes ? await this.getPublicUserRecipes() : []; // Only fetch if flag is true
 
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
         this.renderRecipes(recipes, publicUserRecipes, container);
-        this.updatePagination(recipes, url, `${recipes.from}-${recipes.to}`, mealTypes, dishTypes, cuisineTypes);
+        this.updatePagination(recipes, url, `${recipes.from}-${recipes.to}`, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
         pagination.show();
       } else {
         console.warn(NO_RECIPES_FOUND);
@@ -40,12 +40,9 @@ function RecipesView() {
       container.append(this.getNoRecipesFound());
       pagination.empty().hide();
     }
-    //Building Filter
-    this.buildFilter();
-
   };
 
-  this.buildBaseUrl = (searchParam, mealTypes, dishTypes, cuisineTypes) => {
+  this.buildBaseUrl = (searchParam, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels) => {
     const userSelectedMealTypes = mealTypes
       .filter(mealType => mealType)
       .map(mealType => `&mealType=${encodeURIComponent(mealType.toLowerCase())}`)
@@ -60,9 +57,15 @@ function RecipesView() {
       .filter(cuisineType => cuisineType)
       .map(cuisineType => `&cuisineType=${encodeURIComponent(cuisineType.toLowerCase())}`)
       .join('');
-
+    const userSelectedDietLabels = dietLabels
+      .filter(dietLabel => dietLabel)
+      .map(dietLabel => `&diet=${encodeURIComponent(dietLabel.toLowerCase())}`)
+      .join('');
+    const userSelectedHealthLabels = healthLabels
+      .filter(healthLabel => healthLabel)
+      .map(healthLabel => '&health=' + healthLabel.toLowerCase())
+      .join('');
     console.debug(`searchParam: ${searchParam}`);
-
     let baseUrl = searchParam ? `${EDAMAM_API_URL}${searchParam}` : EDAMAM_API_EMPTY_SEARCH_URL;
 
     if (userSelectedMealTypes) {
@@ -80,23 +83,31 @@ function RecipesView() {
       baseUrl += userSelectedCuisineTypes;
     }
 
-    // If the user did not provide a search parameter or filters, show the user meals based on the current time
-    if (!searchParam && !userSelectedMealTypes && !userSelectedDishTypes && !userSelectedCuisineTypes) {
-      baseUrl += `${getCurrentTimeMealType()}`;
+    if (userSelectedDietLabels) {
+      console.debug(`Added [userSelectedDietLabels] to query: ${userSelectedDietLabels}`);
+      baseUrl += userSelectedDietLabels;
     }
 
+    if (userSelectedHealthLabels) {
+      console.debug(`Added [userSelectedHealthLabels] to query: ${userSelectedHealthLabels}`);
+      baseUrl += userSelectedHealthLabels;
+    }
+
+    // If the user did not provide a search parameter or filters, show the user meals based on the current time
+    if (!searchParam && !userSelectedMealTypes && !userSelectedDishTypes && !userSelectedCuisineTypes && !userSelectedDietLabels && !userSelectedHealthLabels) {
+      baseUrl += `${getCurrentTimeMealType()}`;
+    }
     return baseUrl;
   };
 
   // Getting User Profile Data
-  this.getApiUrl = async (searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes) => {
+  this.getApiUrl = async (searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels) => {
     if (pageUrl) return pageUrl;
 
     let baseUrl = apiUrl || this.initialPageUrl;
 
     if (!baseUrl) {
-      baseUrl = this.buildBaseUrl(searchParam, mealTypes, dishTypes, cuisineTypes);
-
+      baseUrl = this.buildBaseUrl(searchParam, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
       const username = utils.getUserNameFromCookie();
       if (username) {
         try {
@@ -336,7 +347,7 @@ function RecipesView() {
     }
   };
 
-  this.updatePagination = (recipes, currentUrl, fromTo, mealTypes, dishTypes, cuisineTypes) => {
+  this.updatePagination = (recipes, currentUrl, fromTo, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels) => {
     const $pagination = $("#paginationList").empty();
 
     const addPageLink = (label, pageUrl, isDisabled = false) => {
@@ -348,7 +359,7 @@ function RecipesView() {
       } else {
         $pageLink.on("click", (e) => {
           e.preventDefault();
-          this.load(null, null, pageUrl, mealTypes, dishTypes, cuisineTypes);
+          this.load(null, null, pageUrl, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
           utils.scrollToTop();
         });
       }
@@ -436,15 +447,21 @@ function getDefaultCuisineTypes() {
 const mealTypeSelections = [];
 const dishTypeSelections = [];
 const cuisineTypeSelections = [];
+const dietLabelsSelections = [];
+const healthLabelsSelections = [];
 
 function clearAllSelections() {
   document.querySelectorAll('.form-check-input').forEach(checkbox => checkbox.checked = false);
   mealTypeSelections.length = 0;
   dishTypeSelections.length = 0;
   cuisineTypeSelections.length = 0;
+  dietLabelsSelections.length = 0;
+  healthLabelsSelections.length = 0;
   utils.removeFromStorage('mealTypeSelections');
   utils.removeFromStorage('dishTypeSelections');
   utils.removeFromStorage('cuisineTypeSelections');
+  utils.removeFromStorage('dietLabelsSelections');
+  utils.removeFromStorage('healthLabelsSelections');
   console.log('All selections cleared');
 }
 
@@ -452,18 +469,26 @@ function loadSelectionsFromStorage() {
   const storedMealTypes = utils.getFromStorage('mealTypeSelections');
   const storedDishTypes = utils.getFromStorage('dishTypeSelections');
   const storedCuisineTypes = utils.getFromStorage('cuisineTypeSelections');
+  const storedDietLabels = utils.getFromStorage('dietLabelsSelections');
+  const storedHealthLabels = utils.getFromStorage('healthLabelsSelections');
 
   if (storedMealTypes) mealTypeSelections.push(...storedMealTypes);
   if (storedDishTypes) dishTypeSelections.push(...storedDishTypes);
   if (storedCuisineTypes) cuisineTypeSelections.push(...storedCuisineTypes);
+  if (storedDietLabels) dietLabelsSelections.push(...storedDietLabels);
+  if (storedHealthLabels) healthLabelsSelections.push(...storedHealthLabels);
 
   document.querySelectorAll('.form-check-input').forEach(checkbox => {
     const category = checkbox.getAttribute('value');
-    const checkboxLabel = checkbox.nextElementSibling.innerText.toLowerCase();
+    const checkboxLabel = checkbox.getAttribute('id').toLowerCase();
 
     if ((category === 'mealType' && mealTypeSelections.includes(checkboxLabel)) ||
       (category === 'dishType' && dishTypeSelections.includes(checkboxLabel)) ||
-      (category === 'cuisineType' && cuisineTypeSelections.includes(checkboxLabel))) {
+      (category === 'cuisineType' && cuisineTypeSelections.includes(checkboxLabel)) ||
+      (category === 'dietLabels' && dietLabelsSelections.includes(checkboxLabel)) ||
+      (category === 'healthLabels' && healthLabelsSelections.includes(checkboxLabel))
+      ) 
+    {
       checkbox.checked = true;
     }
   });
@@ -711,17 +736,16 @@ window.onclick = function(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-
+  //Building Filter
+  recipesView.buildFilter();
    // Load the preference from local storage if available
   showPublicRecipes = utils.getFromStorage('showPublicRecipes'); 
   loadSelectionsFromStorage();
-
   document.querySelectorAll('.form-check-input').forEach(checkbox => {
     checkbox.addEventListener('change', function () {
       const category = this.getAttribute('value');
-      const checkboxLabel = this.nextElementSibling.innerText.toLowerCase();
+      const checkboxLabel = this.getAttribute('id').toLowerCase();
       let selectionArray;
-
       switch (category) {
         case 'mealType':
           selectionArray = mealTypeSelections;
@@ -731,6 +755,12 @@ document.addEventListener('DOMContentLoaded', function () {
           break;
         case 'cuisineType':
           selectionArray = cuisineTypeSelections;
+          break;
+        case 'dietLabels':
+          selectionArray = dietLabelsSelections;
+          break;
+        case 'healthLabels':
+          selectionArray = healthLabelsSelections;
           break;
       }
 
@@ -748,6 +778,8 @@ document.addEventListener('DOMContentLoaded', function () {
       utils.setStorage('mealTypeSelections', mealTypeSelections);
       utils.setStorage('dishTypeSelections', dishTypeSelections);
       utils.setStorage('cuisineTypeSelections', cuisineTypeSelections);
+      utils.setStorage('dietLabelsSelections', dietLabelsSelections);
+      utils.setStorage('healthLabelsSelections', healthLabelsSelections);
     });
   });
 
@@ -769,5 +801,5 @@ document.addEventListener('DOMContentLoaded', function () {
   if (search) {
     document.getElementById('search_recipes').value = search;
   }
-  recipesView.load(search, null, null, mealTypeSelections, dishTypeSelections, cuisineTypeSelections);
+  recipesView.load(search, null, null, mealTypeSelections, dishTypeSelections, cuisineTypeSelections, dietLabelsSelections, healthLabelsSelections);
 });
