@@ -462,18 +462,68 @@
 
                 <!--          </div>              -->
                 
-                <div class="recipe-container">
+               <!-- <div class="recipe-container">
                     <p id="favorite-counter">❤️ Favorite <span id="favorite-count">0</span></p>
+                </div> -->
+                <style>
+                    .recipe-container {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-family: Arial, sans-serif;
+                        margin: 20px 0;
+                    }
+                
+                    #favorite-counter {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 20px;
+                        font-weight: bold;
+                        color: #333; /* Dark gray for text */
+                        background: #f8f8f8; /* Light gray background */
+                        padding: 10px 20px;
+                        border-radius: 10px;
+                        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+                        transition: transform 0.2s ease-in-out;
+                    }
+                
+                    #favorite-counter:hover {
+                        transform: scale(1.1);
+                    }
+                
+                    #favorite-counter .heart-icon {
+                        font-size: 24px;
+                        color: black; /* Black heart color */
+                        margin-right: 8px;
+                        transition: transform 0.2s ease-in-out;
+                    }
+                
+                    #favorite-counter:hover .heart-icon {
+                        transform: scale(1.2);
+                    }
+                
+                    #favorite-count {
+                        margin-left: 5px;
+                        font-size: 22px;
+                        color: #333;
+                    }
+                </style>
+                
+                <div class="recipe-container">
+                    <p id="favorite-counter">
+                        <span class="heart-icon">❤️</span> Favorite <span id="favorite-count">0</span>
+                    </p>
                 </div>
                 
 
             </header>
 
-            <section id="reportRecipeSection" class="recipe-info inline-div">
+          <section id="reportRecipeSection" class="recipe-info inline-div">
                 <button id="reportRecipeBtn" class="btn btn-primary" name="action" type="submit" value="reportRecipe">
                     Report Recipe
                 </button>
-            </section>
+            </section> 
 
             <section class="recipe-info">
                 <h3>Ingredients</h3>
