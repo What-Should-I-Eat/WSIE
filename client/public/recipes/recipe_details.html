@@ -342,7 +342,8 @@
                 <form id="forgotUsernamePasswordForm">
                     <div class="form-group">
                         <label class="form-label" for="forgotUsernamePasswordEmailInput">Enter your email</label>
-                        <input id="forgotUsernamePasswordEmailInput" class="form-control" name="forgotUsernamePasswordEmailInput"
+                        <input id="forgotUsernamePasswordEmailInput" class="form-control"
+                               name="forgotUsernamePasswordEmailInput"
                                required type="email"/>
                     </div>
                 </form>
@@ -373,7 +374,8 @@
                         <label class="form-label" for="forgotUsernamePasswordVerificationCodeInput">Enter Your
                             Verification
                             Code</label>
-                        <input id="forgotUsernamePasswordVerificationCodeInput" class="form-control" name="forgotUsernamePasswordVerificationCodeInput"
+                        <input id="forgotUsernamePasswordVerificationCodeInput" class="form-control"
+                               name="forgotUsernamePasswordVerificationCodeInput"
                                required type="number"/>
                     </div>
                 </form>
@@ -423,7 +425,8 @@
                     <div class="form-group">
                         <label for="resetAccountRetypedPasswordInput">Re-type Password</label>
                         <div id="signupPasswordTwoToggle" class="input-group">
-                            <input id="resetAccountRetypedPasswordInput" class="form-control" name="resetAccountRetypedPasswordInput"
+                            <input id="resetAccountRetypedPasswordInput" class="form-control"
+                                   name="resetAccountRetypedPasswordInput"
                                    required type="password"/>
                             <div class="input-group-append">
                   <span class="input-group-text">
@@ -457,13 +460,14 @@
                 <h1 id="recipe-name">Loading...</h1>
                 <img id="recipe-image" alt="Loading recipe image" src="/static/img/loading-spinner.svg"
                      style="max-width: 40%; height: auto;"/>
-                <!--            <div class="like-dislike-container">-->
-                <!--              <button class="btn-like" data-recipe-id="12345">👍</button>-->
-                <!--                <span class="like-counter">0</span>-->
-                <!--               <button class="btn-dislike" data-recipe-id="12345">👎</button>-->
-                <!--               <span class="dislike-counter">0</span>-->
 
-                <!--          </div>              -->
+                <div class="recipe-container">
+                    <p id="favorite-counter">
+                        <span class="heart-icon">❤️</span> Favorite <span id="favorite-count">0</span>
+                    </p>
+                </div>
+
+
             </header>
 
             <section id="reportRecipeSection" class="recipe-info inline-div">
