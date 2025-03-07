@@ -6,9 +6,9 @@
  */
 
 // Server Base URL
-const HOST = 'http://localhost:8080';
+//const HOST = 'http://localhost:8080';
 // Local IP and VM Deployment
-// const HOST = '';
+const HOST = '';
 
 // Server API Version
 const API_VERSION = "api/v1";
