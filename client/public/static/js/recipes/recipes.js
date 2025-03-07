@@ -124,8 +124,17 @@ function RecipesView() {
   };
 
   this.getRecipes = async (url) => {
+    
+    const cacheKey = `edamamCache_${encodeURIComponent(url)}`;
+    
+    const cachedString = localStorage.getItem(cacheKey);
+    if (cachedString) {
+      console.log(`Returning Edamam recipes from cache for url: ${url}`); //check if there is content in cache  
+      return JSON.parse(cachedString);
+    }
+  
     console.debug(`Querying Edamam using: ${url}`);
-
+  
     const response = await fetch(url, {
       method: GET_ACTION,
       headers: {
@@ -133,13 +142,17 @@ function RecipesView() {
         'Content-Type': DEFAULT_DATA_TYPE
       }
     });
-
-    if (response.ok) {
-      return await response.json();
-    } else {
+  
+    if (!response.ok) {
       throw new Error(EDAMAM_QUERY_ERROR);
     }
+  
+    const data = await response.json();
+    // store the JSON for next time
+    localStorage.setItem(cacheKey, JSON.stringify(data));
+    return data;
   };
+  
 
   this.getPublicUserRecipes = async () => {
     console.log(`Querying Server for Public User Recipes at: [${PUBLIC_USER_RECIPES_URL}]`)
@@ -620,6 +633,8 @@ async function getRecipeDetails(recipeUri) {
 async function getRecipeInstructions(source, sourceUrl, recipeName) {
   const sourceTrimmed = source.toLowerCase().trim();
   const apiUrl = `${RECIPE_SCRAPE_URL}/?recipeLink=${sourceUrl}&source=${sourceTrimmed}&recipeName=${recipeName}`;
+
+  const instructionsCacheKey = `recipeInstructions_${encodeURIComponent(sourceUrl)}_${encodeURIComponent(recipeName)}`;
 
   const response = await fetch(apiUrl, {
     method: GET_ACTION,

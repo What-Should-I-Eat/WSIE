@@ -81,47 +81,74 @@ function RecipeDetailsView() {
     this.getRecipeDetails = async (recipeUri) => {
         const uri = encodeURIComponent(recipeUri);
         const apiUrl = `${EDAMAM_RECIPE_URI_URL}=${uri}`;
+        const cacheKey = `edamamRecipeDetails_${uri}`;
         console.log("Querying Edamam at:", apiUrl);
 
-        const response = await fetch(apiUrl, {
-            method: GET_ACTION,
-            headers: {
-                'Accept': DEFAULT_DATA_TYPE,
-                'Content-Type': DEFAULT_DATA_TYPE
-            }
-        });
 
-        if (response.ok) {
+        const cachedData = localStorage.getItem(cacheKey);
+        if (cachedData) {
+            console.log(`Returning cached recipe details for URI: ${recipeUri}`);
+            return JSON.parse(cachedData);
+        }
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: GET_ACTION,
+                headers: {
+                    'Accept': DEFAULT_DATA_TYPE,
+                    'Content-Type': DEFAULT_DATA_TYPE
+                }
+            });
+            if (!response.ok) {
+                throw new Error("Error occurred getting recipe details");
+            }
             const recipeDetails = await response.json();
+
+            localStorage.setItem(cacheKey, JSON.stringify(recipeDetails));
+            console.log(`Cached recipe details for URI: ${recipeUri}`);
             return recipeDetails;
-        } else {
-            console.error("Error occurred getting recipe details");
+        } catch (error) {
+            console.error(error);
             return undefined;
         }
-    }
+    };
+
 
     this.getRecipeInstructions = async (source, sourceUrl, recipeName) => {
         const sourceTrimmed = source.toLowerCase().trim();
         const apiUrl = `${RECIPE_SCRAPE_URL}/?recipeLink=${sourceUrl}&source=${sourceTrimmed}&recipeName=${recipeName}`;
 
+        const instructionsCacheKey = `recipeInstructions_${encodeURIComponent(sourceUrl)}_${encodeURIComponent(recipeName)}`;
         console.log("Querying Server for:", apiUrl);
 
-        const response = await fetch(apiUrl, {
-            method: GET_ACTION,
-            headers: {
-                'Accept': DEFAULT_DATA_TYPE,
-                'Content-Type': DEFAULT_DATA_TYPE
-            }
-        });
 
-        if (response.ok) {
+        const cachedInstructions = localStorage.getItem(instructionsCacheKey);
+        if (cachedInstructions) {
+            console.log(`Returning cached instructions for: ${sourceUrl}, ${recipeName}`);
+            return JSON.parse(cachedInstructions);
+        }
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: GET_ACTION,
+                headers: {
+                    'Accept': DEFAULT_DATA_TYPE,
+                    'Content-Type': DEFAULT_DATA_TYPE
+                }
+            });
+            if (!response.ok) {
+                throw new Error("Error occurred getting recipe instructions");
+            }
             const details = await response.json();
+
+            localStorage.setItem(instructionsCacheKey, JSON.stringify(details));
+            console.log(`Cached instructions for: ${sourceUrl}, ${recipeName}`);
             return details;
-        } else {
-            console.error("Error occurred getting recipe instructions");
+        } catch (error) {
+            console.error("Error occurred getting recipe instructions:", error);
             return undefined;
         }
-    }
+    };
 
     this.getUserRecipe = async (recipeName) => {
         const username = utils.getUserNameFromCookie();
@@ -1222,27 +1249,22 @@ function hasValidImage(recipe) {
 }
 
 async function checkIfFavorite(username, recipeName) {
-    if (username == null || username == undefined) {
+    if (!username) {
         console.debug("User not logged in. Not checking if recipe is a favorite");
         return false;
     }
 
     const userId = await utils.getUserIdFromUsername(username);
-
-    const request = {
-        recipeName: recipeName
-    };
-
-    const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
-    console.log(`Checking if recipe is a favorite at: ${url} with body: ${JSON.stringify(request, null, 2)}`)
+    // Append the recipeName as a query parameter (encoded)
+    const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites?recipeName=${encodeURIComponent(recipeName)}`;
+    console.log(`Checking if recipe is a favorite at: ${url}`);
 
     try {
         const response = await fetch(url, {
-            method: POST_ACTION,
+            method: GET_ACTION, // Change from POST_ACTION to GET_ACTION
             headers: {
                 'Content-Type': DEFAULT_DATA_TYPE
-            },
-            body: JSON.stringify({favorites: request})
+            }
         });
 
         if (!response.ok) {
@@ -1251,11 +1273,12 @@ async function checkIfFavorite(username, recipeName) {
 
         const isFavorite = await response.json();
         console.log(`Recipe: [${recipeName}] is ${isFavorite ? "a favorite" : "not a favorite"}`);
-        return isFavorite
+        return isFavorite;
     } catch (error) {
         console.error(error);
     }
 }
+
 
 function getRecipeId() {
     return document.querySelector('[data-recipe-id]')?.getAttribute('data-recipe-id') || '';
