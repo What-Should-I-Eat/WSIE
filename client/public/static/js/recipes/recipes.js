@@ -205,9 +205,9 @@ function RecipesView() {
         var formCheck = document.createElement('div'); formCheck.className = "form-check";
         // Creating Checkbox Input
         var checkbox = document.createElement('input'); checkbox.type = "checkbox"; checkbox.className = "form-check-input"; 
-        checkbox.id = filterOptions[Option]; checkbox.value = filterId;
+        checkbox.id = filterOptions[Option]['API Parameter']; checkbox.value = filterId;
         // Creating Checkbox Label 
-        var checkboxLabel = document.createElement('label'); checkboxLabel.className = "form-check-label"; checkboxLabel.htmlFor = filterOptions[Option];
+        var checkboxLabel = document.createElement('label'); checkboxLabel.className = "form-check-label"; checkboxLabel.htmlFor = filterOptions[Option]['API Parameter'];
         checkboxLabel.innerHTML = Option;
         // Appending checkboxes
         formCheck.appendChild(checkbox);

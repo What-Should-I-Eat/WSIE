@@ -1,7 +1,6 @@
 import { Alert } from "react-native";
 import { hostForAppCalls } from "./hostCallConst";
 import emailjs from '@emailjs/react-native';
-import { send, EmailJSResponseStatus } from '@emailjs/react-native';
 
 const onVerifyUser = (textUsername, textVerificationCode, navigation) => {
 
@@ -88,10 +87,13 @@ async function getVerificationCode() {
             'Content-Type': 'application/json',
         },
         });
+        console.log("91")
         if (response.status != 200) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        console.log("95")
         const verificationCode = response.json();
+        console.log("97")
         console.log("Verification code response from server: ", verificationCode);
         return verificationCode;
     } 
