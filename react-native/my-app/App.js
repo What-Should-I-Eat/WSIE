@@ -24,6 +24,19 @@ export default function App() {
   return(
       <NavigationContainer>
         <Stack.Navigator>
+            <Stack.Screen
+                name="Home"
+                component={Home}
+                options={
+                    {
+                        title: "Home",
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                            fontSize: 25,
+                        },
+                        headerBackTitle: 'Logout'
+                    }}
+            />
           <Stack.Screen 
             name="LoginScreen" 
             component={LoginScreen} 
@@ -34,19 +47,6 @@ export default function App() {
                   fontWeight: 'bold',
                   fontSize: 25,
                 }
-              }}
-          />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={
-              {
-                title: "Home",
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 25,
-                },
-                headerBackTitle: 'Logout'
               }}
           />
           <Stack.Screen

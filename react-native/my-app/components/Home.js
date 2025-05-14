@@ -32,14 +32,22 @@ export default function Home({ navigation }) {
         
         <View style={styles.NavContainer}>
           <View style={styles.NavBar}>
-            <Pressable
-              title="Go to Recipe Search"
-              onPress={() => navigation.navigate("RecipeSearchScreen")}
-              style={styles.IconBehave}
-              android_ripple={{borderless:true, radius:50}}
-            >
-              <FontAwesome name="search" size={iconHeight} color='#448aff'/>
-            </Pressable>
+              <Pressable
+                  title="Account"
+                  onPress={() => navigation.navigate("LoginScreen")}
+                  style={styles.IconBehave}
+                  android_ripple={{borderless:true, radius:50}}
+              >
+                  <FontAwesome name="user-circle" size={iconHeight} color='#448aff'/>
+              </Pressable>
+              <Pressable
+                  title="Go to Recipe Search"
+                  onPress={() => navigation.navigate("RecipeSearchScreen")}
+                  style={styles.IconBehave}
+                  android_ripple={{borderless:true, radius:50}}
+              >
+                  <FontAwesome name="search" size={iconHeight} color='#448aff'/>
+              </Pressable>
             <Pressable
               title="Dietary Restrictions"
               onPress={() => navigation.navigate("DietaryRestrictionsScreen")}
