@@ -5,11 +5,156 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { loggedInUser } from "../calls/loginCalls";
+import { searchForRecipes } from '../calls/recipeSearchCalls';
+import {getUserFromUsername} from "../calls/utils.js";
 import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
-
+import * as CONST from "../calls/constants.js";
 
 var iconHeight = 26
 var iconWidth = 26
+
+// this.load = async (searchParam, apiUrl = null, pageUrl = null, mealTypes = [], dishTypes = [], cuisineTypes = [], dietLabels = [],healthLabels = []) => {
+//   const container = $('.recipes-container');
+//   const pagination = $("#paginationList");
+//   try {
+//     // Show publish recipe button
+//     // const hidePublicRecipeButton = document.getElementById('togglePublicRecipeShownButton');
+//     // if(showPublicRecipes){
+//     //   hidePublicRecipeButton.textContent = HIDE_PUBLIC_RECIPES;
+//     // }else{
+//     //   hidePublicRecipeButton.textContent = SHOW_PUBLIC_RECIPES;
+//     // }
+//     const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
+//     const recipes = await this.getRecipes(url);
+//     const publicUserRecipes = showPublicRecipes ? await this.getPublicUserRecipes() : []; // Only fetch if flag is true
+//     if (hasRecipeHits(recipes)) {
+//       console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
+//       this.renderRecipes(recipes, publicUserRecipes, container);
+//       this.updatePagination(recipes, url, `${recipes.from}-${recipes.to}`, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
+//       pagination.show();
+//     } else {
+//       console.warn(NO_RECIPES_FOUND);
+//       container.append(this.getNoRecipesFound());
+//       pagination.empty().hide();
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     utils.showAjaxAlert("Error", error.message);
+//     container.append(this.getNoRecipesFound());
+//     pagination.empty().hide();
+//   }
+// };
+
+
+// // Getting User Profile Data
+// this.getApiUrl = async (searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels) => {
+//   if (pageUrl) return pageUrl;
+
+//   let baseUrl = apiUrl || this.initialPageUrl;
+//   if (!baseUrl) {
+//     baseUrl = this.buildBaseUrl(searchParam, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
+//     console.log(baseUrl)
+//     const username = utils.getUserNameFromCookie();
+//     if (username) {
+//       try {
+//         const userData = await utils.getUserFromUsername(username);
+//         const userDietString = getUserDietString(userData.diet);
+//         const userHealthString = getUserHealthString(userData.health);
+
+//         if (userDietString) {
+//           console.debug(`Added [userDietString] to query: ${userDietString}`);
+//           baseUrl += userDietString
+//         }
+
+//         if (userHealthString) {
+//           console.debug(`Added [userHealthString] to query: ${userHealthString}`);
+//           baseUrl += userHealthString
+//         }
+//       } catch (error) {
+//         console.error(CONST.ERROR_UNABLE_TO_GET_USER, error);
+//         utils.showAjaxAlert("Error", CONST.ERROR_UNABLE_TO_GET_USER);
+//         return;
+//       }
+//     }
+
+//     this.initialPageUrl = baseUrl;
+//   }
+
+//   return baseUrl;
+// };
+
+// this.buildBaseUrl = (searchParam, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels) => {
+//   const userSelectedMealTypes = mealTypes
+//     .filter(mealType => mealType)
+//     .map(mealType => `&mealType=${encodeURIComponent(mealType.toLowerCase())}`)
+//     .join('');
+
+//   const userSelectedDishTypes = dishTypes
+//     .filter(dishType => dishType)
+//     .map(dishType => `&dishType=${encodeURIComponent(dishType.toLowerCase())}`)
+//     .join('');
+
+//   const userSelectedCuisineTypes = cuisineTypes
+//     .filter(cuisineType => cuisineType)
+//     .map(cuisineType => `&cuisineType=${encodeURIComponent(cuisineType.toLowerCase())}`)
+//     .join('');
+//   const userSelectedDietLabels = dietLabels
+//     .filter(dietLabel => dietLabel)
+//     .map(dietLabel => `&diet=${encodeURIComponent(dietLabel.toLowerCase())}`)
+//     .join('');
+//   const userSelectedHealthLabels = healthLabels
+//     .filter(healthLabel => healthLabel)
+//     .map(healthLabel => '&health=' + healthLabel.toLowerCase())
+//     .join('');
+//   console.debug(`searchParam: ${searchParam}`);
+//   let baseUrl = searchParam ? `${CONST.EDAMAM_API_URL}${searchParam}` : CONST.EDAMAM_API_EMPTY_SEARCH_URL;
+//   console.log(baseUrl)
+//   if (userSelectedMealTypes) {
+//     console.debug(`Added [userSelectedMealTypes] to query: ${userSelectedMealTypes}`);
+//     baseUrl += userSelectedMealTypes;
+//   }
+
+//   if (userSelectedDishTypes) {
+//     console.debug(`Added [userSelectedDishTypes] to query: ${userSelectedDishTypes}`);
+//     baseUrl += userSelectedDishTypes;
+//   }
+
+//   if (userSelectedCuisineTypes) {
+//     console.debug(`Added [userSelectedCuisineTypes] to query: ${userSelectedCuisineTypes}`);
+//     baseUrl += userSelectedCuisineTypes;
+//   }
+
+//   if (userSelectedDietLabels) {
+//     console.debug(`Added [userSelectedDietLabels] to query: ${userSelectedDietLabels}`);
+//     baseUrl += userSelectedDietLabels;
+//   }
+
+//   if (userSelectedHealthLabels) {
+//     console.debug(`Added [userSelectedHealthLabels] to query: ${userSelectedHealthLabels}`);
+//     baseUrl += userSelectedHealthLabels;
+//   }
+
+//   // If the user did not provide a search parameter or filters, show the user meals based on the current time
+//   if (!searchParam && !userSelectedMealTypes && !userSelectedDishTypes && !userSelectedCuisineTypes && !userSelectedDietLabels && !userSelectedHealthLabels) {
+//     baseUrl += `${getCurrentTimeMealType()}`;
+//   }
+//   return baseUrl;
+// };
+
+// function getCurrentTimeMealType() {
+//   const hours = new Date().getHours();
+
+//   if (hours < 5 || hours > 21) {
+//     return "&mealType=snack";
+//   } else if (hours <= 10) {
+//     return "&mealType=breakfast";
+//   } else if (hours <= 15) {
+//     return "&mealType=lunch";
+//   } else {
+//     return "&mealType=dinner";
+//   }
+// }
+
 
 export default function Home({ navigation }) {
   state = {
@@ -22,6 +167,12 @@ export default function Home({ navigation }) {
       screenText: text
     })
   }
+  // console.log("User_Data")
+  // userData = getUserFromUsername(loggedInUser)
+  // console.log(userData)
+  // console.log('Health of user: ', userData.health);
+  // console.log('Diet of user: ', userData.diet);
+  // const recipes = this.getPublicUserRecipes()
 
     return(
       <View style={styles.containerHome}>

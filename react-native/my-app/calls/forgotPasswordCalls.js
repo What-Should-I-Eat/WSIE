@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import { getVerificationCode, sendEmailForNewCode } from "./verificationCodeCalls";
-import { hostForAppCalls } from "./hostCallConst";
+import * as CONST from "../calls/constants.js";
 import emailjs from '@emailjs/react-native';
 import { send, EmailJSResponseStatus } from '@emailjs/react-native';
 
@@ -42,7 +42,7 @@ async function getUserCredentials(email) {
     console.log('Getting credentials for: ', email);
     let userInfo;
     try {
-      const response = await fetch(`${hostForAppCalls}/api/v1/users/requestInfoForPasswordReset?email=${email}`, {
+      const response = await fetch(`${CONST.HOST}/api/v1/users/requestInfoForPasswordReset?email=${email}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ async function getUserCredentials(email) {
 
 async function putVerificationCodeInDB(username, verificationCode){
     try {
-        const response = await fetch(`${hostForAppCalls}/api/v1/users/resendVerificationCode`, {
+        const response = await fetch(`${CONST.HOST}/api/v1/users/resendVerificationCode`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ const onEnteredCodeForForgotPassword = async (textVerificationCode, setIsCodeEnt
 
 async function validateCode(username, verificationCodeInput){
     try {
-        const response = await fetch(`${hostForAppCalls}/api/v1/users/verify`, {
+        const response = await fetch(`${CONST.HOST}/api/v1/users/verify`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ const onEnteredNewPasswords = async (textPasswordOne, textPasswordTwo, navigatio
     if(arePasswordsValid(textPasswordOne, textPasswordTwo)){
 
         try {
-            const response = await fetch(`${hostForAppCalls}/api/v1/users/changePassword`, {
+            const response = await fetch(`${CONST.HOST}/api/v1/users/changePassword`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

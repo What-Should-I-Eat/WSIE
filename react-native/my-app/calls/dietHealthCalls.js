@@ -1,6 +1,6 @@
 import { loggedInUser } from "./loginCalls";
-import { hostForAppCalls } from "./hostCallConst";
-import { getUserData } from "./recipeSearchCalls";
+import * as CONST from "../calls/constants.js";
+import {getUserFromUsername} from "../calls/utils.js";
 import { Alert } from "react-native";
 
 const sendDietData = async (dietArrayFromClient) => {
@@ -12,7 +12,7 @@ const sendDietData = async (dietArrayFromClient) => {
     console.log(dietData);
 
     try {
-        await fetch(`${hostForAppCalls}/api/v1/users/diet`, {
+        await fetch(`${CONST.HOST}/api/v1/users/diet`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const sendHealthData = async (healthArrayFromClient) => {
     console.log(healthData);
 
     try {
-        await fetch(`${hostForAppCalls}/api/v1/users/health`, {
+        await fetch(`${CONST.HOST}/api/v1/users/health`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ function mapRealRestrictionNameToEdamam(inputtedDiet){
 
 const getDietaryArray = async() => {
     try{
-        const userData = await getUserData(loggedInUser);
+        const userData = await getUserFromUsername(loggedInUser);
         let dietaryArray = [];
         console.log('Diet of user: ', userData.diet);
         const serverSideDiets = userData.diet;
@@ -111,7 +111,7 @@ const getDietaryArray = async() => {
 
 const getHealthArray = async() => {
     try{
-        const userData = await getUserData(loggedInUser);
+        const userData = await getUserFromUsername(loggedInUser);
         let healthArray = [];
         console.log('Health of user: ', userData.health);
         const serverSideHealth = userData.health;

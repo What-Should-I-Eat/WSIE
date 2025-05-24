@@ -1,11 +1,11 @@
 import { Alert } from "react-native";
-import { hostForAppCalls } from "./hostCallConst";
+import * as CONST from "../calls/constants.js";
 import emailjs from '@emailjs/react-native';
 
 const onVerifyUser = (textUsername, textVerificationCode, navigation) => {
 
     if(areInputsFilledIn(textUsername, textVerificationCode)){
-    fetch(`${hostForAppCalls}/api/v1/users/verify`, {
+    fetch(`${CONST.HOST}/api/v1/users/verify`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const onResendCode = async (textUsername) => {
         console.log(newlyGeneratedVerificationCode);
 
         sendEmailForNewCode(textUsername, email, newlyGeneratedVerificationCode, emailjs);
-        fetch(`${hostForAppCalls}/api/v1/users/resendVerificationCode`, {
+        fetch(`${CONST.HOST}/api/v1/users/resendVerificationCode`, {
             method: 'PUT',
             headers: {
             'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ const onResendCode = async (textUsername) => {
 
 async function getVerificationCode() {
     try {
-        const response = await fetch(`${hostForAppCalls}/api/v1/users/getVerificationCode`, {
+        const response = await fetch(`${CONST.HOST}/api/v1/users/getVerificationCode`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ function areInputsFilledIn(textUsername, textVerificationCode){
 }
 
 async function getUserEmail(username){
-    const email = await fetch(`${hostForAppCalls}/api/v1/users/getUserEmail`, {
+    const email = await fetch(`${CONST.HOST}/api/v1/users/getUserEmail`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
