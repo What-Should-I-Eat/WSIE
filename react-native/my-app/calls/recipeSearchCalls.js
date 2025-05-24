@@ -99,7 +99,7 @@ const searchForRecipes = async (inputtedSearch, setShowStuff, navigation, setSea
     } else {
         utils.getUserIdFromUsername(loggedInUser)
         .then(async (userData) => {
-          const fullLink = buildBaseUrl("steak",userData.diet,userData.health)  
+          const fullLink = buildBaseUrl(inputtedSearch,userData.diet,userData.health)  
           //Show the search results
           console.log(userData)
           setShowStuff(true);
