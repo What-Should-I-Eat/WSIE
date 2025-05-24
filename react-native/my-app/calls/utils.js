@@ -179,12 +179,12 @@ async function renderNavbar() {
    * @returns {Promise<Object>} A promise that resolves to the user data or null in case of an error
    */
   async function getUserFromUsername(username) {
-    const urlWithQueryParams = `${GET_USER_DATA_URL}=${username}`;
+    const urlWithQueryParams = `${CONST.GET_USER_DATA_URL}=${username}`;
     try {
       const response = await fetch(urlWithQueryParams, {
-        method: GET_ACTION,
+        method: CONST.GET_ACTION,
         headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
+          'Content-Type': CONST.DEFAULT_DATA_TYPE
         }
       });
 

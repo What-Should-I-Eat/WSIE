@@ -125,15 +125,15 @@ export const EDAMAM_RECIPE_URI_URL = `${EDAMAM_BASE_API_URL}/by-uri?type=public&
 // const SUCCESSFULLY_GOT_PROFILE = "Successfully got profile using cookies";
 // const FAILED_TO_GET_USER_PROFILE = "Error occurred getting profile using cookies";
 
-// // Search
-// const EDAMAM_QUERY_ERROR = "Error occurred getting recipes. Verify dietary restrictions don't contradict your search request";
-// // This is trash can with food
-// // const NO_IMAGE_AVAILABLE = "/static/img/food-loss.svg";
-// // This is a generic no image available
-// const NO_IMAGE_AVAILABLE = "/static/img/no_image_available.svg";
-// const NO_RECIPES_FOUND = "0 recipes found.";
-// const HIDE_PUBLIC_RECIPES = "Hide User Recipes";
-// const SHOW_PUBLIC_RECIPES = "Show User Recipes";
+// Search
+const EDAMAM_QUERY_ERROR = "Error occurred getting recipes. Verify dietary restrictions don't contradict your search request";
+// This is trash can with food
+// const NO_IMAGE_AVAILABLE = "/static/img/food-loss.svg";
+// This is a generic no image available
+const NO_IMAGE_AVAILABLE = "/static/img/no_image_available.svg";
+const NO_RECIPES_FOUND = "0 recipes found.";
+const HIDE_PUBLIC_RECIPES = "Hide User Recipes";
+const SHOW_PUBLIC_RECIPES = "Show User Recipes";
 
 // // Recipe Details
 // const ADD_TO_FAVORITES = "Add Recipe to Favorites";

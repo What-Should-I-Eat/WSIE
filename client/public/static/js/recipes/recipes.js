@@ -23,7 +23,6 @@ function RecipesView() {
       const url = await this.getApiUrl(searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
       const recipes = await this.getRecipes(url);
       const publicUserRecipes = showPublicRecipes ? await this.getPublicUserRecipes() : []; // Only fetch if flag is true
-
       if (hasRecipeHits(recipes)) {
         console.log(`Fetched Recipe Results: [${recipes.from}-${recipes.to}]`);
         this.renderRecipes(recipes, publicUserRecipes, container);
@@ -67,7 +66,7 @@ function RecipesView() {
       .join('');
     console.debug(`searchParam: ${searchParam}`);
     let baseUrl = searchParam ? `${EDAMAM_API_URL}${searchParam}` : EDAMAM_API_EMPTY_SEARCH_URL;
-
+    console.log(baseUrl)
     if (userSelectedMealTypes) {
       console.debug(`Added [userSelectedMealTypes] to query: ${userSelectedMealTypes}`);
       baseUrl += userSelectedMealTypes;
@@ -105,9 +104,9 @@ function RecipesView() {
     if (pageUrl) return pageUrl;
 
     let baseUrl = apiUrl || this.initialPageUrl;
-
     if (!baseUrl) {
       baseUrl = this.buildBaseUrl(searchParam, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
+      console.log(baseUrl)
       const username = utils.getUserNameFromCookie();
       if (username) {
         try {
@@ -166,7 +165,6 @@ function RecipesView() {
           'Content-Type': DEFAULT_DATA_TYPE
         }
       });
-
       if (response.ok) {
         return await response.json();
       } else {
@@ -223,6 +221,7 @@ function RecipesView() {
     addedRecipesSet.clear();
     let dropDownIndex = 0;
     const fromTo = `${recipes.from}-${recipes.to}`;
+    console.log(recipes.hits)
     recipes.hits.forEach(async data => {
       const recipe = data.recipe;
       const recipeUri = recipe.uri;
@@ -256,6 +255,7 @@ function RecipesView() {
       let setFavoriteDropdown = isFavorite ? unfavoriteDropdown : favoriteDropdown;
 
       if (!addedRecipesSet.has(identifier)) {
+        console.log("Hello")
         addedRecipesSet.add(identifier);
         const recipeImage = hasValidImage(recipe) ? recipe.images.REGULAR.url : NO_IMAGE_AVAILABLE;
 
@@ -277,11 +277,13 @@ function RecipesView() {
       dropDownIndex++;
     });
  // Only render publicUserRecipes if showPublicRecipes is true
+ console.log(showPublicRecipes && publicUserRecipes == true)
  if (showPublicRecipes && publicUserRecipes) {
       pubRecipesTo = (recipes.to/5);
       pubRecipesFrom = pubRecipesTo-4;
       userRecipesToShow = publicUserRecipes.slice(pubRecipesFrom,pubRecipesTo);
       userRecipesToShow.forEach(async recipe => {
+        console.log(recipe.recipeName)
         const recipeName = recipe.recipeName;
         const recipeImage = hasValidUserCreatedImage(recipe) ? recipe.recipeImage : NO_IMAGE_AVAILABLE;
 

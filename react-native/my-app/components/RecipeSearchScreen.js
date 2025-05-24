@@ -10,7 +10,7 @@ export default function RecipeSearchScreen({ navigation }) {
     const [showStuff, setShowStuff] = useState(false);
     const [noResults, setNoResults] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
- 
+ setS
     return (
       <SafeAreaView style={RecipeSearchStyles.container}>
         <View style={RecipeSearchStyles.container}>
@@ -31,7 +31,6 @@ export default function RecipeSearchScreen({ navigation }) {
               ><Text><Icon name="search" size={40} color="black" /></Text>
               </Pressable>
             </View>
-
             {showStuff && <View style={RecipeSearchStyles.resultsArea}>
               {noResults && <View style={RecipeSearchStyles.noResultsFound}>
                 <Text style={RecipeSearchStyles.noResultsFound}>

@@ -1,6 +1,6 @@
 import { loggedInUser } from "./loginCalls";
 import * as CONST from "../calls/constants.js";
-import {getUserFromUsername} from "../calls/utils.js";
+import {utils} from "../calls/utils.js";
 import { Alert } from "react-native";
 
 const sendDietData = async (dietArrayFromClient) => {
@@ -91,7 +91,7 @@ function mapRealRestrictionNameToEdamam(inputtedDiet){
 
 const getDietaryArray = async() => {
     try{
-        const userData = await getUserFromUsername(loggedInUser);
+        const userData = await utils.getUserFromUsername(loggedInUser);
         let dietaryArray = [];
         console.log('Diet of user: ', userData.diet);
         const serverSideDiets = userData.diet;
@@ -111,7 +111,7 @@ const getDietaryArray = async() => {
 
 const getHealthArray = async() => {
     try{
-        const userData = await getUserFromUsername(loggedInUser);
+        const userData = await utils.getUserFromUsername(loggedInUser);
         let healthArray = [];
         console.log('Health of user: ', userData.health);
         const serverSideHealth = userData.health;
