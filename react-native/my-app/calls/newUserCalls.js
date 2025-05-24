@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import { getVerificationCode } from "./verificationCodeCalls";
-import { hostForAppCalls } from "./hostCallConst";
+import * as CONST from "../calls/constants.js";
 import { sendEmailForNewCode } from "./verificationCodeCalls";
 import emailjs from '@emailjs/react-native';
 import { send, EmailJSResponseStatus } from '@emailjs/react-native';
@@ -22,7 +22,7 @@ const onNewUserCalls = async (textUsername, textRealName, textEmail, textPasswor
           };
           sendEmailForNewCode(textRealName, textEmail, verificationCode, emailjs);
     
-          fetch(`${hostForAppCalls}/api/v1/users/register`, {
+          fetch(`${CONST.HOST}/api/v1/users/register`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-import { hostForAppCalls } from "./hostCallConst";
+import * as CONST from "../calls/constants.js";
 import { loggedInUser } from "./loginCalls";
 import { Alert } from "react-native";
 import { getUserId } from "./favoriteCalls";
@@ -23,7 +23,7 @@ const uploadNewRecipe = async (recipeNameText, recipeCaloriesText, recipeIngredi
         console.log("adding new recipe (calories): ", recipeCaloriesText);
       try {
         const userId = await getUserId(loggedInUser);
-        const response = await fetch(`${hostForAppCalls}/api/v1/users/${userId}/create_recipes`, {
+        const response = await fetch(`${CONST.HOST}/api/v1/users/${userId}/create_recipes`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

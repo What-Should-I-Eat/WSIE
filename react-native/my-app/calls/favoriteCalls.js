@@ -1,6 +1,6 @@
-import { hostForAppCalls } from "./hostCallConst";
+import * as CONST from "../calls/constants.js";
 import { loggedInUser } from "./loginCalls";
-import { getUserData } from "./recipeSearchCalls";
+import {getUserFromUsername} from "../calls/utils.js";
 import { Alert } from "react-native";
 
 const addRecipeToFavorites = async (givenRecipe, setIsFavorited, directionsOfRecipe, isThisComingFromRecipeSearch) => {
@@ -40,7 +40,7 @@ const addRecipeToFavorites = async (givenRecipe, setIsFavorited, directionsOfRec
       console.log("adding to favorites (calories): ", newFavoritedRecipe.recipeCalories);
       try {
         const userId = await getUserId(loggedInUser);
-        const response = await fetch(`${hostForAppCalls}/api/v1/users/${userId}/favorites`, {
+        const response = await fetch(`${CONST.HOST}/api/v1/users/${userId}/favorites`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -77,7 +77,7 @@ const removeRecipeFromFavorites = async (givenRecipe, setIsFavorited, isThisComi
 
   try {
     const userId = await getUserId(loggedInUser);
-    const response = await fetch(`${hostForAppCalls}/api/v1/users/${userId}/favorites`, {
+    const response = await fetch(`${CONST.HOST}/api/v1/users/${userId}/favorites`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -104,7 +104,7 @@ const isRecipeAlreadyFavorited = async (givenRecipe) => {
   };
   try {
     const userId = await getUserId(loggedInUser);
-    const response = await fetch(`${hostForAppCalls}/api/v1/users/${userId}/favorites`, {
+    const response = await fetch(`${CONST.HOST}/api/v1/users/${userId}/favorites`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -124,7 +124,7 @@ const isRecipeAlreadyFavorited = async (givenRecipe) => {
 
 async function getUserId(username){
     try {
-        const response = await fetch(`${hostForAppCalls}/api/v1/users/findUserId?username=${username}`, {
+        const response = await fetch(`${CONST.HOST}/api/v1/users/findUserId?username=${username}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ async function getUserId(username){
 
   const getUserFavoritesFromSever = async() => {
     try{
-      const userData = await getUserData(loggedInUser);
+      const userData = await getUserFromUsername(loggedInUser);
       console.log('Health of user: ', userData.health);
       console.log('Diet of user: ', userData.diet);
 
