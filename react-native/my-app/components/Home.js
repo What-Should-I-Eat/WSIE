@@ -30,34 +30,34 @@ export default function Home({ navigation }) {
           <Text style={{fontSize:30, color:'Black'}}>{this.state.screenText}</Text>
         </View>
         
-        <View style={styles.NavContainer}>
-          <View style={styles.NavBar}>
-              <Pressable
-                  title="Account"
-                  onPress={() => navigation.navigate("LoginScreen")}
-                  style={styles.IconBehave}
-                  android_ripple={{borderless:true, radius:50}}
-              >
-                  <FontAwesome name="user-circle" size={iconHeight} color='#448aff'/>
-              </Pressable>
-              <Pressable
-                  title="Go to Recipe Search"
-                  onPress={() => navigation.navigate("RecipeSearchScreen")}
-                  style={styles.IconBehave}
-                  android_ripple={{borderless:true, radius:50}}
-              >
-                  <FontAwesome name="search" size={iconHeight} color='#448aff'/>
-              </Pressable>
-            <Pressable
-              title="Dietary Restrictions"
-              onPress={() => navigation.navigate("DietaryRestrictionsScreen")}
-              style={styles.IconBehave}
-              android_ripple={{borderless:true, radius:50}}
-            >
-              <FontAwesome6 name="bowl-food" size={iconHeight} color='#448aff'/>
-            </Pressable>
-          </View>
-        </View>
+        {/*<View style={styles.NavContainer}>*/}
+        {/*  <View style={styles.NavBar}>*/}
+        {/*      <Pressable*/}
+        {/*          title="Account"*/}
+        {/*          onPress={() => navigation.navigate("LoginScreen")}*/}
+        {/*          style={styles.IconBehave}*/}
+        {/*          android_ripple={{borderless:true, radius:50}}*/}
+        {/*      >*/}
+        {/*          <FontAwesome name="user-circle" size={iconHeight} color='#448aff'/>*/}
+        {/*      </Pressable>*/}
+        {/*      <Pressable*/}
+        {/*          title="Go to Recipe Search"*/}
+        {/*          onPress={() => navigation.navigate("RecipeSearchScreen")}*/}
+        {/*          style={styles.IconBehave}*/}
+        {/*          android_ripple={{borderless:true, radius:50}}*/}
+        {/*      >*/}
+        {/*          <FontAwesome name="search" size={iconHeight} color='#448aff'/>*/}
+        {/*      </Pressable>*/}
+        {/*    <Pressable*/}
+        {/*      title="Dietary Restrictions"*/}
+        {/*      onPress={() => navigation.navigate("DietaryRestrictionsScreen")}*/}
+        {/*      style={styles.IconBehave}*/}
+        {/*      android_ripple={{borderless:true, radius:50}}*/}
+        {/*    >*/}
+        {/*      <FontAwesome6 name="bowl-food" size={iconHeight} color='#448aff'/>*/}
+        {/*    </Pressable>*/}
+        {/*  </View>*/}
+        {/*</View>*/}
       </View>
     );
   }

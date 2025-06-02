@@ -15,6 +15,7 @@ import FavoritesScreen from './components/FavoritesScreen';
 import IndividualRecipeScreen from './components/IndividualRecipeScreen';
 import IndividualFavoritesScreen from './components/IndividualFavoritesScreen';
 import UploadRecipeScreen from './components/UploadRecipeScreen';
+import FloatingNavBar from "./components/FloatingNavBar";
 
 const Stack = createNativeStackNavigator();
 
@@ -193,6 +194,7 @@ export default function App() {
               }}
           />
         </Stack.Navigator>
+          <FloatingNavBar />
       </NavigationContainer>
     );
 }
