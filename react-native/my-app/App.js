@@ -16,6 +16,7 @@ import IndividualRecipeScreen from './components/IndividualRecipeScreen';
 import IndividualFavoritesScreen from './components/IndividualFavoritesScreen';
 import UploadRecipeScreen from './components/UploadRecipeScreen';
 import FloatingNavBar from "./components/FloatingNavBar";
+import GuestWelcomeScreen from "./components/GuestWelcomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -193,6 +194,19 @@ export default function App() {
                 headerBackTitle: backButton
               }}
           />
+            <Stack.Screen
+                name="GuestWelcomeScreen"
+                component={GuestWelcomeScreen}
+                options={
+                    {
+                        title: "Guest Mode",
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                            fontSize: 25,
+                        },
+                        headerBackTitle: backButton
+                    }}
+            />
         </Stack.Navigator>
           <FloatingNavBar />
       </NavigationContainer>
