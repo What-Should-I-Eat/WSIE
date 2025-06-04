@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import { onLogin } from '../calls/loginCalls';
+import {requestLogin, loggedInUser, onLogin, onGuestLogin} from '../calls/loginCalls';
 import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
 import NewUserScreen from "./NewUserScreen";
 
@@ -99,11 +99,7 @@ export default function LoginScreen({ navigation }) {
                     },
                     loginStyles.guestButton
                 ]}
-                onPress={() => {
-                    navigation.navigate("GuestWelcomeScreen", {
-                        userType: 'guest'
-                    });
-                }}
+                onPress={() => onGuestLogin(navigation)}
             >
                 <Text style={loginStyles.buttonText}>Continue as Guest</Text>
             </Pressable>

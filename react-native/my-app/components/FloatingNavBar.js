@@ -3,12 +3,21 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { View, Pressable, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import {requestLogin} from "../calls/loginCalls";
 
 var iconHeight = 26;
 var iconWidth = 26;
 
 export default function FloatingNavBar() {
     const navigation = useNavigation();
+
+    const handleAccountPress = () => {
+        if (!requestLogin) {
+            navigation.navigate("WelcomeScreen");
+        } else {
+            navigation.navigate("LoginScreen");
+        }
+    };
 
     return (
         <View style={styles.NavContainer}>
@@ -23,7 +32,7 @@ export default function FloatingNavBar() {
                 </Pressable>
                 <Pressable
                     title="Account"
-                    onPress={() => navigation.navigate("LoginScreen")}
+                    onPress={handleAccountPress}
                     style={styles.IconBehave}
                     android_ripple={{borderless:true, radius:50}}
                 >

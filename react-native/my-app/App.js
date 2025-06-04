@@ -16,7 +16,7 @@ import IndividualRecipeScreen from './components/IndividualRecipeScreen';
 import IndividualFavoritesScreen from './components/IndividualFavoritesScreen';
 import UploadRecipeScreen from './components/UploadRecipeScreen';
 import FloatingNavBar from "./components/FloatingNavBar";
-import GuestWelcomeScreen from "./components/GuestWelcomeScreen";
+import WelcomeScreen from "./components/WelcomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -195,11 +195,11 @@ export default function App() {
               }}
           />
             <Stack.Screen
-                name="GuestWelcomeScreen"
-                component={GuestWelcomeScreen}
+                name="WelcomeScreen"
+                component={WelcomeScreen}
                 options={
                     {
-                        title: "Guest Mode",
+                        title: "Welcome",
                         headerTitleStyle: {
                             fontWeight: 'bold',
                             fontSize: 25,

@@ -1,15 +1,16 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Pressable } from 'react-native';
-import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
+import {SafeAreaView, View, Text, StyleSheet, Pressable} from 'react-native';
+import {appBackgroundColor, mainIndigoButtonBackground, blueClicked} from "../calls/colorConstants";
+import {loggedInUser, onLogout} from "../calls/loginCalls";
 
-export default function GuestWelcomeScreen({ navigation }) {
+export default function WelcomeScreen({navigation}) {
 
     return (
         <SafeAreaView style={guestStyles.container}>
             <View style={guestStyles.content}>
                 <Text style={guestStyles.welcomeText}>Welcome</Text>
                 <Text style={guestStyles.statusText}>You are logged in</Text>
-                <Text style={guestStyles.roleText}>Your role is "guest"</Text>
+                <Text style={guestStyles.roleText}>Your are {loggedInUser}</Text>
 
                 <Pressable
                     style={({ pressed }) => [
@@ -19,6 +20,7 @@ export default function GuestWelcomeScreen({ navigation }) {
                         guestStyles.logoutButton
                     ]}
                     onPress={() => {
+                        onLogout();
                         navigation.navigate("LoginScreen");
                     }}
                 >
