@@ -15,6 +15,8 @@ import FavoritesScreen from './components/FavoritesScreen';
 import IndividualRecipeScreen from './components/IndividualRecipeScreen';
 import IndividualFavoritesScreen from './components/IndividualFavoritesScreen';
 import UploadRecipeScreen from './components/UploadRecipeScreen';
+import FloatingNavBar from "./components/FloatingNavBar";
+import WelcomeScreen from "./components/WelcomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +26,19 @@ export default function App() {
   return(
       <NavigationContainer>
         <Stack.Navigator>
+            <Stack.Screen
+                name="Home"
+                component={Home}
+                options={
+                    {
+                        title: "Home",
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                            fontSize: 25,
+                        },
+                        headerBackTitle: 'Logout'
+                    }}
+            />
           <Stack.Screen 
             name="LoginScreen" 
             component={LoginScreen} 
@@ -34,19 +49,6 @@ export default function App() {
                   fontWeight: 'bold',
                   fontSize: 25,
                 }
-              }}
-          />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={
-              {
-                title: "Home",
-                headerTitleStyle: {
-                  fontWeight: 'bold',
-                  fontSize: 25,
-                },
-                headerBackTitle: 'Logout'
               }}
           />
           <Stack.Screen
@@ -192,7 +194,21 @@ export default function App() {
                 headerBackTitle: backButton
               }}
           />
+            <Stack.Screen
+                name="WelcomeScreen"
+                component={WelcomeScreen}
+                options={
+                    {
+                        title: "Welcome",
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                            fontSize: 25,
+                        },
+                        headerBackTitle: backButton
+                    }}
+            />
         </Stack.Navigator>
+          <FloatingNavBar />
       </NavigationContainer>
     );
 }

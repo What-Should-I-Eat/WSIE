@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import { onLogin } from '../calls/loginCalls';
+import {requestLogin, loggedInUser, onLogin, onGuestLogin} from '../calls/loginCalls';
 import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
+import NewUserScreen from "./NewUserScreen";
 
 export default function LoginScreen({ navigation }) {
 
@@ -59,33 +60,48 @@ export default function LoginScreen({ navigation }) {
                 onPress={togglePasswordVisibility} 
               />
               </View>
+            <View style={loginStyles.buttonRow}>
+                <Pressable style={({ pressed }) =>[
+                    {
+                        backgroundColor: pressed ? blueClicked : '#4567b7',
+                    },
+                    loginStyles.loginButton]}
+                           onPress={() => onLogin(textUsername, textPassword, navigation)}
+                >
+                    <Text style={loginStyles.buttonText}>Login</Text>
+                </Pressable>
+
+                <Pressable style={({ pressed }) =>[
+                    {
+                        backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
+                    },
+                    loginStyles.newUserButton]}
+                           onPress={() => navigation.navigate("NewUserScreen")}
+                >
+                    <Text style={loginStyles.buttonText}>Sign Up</Text>
+                </Pressable>
+            </View>
+
             <Pressable style={({ pressed }) =>[
                 {
-                  backgroundColor: pressed ? blueClicked : '#155724',
+                    backgroundColor: pressed ? blueClicked : '#E74C3C',
                 },
-                loginStyles.loginButton]} 
-                onPress={() => onLogin(textUsername, textPassword, navigation)}
+                loginStyles.forgotPasswordButton]}
+                       onPress={() => navigation.navigate("ForgotPasswordScreen")}
             >
-              <Text style={loginStyles.buttonText}>Login</Text>
+                <Text style={loginStyles.buttonTextSmall}>Forgot Password</Text>
             </Pressable>
-            <Pressable style={({ pressed }) =>[
-                {
-                  backgroundColor: pressed ? blueClicked : '#ff0000',
-                },
-                loginStyles.forgotPasswordButton]} 
-              onPress={() => navigation.navigate("ForgotPasswordScreen")}
+
+            <Pressable
+                style={({ pressed }) => [
+                    {
+                        backgroundColor: pressed ? blueClicked : '#56B3FA',
+                    },
+                    loginStyles.guestButton
+                ]}
+                onPress={() => onGuestLogin(navigation)}
             >
-              <Text style={loginStyles.buttonTextSmall}>Forgot Password</Text>
-            </Pressable>
-            <Pressable style={({ pressed }) =>[
-                {
-                  backgroundColor: pressed ? blueClicked : mainIndigoButtonBackground,
-                },
-                loginStyles.newUserButton]} 
-              onPress={() => navigation.navigate("NewUserScreen")}
-              >
-              <Text style={loginStyles.buttonText}>
-              Sign Up</Text>
+                <Text style={loginStyles.buttonText}>Continue as Guest</Text>
             </Pressable>
       </View>
       </ScrollView>
@@ -115,10 +131,9 @@ export default function LoginScreen({ navigation }) {
         borderRadius: 8,
         elevation: 3,
         borderWidth: 1,
-        width: 300,
-        height: 100,
-        margin: 10,
-        marginTop: 30,   
+        width: 140,
+        height: 66,
+        marginBottom: 20,
     },
     forgotPasswordButton: {
         alignItems: 'center',
@@ -126,9 +141,8 @@ export default function LoginScreen({ navigation }) {
         borderRadius: 8,
         elevation: 3,
         borderWidth: 1,
-        width: 300,
-        height: 100,
-        margin: 10, 
+        width: 290,
+        height: 66,
     },
     passwordInputContainer: {
       flexDirection: 'row',
@@ -141,19 +155,18 @@ export default function LoginScreen({ navigation }) {
       justifyContent: 'center',
       borderRadius: 8,
       elevation: 3,
-      width: 300,
-      height: 100,
-      margin: 10,
+      width: 140,
+      height: 66,
       borderWidth: 1,
   },
     buttonText:{
-        fontSize: 40,
+        fontSize: 30,
         fontWeight: '600',
         color: 'white'
     },
     buttonTextSmall:{
-        fontSize: 34,
-        fontWeight: '700',
+        fontSize: 30,
+        fontWeight: '600',
         color: 'white'
     },
     loginBox: {
@@ -175,6 +188,22 @@ export default function LoginScreen({ navigation }) {
         marginTop: 10,
         marginBottom: 5,
     },
+      guestButton: {
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 8,
+          elevation: 3,
+          borderWidth: 1,
+          width: 290,
+          height: 66,
+          marginTop: 15,
+      },
+      buttonRow: {
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: 290,
+          marginTop: 20,
+      },
     headerTitle: {
         fontSize: 32,
         fontWeight: '600',

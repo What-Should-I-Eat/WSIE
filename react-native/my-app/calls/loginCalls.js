@@ -3,6 +3,7 @@ import { onResendCode } from "./verificationCodeCalls";
 import * as CONST from "../calls/constants.js";
 
 var loggedInUser = 'default';
+var requestLogin = true;
 
 const onLogin = (textUsername, textPassword, navigation) => {
 
@@ -45,13 +46,29 @@ const onLogin = (textUsername, textPassword, navigation) => {
             console.log("DATA = ", data);
             console.log(data.username);
             loggedInUser = data.username;
-            navigation.navigate("Home");
+            requestLogin = false;
+            navigation.navigate("WelcomeScreen", {
+                username: data.username
+            });
           }
         })
         .catch(error => {
           console.error('Fetch error:', error);
       });
     }
+}
+
+const onGuestLogin = (navigation) => {
+    loggedInUser = 'guest';
+    requestLogin = false;
+    navigation.navigate("WelcomeScreen", {
+        username: 'guest',
+    });
+}
+
+const onLogout = () => {
+    loggedInUser = 'default';
+    requestLogin = true;
 }
 
 function areInputsFilledIn(textUsername, textPassword){
@@ -66,4 +83,4 @@ function areInputsFilledIn(textUsername, textPassword){
     return true;
 
 }
-export{ onLogin, loggedInUser };
+export{ onLogin, onGuestLogin, onLogout, loggedInUser, requestLogin };
