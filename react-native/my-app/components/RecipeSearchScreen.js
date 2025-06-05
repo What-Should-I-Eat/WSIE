@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import { Image, Pressable, Text, TextInput, View, StyleSheet, SafeAreaView, FlatList, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { searchForRecipes } from '../calls/recipeSearchCalls';
+import { searchForRecipes, initialRecipes } from '../calls/recipeSearchCalls';
 import { appBackgroundColor } from "../calls/colorConstants";
 
 export default function RecipeSearchScreen({ navigation }) {
@@ -10,6 +10,8 @@ export default function RecipeSearchScreen({ navigation }) {
     const [showStuff, setShowStuff] = useState(false);
     const [noResults, setNoResults] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
+
+    initialRecipes(textInput, setShowStuff, navigation, setSearchResults, setNoResults);
     return (
       <SafeAreaView style={RecipeSearchStyles.container}>
         <View style={RecipeSearchStyles.container}>
@@ -26,7 +28,7 @@ export default function RecipeSearchScreen({ navigation }) {
                   defaultValue={textInput}
               />
               <Pressable style={RecipeSearchStyles.searchButton} 
-                  onPress={() => searchForRecipes(textInput, setShowStuff, navigation, setSearchResults, setNoResults)}
+                  onPress={() => {searchForRecipes(textInput, setShowStuff, navigation, setSearchResults, setNoResults)}}
               ><Text><Icon name="search" size={40} color="black" /></Text>
               </Pressable>
             </View>
@@ -36,7 +38,6 @@ export default function RecipeSearchScreen({ navigation }) {
                   Sorry, based on your dietary restrictions we weren't able to find any results with that search parameter.
                 </Text>  
               </View>}
-
               <FlatList
                 data={searchResults}
                 keyExtractor={(item) => item.uri}
