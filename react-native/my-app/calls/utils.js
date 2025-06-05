@@ -438,7 +438,7 @@ async function cookieWorkaround() {
   }
   // Checks for a valid image
   function hasValidImage(recipe) {
-    return recipe.recipeImage && recipe.recipeImage !== "";
+    return recipe.images.REGULAR.url && recipe.images.SMALL.url !== "";
   }
   // Gets Image Type
   function getImageType(recipeImage) {
