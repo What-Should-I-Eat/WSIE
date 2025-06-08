@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView, Image } from 'react-native';
-import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked, navBarPadding } from "../calls/styleSheets";
 import * as ImagePicker from 'expo-image-picker';
 import { uploadNewRecipe } from '../calls/uploadRecipeCalls';
 
@@ -130,6 +130,7 @@ export default function UploadRecipeScreen({ navigation }) {
       backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
+      paddingBottom: navBarPadding
     },
     images: {
       width: 60,

@@ -2,11 +2,9 @@ import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import {requestLogin, loggedInUser, onLogin, onGuestLogin} from '../calls/loginCalls';
-import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
-import NewUserScreen from "./NewUserScreen";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/styleSheets";
 
-export default function LoginScreen({ navigation }) {
-
+export default function LoginScreen({navigation}) {
     const [textUsername, setUsernameText] = useState('');
     const [textPassword, setPasswordText] = useState('');
 

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { onResendCode, onVerifyUser } from '../calls/verificationCodeCalls';
-import { appBackgroundColor, blueClicked } from "../calls/colorConstants";
+import { appBackgroundColor, blueClicked } from "../calls/styleSheets";
 
 export default function VerificationCodeScreen({ route, navigation }) {
     const [textUsername, setUsernameText] = useState(route.params.user);

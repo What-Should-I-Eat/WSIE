@@ -59,16 +59,13 @@ const onLogin = (textUsername, textPassword, navigation) => {
 }
 
 const onGuestLogin = (navigation) => {
-    loggedInUser = 'guest';
-    requestLogin = false;
-    navigation.navigate("WelcomeScreen", {
-        username: 'guest',
-    });
+    onLogin('guest','Password1',navigation)
 }
 
 const onLogout = () => {
     loggedInUser = 'default';
     requestLogin = true;
+    console.log("Logged out:" + loggedInUser)
 }
 
 function areInputsFilledIn(textUsername, textPassword){

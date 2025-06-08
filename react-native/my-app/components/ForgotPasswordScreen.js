@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { SafeAreaView, Pressable, Text, TextInput, View, StyleSheet, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { onEnteredCodeForForgotPassword, onEnteredEmailForForgotPassword, onEnteredNewPasswords } from '../calls/forgotPasswordCalls';
-import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/styleSheets";
 
 export default function ForgotPasswordScreen({ navigation }) {
 

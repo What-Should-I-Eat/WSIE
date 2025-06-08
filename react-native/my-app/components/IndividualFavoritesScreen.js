@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
-import { appBackgroundColor, blueClicked } from "../calls/colorConstants";
+import { appBackgroundColor, blueClicked, navBarPadding } from "../calls/styleSheets";
 
 export default function IndividualFavoritesScreen({ route, navigation }) {
 
@@ -67,7 +67,8 @@ export default function IndividualFavoritesScreen({ route, navigation }) {
       backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
-      height: 'max'
+      height: 'max',
+      paddingBottom: navBarPadding
     },
     favoritesButton: {
         alignItems: 'center',

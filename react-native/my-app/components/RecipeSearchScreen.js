@@ -1,8 +1,9 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState} from 'react';
 import { Image, Pressable, Text, TextInput, View, StyleSheet, SafeAreaView, FlatList, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { searchForRecipes, initialRecipes } from '../calls/recipeSearchCalls';
-import { appBackgroundColor } from "../calls/colorConstants";
+import { appBackgroundColor, iconColor, iconHeight, navBarPadding } from "../calls/styleSheets";
 
 export default function RecipeSearchScreen({ navigation }) {
 
@@ -14,57 +15,52 @@ export default function RecipeSearchScreen({ navigation }) {
     initialRecipes(textInput, setShowStuff, navigation, setSearchResults, setNoResults);
     return (
       <SafeAreaView style={RecipeSearchStyles.container}>
-        <View style={RecipeSearchStyles.container}>
-            <Text style={RecipeSearchStyles.instructions}>
-               Search for your favorite recipe below:
-            </Text>
-            <View style={RecipeSearchStyles.searchArea}>
-              <TextInput
-                  style={RecipeSearchStyles.inputBox}
-                  placeholder="Search recipe..."
-                  placeholderTextColor={"#8c8c8c"}
-                  placeholderFon
-                  onChangeText={value => setInputText(value)}
-                  defaultValue={textInput}
-              />
-              <Pressable style={RecipeSearchStyles.searchButton} 
-                  onPress={() => {searchForRecipes(textInput, setShowStuff, navigation, setSearchResults, setNoResults)}}
-              ><Text><Icon name="search" size={40} color="black" /></Text>
-              </Pressable>
-            </View>
-            {showStuff && <View style={RecipeSearchStyles.resultsArea}>
-              {noResults && <View style={RecipeSearchStyles.noResultsFound}>
-                <Text style={RecipeSearchStyles.noResultsFound}>
-                  Sorry, based on your dietary restrictions we weren't able to find any results with that search parameter.
-                </Text>  
-              </View>}
-              <FlatList
-                data={searchResults}
-                keyExtractor={(item) => item.uri}
-                renderItem={({ item }) => (
-                  <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualRecipeScreen", {
-                    individualRecipe: item
-                  })}>
-                  <View style={[RecipeSearchStyles.singleRecipeDiv, RecipeSearchStyles.divider]}>
-                    <Image 
-                      source={ { uri: item.image}} 
-                      style={RecipeSearchStyles.images} 
-                    />
-                    <View style={RecipeSearchStyles.textResults}>
-
-                      <Text style={RecipeSearchStyles.foodTitle}>
-                        {item.name}  
-                      </Text>
-                      <Text style={RecipeSearchStyles.calories}>
-                        Cal: {item.calories}
-                      </Text>
-                    </View>
-                  </View>
-                  </TouchableWithoutFeedback>
-                )}
-              />
-            </View>}
+        <View style={RecipeSearchStyles.searchArea}>
+          <TextInput
+              style={RecipeSearchStyles.inputBox}
+              placeholder="Search recipe..."
+              placeholderTextColor={"#8c8c8c"}
+              placeholderFon
+              onChangeText={value => setInputText(value)}
+              defaultValue={textInput}
+          />
+          <Pressable style={RecipeSearchStyles.searchButton} 
+              onPress={() => {searchForRecipes(textInput, setShowStuff, navigation, setSearchResults, setNoResults)}}
+          ><Text><FontAwesome name="search" size={iconHeight+10} color={iconColor}/></Text>
+          </Pressable>
         </View>
+        {showStuff && <View style={RecipeSearchStyles.resultArea}>
+          {noResults && <View style={RecipeSearchStyles.noResultsFound}>
+            <Text style={RecipeSearchStyles.noResultsFound}>
+              Sorry, based on your dietary restrictions we weren't able to find any results with that search parameter.
+            </Text>  
+          </View>}
+          <FlatList
+            data={searchResults}
+            keyExtractor={(item) => item.uri}
+            renderItem={({ item }) => (
+              <TouchableWithoutFeedback onPress={() => navigation.navigate("IndividualRecipeScreen", {
+                individualRecipe: item
+              })}>
+              <View style={[RecipeSearchStyles.singleRecipeDiv, RecipeSearchStyles.divider]}>
+                <Image 
+                  source={ { uri: item.image}} 
+                  style={RecipeSearchStyles.images} 
+                />
+                <View style={RecipeSearchStyles.textResults}>
+
+                  <Text style={RecipeSearchStyles.foodTitle}>
+                    {item.name}  
+                  </Text>
+                  <Text style={RecipeSearchStyles.calories}>
+                    Cal: {item.calories}
+                  </Text>
+                </View>
+              </View>
+              </TouchableWithoutFeedback>
+            )}
+          />
+        </View>}
       </SafeAreaView>
     );
   }
@@ -75,17 +71,17 @@ export default function RecipeSearchScreen({ navigation }) {
       alignItems: 'center',
       justifyContent: 'top',
       height: 'max',
-      paddingBottom: 200,
+      paddingBottom: navBarPadding
     },
     searchButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 4,
+        borderRadius: 14,
         elevation: 3,
         width: 75,
         height: 75,
         margin: 5,     
-        backgroundColor: '#3cdfff' 
+        backgroundColor: '#eee', 
     },
     buttonText:{
         fontSize: 40,
@@ -132,7 +128,12 @@ export default function RecipeSearchScreen({ navigation }) {
       textAlign: 'center',
       marginHorizontal: 15
     },
-    resultsArea: {
+    resultArea: {
+      flex: 1,
+      backgroundColor: appBackgroundColor,
+      alignItems: 'center',
+      justifyContent: 'top',
+      height: 'max',
     },
     images: {
       width: 130,

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Pressable, Text, TextInput, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/styleSheets";
 
 import { onNewUserCalls } from '../calls/newUserCalls';
 

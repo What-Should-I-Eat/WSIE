@@ -3,7 +3,7 @@ import { Image, Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } fr
 import { isRecipeAlreadyFavorited } from '../calls/favoriteCalls';
 import { addRecipeToFavorites, removeRecipeFromFavorites } from '../calls/favoriteCalls';
 import { getRecipeDirections } from '../calls/recipeSearchCalls';
-import { appBackgroundColor } from "../calls/colorConstants";
+import { appBackgroundColor, navBarPadding } from "../calls/styleSheets";
 
 export default function IndividualRecipeScreen({ route, navigation }) {
 
@@ -87,7 +87,8 @@ export default function IndividualRecipeScreen({ route, navigation }) {
       backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
-      height: 'max'
+      height: 'max',
+      paddingBottom: navBarPadding
     },
     searchArea:{
       alignContent: "center",

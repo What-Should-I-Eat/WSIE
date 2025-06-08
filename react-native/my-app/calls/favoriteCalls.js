@@ -1,6 +1,6 @@
 import * as CONST from "../calls/constants.js";
 import { loggedInUser } from "./loginCalls";
-import {getUserFromUsername} from "../calls/utils.js";
+import {utils} from "../calls/utils.js";
 import { Alert } from "react-native";
 
 const addRecipeToFavorites = async (givenRecipe, setIsFavorited, directionsOfRecipe, isThisComingFromRecipeSearch) => {
@@ -99,27 +99,15 @@ const removeRecipeFromFavorites = async (givenRecipe, setIsFavorited, isThisComi
 
 
 const isRecipeAlreadyFavorited = async (givenRecipe) => {
-  const recipeToGet = {
-    recipeName: givenRecipe.name,
-  };
-  try {
-    const userId = await getUserId(loggedInUser);
-    const response = await fetch(`${CONST.HOST}/api/v1/users/${userId}/favorites`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ favorites: recipeToGet })
-    });
-    if (!response.ok) {
-      throw new Error('There was a problem checking if recipe is favorited!');
-    }
-    const isFavorited = await response.json();
-    return isFavorited;
-  } catch (error) {
-    console.error('There was a problem with the isFavorited operation:', error);
+  const user = await utils.getUserIdFromUsername(loggedInUser)
+  if(user.favorites.some(e => e.recipeName == givenRecipe.name)) {
+    console.log(true);
+    return true
   }
-
+  else{
+    console.log(false);
+    return false
+  }
 }
 
 async function getUserId(username){
@@ -144,7 +132,7 @@ async function getUserId(username){
 
   const getUserFavoritesFromSever = async() => {
     try{
-      const userData = await getUserFromUsername(loggedInUser);
+      const userData = await utils.getUserFromUsername(loggedInUser);
       console.log('Health of user: ', userData.health);
       console.log('Diet of user: ', userData.diet);
 

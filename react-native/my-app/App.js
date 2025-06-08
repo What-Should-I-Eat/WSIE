@@ -1,12 +1,12 @@
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import React, {useEffect,useState} from 'react';
+import {NavigationContainer, useIsFocused, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {requestLogin, loggedInUser, onLogin, onGuestLogin} from './calls/loginCalls';
 
 import LoginScreen from './components/LoginScreen';
 import ForgotPasswordScreen from './components/ForgotPasswordScreen';
 import NewUserScreen from './components/NewUserScreen';
 import VerificationCodeScreen from './components/VerificationCodeScreen';
-import Home from './components/Home';
 import RecipeSearchScreen from './components/RecipeSearchScreen';
 import DietaryRestrictionsScreen from './components/DietaryRestrictionsScreen';
 import DietsScreen from './components/DietsScreen';
@@ -23,22 +23,19 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const appTitle = "WSIE";
   const backButton = "Back";
+
+  const [currentRouteName, setCurrentRouteName] = useState('');
+
+  const onNavigationStateChange = (state) => {
+      const routeName = state?.routes[state.index]?.name;
+      setCurrentRouteName(routeName);
+  };
+
+  const shouldShowNavBar = currentRouteName !== 'LoginScreen';
+
   return(
-      <NavigationContainer>
+    <NavigationContainer onStateChange={onNavigationStateChange}>
         <Stack.Navigator>
-            <Stack.Screen
-                name="Home"
-                component={Home}
-                options={
-                    {
-                        title: "Home",
-                        headerTitleStyle: {
-                            fontWeight: 'bold',
-                            fontSize: 25,
-                        },
-                        headerBackTitle: 'Logout'
-                    }}
-            />
           <Stack.Screen 
             name="LoginScreen" 
             component={LoginScreen} 
@@ -48,8 +45,9 @@ export default function App() {
                 headerTitleStyle: {
                   fontWeight: 'bold',
                   fontSize: 25,
-                }
+                },
               }}
+    
           />
           <Stack.Screen
             name="ForgotPasswordScreen"
@@ -75,7 +73,8 @@ export default function App() {
                   fontSize: 25,
                 },
                 headerBackTitle: backButton
-              }}
+              }
+            }
           />
            <Stack.Screen 
             name="VerificationCodeScreen" 
@@ -202,13 +201,13 @@ export default function App() {
                         title: "Welcome",
                         headerTitleStyle: {
                             fontWeight: 'bold',
-                            fontSize: 25,
+                            fontSize: 25,                
                         },
-                        headerBackTitle: backButton
-                    }}
+                    headerBackTitle: backButton
+                  }}
             />
-        </Stack.Navigator>
-          <FloatingNavBar />
+        </Stack.Navigator>        
+        {shouldShowNavBar && <FloatingNavBar />}
       </NavigationContainer>
     );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import {SafeAreaView, View, Text, StyleSheet, Pressable} from 'react-native';
-import {appBackgroundColor, mainIndigoButtonBackground, blueClicked} from "../calls/colorConstants";
+import {appBackgroundColor, mainIndigoButtonBackground, blueClicked, navBarPadding} from "../calls/styleSheets";
 import {loggedInUser, onLogout} from "../calls/loginCalls";
 
 export default function WelcomeScreen({navigation}) {
@@ -37,6 +37,7 @@ const guestStyles = StyleSheet.create({
         backgroundColor: appBackgroundColor,
         alignItems: 'center',
         justifyContent: 'center',
+        paddingBottom: navBarPadding
     },
     content: {
         alignItems: 'center',

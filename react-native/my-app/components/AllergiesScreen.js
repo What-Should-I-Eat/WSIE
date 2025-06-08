@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, Text, View, StyleSheet } from 'react-native';
 import { MultiSelectListAllergy, selectedAllergyArray } from './AllergiesList';
 import { sendHealthData } from '../calls/dietHealthCalls';
-import { appBackgroundColor, blueClicked } from "../calls/colorConstants";
+import { appBackgroundColor, blueClicked, navBarPadding } from "../calls/styleSheets";
 
 export default function AllergiesScreen({ navigation }) {
   
@@ -32,6 +32,7 @@ export default function AllergiesScreen({ navigation }) {
       backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
+      paddingBottom: navBarPadding
     },
     updateButton: {
         alignItems: 'center',

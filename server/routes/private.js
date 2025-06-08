@@ -98,7 +98,6 @@ privateRouter.put("/users/verify", async (req, res) => {
     res.cookie('sessionId', req.session.id, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.cookie('username', req.session.username, { maxAge: 24 * 60 * 60 * 1000 });
      
-    
     res.json(verifiedUser);
   } catch (error) {
     console.error('Error fetching unique user: ', error);

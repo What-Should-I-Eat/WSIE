@@ -146,17 +146,17 @@ async function renderNavbar() {
    * If there is an error during the sign-out process, logs the error to the console.
    */
   function signOutUser() {
-    fetch(SIGNOUT_ROUTE)
+    fetch(CONST.SIGNOUT_ROUTE)
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          setStorage("signOutMessage", SUCCESSFUL_SIGNOUT);
-          window.location.href = BASE_HOME_REDIRECT;
+          setStorage("signOutMessage", CONST.SUCCESSFUL_SIGNOUT);
+          window.location.href = CONST.BASE_HOME_REDIRECT;
         }
       })
       .catch(error => {
         console.error('Error:', error);
-        showAjaxAlert("Error", INTERNAL_SERVER_ERROR_OCCURRED);
+        showAjaxAlert("Error", CONST.INTERNAL_SERVER_ERROR_OCCURRED);
       });
   }
 
@@ -207,12 +207,12 @@ async function renderNavbar() {
    * @returns {Promise<Object>} A promise that resolves to the user data or null in case of an error
    */
   async function getUserFromEmail(email) {
-    const urlWithQueryParams = `${REQUEST_USER_INFO_FOR_RESET_URL}=${email}`;
+    const urlWithQueryParams = `${CONST.REQUEST_USER_INFO_FOR_RESET_URL}=${email}`;
     try {
       const response = await fetch(urlWithQueryParams, {
-        method: GET_ACTION,
+        method: CONST.GET_ACTION,
         headers: {
-          'Content-Type': DEFAULT_DATA_TYPE
+          'Content-Type': CONST.DEFAULT_DATA_TYPE
         }
       });
 
@@ -270,7 +270,7 @@ async function renderNavbar() {
 
 async function cookieWorkaround() {
   try {
-    const response = await fetch(PROFILE_URL, {
+    const response = await fetch(CONST.PROFILE_URL, {
       method: 'GET_ACTION',
       credentials: 'include', // Ensures cookies are sent with the request
       headers: {
@@ -418,13 +418,13 @@ async function cookieWorkaround() {
 
   // Gets the Recipe Details
   async function getRecipeDetails(recipeIdToFind){
-    const url = `${PUBLIC_USER_RECIPES_URL}/get_requested_recipe?recipeId=${recipeIdToFind}`;
+    const url = `${CONST.PUBLIC_USER_RECIPES_URL}/get_requested_recipe?recipeId=${recipeIdToFind}`;
     console.log(`Querying Server at: ${url}`);
 
     const response = await fetch(url, {
-      method: GET_ACTION,
+      method: CONST.GET_ACTION,
       headers: {
-        'Content-Type': DEFAULT_DATA_TYPE
+        'Content-Type': CONST.DEFAULT_DATA_TYPE
       }
     });
 
@@ -456,11 +456,11 @@ async function cookieWorkaround() {
       if (recipe.recipeImage) {
         return recipe.recipeImage;
       } else {
-        return NO_IMAGE_AVAILABLE;
+        return CONST.NO_IMAGE_AVAILABLE;
       }
     } catch (error) {
       console.error(error.message);
-      return NO_IMAGE_AVAILABLE;
+      return CONST.NO_IMAGE_AVAILABLE;
     }
   }
 
@@ -471,7 +471,7 @@ async function cookieWorkaround() {
    */
   async function decodeUserRecipeImage(recipe) {
     if (!recipe.userRecipeImage || !recipe.userRecipeImage.recipeImageData) {
-      throw new Error(`${USER_CREATED_RECIPE_HAS_NO_IMAGE} for [${recipe.recipeName}]`);
+      throw new Error(`${CONST.USER_CREATED_RECIPE_HAS_NO_IMAGE} for [${recipe.recipeName}]`);
     }
 
     const { data, imageType } = recipe.userRecipeImage.recipeImageData;
@@ -480,7 +480,7 @@ async function cookieWorkaround() {
 
     return new Promise((resolve, reject) => {
       reader.onloadend = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error(`${FAILED_TO_DECODE_USER_RECIPE_IMAGE} for [${recipe.recipeName}]`));
+      reader.onerror = () => reject(new Error(`${CONST.FAILED_TO_DECODE_USER_RECIPE_IMAGE} for [${recipe.recipeName}]`));
       reader.readAsDataURL(blob);
     });
   }
@@ -541,15 +541,15 @@ async function cookieWorkaround() {
   async function checkUserIdAndUsername(){
     const username = utils.getUserNameFromCookie();
     if (!username) {
-      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      console.error(CONST.UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", CONST.UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
       return 0;
     }
   
     const userId = await utils.getUserIdFromUsername(username);
     if (!userId) {
-      console.error(UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
-      utils.showAjaxAlert("Error", UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      console.error(CONST.UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
+      utils.showAjaxAlert("Error", CONST.UNABLE_TO_UPDATE_USER_NOT_LOGGED_IN);
       return 0;
     }
     return userId;
@@ -578,16 +578,16 @@ async function cookieWorkaround() {
       let request = {
           recipeName: recipeName
         }
-      let successMessage = SUCCESSFULLY_DELETED_RECIPE;
-      let errorMessage = UNABLE_TO_DELETE_RECIPE_ERROR;
+      let successMessage = CONST.SUCCESSFULLY_DELETED_RECIPE;
+      let errorMessage = CONST.UNABLE_TO_DELETE_RECIPE_ERROR;
   
-      let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
+      let url = `${CONST.USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/recipe/delete_recipe`;
   
       try {
         const response = await fetch(url, {
-          method: DELETE_ACTION,
+          method: CONST.DELETE_ACTION,
           headers: {
-            'Content-Type': DEFAULT_DATA_TYPE
+            'Content-Type': CONST.DEFAULT_DATA_TYPE
           },
           body: JSON.stringify({ favorites: request })
         });
@@ -621,15 +621,15 @@ async function cookieWorkaround() {
       let request = {
         recipeName: recipeName
       }
-      let successMessage = SUCCESSFULLY_UNFAVORITE_RECIPE;
-      let errorMessage = UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
+      let successMessage = CONST.SUCCESSFULLY_UNFAVORITE_RECIPE;
+      let errorMessage = CONST.UNABLE_TO_UNFAVORITE_UNEXPECTED_ERROR;
   
-      let url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+      let url = `${CONST.USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
       try {
         const response = await fetch(url, {
-          method: DELETE_ACTION,
+          method: CONST.DELETE_ACTION,
           headers: {
-            'Content-Type': DEFAULT_DATA_TYPE
+            'Content-Type': CONST.DEFAULT_DATA_TYPE
           },
           body: JSON.stringify({ favorites: request })
         });
@@ -670,7 +670,7 @@ async function cookieWorkaround() {
       recipeName: recipeName
     };
   
-    const url = `${USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
+    const url = `${CONST.USER_FAVORITES_RECIPES_CRUD_URL}/${userId}/favorites`;
   
     try {
       const response = await fetch(url, {
@@ -684,7 +684,7 @@ async function cookieWorkaround() {
       //if the recipe is not found at all then this immediately throws an error rather than returning false
       if (!response.ok) {
         return false;
-        throw new Error(ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE);
+        throw new Error(CONST.ERROR_OCCURRED_CHECKING_IF_RECIPE_FAVORITE);
       }
   
       const isFavorite = await response.json();
@@ -704,7 +704,7 @@ async function cookieWorkaround() {
    */
   async function checkForProfanity(text) {
     const options = {
-      method: GET_ACTION,
+      method: CONST.GET_ACTION,
       headers: {Authorization: 'Bearer b30c3a2dbb27b1f84c31fc3e1123df73'}
     };
 

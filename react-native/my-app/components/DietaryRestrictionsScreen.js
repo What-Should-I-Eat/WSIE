@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, Text, View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { appBackgroundColor, mainIndigoButtonBackground, blueClicked } from "../calls/colorConstants";
+import { appBackgroundColor, mainIndigoButtonBackground, blueClicked, } from "../calls/styleSheets";
 
 export default function DietaryRestrictionsScreen({ navigation }) {
 

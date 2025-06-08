@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Image, Text, View, StyleSheet, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { getUserFavoritesFromSever } from '../calls/favoriteCalls';
-import { appBackgroundColor } from "../calls/colorConstants";
+import { appBackgroundColor, navBarPadding } from "../calls/styleSheets";
 
 export default function FavoritesScreen({ navigation }) {
 
@@ -60,7 +60,7 @@ export default function FavoritesScreen({ navigation }) {
       backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
-      paddingBottom: 30,
+      paddingBottom: navBarPadding,
     },
     noRecipeFeedback: {
         fontSize: 35,
