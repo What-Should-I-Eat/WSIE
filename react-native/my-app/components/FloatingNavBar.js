@@ -48,7 +48,7 @@ export default function FloatingNavBar() {
                 </Pressable>
                 <Pressable
                     title="Dietary Restrictions"
-                    onPress={() => navigation.navigate("DietaryRestrictionsScreen")}
+                    onPress={() => navigation.navigate("UploadRecipeScreen")}
                     style={NavBar.IconBehave}
                     android_ripple={{borderless:true, radius:50}}
                 >
