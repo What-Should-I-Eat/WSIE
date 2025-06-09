@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import { Image, Pressable, Text, TextInput, View, StyleSheet, SafeAreaView, FlatList, TouchableWithoutFeedback } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { searchForRecipes, initialRecipes } from '../calls/recipeSearchCalls';
 import { appBackgroundColor, iconColor, iconHeight, navBarPadding } from "../calls/styleSheets";

@@ -130,7 +130,7 @@ export default function UploadRecipeScreen({ navigation }) {
       backgroundColor: appBackgroundColor,
       alignItems: 'center',
       justifyContent: 'top',
-      paddingBottom: navBarPadding
+      paddingBottom: navBarPadding+20
     },
     images: {
       width: 60,

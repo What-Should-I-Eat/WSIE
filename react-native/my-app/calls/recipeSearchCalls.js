@@ -59,43 +59,6 @@ const getPublicUserRecipes = async () => {
   }
 }
 
-  // Getting User Profile Data
-  this.getApiUrl = async (searchParam, apiUrl, pageUrl, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels) => {
-    if (pageUrl) return pageUrl;
-
-    let baseUrl = apiUrl || this.initialPageUrl;
-    if (!baseUrl) {
-      baseUrl = this.buildBaseUrl(searchParam, mealTypes, dishTypes, cuisineTypes,dietLabels,healthLabels);
-      console.log(baseUrl)
-      const username = utils.getUserNameFromCookie();
-      if (username) {
-        try {
-          const userData = await utils.getUserFromUsername(username);
-          const userDietString = getUserDietString(userData.diet);
-          const userHealthString = getUserHealthString(userData.health);
-
-          if (userDietString) {
-            console.debug(`Added [userDietString] to query: ${userDietString}`);
-            baseUrl += userDietString
-          }
-
-          if (userHealthString) {
-            console.debug(`Added [userHealthString] to query: ${userHealthString}`);
-            baseUrl += userHealthString
-          }
-        } catch (error) {
-          console.error(ERROR_UNABLE_TO_GET_USER, error);
-          utils.showAjaxAlert("Error", ERROR_UNABLE_TO_GET_USER);
-          return;
-        }
-      }
-
-      this.initialPageUrl = baseUrl;
-    }
-
-    return baseUrl;
-  };
-
 // Main Function fo rsearchiing for recipes
   async function searchForRecipes(inputtedSearch, setShowStuff, navigation, setSearchResults, setNoResults) {
     utils.getUserIdFromUsername(loggedInUser)
